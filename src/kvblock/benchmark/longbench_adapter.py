@@ -14,6 +14,7 @@ import json
 from pathlib import Path
 import re
 from typing import Any, Callable, Iterable, Mapping, Sequence
+import zipfile
 
 from kvblock.benchmark.dynamic_block_benchmark import (
     DynamicBlockBenchmarkResult,
@@ -502,6 +503,17 @@ def _load_hf_longbench_dataset(
     dataset_name: str,
     split: str,
 ) -> Iterable[Mapping[str, Any]]:
+    # Newer `datasets` releases reject Hub datasets backed by Python loading
+    # scripts. LongBench's script only downloads `data.zip` and reads one JSONL
+    # file, so prefer that script-free path and keep load_dataset as a fallback.
+    if split != "test":
+        raise ValueError("LongBench adapter currently supports the test split only")
+    direct_error: Exception | None = None
+    try:
+        return _load_longbench_jsonl_from_hub(dataset_repo, dataset_name)
+    except Exception as exc:
+        direct_error = exc
+
     try:
         from datasets import load_dataset
     except ImportError as exc:  # pragma: no cover - optional runtime dependency
@@ -509,7 +521,53 @@ def _load_hf_longbench_dataset(
             "LongBench loading requires the optional 'datasets' dependency. "
             "Install it in the benchmark environment."
         ) from exc
-    return load_dataset(dataset_repo, dataset_name, split=split)
+    try:
+        return load_dataset(dataset_repo, dataset_name, split=split)
+    except RuntimeError as exc:
+        if "Dataset scripts are no longer supported" not in str(exc):
+            raise
+        detail = "" if direct_error is None else f" Direct data.zip error: {direct_error}"
+        raise RuntimeError(
+            "This datasets version no longer supports LongBench's Hub loading "
+            "script, and direct data.zip loading also failed. Install the "
+            "optional huggingface_hub dependency or use a datasets version that "
+            f"still supports script-based datasets.{detail}"
+        ) from exc
+
+
+def _load_longbench_jsonl_from_hub(
+    dataset_repo: str,
+    dataset_name: str,
+) -> tuple[Mapping[str, Any], ...]:
+    """Load LongBench rows directly from the repository's data.zip archive."""
+
+    try:
+        from huggingface_hub import hf_hub_download
+    except ImportError as exc:  # pragma: no cover - dependency of datasets
+        raise ImportError(
+            "Direct LongBench loading requires huggingface_hub."
+        ) from exc
+    zip_path = Path(
+        hf_hub_download(
+            repo_id=dataset_repo,
+            filename="data.zip",
+            repo_type="dataset",
+        )
+    )
+    member_name = f"data/{dataset_name}.jsonl"
+    with zipfile.ZipFile(zip_path) as archive:
+        if member_name not in archive.namelist():
+            raise FileNotFoundError(
+                f"{member_name!r} not found in LongBench data.zip"
+            )
+        rows: list[Mapping[str, Any]] = []
+        with archive.open(member_name) as handle:
+            for line in handle:
+                stripped = line.strip()
+                if not stripped:
+                    continue
+                rows.append(json.loads(stripped.decode("utf-8")))
+    return tuple(rows)
 
 
 def _longbench_rows(

@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import importlib.util
 from pathlib import Path
+from types import SimpleNamespace
+import sys
+import zipfile
 
 import pytest
 
@@ -178,6 +181,35 @@ def test_parse_helpers_validate_inputs() -> None:
 
     with pytest.raises(ValueError):
         longbench.parse_length_bucket("bad")
+
+
+def test_direct_longbench_zip_loader_reads_jsonl(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    zip_path = tmp_path / "data.zip"
+    with zipfile.ZipFile(zip_path, "w") as archive:
+        archive.writestr(
+            "data/narrativeqa.jsonl",
+            (
+                '{"input":"Question?","context":"Context.",'
+                '"answers":["Answer"],"length":5120,"dataset":"narrativeqa",'
+                '"language":"en","_id":"row-1","all_classes":[]}\n'
+            ),
+        )
+    fake_hub = SimpleNamespace(
+        hf_hub_download=lambda repo_id, filename, repo_type: str(zip_path)
+    )
+    monkeypatch.setitem(sys.modules, "huggingface_hub", fake_hub)
+
+    rows = longbench._load_longbench_jsonl_from_hub(
+        "THUDM/LongBench",
+        "narrativeqa",
+    )
+
+    assert len(rows) == 1
+    assert rows[0]["_id"] == "row-1"
+    assert rows[0]["answers"] == ["Answer"]
 
 
 def test_longbench_cli_parser_accepts_baseline_flags() -> None:
