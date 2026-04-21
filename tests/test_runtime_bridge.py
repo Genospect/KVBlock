@@ -296,6 +296,42 @@ def test_model_prefill_selector_uses_query_vector_for_query_sources() -> None:
     assert per_head_query.shape == (2, 3)
 
 
+def test_model_prefill_selector_repeats_grouped_key_heads_for_gqa() -> None:
+    key_layers = (
+        (
+            torch.tensor(
+                [[[[1.0, 1.0], [2.0, 2.0]], [[10.0, 10.0], [20.0, 20.0]]]]
+            ),
+            torch.zeros(1, 2, 2, 2),
+        ),
+    )
+    query_layers = (
+        torch.ones(1, 4, 2, 2, dtype=torch.float32),
+    )
+
+    (
+        keys,
+        query,
+        _name,
+        per_head_keys,
+        per_head_query,
+    ) = select_model_prefill_representations_with_name(
+        hidden_states=None,
+        past_key_values=key_layers,
+        query_states=query_layers,
+        config=HiddenStateCaptureConfig(representation_source="query_mean_last_layer"),
+    )
+
+    assert keys.shape == (2, 2)
+    assert query.shape == (2,)
+    assert per_head_keys is not None
+    assert per_head_query is not None
+    assert per_head_keys.shape == (4, 2, 2)
+    assert per_head_query.shape == (4, 2)
+    assert torch.equal(per_head_keys[0], per_head_keys[1])
+    assert torch.equal(per_head_keys[2], per_head_keys[3])
+
+
 def test_gpt2_query_projection_capture_splits_fused_qkv() -> None:
     class FakeCAttn(torch.nn.Module):
         def __init__(self, offset: float) -> None:
@@ -337,6 +373,57 @@ def test_gpt2_query_projection_capture_splits_fused_qkv() -> None:
         def forward(self, values: torch.Tensor) -> None:
             for block in self.transformer.h:
                 block.attn.c_attn(values)
+
+    model = FakeModel()
+    with _Gpt2QueryProjectionCapture(model) as capture:
+        model(torch.zeros(1, 3, 4))
+
+    assert len(capture.query_states) == 2
+    assert capture.query_states[0].shape == (1, 2, 3, 2)
+    assert torch.equal(
+        capture.query_states[1].permute(0, 2, 1, 3).reshape(1, 3, 4),
+        torch.arange(12, dtype=torch.float32).reshape(1, 3, 4) + 100.0,
+    )
+
+
+def test_query_projection_capture_supports_q_proj_modules() -> None:
+    class FakeQProj(torch.nn.Module):
+        def __init__(self, offset: float) -> None:
+            super().__init__()
+            self.offset = offset
+
+        def forward(self, values: torch.Tensor) -> torch.Tensor:
+            batch, tokens, hidden = values.shape
+            return (
+                torch.arange(batch * tokens * hidden, dtype=torch.float32)
+                .reshape(batch, tokens, hidden)
+                + self.offset
+            )
+
+    class FakeSelfAttn(torch.nn.Module):
+        def __init__(self, offset: float) -> None:
+            super().__init__()
+            self.q_proj = FakeQProj(offset)
+
+    class FakeBlock(torch.nn.Module):
+        def __init__(self, offset: float) -> None:
+            super().__init__()
+            self.self_attn = FakeSelfAttn(offset)
+
+    class FakeBackbone(torch.nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.layers = torch.nn.ModuleList((FakeBlock(0.0), FakeBlock(100.0)))
+
+    class FakeModel(torch.nn.Module):
+        def __init__(self) -> None:
+            super().__init__()
+            self.config = type("Config", (), {"num_attention_heads": 2})()
+            self.model = FakeBackbone()
+
+        def forward(self, values: torch.Tensor) -> None:
+            for block in self.model.layers:
+                block.self_attn.q_proj(values)
 
     model = FakeModel()
     with _Gpt2QueryProjectionCapture(model) as capture:

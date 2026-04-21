@@ -9,6 +9,7 @@ import torch
 from kvblock.runtime.base import ModelPrefillOutput, RuntimeBackend, RuntimeLoadConfig, TokenizedPrompt
 from kvblock.runtime.hooks import (
     HiddenStateCaptureConfig,
+    is_key_source,
     is_query_source,
     select_model_prefill_representations_with_name,
 )
@@ -117,17 +118,15 @@ class LocalHfRuntime(RuntimeBackend):
             device=self.config.device,
         )
 
-        query_capture = (
-            _Gpt2QueryProjectionCapture(model)
-            if is_query_source(self.capture_config.representation_source)
-            else None
-        )
+        source = self.capture_config.representation_source
+        query_capture = _QueryProjectionCapture(model) if is_query_source(source) else None
+        needs_hidden_states = not (is_query_source(source) or is_key_source(source))
         if query_capture is None:
             with torch.no_grad():
                 outputs = model(
                     input_ids=input_ids,
                     attention_mask=attention_mask,
-                    output_hidden_states=True,
+                    output_hidden_states=needs_hidden_states,
                     use_cache=True,
                     return_dict=True,
                 )
@@ -138,7 +137,7 @@ class LocalHfRuntime(RuntimeBackend):
                     outputs = model(
                         input_ids=input_ids,
                         attention_mask=attention_mask,
-                        output_hidden_states=True,
+                        output_hidden_states=needs_hidden_states,
                         use_cache=True,
                         return_dict=True,
                     )
@@ -206,12 +205,13 @@ def _resolve_torch_dtype(value: str) -> torch.dtype | None:
         ) from exc
 
 
-class _Gpt2QueryProjectionCapture:
-    """Temporarily capture GPT-2-style attention query projections.
+class _QueryProjectionCapture:
+    """Temporarily capture attention query projections from common HF models.
 
-    GPT-2-family HF modules use a fused ``c_attn`` projection that returns
-    concatenated Q/K/V. This hook splits the Q slice and reshapes it to match
-    the cache convention ``[batch, heads, tokens, head_dim]``.
+    GPT-2-family modules use a fused ``c_attn`` projection that returns
+    concatenated Q/K/V. Llama/Mistral/Qwen-family modules expose an explicit
+    ``q_proj`` module. Both paths are reshaped to the cache convention
+    ``[batch, heads, tokens, head_dim]``.
     """
 
     def __init__(self, model: Any) -> None:
@@ -225,15 +225,25 @@ class _Gpt2QueryProjectionCapture:
 
         return tuple(self._query_states)
 
-    def __enter__(self) -> "_Gpt2QueryProjectionCapture":
+    def __enter__(self) -> "_QueryProjectionCapture":
         self._query_states.clear()
-        n_head = _gpt2_num_heads(self._model)
-        for module in _iter_gpt2_c_attn_modules(self._model):
-            self._handles.append(module.register_forward_hook(_make_query_hook(self, n_head)))
+        n_head = _num_attention_heads(self._model)
+        gpt2_modules = _iter_gpt2_c_attn_modules(self._model)
+        if gpt2_modules:
+            for module in gpt2_modules:
+                self._handles.append(
+                    module.register_forward_hook(_make_fused_qkv_query_hook(self, n_head))
+                )
+        else:
+            for module in _iter_q_proj_modules(self._model):
+                self._handles.append(
+                    module.register_forward_hook(_make_q_proj_query_hook(self, n_head))
+                )
         if not self._handles:
             raise RuntimeError(
-                "query representation sources currently require GPT-2-style "
-                "transformer.h[*].attn.c_attn modules"
+                "query representation sources require either GPT-2-style "
+                "transformer.h[*].attn.c_attn modules or Llama/Mistral/Qwen-style "
+                "*.q_proj modules"
             )
         return self
 
@@ -246,7 +256,10 @@ class _Gpt2QueryProjectionCapture:
         self._query_states.append(query_state.detach())
 
 
-def _make_query_hook(capture: _Gpt2QueryProjectionCapture, n_head: int):
+_Gpt2QueryProjectionCapture = _QueryProjectionCapture
+
+
+def _make_fused_qkv_query_hook(capture: _QueryProjectionCapture, n_head: int):
     def hook(module: Any, _inputs: Any, output: Any) -> None:
         if isinstance(output, tuple):
             projected = output[0]
@@ -269,6 +282,25 @@ def _make_query_hook(capture: _Gpt2QueryProjectionCapture, n_head: int):
     return hook
 
 
+def _make_q_proj_query_hook(capture: _QueryProjectionCapture, n_head: int):
+    def hook(module: Any, _inputs: Any, output: Any) -> None:
+        if isinstance(output, tuple):
+            projected = output[0]
+        else:
+            projected = output
+        if not isinstance(projected, torch.Tensor):
+            raise TypeError("q_proj output must be a torch.Tensor")
+        if projected.ndim != 3:
+            raise ValueError("q_proj output must have shape [batch, tokens, hidden]")
+        if projected.shape[-1] % n_head != 0:
+            raise ValueError("q_proj hidden dim must be divisible by num_attention_heads")
+        head_dim = projected.shape[-1] // n_head
+        query = projected.reshape(projected.shape[0], projected.shape[1], n_head, head_dim)
+        capture.append(query.permute(0, 2, 1, 3).contiguous())
+
+    return hook
+
+
 def _iter_gpt2_c_attn_modules(model: Any):
     transformer = getattr(model, "transformer", None)
     blocks = getattr(transformer, "h", None)
@@ -284,7 +316,18 @@ def _iter_gpt2_c_attn_modules(model: Any):
     return tuple(modules)
 
 
-def _gpt2_num_heads(model: Any) -> int:
+def _iter_q_proj_modules(model: Any):
+    modules = []
+    named_modules = getattr(model, "named_modules", None)
+    if named_modules is None:
+        return ()
+    for name, module in named_modules():
+        if name.endswith(".q_proj"):
+            modules.append(module)
+    return tuple(modules)
+
+
+def _num_attention_heads(model: Any) -> int:
     config = getattr(model, "config", None)
     n_head = getattr(config, "n_head", None) or getattr(config, "num_attention_heads", None)
     if n_head is None or int(n_head) <= 0:

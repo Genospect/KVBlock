@@ -193,16 +193,6 @@ def select_query_key_states_with_name(
     if len(query_states) != layer_count:
         raise ValueError("query_states layer count must match past_key_values")
 
-    key_representations = _select_raw_key_state(
-        past_key_values,
-        _query_source_as_key_source(resolved),
-        layer_count=layer_count,
-    )
-    query_representations = _select_raw_query_state(
-        query_states,
-        resolved,
-        layer_count=layer_count,
-    )
     per_head_key_representations = _select_raw_key_heads(
         past_key_values,
         _query_source_as_key_source(resolved),
@@ -212,6 +202,16 @@ def select_query_key_states_with_name(
         query_states,
         resolved,
         layer_count=layer_count,
+    )
+    per_head_key_representations = _align_key_heads_to_query_heads(
+        per_head_key_representations,
+        query_head_count=per_head_query_representations.shape[0],
+    )
+    key_representations = _head_mean_attention_tensor(
+        per_head_key_representations.unsqueeze(0)
+    )
+    query_representations = _head_mean_attention_tensor(
+        per_head_query_representations.unsqueeze(0)
     )
     return (
         key_representations.detach().to(dtype=torch.float32, device="cpu").contiguous(),
@@ -411,6 +411,28 @@ def _attention_heads_tensor(attention_tensor: torch.Tensor) -> torch.Tensor:
     # heads gives a compact K/V-adjacent per-token stream without changing
     # BlockMetadata for this first key-ingest pass.
     return attention_tensor.detach().to(dtype=torch.float32).squeeze(0)
+
+
+def _align_key_heads_to_query_heads(
+    key_heads: torch.Tensor,
+    *,
+    query_head_count: int,
+) -> torch.Tensor:
+    """Repeat grouped-query key heads to match query-head count when needed."""
+
+    if key_heads.ndim != 3:
+        raise ValueError("key_heads must have shape [heads, tokens, head_dim]")
+    if query_head_count <= 0:
+        raise ValueError("query_head_count must be > 0")
+    key_head_count = key_heads.shape[0]
+    if key_head_count == query_head_count:
+        return key_heads
+    if query_head_count % key_head_count != 0:
+        raise ValueError(
+            "query/key head mismatch is only supported when query heads are an "
+            "integer multiple of key heads"
+        )
+    return key_heads.repeat_interleave(query_head_count // key_head_count, dim=0)
 
 
 def _average_hidden_states(hidden_states: Sequence[torch.Tensor]) -> torch.Tensor:
