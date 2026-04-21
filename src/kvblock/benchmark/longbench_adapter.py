@@ -124,6 +124,10 @@ class LongBenchPromptMetadata:
     length: int | None
     approximate_length: int
     answer_labels: tuple[str, ...]
+    answer_present_count: int
+    answer_missing_count: int
+    answer_presence_rate: float
+    answer_present: bool
     prompt_chars: int
 
     def to_dict(self) -> dict[str, Any]:
@@ -141,6 +145,13 @@ class LongBenchBenchmarkRunRow:
     longbench_length: int | None
     approximate_length: int
     answer_count: int
+    answer_present_count: int
+    answer_missing_count: int
+    answer_presence_rate: float
+    scoreable_by_answer_presence: bool
+    expected_block_count: int
+    selected_expected_block_count: int
+    missed_expected_block_count: int
     prompt_name: str
     prompt_file: str
     model_name: str
@@ -178,6 +189,9 @@ class LongBenchDatasetSummary:
     mean_length: float
     mean_tokens: float
     mean_candidate_block_count: float
+    mean_answer_presence_rate: float
+    scoreable_run_count: int
+    mean_expected_block_count: float
     mean_selected_to_semantic_k_ratio: float
     mean_selector_latency_sec: float
     mean_recall: float | None
@@ -363,6 +377,10 @@ def materialize_longbench_prompt_cases(
         prompt_name = _prompt_name(record, ordinal=ordinal)
         path = output_dir / f"{prompt_name}.txt"
         prompt_text = record.prompt_text
+        present_answers, missing_answers = _answer_presence(
+            prompt_text,
+            record.answers,
+        )
         path.write_text(prompt_text, encoding="utf-8")
         cases.append(
             PromptRetrievalCase(
@@ -380,6 +398,10 @@ def materialize_longbench_prompt_cases(
                 length=record.length,
                 approximate_length=record.approximate_length,
                 answer_labels=record.answers,
+                answer_present_count=len(present_answers),
+                answer_missing_count=len(missing_answers),
+                answer_presence_rate=len(present_answers) / len(record.answers),
+                answer_present=bool(present_answers),
                 prompt_chars=len(prompt_text),
             )
         )
@@ -478,6 +500,9 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
             f"mean_length={summary.mean_length:.1f} "
             f"mean_tokens={summary.mean_tokens:.1f} "
             f"mean_candidates={summary.mean_candidate_block_count:.1f} "
+            f"answer_presence={summary.mean_answer_presence_rate:.3f} "
+            f"scoreable_runs={summary.scoreable_run_count}/{summary.run_count} "
+            f"mean_expected_blocks={summary.mean_expected_block_count:.1f} "
             f"mean_selected/K={summary.mean_selected_to_semantic_k_ratio:.3f} "
             f"mean_selector={summary.mean_selector_latency_sec:.6f}s "
             f"mean_recall={_fmt_optional(summary.mean_recall)} "
@@ -491,6 +516,8 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
             f"mode={row.block_mode} qk={row.qk_aggregation_strategy} "
             f"length={row.longbench_length} tokens={row.tokens} "
             f"candidates={row.candidate_block_count} selected/K={row.selected_to_semantic_k_ratio:.3f} "
+            f"answer_presence={row.answer_present_count}/{row.answer_count} "
+            f"expected_blocks={row.expected_block_count} "
             f"selector={row.selector_latency_sec:.6f}s "
             f"recall={_fmt_optional(row.target_recall)} "
             f"precision={_fmt_optional(row.selected_precision)}"
@@ -585,6 +612,17 @@ def _longbench_rows(
                 longbench_length=sample.length,
                 approximate_length=sample.approximate_length,
                 answer_count=len(sample.answer_labels),
+                answer_present_count=sample.answer_present_count,
+                answer_missing_count=sample.answer_missing_count,
+                answer_presence_rate=sample.answer_presence_rate,
+                scoreable_by_answer_presence=sample.answer_present,
+                expected_block_count=len(row.retrieval_quality.expected_block_ids),
+                selected_expected_block_count=len(
+                    row.retrieval_quality.selected_expected_block_ids
+                ),
+                missed_expected_block_count=len(
+                    row.retrieval_quality.missed_expected_block_ids
+                ),
                 prompt_name=row.prompt_name,
                 prompt_file=row.prompt_file,
                 model_name=row.model_name,
@@ -624,6 +662,9 @@ def _dataset_summaries(
             mean_length=_mean(row.approximate_length for row in group) or 0.0,
             mean_tokens=_mean(row.tokens for row in group) or 0.0,
             mean_candidate_block_count=_mean(row.candidate_block_count for row in group) or 0.0,
+            mean_answer_presence_rate=_mean(row.answer_presence_rate for row in group) or 0.0,
+            scoreable_run_count=sum(1 for row in group if row.scoreable_by_answer_presence),
+            mean_expected_block_count=_mean(row.expected_block_count for row in group) or 0.0,
             mean_selected_to_semantic_k_ratio=_mean(
                 row.selected_to_semantic_k_ratio for row in group
             )
@@ -665,6 +706,40 @@ def _normalize_answers(value: Any) -> tuple[str, ...]:
     if not deduped:
         raise ValueError("LongBench answers must contain at least one non-empty label")
     return deduped
+
+
+def _answer_presence(
+    prompt_text: str,
+    answers: Sequence[str],
+) -> tuple[tuple[str, ...], tuple[str, ...]]:
+    """Split answer labels by whether they appear in the materialized prompt.
+
+    This is a LongBench diagnostic only. Some tasks use abstractive or
+    completion labels, so answer-string retrieval is not always scoreable.
+    """
+
+    present: list[str] = []
+    missing: list[str] = []
+    for answer in answers:
+        if _contains_fragment(prompt_text, answer):
+            present.append(answer)
+        else:
+            missing.append(answer)
+    return tuple(present), tuple(missing)
+
+
+def _contains_fragment(text: str, fragment: str) -> bool:
+    """Return whether ``fragment`` appears in ``text`` with light normalization."""
+
+    text_folded = text.casefold()
+    fragment_folded = fragment.strip().casefold()
+    if not fragment_folded:
+        return False
+    if fragment_folded in text_folded:
+        return True
+    normalized_text = " ".join(text_folded.split())
+    normalized_fragment = " ".join(fragment_folded.split())
+    return bool(normalized_fragment and normalized_fragment in normalized_text)
 
 
 def _coerce_text(value: Any) -> str:

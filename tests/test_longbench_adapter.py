@@ -95,6 +95,9 @@ def test_materialize_longbench_prompt_cases(tmp_path: Path) -> None:
     assert "sparse attention" in cases[0].path.read_text(encoding="utf-8")
     assert metadata[0].dataset_name == "qasper"
     assert metadata[0].answer_labels == ("sparse attention",)
+    assert metadata[0].answer_present_count == 1
+    assert metadata[0].answer_missing_count == 0
+    assert metadata[0].answer_presence_rate == 1.0
 
 
 def test_run_longbench_benchmark_wraps_dynamic_result(
@@ -166,8 +169,12 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
     assert result.samples[0].dataset_name == "narrativeqa"
     assert result.rows[0].dataset_name == "narrativeqa"
     assert result.rows[0].candidate_block_count == 128
+    assert result.rows[0].answer_present_count == 1
+    assert result.rows[0].expected_block_count == 1
+    assert result.rows[0].selected_expected_block_count == 1
     assert result.rows[0].target_recall == 1.0
     assert result.dataset_summaries[0].mean_precision == 0.5
+    assert result.dataset_summaries[0].scoreable_run_count == 1
     assert result.to_dict()["rows"][0]["selected_to_semantic_k_ratio"] == 0.5
 
 
