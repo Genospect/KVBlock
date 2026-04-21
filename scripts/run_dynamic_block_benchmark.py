@@ -87,6 +87,14 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--torch-dtype", default="float32")
+    parser.add_argument(
+        "--device-map",
+        default=None,
+        help=(
+            "Optional Hugging Face device_map for from_pretrained, e.g. auto. "
+            "When set, LocalHfRuntime skips model.to(--device)."
+        ),
+    )
     parser.add_argument("--local-files-only", action="store_true")
     parser.add_argument("--trust-remote-code", action="store_true")
     parser.add_argument(
@@ -143,6 +151,7 @@ def main(argv: list[str] | None = None) -> int:
         load_config_kwargs={
             "device": args.device,
             "torch_dtype": args.torch_dtype,
+            "device_map": args.device_map,
             "local_files_only": args.local_files_only,
             "trust_remote_code": args.trust_remote_code,
         },

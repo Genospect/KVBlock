@@ -16,6 +16,7 @@ def test_real_block_selector_cli_defaults_to_candidate_selector_config() -> None
     assert args.semantic_k == 10
     assert args.confidence_margin == 0.0
     assert args.device == "cpu"
+    assert args.device_map is None
     assert args.preview_chars == 120
     assert args.keep_recent_blocks == 4
     assert args.keep_anchor_blocks == 2
@@ -31,6 +32,13 @@ def test_real_block_selector_cli_parses_representation_source() -> None:
 
     assert args.representation_source == "hidden_layer_index"
     assert args.layer_index == 1
+
+
+def test_real_block_selector_cli_parses_device_map() -> None:
+    args = build_parser().parse_args(["--device", "cuda", "--device-map", "auto"])
+
+    assert args.device == "cuda"
+    assert args.device_map == "auto"
 
 
 def test_real_block_selector_cli_parses_key_representation_source() -> None:

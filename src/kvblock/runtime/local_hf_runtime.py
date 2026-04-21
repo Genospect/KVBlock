@@ -62,6 +62,8 @@ class LocalHfRuntime(RuntimeBackend):
         }
         if dtype is not None:
             model_kwargs["torch_dtype"] = dtype
+        if self.config.device_map is not None:
+            model_kwargs["device_map"] = self.config.device_map
 
         self._tokenizer = AutoTokenizer.from_pretrained(
             self.config.model_name,
@@ -72,7 +74,8 @@ class LocalHfRuntime(RuntimeBackend):
             self.config.model_name,
             **model_kwargs,
         )
-        self._model.to(self.config.device)
+        if self.config.device_map is None:
+            self._model.to(self.config.device)
         self._model.eval()
 
     def tokenize(self, prompt: str) -> TokenizedPrompt:
@@ -107,15 +110,16 @@ class LocalHfRuntime(RuntimeBackend):
 
         tokenized = self.tokenize(prompt)
         model = self._require_model()
+        input_device = self._input_device()
         input_ids = torch.tensor(
             [tokenized.token_ids],
             dtype=torch.long,
-            device=self.config.device,
+            device=input_device,
         )
         attention_mask = torch.tensor(
             [tokenized.attention_mask],
             dtype=torch.long,
-            device=self.config.device,
+            device=input_device,
         )
 
         source = self.capture_config.representation_source
@@ -182,6 +186,17 @@ class LocalHfRuntime(RuntimeBackend):
         if self._model is None:
             raise RuntimeError("model is not loaded")
         return self._model
+
+    def _input_device(self) -> torch.device | str:
+        """Return the device where prompt tensors should enter the HF model."""
+
+        if self.config.device_map is None:
+            return self.config.device
+        model = self._require_model()
+        for parameter in model.parameters():
+            if parameter.device.type != "meta":
+                return parameter.device
+        return self.config.device
 
 
 def _resolve_torch_dtype(value: str) -> torch.dtype | None:

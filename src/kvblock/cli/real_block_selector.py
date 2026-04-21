@@ -210,6 +210,14 @@ def build_parser() -> argparse.ArgumentParser:
         help="Torch dtype for model loading: float32, float16, bfloat16, or auto.",
     )
     parser.add_argument(
+        "--device-map",
+        default=None,
+        help=(
+            "Optional Hugging Face device_map for from_pretrained, e.g. auto. "
+            "When set, the bridge skips model.to(--device)."
+        ),
+    )
+    parser.add_argument(
         "--local-files-only",
         action="store_true",
         help="Require model/tokenizer files to already exist locally.",
@@ -263,6 +271,7 @@ def run_real_block_selector_cli(
             model_name=args.model,
             device=args.device,
             torch_dtype=args.torch_dtype,
+            device_map=args.device_map,
             local_files_only=args.local_files_only,
             trust_remote_code=args.trust_remote_code,
             max_length=args.max_length,

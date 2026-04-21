@@ -15,6 +15,7 @@ class RuntimeLoadConfig:
     model_name: str = "sshleifer/tiny-gpt2"
     device: str = "cpu"
     torch_dtype: str = "float32"
+    device_map: str | None = None
     local_files_only: bool = False
     trust_remote_code: bool = False
     max_length: int | None = None
@@ -26,6 +27,8 @@ class RuntimeLoadConfig:
             raise ValueError("device must be non-empty")
         if not self.torch_dtype.strip():
             raise ValueError("torch_dtype must be non-empty")
+        if self.device_map is not None and not self.device_map.strip():
+            raise ValueError("device_map must be non-empty when provided")
         if self.max_length is not None and self.max_length <= 0:
             raise ValueError("max_length must be > 0 when provided")
 

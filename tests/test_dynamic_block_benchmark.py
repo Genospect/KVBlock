@@ -553,6 +553,8 @@ def test_dynamic_block_benchmark_prompt_filter_and_script_parser() -> None:
             "0.8",
             "--coarse-top-k",
             "3",
+            "--device-map",
+            "auto",
             "--local-files-only",
         ]
     )
@@ -564,4 +566,5 @@ def test_dynamic_block_benchmark_prompt_filter_and_script_parser() -> None:
     assert args.suppression_modes == "none,overlap_threshold"
     assert args.suppression_threshold == 0.8
     assert args.coarse_top_k == 3
+    assert args.device_map == "auto"
     assert args.local_files_only is True
