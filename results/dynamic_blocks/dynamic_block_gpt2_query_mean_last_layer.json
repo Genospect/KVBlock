@@ -1,0 +1,2391 @@
+{
+  "rows": [
+    {
+      "model_name": "gpt2",
+      "prompt_name": "needle",
+      "prompt_file": "prompts/needle.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_top_token_mean",
+      "qk_aggregation_strategy": "top_token_mean",
+      "block_mode": "fixed_16",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 92,
+      "candidate_block_count": 6,
+      "selected_ids": [
+        5,
+        0,
+        1,
+        2
+      ],
+      "selected_candidate_ids": [
+        "s16_stride16_t0_16",
+        "s16_stride16_t16_32",
+        "s16_stride16_t32_48",
+        "s16_stride16_t80_92"
+      ],
+      "selected_spans": [
+        "0:16",
+        "16:32",
+        "32:48",
+        "80:92"
+      ],
+      "selected_block_sizes": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.003338406968396157,
+      "total_latency_sec": 1.599123961001169,
+      "prefill_latency_sec": 1.5617642170400359,
+      "metadata_latency_sec": 0.03280535602243617,
+      "inspection_latency_sec": 0.0011287590023130178,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.008902937173843384,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          2
+        ],
+        "selected_expected_block_ids": [
+          2
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          5,
+          0,
+          1
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.25,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "long_reference",
+      "prompt_file": "prompts/long_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_block_max",
+      "qk_aggregation_strategy": "block_max",
+      "block_mode": "fixed_16",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 194,
+      "candidate_block_count": 13,
+      "selected_ids": [
+        12,
+        11,
+        8,
+        5
+      ],
+      "selected_candidate_ids": [
+        "s16_stride16_t80_96",
+        "s16_stride16_t128_144",
+        "s16_stride16_t176_192",
+        "s16_stride16_t192_194"
+      ],
+      "selected_spans": [
+        "80:96",
+        "128:144",
+        "176:192",
+        "192:194"
+      ],
+      "selected_block_sizes": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.004191025975160301,
+      "total_latency_sec": 0.4591571729979478,
+      "prefill_latency_sec": 0.3847817140049301,
+      "metadata_latency_sec": 0.06830586900468916,
+      "inspection_latency_sec": 0.0016397580038756132,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0015377402305603027,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          7,
+          8
+        ],
+        "selected_expected_block_ids": [
+          8
+        ],
+        "missed_expected_block_ids": [
+          7
+        ],
+        "extra_selected_block_ids": [
+          12,
+          11,
+          5
+        ],
+        "target_recall": 0.5,
+        "selected_precision": 0.25,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "code_context",
+      "prompt_file": "prompts/code_context.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_block_max",
+      "qk_aggregation_strategy": "block_max",
+      "block_mode": "fixed_16",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 216,
+      "candidate_block_count": 14,
+      "selected_ids": [
+        13,
+        12,
+        9,
+        8
+      ],
+      "selected_candidate_ids": [
+        "s16_stride16_t128_144",
+        "s16_stride16_t144_160",
+        "s16_stride16_t192_208",
+        "s16_stride16_t208_216"
+      ],
+      "selected_spans": [
+        "128:144",
+        "144:160",
+        "192:208",
+        "208:216"
+      ],
+      "selected_block_sizes": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.004001677967607975,
+      "total_latency_sec": 0.5198579329880886,
+      "prefill_latency_sec": 0.43869021302089095,
+      "metadata_latency_sec": 0.075281475961674,
+      "inspection_latency_sec": 0.0017839320353232324,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.014101248979568493,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          4,
+          5,
+          6,
+          7,
+          11
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          4,
+          5,
+          6,
+          7,
+          11
+        ],
+        "extra_selected_block_ids": [
+          13,
+          12,
+          9,
+          8
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "repeated_reference",
+      "prompt_file": "prompts/repeated_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_block_max",
+      "qk_aggregation_strategy": "block_max",
+      "block_mode": "fixed_16",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 129,
+      "candidate_block_count": 9,
+      "selected_ids": [
+        8,
+        7,
+        6,
+        0
+      ],
+      "selected_candidate_ids": [
+        "s16_stride16_t0_16",
+        "s16_stride16_t96_112",
+        "s16_stride16_t112_128",
+        "s16_stride16_t128_129"
+      ],
+      "selected_spans": [
+        "0:16",
+        "96:112",
+        "112:128",
+        "128:129"
+      ],
+      "selected_block_sizes": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.0039501129649579525,
+      "total_latency_sec": 0.3406652499688789,
+      "prefill_latency_sec": 0.2862588220159523,
+      "metadata_latency_sec": 0.04844611702719703,
+      "inspection_latency_sec": 0.0019402269972488284,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.006230139732360862,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          0
+        ],
+        "selected_expected_block_ids": [
+          0
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          8,
+          7,
+          6
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.25,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "needle",
+      "prompt_file": "prompts/needle.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_top_token_mean",
+      "qk_aggregation_strategy": "top_token_mean",
+      "block_mode": "fixed_24",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 92,
+      "candidate_block_count": 4,
+      "selected_ids": [
+        3,
+        0,
+        2,
+        1
+      ],
+      "selected_candidate_ids": [
+        "s24_stride24_t0_24",
+        "s24_stride24_t24_48",
+        "s24_stride24_t48_72",
+        "s24_stride24_t72_92"
+      ],
+      "selected_spans": [
+        "0:24",
+        "24:48",
+        "48:72",
+        "72:92"
+      ],
+      "selected_block_sizes": [
+        24,
+        24,
+        24,
+        24
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.0034204820403829217,
+      "total_latency_sec": 0.25241048098541796,
+      "prefill_latency_sec": 0.22119829402072355,
+      "metadata_latency_sec": 0.02687260101083666,
+      "inspection_latency_sec": 0.0008443929837085307,
+      "fallback_mode": "sparse",
+      "raw_margin": Infinity,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          1
+        ],
+        "selected_expected_block_ids": [
+          1
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          3,
+          0,
+          2
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.25,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "long_reference",
+      "prompt_file": "prompts/long_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_block_max",
+      "qk_aggregation_strategy": "block_max",
+      "block_mode": "fixed_24",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 194,
+      "candidate_block_count": 9,
+      "selected_ids": [
+        8,
+        7,
+        5,
+        1
+      ],
+      "selected_candidate_ids": [
+        "s24_stride24_t24_48",
+        "s24_stride24_t120_144",
+        "s24_stride24_t168_192",
+        "s24_stride24_t192_194"
+      ],
+      "selected_spans": [
+        "24:48",
+        "120:144",
+        "168:192",
+        "192:194"
+      ],
+      "selected_block_sizes": [
+        24,
+        24,
+        24,
+        24
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.0034193750470876694,
+      "total_latency_sec": 0.48873321805149317,
+      "prefill_latency_sec": 0.43281591997947544,
+      "metadata_latency_sec": 0.05073660996276885,
+      "inspection_latency_sec": 0.0016936800093390048,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.007164162397384655,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          5
+        ],
+        "selected_expected_block_ids": [
+          5
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          8,
+          7,
+          1
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.25,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "code_context",
+      "prompt_file": "prompts/code_context.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_block_max",
+      "qk_aggregation_strategy": "block_max",
+      "block_mode": "fixed_24",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 216,
+      "candidate_block_count": 9,
+      "selected_ids": [
+        8,
+        3,
+        6,
+        5
+      ],
+      "selected_candidate_ids": [
+        "s24_stride24_t72_96",
+        "s24_stride24_t120_144",
+        "s24_stride24_t144_168",
+        "s24_stride24_t192_216"
+      ],
+      "selected_spans": [
+        "72:96",
+        "120:144",
+        "144:168",
+        "192:216"
+      ],
+      "selected_block_sizes": [
+        24,
+        24,
+        24,
+        24
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.0041765180067159235,
+      "total_latency_sec": 0.6059516789973713,
+      "prefill_latency_sec": 0.5461794250295497,
+      "metadata_latency_sec": 0.05367468803888187,
+      "inspection_latency_sec": 0.0018487810157239437,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0019545674324035756,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          3,
+          4,
+          7
+        ],
+        "selected_expected_block_ids": [
+          3
+        ],
+        "missed_expected_block_ids": [
+          4,
+          7
+        ],
+        "extra_selected_block_ids": [
+          8,
+          6,
+          5
+        ],
+        "target_recall": 0.5,
+        "selected_precision": 0.25,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "repeated_reference",
+      "prompt_file": "prompts/repeated_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_block_max",
+      "qk_aggregation_strategy": "block_max",
+      "block_mode": "fixed_24",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 129,
+      "candidate_block_count": 6,
+      "selected_ids": [
+        5,
+        4,
+        1,
+        2
+      ],
+      "selected_candidate_ids": [
+        "s24_stride24_t24_48",
+        "s24_stride24_t48_72",
+        "s24_stride24_t96_120",
+        "s24_stride24_t120_129"
+      ],
+      "selected_spans": [
+        "24:48",
+        "48:72",
+        "96:120",
+        "120:129"
+      ],
+      "selected_block_sizes": [
+        24,
+        24,
+        24,
+        24
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.0038378930184990168,
+      "total_latency_sec": 0.37203484401106834,
+      "prefill_latency_sec": 0.3274939350085333,
+      "metadata_latency_sec": 0.03917874000035226,
+      "inspection_latency_sec": 0.0013902260106988251,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.00841715931892395,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          0
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          0
+        ],
+        "extra_selected_block_ids": [
+          5,
+          4,
+          1,
+          2
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "needle",
+      "prompt_file": "prompts/needle.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_top_token_mean",
+      "qk_aggregation_strategy": "top_token_mean",
+      "block_mode": "fixed_32",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 92,
+      "candidate_block_count": 3,
+      "selected_ids": [
+        2,
+        0,
+        1
+      ],
+      "selected_candidate_ids": [
+        "s32_stride32_t0_32",
+        "s32_stride32_t32_64",
+        "s32_stride32_t64_92"
+      ],
+      "selected_spans": [
+        "0:32",
+        "32:64",
+        "64:92"
+      ],
+      "selected_block_sizes": [
+        32,
+        32,
+        32
+      ],
+      "selected_count": 3,
+      "selected_to_semantic_k_ratio": 0.75,
+      "selector_latency_sec": 0.0034340890124440193,
+      "total_latency_sec": 0.26712598896119744,
+      "prefill_latency_sec": 0.24300458800280467,
+      "metadata_latency_sec": 0.01943476201267913,
+      "inspection_latency_sec": 0.0011856229975819588,
+      "fallback_mode": "sparse",
+      "raw_margin": Infinity,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          1
+        ],
+        "selected_expected_block_ids": [
+          1
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          2,
+          0
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.3333333333333333,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "long_reference",
+      "prompt_file": "prompts/long_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_block_max",
+      "qk_aggregation_strategy": "block_max",
+      "block_mode": "fixed_32",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 194,
+      "candidate_block_count": 7,
+      "selected_ids": [
+        6,
+        5,
+        4,
+        1
+      ],
+      "selected_candidate_ids": [
+        "s32_stride32_t32_64",
+        "s32_stride32_t128_160",
+        "s32_stride32_t160_192",
+        "s32_stride32_t192_194"
+      ],
+      "selected_spans": [
+        "32:64",
+        "128:160",
+        "160:192",
+        "192:194"
+      ],
+      "selected_block_sizes": [
+        32,
+        32,
+        32,
+        32
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.0038769199745729566,
+      "total_latency_sec": 0.5246252330252901,
+      "prefill_latency_sec": 0.4742562120081857,
+      "metadata_latency_sec": 0.04328870202880353,
+      "inspection_latency_sec": 0.003120405017398298,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.023377972841262806,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          3,
+          4
+        ],
+        "selected_expected_block_ids": [
+          4
+        ],
+        "missed_expected_block_ids": [
+          3
+        ],
+        "extra_selected_block_ids": [
+          6,
+          5,
+          1
+        ],
+        "target_recall": 0.5,
+        "selected_precision": 0.25,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "code_context",
+      "prompt_file": "prompts/code_context.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_block_max",
+      "qk_aggregation_strategy": "block_max",
+      "block_mode": "fixed_32",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 216,
+      "candidate_block_count": 7,
+      "selected_ids": [
+        6,
+        4,
+        0,
+        3
+      ],
+      "selected_candidate_ids": [
+        "s32_stride32_t0_32",
+        "s32_stride32_t96_128",
+        "s32_stride32_t128_160",
+        "s32_stride32_t192_216"
+      ],
+      "selected_spans": [
+        "0:32",
+        "96:128",
+        "128:160",
+        "192:216"
+      ],
+      "selected_block_sizes": [
+        32,
+        32,
+        32,
+        32
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.005802897969260812,
+      "total_latency_sec": 0.5723934679990634,
+      "prefill_latency_sec": 0.517473065003287,
+      "metadata_latency_sec": 0.04695483000250533,
+      "inspection_latency_sec": 0.002063568972516805,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.004414856433868408,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          2,
+          3,
+          5
+        ],
+        "selected_expected_block_ids": [
+          3
+        ],
+        "missed_expected_block_ids": [
+          2,
+          5
+        ],
+        "extra_selected_block_ids": [
+          6,
+          4,
+          0
+        ],
+        "target_recall": 0.5,
+        "selected_precision": 0.25,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "repeated_reference",
+      "prompt_file": "prompts/repeated_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_block_max",
+      "qk_aggregation_strategy": "block_max",
+      "block_mode": "fixed_32",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 129,
+      "candidate_block_count": 5,
+      "selected_ids": [
+        4,
+        3,
+        1,
+        2
+      ],
+      "selected_candidate_ids": [
+        "s32_stride32_t32_64",
+        "s32_stride32_t64_96",
+        "s32_stride32_t96_128",
+        "s32_stride32_t128_129"
+      ],
+      "selected_spans": [
+        "32:64",
+        "64:96",
+        "96:128",
+        "128:129"
+      ],
+      "selected_block_sizes": [
+        32,
+        32,
+        32,
+        32
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.0034488519886508584,
+      "total_latency_sec": 0.4074315879843198,
+      "prefill_latency_sec": 0.37292234401684254,
+      "metadata_latency_sec": 0.029525613004807383,
+      "inspection_latency_sec": 0.0014634619583375752,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.009107536077499423,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          0
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          0
+        ],
+        "extra_selected_block_ids": [
+          4,
+          3,
+          1,
+          2
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "needle",
+      "prompt_file": "prompts/needle.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_top_token_mean",
+      "qk_aggregation_strategy": "top_token_mean",
+      "block_mode": "fixed_40",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 92,
+      "candidate_block_count": 3,
+      "selected_ids": [
+        2,
+        0,
+        1
+      ],
+      "selected_candidate_ids": [
+        "s40_stride40_t0_40",
+        "s40_stride40_t40_80",
+        "s40_stride40_t80_92"
+      ],
+      "selected_spans": [
+        "0:40",
+        "40:80",
+        "80:92"
+      ],
+      "selected_block_sizes": [
+        40,
+        40,
+        40
+      ],
+      "selected_count": 3,
+      "selected_to_semantic_k_ratio": 0.75,
+      "selector_latency_sec": 0.0039652500418014824,
+      "total_latency_sec": 0.2804332030354999,
+      "prefill_latency_sec": 0.2545985890319571,
+      "metadata_latency_sec": 0.020898798014968634,
+      "inspection_latency_sec": 0.0008915879880078137,
+      "fallback_mode": "sparse",
+      "raw_margin": Infinity,
+      "retrieval_quality": {
+        "expected_block_ids": [],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          2,
+          0,
+          1
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "long_reference",
+      "prompt_file": "prompts/long_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_block_max",
+      "qk_aggregation_strategy": "block_max",
+      "block_mode": "fixed_40",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 194,
+      "candidate_block_count": 5,
+      "selected_ids": [
+        4,
+        3,
+        2,
+        0
+      ],
+      "selected_candidate_ids": [
+        "s40_stride40_t0_40",
+        "s40_stride40_t80_120",
+        "s40_stride40_t120_160",
+        "s40_stride40_t160_194"
+      ],
+      "selected_spans": [
+        "0:40",
+        "80:120",
+        "120:160",
+        "160:194"
+      ],
+      "selected_block_sizes": [
+        40,
+        40,
+        40,
+        40
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.004072562034707516,
+      "total_latency_sec": 0.5174926429754123,
+      "prefill_latency_sec": 0.4786575420293957,
+      "metadata_latency_sec": 0.031857175985351205,
+      "inspection_latency_sec": 0.0028333570226095617,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.004230844974517811,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          3
+        ],
+        "selected_expected_block_ids": [
+          3
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          4,
+          2,
+          0
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.25,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "code_context",
+      "prompt_file": "prompts/code_context.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_block_max",
+      "qk_aggregation_strategy": "block_max",
+      "block_mode": "fixed_40",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 216,
+      "candidate_block_count": 6,
+      "selected_ids": [
+        5,
+        3,
+        0,
+        2
+      ],
+      "selected_candidate_ids": [
+        "s40_stride40_t0_40",
+        "s40_stride40_t80_120",
+        "s40_stride40_t120_160",
+        "s40_stride40_t200_216"
+      ],
+      "selected_spans": [
+        "0:40",
+        "80:120",
+        "120:160",
+        "200:216"
+      ],
+      "selected_block_sizes": [
+        40,
+        40,
+        40,
+        40
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.003955320979002863,
+      "total_latency_sec": 0.5575554220122285,
+      "prefill_latency_sec": 0.5139590170001611,
+      "metadata_latency_sec": 0.037675151019357145,
+      "inspection_latency_sec": 0.0018829029868356884,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.03759998679161075,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          1,
+          2,
+          4
+        ],
+        "selected_expected_block_ids": [
+          2
+        ],
+        "missed_expected_block_ids": [
+          1,
+          4
+        ],
+        "extra_selected_block_ids": [
+          5,
+          3,
+          0
+        ],
+        "target_recall": 0.75,
+        "selected_precision": 0.25,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "repeated_reference",
+      "prompt_file": "prompts/repeated_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_block_max",
+      "qk_aggregation_strategy": "block_max",
+      "block_mode": "fixed_40",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 129,
+      "candidate_block_count": 4,
+      "selected_ids": [
+        3,
+        2,
+        1,
+        0
+      ],
+      "selected_candidate_ids": [
+        "s40_stride40_t0_40",
+        "s40_stride40_t40_80",
+        "s40_stride40_t80_120",
+        "s40_stride40_t120_129"
+      ],
+      "selected_spans": [
+        "0:40",
+        "40:80",
+        "80:120",
+        "120:129"
+      ],
+      "selected_block_sizes": [
+        40,
+        40,
+        40,
+        40
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.004073410003911704,
+      "total_latency_sec": 0.3578004580340348,
+      "prefill_latency_sec": 0.3261231960495934,
+      "metadata_latency_sec": 0.026189824973698705,
+      "inspection_latency_sec": 0.0013459529727697372,
+      "fallback_mode": "sparse",
+      "raw_margin": Infinity,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          0
+        ],
+        "selected_expected_block_ids": [
+          0
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          3,
+          2,
+          1
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.25,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "needle",
+      "prompt_file": "prompts/needle.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_top_token_mean",
+      "qk_aggregation_strategy": "top_token_mean",
+      "block_mode": "multiscale_16_32",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 92,
+      "candidate_block_count": 9,
+      "selected_ids": [
+        5,
+        8,
+        6,
+        0
+      ],
+      "selected_candidate_ids": [
+        "s16_stride16_t0_16",
+        "s16_stride16_t80_92",
+        "s32_stride32_t0_32",
+        "s32_stride32_t64_92"
+      ],
+      "selected_spans": [
+        "0:16",
+        "80:92",
+        "0:32",
+        "64:92"
+      ],
+      "selected_block_sizes": [
+        16,
+        16,
+        32,
+        32
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.0037651819875463843,
+      "total_latency_sec": 0.2979035129537806,
+      "prefill_latency_sec": 0.23627399594988674,
+      "metadata_latency_sec": 0.05601873196428642,
+      "inspection_latency_sec": 0.001754263008479029,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.06247001290321352,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          2,
+          7
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          2,
+          7
+        ],
+        "extra_selected_block_ids": [
+          5,
+          8,
+          6,
+          0
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "long_reference",
+      "prompt_file": "prompts/long_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_block_max",
+      "qk_aggregation_strategy": "block_max",
+      "block_mode": "multiscale_16_32",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 194,
+      "candidate_block_count": 20,
+      "selected_ids": [
+        12,
+        19,
+        11,
+        18
+      ],
+      "selected_candidate_ids": [
+        "s16_stride16_t176_192",
+        "s16_stride16_t192_194",
+        "s32_stride32_t160_192",
+        "s32_stride32_t192_194"
+      ],
+      "selected_spans": [
+        "176:192",
+        "192:194",
+        "160:192",
+        "192:194"
+      ],
+      "selected_block_sizes": [
+        16,
+        16,
+        32,
+        32
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.003588560037314892,
+      "total_latency_sec": 0.5934512710082345,
+      "prefill_latency_sec": 0.4634431339800358,
+      "metadata_latency_sec": 0.122940914996434,
+      "inspection_latency_sec": 0.0033985779737122357,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.06501814723014826,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          7,
+          8,
+          16,
+          17
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          7,
+          8,
+          16,
+          17
+        ],
+        "extra_selected_block_ids": [
+          12,
+          19,
+          11,
+          18
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "code_context",
+      "prompt_file": "prompts/code_context.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_block_max",
+      "qk_aggregation_strategy": "block_max",
+      "block_mode": "multiscale_16_32",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 216,
+      "candidate_block_count": 21,
+      "selected_ids": [
+        13,
+        20,
+        12,
+        9
+      ],
+      "selected_candidate_ids": [
+        "s16_stride16_t144_160",
+        "s16_stride16_t192_208",
+        "s16_stride16_t208_216",
+        "s32_stride32_t192_216"
+      ],
+      "selected_spans": [
+        "144:160",
+        "192:208",
+        "208:216",
+        "192:216"
+      ],
+      "selected_block_sizes": [
+        16,
+        16,
+        16,
+        32
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.003820748010184616,
+      "total_latency_sec": 0.6388436020351946,
+      "prefill_latency_sec": 0.5071536329924129,
+      "metadata_latency_sec": 0.12425013398751616,
+      "inspection_latency_sec": 0.0034986030077561736,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0028470516204833762,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          4,
+          5,
+          6,
+          7,
+          11,
+          16,
+          17,
+          19
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          4,
+          5,
+          6,
+          7,
+          11,
+          16,
+          17,
+          19
+        ],
+        "extra_selected_block_ids": [
+          13,
+          20,
+          12,
+          9
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "repeated_reference",
+      "prompt_file": "prompts/repeated_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_block_max",
+      "qk_aggregation_strategy": "block_max",
+      "block_mode": "multiscale_16_32",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 129,
+      "candidate_block_count": 14,
+      "selected_ids": [
+        8,
+        13,
+        7,
+        12
+      ],
+      "selected_candidate_ids": [
+        "s16_stride16_t112_128",
+        "s16_stride16_t128_129",
+        "s32_stride32_t96_128",
+        "s32_stride32_t128_129"
+      ],
+      "selected_spans": [
+        "112:128",
+        "128:129",
+        "96:128",
+        "128:129"
+      ],
+      "selected_block_sizes": [
+        16,
+        16,
+        32,
+        32
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.005573520029429346,
+      "total_latency_sec": 0.4272723540198058,
+      "prefill_latency_sec": 0.320711140986532,
+      "metadata_latency_sec": 0.09652507997816429,
+      "inspection_latency_sec": 0.004362807027064264,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.03476284742355351,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          0,
+          9
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          0,
+          9
+        ],
+        "extra_selected_block_ids": [
+          8,
+          13,
+          7,
+          12
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "needle",
+      "prompt_file": "prompts/needle.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_top_token_mean",
+      "qk_aggregation_strategy": "top_token_mean",
+      "block_mode": "multiscale_16_24_32",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 92,
+      "candidate_block_count": 13,
+      "selected_ids": [
+        5,
+        9,
+        12,
+        10
+      ],
+      "selected_candidate_ids": [
+        "s16_stride16_t80_92",
+        "s24_stride24_t72_92",
+        "s32_stride32_t0_32",
+        "s32_stride32_t64_92"
+      ],
+      "selected_spans": [
+        "80:92",
+        "72:92",
+        "0:32",
+        "64:92"
+      ],
+      "selected_block_sizes": [
+        16,
+        24,
+        32,
+        32
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.008577993023209274,
+      "total_latency_sec": 0.4060559240169823,
+      "prefill_latency_sec": 0.2846912710228935,
+      "metadata_latency_sec": 0.10826293204445392,
+      "inspection_latency_sec": 0.003988106036558747,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.000368654727935791,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          2,
+          7,
+          11
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          2,
+          7,
+          11
+        ],
+        "extra_selected_block_ids": [
+          5,
+          9,
+          12,
+          10
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "long_reference",
+      "prompt_file": "prompts/long_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_block_max",
+      "qk_aggregation_strategy": "block_max",
+      "block_mode": "multiscale_16_24_32",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 194,
+      "candidate_block_count": 29,
+      "selected_ids": [
+        12,
+        21,
+        28,
+        11
+      ],
+      "selected_candidate_ids": [
+        "s16_stride16_t176_192",
+        "s16_stride16_t192_194",
+        "s24_stride24_t192_194",
+        "s32_stride32_t192_194"
+      ],
+      "selected_spans": [
+        "176:192",
+        "192:194",
+        "192:194",
+        "192:194"
+      ],
+      "selected_block_sizes": [
+        16,
+        16,
+        24,
+        32
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.005235693999566138,
+      "total_latency_sec": 0.8566290469607338,
+      "prefill_latency_sec": 0.6563272890052758,
+      "metadata_latency_sec": 0.18973706400720403,
+      "inspection_latency_sec": 0.005242191953584552,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.008430671691894598,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          7,
+          8,
+          18,
+          25,
+          26
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          7,
+          8,
+          18,
+          25,
+          26
+        ],
+        "extra_selected_block_ids": [
+          12,
+          21,
+          28,
+          11
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "code_context",
+      "prompt_file": "prompts/code_context.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_block_max",
+      "qk_aggregation_strategy": "block_max",
+      "block_mode": "multiscale_16_24_32",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 216,
+      "candidate_block_count": 30,
+      "selected_ids": [
+        13,
+        22,
+        29,
+        12
+      ],
+      "selected_candidate_ids": [
+        "s16_stride16_t192_208",
+        "s16_stride16_t208_216",
+        "s24_stride24_t192_216",
+        "s32_stride32_t192_216"
+      ],
+      "selected_spans": [
+        "192:208",
+        "208:216",
+        "192:216",
+        "192:216"
+      ],
+      "selected_block_sizes": [
+        16,
+        16,
+        24,
+        32
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.005613162997178733,
+      "total_latency_sec": 0.7877734819776379,
+      "prefill_latency_sec": 0.578349019982852,
+      "metadata_latency_sec": 0.19529924500966445,
+      "inspection_latency_sec": 0.008398739038966596,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.005778104066848755,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          4,
+          5,
+          6,
+          7,
+          11,
+          17,
+          18,
+          21,
+          25,
+          26,
+          28
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          4,
+          5,
+          6,
+          7,
+          11,
+          17,
+          18,
+          21,
+          25,
+          26,
+          28
+        ],
+        "extra_selected_block_ids": [
+          13,
+          22,
+          29,
+          12
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "repeated_reference",
+      "prompt_file": "prompts/repeated_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_block_max",
+      "qk_aggregation_strategy": "block_max",
+      "block_mode": "multiscale_16_24_32",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 129,
+      "candidate_block_count": 20,
+      "selected_ids": [
+        8,
+        19,
+        14,
+        7
+      ],
+      "selected_candidate_ids": [
+        "s16_stride16_t112_128",
+        "s16_stride16_t128_129",
+        "s24_stride24_t120_129",
+        "s32_stride32_t128_129"
+      ],
+      "selected_spans": [
+        "112:128",
+        "128:129",
+        "120:129",
+        "128:129"
+      ],
+      "selected_block_sizes": [
+        16,
+        16,
+        24,
+        32
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.005263786995783448,
+      "total_latency_sec": 0.5653510330012068,
+      "prefill_latency_sec": 0.43472678901162,
+      "metadata_latency_sec": 0.1206313610309735,
+      "inspection_latency_sec": 0.004633261996787041,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.009416443109512285,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          0,
+          9,
+          15
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          0,
+          9,
+          15
+        ],
+        "extra_selected_block_ids": [
+          8,
+          19,
+          14,
+          7
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "needle",
+      "prompt_file": "prompts/needle.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_top_token_mean",
+      "qk_aggregation_strategy": "top_token_mean",
+      "block_mode": "overlap_16_stride_8",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 92,
+      "candidate_block_count": 11,
+      "selected_ids": [
+        10,
+        1,
+        0,
+        9
+      ],
+      "selected_candidate_ids": [
+        "s16_stride8_t0_16",
+        "s16_stride8_t8_24",
+        "s16_stride8_t72_88",
+        "s16_stride8_t80_92"
+      ],
+      "selected_spans": [
+        "0:16",
+        "8:24",
+        "72:88",
+        "80:92"
+      ],
+      "selected_block_sizes": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.004529172962065786,
+      "total_latency_sec": 0.32151230599265546,
+      "prefill_latency_sec": 0.2447309450362809,
+      "metadata_latency_sec": 0.06930701399687678,
+      "inspection_latency_sec": 0.0028746319585479796,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.05336699485778812,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          4
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          4
+        ],
+        "extra_selected_block_ids": [
+          10,
+          1,
+          0,
+          9
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "long_reference",
+      "prompt_file": "prompts/long_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_block_max",
+      "qk_aggregation_strategy": "block_max",
+      "block_mode": "overlap_16_stride_8",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 194,
+      "candidate_block_count": 24,
+      "selected_ids": [
+        23,
+        22,
+        16,
+        15
+      ],
+      "selected_candidate_ids": [
+        "s16_stride8_t120_136",
+        "s16_stride8_t128_144",
+        "s16_stride8_t176_192",
+        "s16_stride8_t184_194"
+      ],
+      "selected_spans": [
+        "120:136",
+        "128:144",
+        "176:192",
+        "184:194"
+      ],
+      "selected_block_sizes": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.004678277007769793,
+      "total_latency_sec": 0.6405358840129338,
+      "prefill_latency_sec": 0.49278378498274833,
+      "metadata_latency_sec": 0.13946110696997494,
+      "inspection_latency_sec": 0.003444979025516659,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.011570972204208385,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          14,
+          15,
+          16
+        ],
+        "selected_expected_block_ids": [
+          16,
+          15
+        ],
+        "missed_expected_block_ids": [
+          14
+        ],
+        "extra_selected_block_ids": [
+          23,
+          22
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.5,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "code_context",
+      "prompt_file": "prompts/code_context.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_block_max",
+      "qk_aggregation_strategy": "block_max",
+      "block_mode": "overlap_16_stride_8",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 216,
+      "candidate_block_count": 26,
+      "selected_ids": [
+        25,
+        19,
+        3,
+        24
+      ],
+      "selected_candidate_ids": [
+        "s16_stride8_t24_40",
+        "s16_stride8_t152_168",
+        "s16_stride8_t192_208",
+        "s16_stride8_t200_216"
+      ],
+      "selected_spans": [
+        "24:40",
+        "152:168",
+        "192:208",
+        "200:216"
+      ],
+      "selected_block_sizes": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.003753164957743138,
+      "total_latency_sec": 0.6633562800125219,
+      "prefill_latency_sec": 0.509282347979024,
+      "metadata_latency_sec": 0.14417091198265553,
+      "inspection_latency_sec": 0.006070093018934131,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0020298123359679954,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          8,
+          9,
+          10,
+          12,
+          13,
+          14,
+          21,
+          22
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          8,
+          9,
+          10,
+          12,
+          13,
+          14,
+          21,
+          22
+        ],
+        "extra_selected_block_ids": [
+          25,
+          19,
+          3,
+          24
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "repeated_reference",
+      "prompt_file": "prompts/repeated_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_block_max",
+      "qk_aggregation_strategy": "block_max",
+      "block_mode": "overlap_16_stride_8",
+      "keep_recent_blocks": 0,
+      "keep_anchor_blocks": 0,
+      "tokens": 129,
+      "candidate_block_count": 16,
+      "selected_ids": [
+        15,
+        14,
+        12,
+        0
+      ],
+      "selected_candidate_ids": [
+        "s16_stride8_t0_16",
+        "s16_stride8_t96_112",
+        "s16_stride8_t112_128",
+        "s16_stride8_t120_129"
+      ],
+      "selected_spans": [
+        "0:16",
+        "96:112",
+        "112:128",
+        "120:129"
+      ],
+      "selected_block_sizes": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "selected_count": 4,
+      "selected_to_semantic_k_ratio": 1.0,
+      "selector_latency_sec": 0.004891547025181353,
+      "total_latency_sec": 0.42527040996355936,
+      "prefill_latency_sec": 0.3275011640507728,
+      "metadata_latency_sec": 0.08985429798485711,
+      "inspection_latency_sec": 0.0028889270033687353,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.005820965766906772,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          0,
+          1
+        ],
+        "selected_expected_block_ids": [
+          0
+        ],
+        "missed_expected_block_ids": [
+          1
+        ],
+        "extra_selected_block_ids": [
+          15,
+          14,
+          12
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.25,
+        "target_hit": true
+      }
+    }
+  ],
+  "aggregate_summaries": [
+    {
+      "block_mode": "fixed_16",
+      "run_count": 4,
+      "mean_recall": 0.625,
+      "mean_precision": 0.1875,
+      "mean_selected_count": 4.0,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 10.5,
+      "mean_selector_latency_sec": 0.0038703059690305963,
+      "recall_delta_vs_best_fixed": -0.0625,
+      "precision_delta_vs_best_fixed": 0.0,
+      "selected_to_k_delta_vs_best_fixed": 0.0625,
+      "latency_delta_vs_best_fixed_sec": -0.00014632979582529515
+    },
+    {
+      "block_mode": "fixed_24",
+      "run_count": 4,
+      "mean_recall": 0.625,
+      "mean_precision": 0.1875,
+      "mean_selected_count": 4.0,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 7.0,
+      "mean_selector_latency_sec": 0.003713567028171383,
+      "recall_delta_vs_best_fixed": -0.0625,
+      "precision_delta_vs_best_fixed": 0.0,
+      "selected_to_k_delta_vs_best_fixed": 0.0625,
+      "latency_delta_vs_best_fixed_sec": -0.0003030687366845086
+    },
+    {
+      "block_mode": "fixed_32",
+      "run_count": 4,
+      "mean_recall": 0.5,
+      "mean_precision": 0.20833333333333331,
+      "mean_selected_count": 3.75,
+      "mean_selected_to_semantic_k_ratio": 0.9375,
+      "mean_candidate_block_count": 5.5,
+      "mean_selector_latency_sec": 0.0041406897362321615,
+      "recall_delta_vs_best_fixed": -0.1875,
+      "precision_delta_vs_best_fixed": 0.020833333333333315,
+      "selected_to_k_delta_vs_best_fixed": 0.0,
+      "latency_delta_vs_best_fixed_sec": 0.00012405397137627006
+    },
+    {
+      "block_mode": "fixed_40",
+      "run_count": 4,
+      "mean_recall": 0.6875,
+      "mean_precision": 0.1875,
+      "mean_selected_count": 3.75,
+      "mean_selected_to_semantic_k_ratio": 0.9375,
+      "mean_candidate_block_count": 4.5,
+      "mean_selector_latency_sec": 0.0040166357648558915,
+      "recall_delta_vs_best_fixed": 0.0,
+      "precision_delta_vs_best_fixed": 0.0,
+      "selected_to_k_delta_vs_best_fixed": 0.0,
+      "latency_delta_vs_best_fixed_sec": 0.0
+    },
+    {
+      "block_mode": "multiscale_16_24_32",
+      "run_count": 4,
+      "mean_recall": 0.0,
+      "mean_precision": 0.0,
+      "mean_selected_count": 4.0,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 23.0,
+      "mean_selector_latency_sec": 0.006172659253934398,
+      "recall_delta_vs_best_fixed": -0.6875,
+      "precision_delta_vs_best_fixed": -0.1875,
+      "selected_to_k_delta_vs_best_fixed": 0.0625,
+      "latency_delta_vs_best_fixed_sec": 0.002156023489078507
+    },
+    {
+      "block_mode": "multiscale_16_32",
+      "run_count": 4,
+      "mean_recall": 0.0,
+      "mean_precision": 0.0,
+      "mean_selected_count": 4.0,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 16.0,
+      "mean_selector_latency_sec": 0.00418700251611881,
+      "recall_delta_vs_best_fixed": -0.6875,
+      "precision_delta_vs_best_fixed": -0.1875,
+      "selected_to_k_delta_vs_best_fixed": 0.0625,
+      "latency_delta_vs_best_fixed_sec": 0.00017036675126291811
+    },
+    {
+      "block_mode": "overlap_16_stride_8",
+      "run_count": 4,
+      "mean_recall": 0.5,
+      "mean_precision": 0.1875,
+      "mean_selected_count": 4.0,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 19.25,
+      "mean_selector_latency_sec": 0.004463040488190018,
+      "recall_delta_vs_best_fixed": -0.1875,
+      "precision_delta_vs_best_fixed": 0.0,
+      "selected_to_k_delta_vs_best_fixed": 0.0625,
+      "latency_delta_vs_best_fixed_sec": 0.0004464047233341262
+    }
+  ],
+  "ranked_summaries": [
+    {
+      "block_mode": "fixed_40",
+      "run_count": 4,
+      "mean_recall": 0.6875,
+      "mean_precision": 0.1875,
+      "mean_selected_count": 3.75,
+      "mean_selected_to_semantic_k_ratio": 0.9375,
+      "mean_candidate_block_count": 4.5,
+      "mean_selector_latency_sec": 0.0040166357648558915,
+      "recall_delta_vs_best_fixed": 0.0,
+      "precision_delta_vs_best_fixed": 0.0,
+      "selected_to_k_delta_vs_best_fixed": 0.0,
+      "latency_delta_vs_best_fixed_sec": 0.0
+    },
+    {
+      "block_mode": "fixed_24",
+      "run_count": 4,
+      "mean_recall": 0.625,
+      "mean_precision": 0.1875,
+      "mean_selected_count": 4.0,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 7.0,
+      "mean_selector_latency_sec": 0.003713567028171383,
+      "recall_delta_vs_best_fixed": -0.0625,
+      "precision_delta_vs_best_fixed": 0.0,
+      "selected_to_k_delta_vs_best_fixed": 0.0625,
+      "latency_delta_vs_best_fixed_sec": -0.0003030687366845086
+    },
+    {
+      "block_mode": "fixed_16",
+      "run_count": 4,
+      "mean_recall": 0.625,
+      "mean_precision": 0.1875,
+      "mean_selected_count": 4.0,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 10.5,
+      "mean_selector_latency_sec": 0.0038703059690305963,
+      "recall_delta_vs_best_fixed": -0.0625,
+      "precision_delta_vs_best_fixed": 0.0,
+      "selected_to_k_delta_vs_best_fixed": 0.0625,
+      "latency_delta_vs_best_fixed_sec": -0.00014632979582529515
+    },
+    {
+      "block_mode": "fixed_32",
+      "run_count": 4,
+      "mean_recall": 0.5,
+      "mean_precision": 0.20833333333333331,
+      "mean_selected_count": 3.75,
+      "mean_selected_to_semantic_k_ratio": 0.9375,
+      "mean_candidate_block_count": 5.5,
+      "mean_selector_latency_sec": 0.0041406897362321615,
+      "recall_delta_vs_best_fixed": -0.1875,
+      "precision_delta_vs_best_fixed": 0.020833333333333315,
+      "selected_to_k_delta_vs_best_fixed": 0.0,
+      "latency_delta_vs_best_fixed_sec": 0.00012405397137627006
+    },
+    {
+      "block_mode": "overlap_16_stride_8",
+      "run_count": 4,
+      "mean_recall": 0.5,
+      "mean_precision": 0.1875,
+      "mean_selected_count": 4.0,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 19.25,
+      "mean_selector_latency_sec": 0.004463040488190018,
+      "recall_delta_vs_best_fixed": -0.1875,
+      "precision_delta_vs_best_fixed": 0.0,
+      "selected_to_k_delta_vs_best_fixed": 0.0625,
+      "latency_delta_vs_best_fixed_sec": 0.0004464047233341262
+    },
+    {
+      "block_mode": "multiscale_16_32",
+      "run_count": 4,
+      "mean_recall": 0.0,
+      "mean_precision": 0.0,
+      "mean_selected_count": 4.0,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 16.0,
+      "mean_selector_latency_sec": 0.00418700251611881,
+      "recall_delta_vs_best_fixed": -0.6875,
+      "precision_delta_vs_best_fixed": -0.1875,
+      "selected_to_k_delta_vs_best_fixed": 0.0625,
+      "latency_delta_vs_best_fixed_sec": 0.00017036675126291811
+    },
+    {
+      "block_mode": "multiscale_16_24_32",
+      "run_count": 4,
+      "mean_recall": 0.0,
+      "mean_precision": 0.0,
+      "mean_selected_count": 4.0,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 23.0,
+      "mean_selector_latency_sec": 0.006172659253934398,
+      "recall_delta_vs_best_fixed": -0.6875,
+      "precision_delta_vs_best_fixed": -0.1875,
+      "selected_to_k_delta_vs_best_fixed": 0.0625,
+      "latency_delta_vs_best_fixed_sec": 0.002156023489078507
+    }
+  ],
+  "prompt_breakdowns": [
+    {
+      "prompt_name": "code_context",
+      "block_mode": "fixed_16",
+      "qk_aggregation_strategy": "block_max",
+      "run_count": 1,
+      "mean_recall": 0.0,
+      "mean_precision": 0.0,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 14.0,
+      "mean_selector_latency_sec": 0.004001677967607975
+    },
+    {
+      "prompt_name": "code_context",
+      "block_mode": "fixed_24",
+      "qk_aggregation_strategy": "block_max",
+      "run_count": 1,
+      "mean_recall": 0.5,
+      "mean_precision": 0.25,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 9.0,
+      "mean_selector_latency_sec": 0.0041765180067159235
+    },
+    {
+      "prompt_name": "code_context",
+      "block_mode": "fixed_32",
+      "qk_aggregation_strategy": "block_max",
+      "run_count": 1,
+      "mean_recall": 0.5,
+      "mean_precision": 0.25,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 7.0,
+      "mean_selector_latency_sec": 0.005802897969260812
+    },
+    {
+      "prompt_name": "code_context",
+      "block_mode": "fixed_40",
+      "qk_aggregation_strategy": "block_max",
+      "run_count": 1,
+      "mean_recall": 0.75,
+      "mean_precision": 0.25,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 6.0,
+      "mean_selector_latency_sec": 0.003955320979002863
+    },
+    {
+      "prompt_name": "code_context",
+      "block_mode": "multiscale_16_24_32",
+      "qk_aggregation_strategy": "block_max",
+      "run_count": 1,
+      "mean_recall": 0.0,
+      "mean_precision": 0.0,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 30.0,
+      "mean_selector_latency_sec": 0.005613162997178733
+    },
+    {
+      "prompt_name": "code_context",
+      "block_mode": "multiscale_16_32",
+      "qk_aggregation_strategy": "block_max",
+      "run_count": 1,
+      "mean_recall": 0.0,
+      "mean_precision": 0.0,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 21.0,
+      "mean_selector_latency_sec": 0.003820748010184616
+    },
+    {
+      "prompt_name": "code_context",
+      "block_mode": "overlap_16_stride_8",
+      "qk_aggregation_strategy": "block_max",
+      "run_count": 1,
+      "mean_recall": 0.0,
+      "mean_precision": 0.0,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 26.0,
+      "mean_selector_latency_sec": 0.003753164957743138
+    },
+    {
+      "prompt_name": "long_reference",
+      "block_mode": "fixed_16",
+      "qk_aggregation_strategy": "block_max",
+      "run_count": 1,
+      "mean_recall": 0.5,
+      "mean_precision": 0.25,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 13.0,
+      "mean_selector_latency_sec": 0.004191025975160301
+    },
+    {
+      "prompt_name": "long_reference",
+      "block_mode": "fixed_24",
+      "qk_aggregation_strategy": "block_max",
+      "run_count": 1,
+      "mean_recall": 1.0,
+      "mean_precision": 0.25,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 9.0,
+      "mean_selector_latency_sec": 0.0034193750470876694
+    },
+    {
+      "prompt_name": "long_reference",
+      "block_mode": "fixed_32",
+      "qk_aggregation_strategy": "block_max",
+      "run_count": 1,
+      "mean_recall": 0.5,
+      "mean_precision": 0.25,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 7.0,
+      "mean_selector_latency_sec": 0.0038769199745729566
+    },
+    {
+      "prompt_name": "long_reference",
+      "block_mode": "fixed_40",
+      "qk_aggregation_strategy": "block_max",
+      "run_count": 1,
+      "mean_recall": 1.0,
+      "mean_precision": 0.25,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 5.0,
+      "mean_selector_latency_sec": 0.004072562034707516
+    },
+    {
+      "prompt_name": "long_reference",
+      "block_mode": "multiscale_16_24_32",
+      "qk_aggregation_strategy": "block_max",
+      "run_count": 1,
+      "mean_recall": 0.0,
+      "mean_precision": 0.0,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 29.0,
+      "mean_selector_latency_sec": 0.005235693999566138
+    },
+    {
+      "prompt_name": "long_reference",
+      "block_mode": "multiscale_16_32",
+      "qk_aggregation_strategy": "block_max",
+      "run_count": 1,
+      "mean_recall": 0.0,
+      "mean_precision": 0.0,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 20.0,
+      "mean_selector_latency_sec": 0.003588560037314892
+    },
+    {
+      "prompt_name": "long_reference",
+      "block_mode": "overlap_16_stride_8",
+      "qk_aggregation_strategy": "block_max",
+      "run_count": 1,
+      "mean_recall": 1.0,
+      "mean_precision": 0.5,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 24.0,
+      "mean_selector_latency_sec": 0.004678277007769793
+    },
+    {
+      "prompt_name": "needle",
+      "block_mode": "fixed_16",
+      "qk_aggregation_strategy": "top_token_mean",
+      "run_count": 1,
+      "mean_recall": 1.0,
+      "mean_precision": 0.25,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 6.0,
+      "mean_selector_latency_sec": 0.003338406968396157
+    },
+    {
+      "prompt_name": "needle",
+      "block_mode": "fixed_24",
+      "qk_aggregation_strategy": "top_token_mean",
+      "run_count": 1,
+      "mean_recall": 1.0,
+      "mean_precision": 0.25,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 4.0,
+      "mean_selector_latency_sec": 0.0034204820403829217
+    },
+    {
+      "prompt_name": "needle",
+      "block_mode": "fixed_32",
+      "qk_aggregation_strategy": "top_token_mean",
+      "run_count": 1,
+      "mean_recall": 1.0,
+      "mean_precision": 0.3333333333333333,
+      "mean_selected_to_semantic_k_ratio": 0.75,
+      "mean_candidate_block_count": 3.0,
+      "mean_selector_latency_sec": 0.0034340890124440193
+    },
+    {
+      "prompt_name": "needle",
+      "block_mode": "fixed_40",
+      "qk_aggregation_strategy": "top_token_mean",
+      "run_count": 1,
+      "mean_recall": 0.0,
+      "mean_precision": 0.0,
+      "mean_selected_to_semantic_k_ratio": 0.75,
+      "mean_candidate_block_count": 3.0,
+      "mean_selector_latency_sec": 0.0039652500418014824
+    },
+    {
+      "prompt_name": "needle",
+      "block_mode": "multiscale_16_24_32",
+      "qk_aggregation_strategy": "top_token_mean",
+      "run_count": 1,
+      "mean_recall": 0.0,
+      "mean_precision": 0.0,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 13.0,
+      "mean_selector_latency_sec": 0.008577993023209274
+    },
+    {
+      "prompt_name": "needle",
+      "block_mode": "multiscale_16_32",
+      "qk_aggregation_strategy": "top_token_mean",
+      "run_count": 1,
+      "mean_recall": 0.0,
+      "mean_precision": 0.0,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 9.0,
+      "mean_selector_latency_sec": 0.0037651819875463843
+    },
+    {
+      "prompt_name": "needle",
+      "block_mode": "overlap_16_stride_8",
+      "qk_aggregation_strategy": "top_token_mean",
+      "run_count": 1,
+      "mean_recall": 0.0,
+      "mean_precision": 0.0,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 11.0,
+      "mean_selector_latency_sec": 0.004529172962065786
+    },
+    {
+      "prompt_name": "repeated_reference",
+      "block_mode": "fixed_16",
+      "qk_aggregation_strategy": "block_max",
+      "run_count": 1,
+      "mean_recall": 1.0,
+      "mean_precision": 0.25,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 9.0,
+      "mean_selector_latency_sec": 0.0039501129649579525
+    },
+    {
+      "prompt_name": "repeated_reference",
+      "block_mode": "fixed_24",
+      "qk_aggregation_strategy": "block_max",
+      "run_count": 1,
+      "mean_recall": 0.0,
+      "mean_precision": 0.0,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 6.0,
+      "mean_selector_latency_sec": 0.0038378930184990168
+    },
+    {
+      "prompt_name": "repeated_reference",
+      "block_mode": "fixed_32",
+      "qk_aggregation_strategy": "block_max",
+      "run_count": 1,
+      "mean_recall": 0.0,
+      "mean_precision": 0.0,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 5.0,
+      "mean_selector_latency_sec": 0.0034488519886508584
+    },
+    {
+      "prompt_name": "repeated_reference",
+      "block_mode": "fixed_40",
+      "qk_aggregation_strategy": "block_max",
+      "run_count": 1,
+      "mean_recall": 1.0,
+      "mean_precision": 0.25,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 4.0,
+      "mean_selector_latency_sec": 0.004073410003911704
+    },
+    {
+      "prompt_name": "repeated_reference",
+      "block_mode": "multiscale_16_24_32",
+      "qk_aggregation_strategy": "block_max",
+      "run_count": 1,
+      "mean_recall": 0.0,
+      "mean_precision": 0.0,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 20.0,
+      "mean_selector_latency_sec": 0.005263786995783448
+    },
+    {
+      "prompt_name": "repeated_reference",
+      "block_mode": "multiscale_16_32",
+      "qk_aggregation_strategy": "block_max",
+      "run_count": 1,
+      "mean_recall": 0.0,
+      "mean_precision": 0.0,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 14.0,
+      "mean_selector_latency_sec": 0.005573520029429346
+    },
+    {
+      "prompt_name": "repeated_reference",
+      "block_mode": "overlap_16_stride_8",
+      "qk_aggregation_strategy": "block_max",
+      "run_count": 1,
+      "mean_recall": 1.0,
+      "mean_precision": 0.25,
+      "mean_selected_to_semantic_k_ratio": 1.0,
+      "mean_candidate_block_count": 16.0,
+      "mean_selector_latency_sec": 0.004891547025181353
+    }
+  ],
+  "model_load_seconds": {
+    "gpt2": 6.617916249029804
+  }
+}

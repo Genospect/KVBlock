@@ -1,0 +1,843 @@
+{
+  "run_summary": {
+    "runtime_name": "local_hf:gpt2",
+    "representation_name": "query_mean_layer_11_key_mean_layer_11",
+    "token_count": 129,
+    "block_count": 9,
+    "block_size": 16,
+    "summary_dim": 32,
+    "prompt_chars": 558
+  },
+  "selected_block_ids": [
+    8,
+    7,
+    0,
+    2
+  ],
+  "query_key_inspection": {
+    "prompt_id": "repeated_reference",
+    "prompt_name": "repeated_reference",
+    "representation_source": "query_mean_last_layer",
+    "representation_name": "query_mean_layer_11_key_mean_layer_11",
+    "rail_setting": "cli",
+    "selected_block_ids": [
+      8,
+      7,
+      0,
+      2
+    ],
+    "missed_relevant_block_ids": [],
+    "relevance_fragments": [
+      "22 ng/mL",
+      "ferritin level",
+      "baseline ferritin"
+    ],
+    "query_summary_metadata": {
+      "summary_dim": 32,
+      "summary_scale": 0.00395625172637579,
+      "summary_norm": 1.168252944946289,
+      "sign_sketch": 4662595560661566602,
+      "quantized_values_preview": [
+        -60,
+        0,
+        -36,
+        9,
+        127,
+        109,
+        -71,
+        7
+      ],
+      "has_per_head": true,
+      "head_count": 12,
+      "mean_per_head_summary_scale": 0.01603346335606312,
+      "mean_per_head_summary_norm": 4.3482382496198015
+    },
+    "comparison_groups": {
+      "selected_relevant_block_ids": [
+        0,
+        7
+      ],
+      "selected_irrelevant_block_ids": [
+        2,
+        8
+      ],
+      "missed_relevant_block_ids": [],
+      "high_scoring_near_miss_block_ids": [
+        1,
+        3,
+        5,
+        6,
+        4
+      ]
+    },
+    "block_records": [
+      {
+        "block_id": 0,
+        "token_start": 0,
+        "token_end": 16,
+        "token_count": 16,
+        "preview_text": "The patient\u2019s baseline ferritin level was 22 ng/mL.",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.4409973919391632,
+        "stage_b_score": 0.578125,
+        "final_score": 0.5566223919391632,
+        "rank_position": 2,
+        "stage_a_rank": 2,
+        "stage_b_rank": 3,
+        "final_rank": 3,
+        "labeled_relevant": true,
+        "matched_relevance_fragments": [
+          "22 ng/mL",
+          "ferritin level",
+          "baseline ferritin"
+        ],
+        "explanation_hints": [
+          "semantic high-score",
+          "question-adjacent"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.0025455329831190936,
+          "summary_norm": 0.7097688913345337,
+          "sign_sketch": 4239797798072079451,
+          "quantized_values_preview": [
+            -18,
+            -47,
+            41,
+            8,
+            25,
+            45,
+            -14,
+            -100
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.01088642436531898,
+          "mean_per_head_summary_norm": 2.919682582219442
+        }
+      },
+      {
+        "block_id": 1,
+        "token_start": 16,
+        "token_end": 32,
+        "token_count": 16,
+        "preview_text": "The user began supplementation with iron bisglycinate and vitamin C.",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.3586674630641937,
+        "stage_b_score": 0.5625,
+        "final_score": 0.4711674630641937,
+        "rank_position": 5,
+        "stage_a_rank": 5,
+        "stage_b_rank": 5,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.0040077693819061035,
+          "summary_norm": 0.9753256440162659,
+          "sign_sketch": 4097758526603121883,
+          "quantized_values_preview": [
+            31,
+            -36,
+            25,
+            43,
+            11,
+            20,
+            -11,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012020798962260168,
+          "mean_per_head_summary_norm": 3.4127394954363504
+        }
+      },
+      {
+        "block_id": 2,
+        "token_start": 32,
+        "token_end": 48,
+        "token_count": 16,
+        "preview_text": "Weekly logs showed improved energy, fewer headaches, and better exercise tolerance",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.36714285612106323,
+        "stage_b_score": 0.578125,
+        "final_score": 0.4827678561210632,
+        "rank_position": 4,
+        "stage_a_rank": 4,
+        "stage_b_rank": 4,
+        "final_rank": 4,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.00350917042709711,
+          "summary_norm": 0.9905945062637329,
+          "sign_sketch": 4101910246276060184,
+          "quantized_values_preview": [
+            20,
+            -30,
+            17,
+            20,
+            40,
+            28,
+            -9,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.013708146772985383,
+          "mean_per_head_summary_norm": 3.7157363494237265
+        }
+      },
+      {
+        "block_id": 3,
+        "token_start": 48,
+        "token_end": 64,
+        "token_count": 16,
+        "preview_text": ". Additional notes covered sleep quality, hydration, and meal timing.",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.3516579270362854,
+        "stage_b_score": 0.59375,
+        "final_score": 0.4704079270362854,
+        "rank_position": 6,
+        "stage_a_rank": 6,
+        "stage_b_rank": 6,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.003818182025368758,
+          "summary_norm": 1.109104871749878,
+          "sign_sketch": 4101914097786934296,
+          "quantized_values_preview": [
+            3,
+            11,
+            -21,
+            45,
+            52,
+            44,
+            44,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.013390260027462415,
+          "mean_per_head_summary_norm": 3.7698474526405334
+        }
+      },
+      {
+        "block_id": 4,
+        "token_start": 64,
+        "token_end": 80,
+        "token_count": 16,
+        "preview_text": "Several pages of progress notes followed discussing unrelated biomarkers such as magnesium,",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.33451664447784424,
+        "stage_b_score": 0.578125,
+        "final_score": 0.4501416444778442,
+        "rank_position": 9,
+        "stage_a_rank": 9,
+        "stage_b_rank": 9,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004322435912184828,
+          "summary_norm": 1.062900424003601,
+          "sign_sketch": 4101702991550174360,
+          "quantized_values_preview": [
+            -1,
+            -17,
+            -6,
+            11,
+            39,
+            10,
+            35,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012586899629728062,
+          "mean_per_head_summary_norm": 3.4985192815462747
+        }
+      },
+      {
+        "block_id": 5,
+        "token_start": 80,
+        "token_end": 96,
+        "token_count": 16,
+        "preview_text": "B12, sodium, potassium, CRP, ALT, AST, and",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.3462725877761841,
+        "stage_b_score": 0.546875,
+        "final_score": 0.4556475877761841,
+        "rank_position": 7,
+        "stage_a_rank": 7,
+        "stage_b_rank": 8,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004744539110679326,
+          "summary_norm": 1.328028917312622,
+          "sign_sketch": 11168554526335636698,
+          "quantized_values_preview": [
+            3,
+            -3,
+            -9,
+            19,
+            9,
+            -2,
+            -15,
+            -63
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.016906109694733707,
+          "mean_per_head_summary_norm": 4.913127024968465
+        }
+      },
+      {
+        "block_id": 6,
+        "token_start": 96,
+        "token_end": 112,
+        "token_count": 16,
+        "preview_text": "vitamin D. Later consultation notes discussed exercise adherence and stress reduction.",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.3438560366630554,
+        "stage_b_score": 0.609375,
+        "final_score": 0.46573103666305543,
+        "rank_position": 8,
+        "stage_a_rank": 8,
+        "stage_b_rank": 7,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.003656797521696316,
+          "summary_norm": 1.1199132204055786,
+          "sign_sketch": 4243777486049105048,
+          "quantized_values_preview": [
+            2,
+            -27,
+            -21,
+            35,
+            52,
+            14,
+            32,
+            -112
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012961703257297905,
+          "mean_per_head_summary_norm": 3.6326312820116677
+        }
+      },
+      {
+        "block_id": 7,
+        "token_start": 112,
+        "token_end": 128,
+        "token_count": 16,
+        "preview_text": "Question: What was the patient\u2019s baseline ferritin level",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.4386131167411804,
+        "stage_b_score": 0.640625,
+        "final_score": 0.5667381167411805,
+        "rank_position": 3,
+        "stage_a_rank": 3,
+        "stage_b_rank": 2,
+        "final_rank": 2,
+        "labeled_relevant": true,
+        "matched_relevance_fragments": [
+          "ferritin level",
+          "baseline ferritin"
+        ],
+        "explanation_hints": [
+          "semantic high-score",
+          "question-adjacent"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.003180372433399591,
+          "summary_norm": 1.0175161361694336,
+          "sign_sketch": 8711840886937476248,
+          "quantized_values_preview": [
+            -31,
+            -46,
+            -39,
+            6,
+            28,
+            45,
+            55,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.013171135831692713,
+          "mean_per_head_summary_norm": 3.576501250267029
+        }
+      },
+      {
+        "block_id": 8,
+        "token_start": 128,
+        "token_end": 129,
+        "token_count": 1,
+        "preview_text": "?",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.522404670715332,
+        "stage_b_score": 0.671875,
+        "final_score": 0.656779670715332,
+        "rank_position": 1,
+        "stage_a_rank": 1,
+        "stage_b_rank": 1,
+        "final_rank": 1,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004040865447577529,
+          "summary_norm": 1.5761032104492188,
+          "sign_sketch": 8711366528131521552,
+          "quantized_values_preview": [
+            -8,
+            -72,
+            -39,
+            88,
+            32,
+            127,
+            0,
+            -105
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.01596454802773443,
+          "mean_per_head_summary_norm": 4.785250087579091
+        }
+      }
+    ],
+    "selected_relevant_blocks": [
+      {
+        "block_id": 0,
+        "token_start": 0,
+        "token_end": 16,
+        "token_count": 16,
+        "preview_text": "The patient\u2019s baseline ferritin level was 22 ng/mL.",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.4409973919391632,
+        "stage_b_score": 0.578125,
+        "final_score": 0.5566223919391632,
+        "rank_position": 2,
+        "stage_a_rank": 2,
+        "stage_b_rank": 3,
+        "final_rank": 3,
+        "labeled_relevant": true,
+        "matched_relevance_fragments": [
+          "22 ng/mL",
+          "ferritin level",
+          "baseline ferritin"
+        ],
+        "explanation_hints": [
+          "semantic high-score",
+          "question-adjacent"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.0025455329831190936,
+          "summary_norm": 0.7097688913345337,
+          "sign_sketch": 4239797798072079451,
+          "quantized_values_preview": [
+            -18,
+            -47,
+            41,
+            8,
+            25,
+            45,
+            -14,
+            -100
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.01088642436531898,
+          "mean_per_head_summary_norm": 2.919682582219442
+        }
+      },
+      {
+        "block_id": 7,
+        "token_start": 112,
+        "token_end": 128,
+        "token_count": 16,
+        "preview_text": "Question: What was the patient\u2019s baseline ferritin level",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.4386131167411804,
+        "stage_b_score": 0.640625,
+        "final_score": 0.5667381167411805,
+        "rank_position": 3,
+        "stage_a_rank": 3,
+        "stage_b_rank": 2,
+        "final_rank": 2,
+        "labeled_relevant": true,
+        "matched_relevance_fragments": [
+          "ferritin level",
+          "baseline ferritin"
+        ],
+        "explanation_hints": [
+          "semantic high-score",
+          "question-adjacent"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.003180372433399591,
+          "summary_norm": 1.0175161361694336,
+          "sign_sketch": 8711840886937476248,
+          "quantized_values_preview": [
+            -31,
+            -46,
+            -39,
+            6,
+            28,
+            45,
+            55,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.013171135831692713,
+          "mean_per_head_summary_norm": 3.576501250267029
+        }
+      }
+    ],
+    "selected_irrelevant_blocks": [
+      {
+        "block_id": 2,
+        "token_start": 32,
+        "token_end": 48,
+        "token_count": 16,
+        "preview_text": "Weekly logs showed improved energy, fewer headaches, and better exercise tolerance",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.36714285612106323,
+        "stage_b_score": 0.578125,
+        "final_score": 0.4827678561210632,
+        "rank_position": 4,
+        "stage_a_rank": 4,
+        "stage_b_rank": 4,
+        "final_rank": 4,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.00350917042709711,
+          "summary_norm": 0.9905945062637329,
+          "sign_sketch": 4101910246276060184,
+          "quantized_values_preview": [
+            20,
+            -30,
+            17,
+            20,
+            40,
+            28,
+            -9,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.013708146772985383,
+          "mean_per_head_summary_norm": 3.7157363494237265
+        }
+      },
+      {
+        "block_id": 8,
+        "token_start": 128,
+        "token_end": 129,
+        "token_count": 1,
+        "preview_text": "?",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.522404670715332,
+        "stage_b_score": 0.671875,
+        "final_score": 0.656779670715332,
+        "rank_position": 1,
+        "stage_a_rank": 1,
+        "stage_b_rank": 1,
+        "final_rank": 1,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004040865447577529,
+          "summary_norm": 1.5761032104492188,
+          "sign_sketch": 8711366528131521552,
+          "quantized_values_preview": [
+            -8,
+            -72,
+            -39,
+            88,
+            32,
+            127,
+            0,
+            -105
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.01596454802773443,
+          "mean_per_head_summary_norm": 4.785250087579091
+        }
+      }
+    ],
+    "missed_relevant_blocks": [],
+    "high_scoring_near_miss_blocks": [
+      {
+        "block_id": 1,
+        "token_start": 16,
+        "token_end": 32,
+        "token_count": 16,
+        "preview_text": "The user began supplementation with iron bisglycinate and vitamin C.",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.3586674630641937,
+        "stage_b_score": 0.5625,
+        "final_score": 0.4711674630641937,
+        "rank_position": 5,
+        "stage_a_rank": 5,
+        "stage_b_rank": 5,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.0040077693819061035,
+          "summary_norm": 0.9753256440162659,
+          "sign_sketch": 4097758526603121883,
+          "quantized_values_preview": [
+            31,
+            -36,
+            25,
+            43,
+            11,
+            20,
+            -11,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012020798962260168,
+          "mean_per_head_summary_norm": 3.4127394954363504
+        }
+      },
+      {
+        "block_id": 3,
+        "token_start": 48,
+        "token_end": 64,
+        "token_count": 16,
+        "preview_text": ". Additional notes covered sleep quality, hydration, and meal timing.",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.3516579270362854,
+        "stage_b_score": 0.59375,
+        "final_score": 0.4704079270362854,
+        "rank_position": 6,
+        "stage_a_rank": 6,
+        "stage_b_rank": 6,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.003818182025368758,
+          "summary_norm": 1.109104871749878,
+          "sign_sketch": 4101914097786934296,
+          "quantized_values_preview": [
+            3,
+            11,
+            -21,
+            45,
+            52,
+            44,
+            44,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.013390260027462415,
+          "mean_per_head_summary_norm": 3.7698474526405334
+        }
+      },
+      {
+        "block_id": 4,
+        "token_start": 64,
+        "token_end": 80,
+        "token_count": 16,
+        "preview_text": "Several pages of progress notes followed discussing unrelated biomarkers such as magnesium,",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.33451664447784424,
+        "stage_b_score": 0.578125,
+        "final_score": 0.4501416444778442,
+        "rank_position": 9,
+        "stage_a_rank": 9,
+        "stage_b_rank": 9,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004322435912184828,
+          "summary_norm": 1.062900424003601,
+          "sign_sketch": 4101702991550174360,
+          "quantized_values_preview": [
+            -1,
+            -17,
+            -6,
+            11,
+            39,
+            10,
+            35,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012586899629728062,
+          "mean_per_head_summary_norm": 3.4985192815462747
+        }
+      },
+      {
+        "block_id": 5,
+        "token_start": 80,
+        "token_end": 96,
+        "token_count": 16,
+        "preview_text": "B12, sodium, potassium, CRP, ALT, AST, and",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.3462725877761841,
+        "stage_b_score": 0.546875,
+        "final_score": 0.4556475877761841,
+        "rank_position": 7,
+        "stage_a_rank": 7,
+        "stage_b_rank": 8,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004744539110679326,
+          "summary_norm": 1.328028917312622,
+          "sign_sketch": 11168554526335636698,
+          "quantized_values_preview": [
+            3,
+            -3,
+            -9,
+            19,
+            9,
+            -2,
+            -15,
+            -63
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.016906109694733707,
+          "mean_per_head_summary_norm": 4.913127024968465
+        }
+      },
+      {
+        "block_id": 6,
+        "token_start": 96,
+        "token_end": 112,
+        "token_count": 16,
+        "preview_text": "vitamin D. Later consultation notes discussed exercise adherence and stress reduction.",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.3438560366630554,
+        "stage_b_score": 0.609375,
+        "final_score": 0.46573103666305543,
+        "rank_position": 8,
+        "stage_a_rank": 8,
+        "stage_b_rank": 7,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.003656797521696316,
+          "summary_norm": 1.1199132204055786,
+          "sign_sketch": 4243777486049105048,
+          "quantized_values_preview": [
+            2,
+            -27,
+            -21,
+            35,
+            52,
+            14,
+            32,
+            -112
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012961703257297905,
+          "mean_per_head_summary_norm": 3.6326312820116677
+        }
+      }
+    ]
+  }
+}

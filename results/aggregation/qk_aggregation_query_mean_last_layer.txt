@@ -1,0 +1,88 @@
+QUERY/KEY AGGREGATION BENCHMARK
+model_load_seconds={'distilgpt2': 4.878521438979078, 'gpt2': 1.7008433590526693}
+
+RANKED AGGREGATES
+block_max | runs=10 mean_recall=0.730 mean_precision=0.240 mean_selected=5.000 mean_selected/K=1.250 mean_selector=0.003579s d_recall=0.070 d_precision=0.020 d_selected/K=0.000 d_selector=0.000s
+mean_pool | runs=10 mean_recall=0.660 mean_precision=0.220 mean_selected=5.000 mean_selected/K=1.250 mean_selector=0.003360s d_recall=0.000 d_precision=0.000 d_selected/K=0.000 d_selector=0.000s
+top_token_mean | runs=10 mean_recall=0.660 mean_precision=0.200 mean_selected=5.000 mean_selected/K=1.250 mean_selector=0.003357s d_recall=0.000 d_precision=-0.020 d_selected/K=0.000 d_selector=-0.000s
+norm_weighted_mean | runs=10 mean_recall=0.440 mean_precision=0.140 mean_selected=5.000 mean_selected/K=1.250 mean_selector=0.003357s d_recall=-0.220 d_precision=-0.080 d_selected/K=0.000 d_selector=-0.000s
+max_pool | runs=10 mean_recall=0.320 mean_precision=0.080 mean_selected=5.000 mean_selected/K=1.250 mean_selector=0.003527s d_recall=-0.340 d_precision=-0.140 d_selected/K=0.000 d_selector=0.000s
+
+PER-PROMPT BREAKDOWN
+adversarial_semantic | block_max | runs=2 mean_recall=1.000 mean_precision=0.200 mean_selected/K=1.250 mean_selector=0.004023s
+adversarial_semantic | max_pool | runs=2 mean_recall=0.500 mean_precision=0.100 mean_selected/K=1.250 mean_selector=0.003685s
+adversarial_semantic | mean_pool | runs=2 mean_recall=0.500 mean_precision=0.100 mean_selected/K=1.250 mean_selector=0.002743s
+adversarial_semantic | norm_weighted_mean | runs=2 mean_recall=0.000 mean_precision=0.000 mean_selected/K=1.250 mean_selector=0.002747s
+adversarial_semantic | top_token_mean | runs=2 mean_recall=0.500 mean_precision=0.100 mean_selected/K=1.250 mean_selector=0.003014s
+code_context | block_max | runs=2 mean_recall=0.400 mean_precision=0.400 mean_selected/K=1.250 mean_selector=0.003396s
+code_context | max_pool | runs=2 mean_recall=0.100 mean_precision=0.100 mean_selected/K=1.250 mean_selector=0.003940s
+code_context | mean_pool | runs=2 mean_recall=0.300 mean_precision=0.300 mean_selected/K=1.250 mean_selector=0.004731s
+code_context | norm_weighted_mean | runs=2 mean_recall=0.200 mean_precision=0.200 mean_selected/K=1.250 mean_selector=0.003313s
+code_context | top_token_mean | runs=2 mean_recall=0.300 mean_precision=0.300 mean_selected/K=1.250 mean_selector=0.003702s
+long_reference | block_max | runs=2 mean_recall=0.750 mean_precision=0.300 mean_selected/K=1.250 mean_selector=0.003305s
+long_reference | max_pool | runs=2 mean_recall=0.000 mean_precision=0.000 mean_selected/K=1.250 mean_selector=0.003139s
+long_reference | mean_pool | runs=2 mean_recall=1.000 mean_precision=0.400 mean_selected/K=1.250 mean_selector=0.003275s
+long_reference | norm_weighted_mean | runs=2 mean_recall=0.500 mean_precision=0.200 mean_selected/K=1.250 mean_selector=0.003180s
+long_reference | top_token_mean | runs=2 mean_recall=0.500 mean_precision=0.200 mean_selected/K=1.250 mean_selector=0.003400s
+needle | block_max | runs=2 mean_recall=0.500 mean_precision=0.100 mean_selected/K=1.250 mean_selector=0.003522s
+needle | max_pool | runs=2 mean_recall=0.000 mean_precision=0.000 mean_selected/K=1.250 mean_selector=0.003429s
+needle | mean_pool | runs=2 mean_recall=0.500 mean_precision=0.100 mean_selected/K=1.250 mean_selector=0.003175s
+needle | norm_weighted_mean | runs=2 mean_recall=0.500 mean_precision=0.100 mean_selected/K=1.250 mean_selector=0.003685s
+needle | top_token_mean | runs=2 mean_recall=1.000 mean_precision=0.200 mean_selected/K=1.250 mean_selector=0.003061s
+repeated_reference | block_max | runs=2 mean_recall=1.000 mean_precision=0.200 mean_selected/K=1.250 mean_selector=0.003651s
+repeated_reference | max_pool | runs=2 mean_recall=1.000 mean_precision=0.200 mean_selected/K=1.250 mean_selector=0.003443s
+repeated_reference | mean_pool | runs=2 mean_recall=1.000 mean_precision=0.200 mean_selected/K=1.250 mean_selector=0.002876s
+repeated_reference | norm_weighted_mean | runs=2 mean_recall=1.000 mean_precision=0.200 mean_selected/K=1.250 mean_selector=0.003862s
+repeated_reference | top_token_mean | runs=2 mean_recall=1.000 mean_precision=0.200 mean_selected/K=1.250 mean_selector=0.003607s
+
+RUNS
+distilgpt2 | long_reference | mean_pool | selected=[12, 11, 1, 8, 7] | recall=1.000 precision=0.400 selected/K=1.250 selector=0.003515s
+distilgpt2 | needle | mean_pool | selected=[5, 0, 1, 2, 4] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.003168s
+distilgpt2 | repeated_reference | mean_pool | selected=[8, 0, 7, 2, 1] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.002324s
+distilgpt2 | code_context | mean_pool | selected=[13, 12, 11, 10, 5] | recall=0.400 precision=0.400 selected/K=1.250 selector=0.005094s
+distilgpt2 | adversarial_semantic | mean_pool | selected=[5, 4, 0, 2, 3] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.002579s
+distilgpt2 | long_reference | max_pool | selected=[12, 0, 2, 11, 3] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.002903s
+distilgpt2 | needle | max_pool | selected=[5, 4, 1, 0, 3] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.003698s
+distilgpt2 | repeated_reference | max_pool | selected=[8, 7, 0, 5, 1] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.003587s
+distilgpt2 | code_context | max_pool | selected=[13, 0, 11, 12, 9] | recall=0.200 precision=0.200 selected/K=1.250 selector=0.004506s
+distilgpt2 | adversarial_semantic | max_pool | selected=[5, 2, 4, 0, 1] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.004230s
+distilgpt2 | long_reference | norm_weighted_mean | selected=[12, 11, 1, 8, 10] | recall=0.500 precision=0.200 selected/K=1.250 selector=0.003126s
+distilgpt2 | needle | norm_weighted_mean | selected=[5, 0, 1, 4, 2] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.004226s
+distilgpt2 | repeated_reference | norm_weighted_mean | selected=[8, 0, 7, 2, 1] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.003502s
+distilgpt2 | code_context | norm_weighted_mean | selected=[13, 12, 11, 10, 9] | recall=0.200 precision=0.200 selected/K=1.250 selector=0.002958s
+distilgpt2 | adversarial_semantic | norm_weighted_mean | selected=[5, 4, 0, 2, 3] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.002342s
+distilgpt2 | long_reference | top_token_mean | selected=[12, 11, 10, 1, 7] | recall=0.500 precision=0.200 selected/K=1.250 selector=0.003543s
+distilgpt2 | needle | top_token_mean | selected=[5, 0, 1, 2, 3] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.002807s
+distilgpt2 | repeated_reference | top_token_mean | selected=[8, 0, 7, 1, 5] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.002953s
+distilgpt2 | code_context | top_token_mean | selected=[13, 12, 11, 9, 8] | recall=0.200 precision=0.200 selected/K=1.250 selector=0.003169s
+distilgpt2 | adversarial_semantic | top_token_mean | selected=[5, 4, 0, 2, 3] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.002991s
+distilgpt2 | long_reference | block_max | selected=[12, 11, 7, 8, 2] | recall=1.000 precision=0.400 selected/K=1.250 selector=0.003035s
+distilgpt2 | needle | block_max | selected=[5, 1, 4, 2, 0] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.002972s
+distilgpt2 | repeated_reference | block_max | selected=[8, 7, 0, 1, 3] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.003418s
+distilgpt2 | code_context | block_max | selected=[13, 12, 11, 6, 7] | recall=0.600 precision=0.600 selected/K=1.250 selector=0.003501s
+distilgpt2 | adversarial_semantic | block_max | selected=[5, 4, 2, 1, 0] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.004483s
+gpt2 | long_reference | mean_pool | selected=[12, 11, 7, 8, 9] | recall=1.000 precision=0.400 selected/K=1.250 selector=0.003035s
+gpt2 | needle | mean_pool | selected=[5, 0, 1, 4, 3] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.003182s
+gpt2 | repeated_reference | mean_pool | selected=[8, 7, 0, 2, 1] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.003427s
+gpt2 | code_context | mean_pool | selected=[13, 12, 10, 0, 5] | recall=0.200 precision=0.200 selected/K=1.250 selector=0.004367s
+gpt2 | adversarial_semantic | mean_pool | selected=[5, 4, 0, 2, 1] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.002907s
+gpt2 | long_reference | max_pool | selected=[12, 0, 1, 4, 2] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.003375s
+gpt2 | needle | max_pool | selected=[5, 0, 1, 3, 4] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.003160s
+gpt2 | repeated_reference | max_pool | selected=[8, 7, 2, 0, 5] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.003299s
+gpt2 | code_context | max_pool | selected=[13, 0, 10, 8, 9] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.003374s
+gpt2 | adversarial_semantic | max_pool | selected=[5, 0, 2, 3, 4] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.003140s
+gpt2 | long_reference | norm_weighted_mean | selected=[12, 11, 7, 10, 0] | recall=0.500 precision=0.200 selected/K=1.250 selector=0.003233s
+gpt2 | needle | norm_weighted_mean | selected=[5, 0, 1, 4, 3] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.003143s
+gpt2 | repeated_reference | norm_weighted_mean | selected=[8, 7, 0, 2, 3] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.004221s
+gpt2 | code_context | norm_weighted_mean | selected=[13, 12, 10, 0, 5] | recall=0.200 precision=0.200 selected/K=1.250 selector=0.003667s
+gpt2 | adversarial_semantic | norm_weighted_mean | selected=[5, 4, 0, 2, 3] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.003151s
+gpt2 | long_reference | top_token_mean | selected=[12, 11, 0, 10, 7] | recall=0.500 precision=0.200 selected/K=1.250 selector=0.003258s
+gpt2 | needle | top_token_mean | selected=[5, 0, 1, 2, 3] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.003315s
+gpt2 | repeated_reference | top_token_mean | selected=[8, 7, 0, 1, 2] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.004262s
+gpt2 | code_context | top_token_mean | selected=[13, 12, 10, 11, 5] | recall=0.400 precision=0.400 selected/K=1.250 selector=0.004236s
+gpt2 | adversarial_semantic | top_token_mean | selected=[5, 4, 0, 2, 1] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.003037s
+gpt2 | long_reference | block_max | selected=[12, 11, 8, 5, 0] | recall=0.500 precision=0.200 selected/K=1.250 selector=0.003575s
+gpt2 | needle | block_max | selected=[5, 0, 1, 4, 3] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.004071s
+gpt2 | repeated_reference | block_max | selected=[8, 7, 6, 0, 4] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.003884s
+gpt2 | code_context | block_max | selected=[13, 12, 9, 8, 5] | recall=0.200 precision=0.200 selected/K=1.250 selector=0.003292s
+gpt2 | adversarial_semantic | block_max | selected=[5, 4, 0, 2, 1] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.003563s

@@ -1,0 +1,1046 @@
+{
+  "run_summary": {
+    "runtime_name": "local_hf:gpt2",
+    "representation_name": "query_mean_layer_11_key_mean_layer_11",
+    "token_count": 194,
+    "block_count": 13,
+    "block_size": 16,
+    "summary_dim": 32,
+    "prompt_chars": 900
+  },
+  "selected_block_ids": [
+    12,
+    11,
+    7,
+    8,
+    9
+  ],
+  "query_key_inspection": {
+    "prompt_id": "long_reference",
+    "prompt_name": "long_reference",
+    "representation_source": "query_mean_last_layer",
+    "representation_name": "query_mean_layer_11_key_mean_layer_11",
+    "rail_setting": "cli",
+    "selected_block_ids": [
+      12,
+      11,
+      7,
+      8,
+      9
+    ],
+    "missed_relevant_block_ids": [],
+    "relevance_fragments": [
+      "AES-256-GCM",
+      "AES-256",
+      "archival backups",
+      "encryption standard"
+    ],
+    "query_summary_metadata": {
+      "summary_dim": 32,
+      "summary_scale": 0.0035198147841325896,
+      "summary_norm": 1.0112757682800293,
+      "sign_sketch": 2951790651897349515,
+      "quantized_values_preview": [
+        4,
+        26,
+        -21,
+        -9,
+        127,
+        55,
+        -18,
+        -44
+      ],
+      "has_per_head": true,
+      "head_count": 12,
+      "mean_per_head_summary_scale": 0.01597825670492618,
+      "mean_per_head_summary_norm": 4.5357043743133545
+    },
+    "comparison_groups": {
+      "selected_relevant_block_ids": [
+        7,
+        11
+      ],
+      "selected_irrelevant_block_ids": [
+        8,
+        9,
+        12
+      ],
+      "missed_relevant_block_ids": [],
+      "high_scoring_near_miss_block_ids": [
+        0,
+        10,
+        1,
+        6,
+        2
+      ]
+    },
+    "block_records": [
+      {
+        "block_id": 0,
+        "token_start": 0,
+        "token_end": 16,
+        "token_count": 16,
+        "preview_text": "Project Atlas is a distributed analytics platform used by several internal teams. The",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.3942924439907074,
+        "stage_b_score": 0.484375,
+        "final_score": 0.4911674439907074,
+        "rank_position": 3,
+        "stage_a_rank": 3,
+        "stage_b_rank": 7,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.003817824397500106,
+          "summary_norm": 0.942488431930542,
+          "sign_sketch": 8740968462289231508,
+          "quantized_values_preview": [
+            0,
+            -16,
+            30,
+            16,
+            42,
+            11,
+            41,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.009360343648066984,
+          "mean_per_head_summary_norm": 2.82945982615153
+        }
+      },
+      {
+        "block_id": 1,
+        "token_start": 16,
+        "token_end": 32,
+        "token_count": 16,
+        "preview_text": "ingestion layer receives CSV, JSON, and streaming telemetry data. Files are validated",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.366754412651062,
+        "stage_b_score": 0.609375,
+        "final_score": 0.488629412651062,
+        "rank_position": 8,
+        "stage_a_rank": 8,
+        "stage_b_rank": 8,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004744460263590175,
+          "summary_norm": 0.9145439267158508,
+          "sign_sketch": 4237439658358855321,
+          "quantized_values_preview": [
+            4,
+            -22,
+            34,
+            35,
+            19,
+            1,
+            14,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.01296947407597319,
+          "mean_per_head_summary_norm": 3.8054851293563843
+        }
+      },
+      {
+        "block_id": 2,
+        "token_start": 32,
+        "token_end": 48,
+        "token_count": 16,
+        "preview_text": ", normalized, and routed into storage buckets. The compute layer runs batch",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.35700473189353943,
+        "stage_b_score": 0.5625,
+        "final_score": 0.4695047318935394,
+        "rank_position": 10,
+        "stage_a_rank": 10,
+        "stage_b_rank": 10,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.005057411869679849,
+          "summary_norm": 1.0104836225509644,
+          "sign_sketch": 4173830301497284249,
+          "quantized_values_preview": [
+            13,
+            -5,
+            14,
+            37,
+            22,
+            2,
+            26,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.013123586265433805,
+          "mean_per_head_summary_norm": 3.7520533998807273
+        }
+      },
+      {
+        "block_id": 3,
+        "token_start": 48,
+        "token_end": 64,
+        "token_count": 16,
+        "preview_text": "transforms every hour and can also launch ad-hoc jobs for analysts.",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.34435269236564636,
+        "stage_b_score": 0.578125,
+        "final_score": 0.45997769236564634,
+        "rank_position": 12,
+        "stage_a_rank": 12,
+        "stage_b_rank": 12,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004090274412800947,
+          "summary_norm": 0.9824204444885254,
+          "sign_sketch": 4173972138497267352,
+          "quantized_values_preview": [
+            11,
+            -40,
+            23,
+            41,
+            16,
+            29,
+            3,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.013315872726790861,
+          "mean_per_head_summary_norm": 3.8138793309529624
+        }
+      },
+      {
+        "block_id": 4,
+        "token_start": 64,
+        "token_end": 80,
+        "token_count": 16,
+        "preview_text": "The metadata service tracks ownership, retention rules, schemas, and audit events",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.34554004669189453,
+        "stage_b_score": 0.578125,
+        "final_score": 0.4611650466918945,
+        "rank_position": 11,
+        "stage_a_rank": 11,
+        "stage_b_rank": 11,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.0047791201298631085,
+          "summary_norm": 1.0157334804534912,
+          "sign_sketch": 4174323567754827482,
+          "quantized_values_preview": [
+            3,
+            -6,
+            -18,
+            36,
+            12,
+            -15,
+            9,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.013942799230260173,
+          "mean_per_head_summary_norm": 3.930761913458506
+        }
+      },
+      {
+        "block_id": 5,
+        "token_start": 80,
+        "token_end": 96,
+        "token_count": 16,
+        "preview_text": ". The user dashboard shows job status, data freshness, and alert",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.3436259627342224,
+        "stage_b_score": 0.546875,
+        "final_score": 0.4530009627342224,
+        "rank_position": 13,
+        "stage_a_rank": 13,
+        "stage_b_rank": 13,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.003815793850290494,
+          "summary_norm": 0.9412310719490051,
+          "sign_sketch": 4173830851254146200,
+          "quantized_values_preview": [
+            -17,
+            -26,
+            -10,
+            41,
+            28,
+            -5,
+            28,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.013195416354757595,
+          "mean_per_head_summary_norm": 3.8397661050160727
+        }
+      },
+      {
+        "block_id": 6,
+        "token_start": 96,
+        "token_end": 112,
+        "token_count": 16,
+        "preview_text": "history. Many teams requested stronger role-based access control and better query",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.36655017733573914,
+        "stage_b_score": 0.546875,
+        "final_score": 0.47592517733573914,
+        "rank_position": 9,
+        "stage_a_rank": 9,
+        "stage_b_rank": 9,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004736771264414149,
+          "summary_norm": 1.158984661102295,
+          "sign_sketch": 4318015263466380952,
+          "quantized_values_preview": [
+            -9,
+            -14,
+            -27,
+            51,
+            26,
+            -25,
+            59,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012812733884871474,
+          "mean_per_head_summary_norm": 3.810878098011017
+        }
+      },
+      {
+        "block_id": 7,
+        "token_start": 112,
+        "token_end": 128,
+        "token_count": 16,
+        "preview_text": "logging. The current encryption standard for archival backups is AES-256",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.3743714392185211,
+        "stage_b_score": 0.6875,
+        "final_score": 0.5118714392185211,
+        "rank_position": 6,
+        "stage_a_rank": 6,
+        "stage_b_rank": 3,
+        "final_rank": 3,
+        "labeled_relevant": true,
+        "matched_relevance_fragments": [
+          "AES-256",
+          "archival backups",
+          "encryption standard"
+        ],
+        "explanation_hints": [
+          "semantic high-score",
+          "question-adjacent"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.005327824532516359,
+          "summary_norm": 1.201434850692749,
+          "sign_sketch": 4100014165314327706,
+          "quantized_values_preview": [
+            -18,
+            5,
+            13,
+            17,
+            4,
+            -11,
+            44,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012738638584382263,
+          "mean_per_head_summary_norm": 3.8342588941256204
+        }
+      },
+      {
+        "block_id": 8,
+        "token_start": 128,
+        "token_end": 144,
+        "token_count": 16,
+        "preview_text": "-GCM. The support team reported slow exports during end-of",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.37664148211479187,
+        "stage_b_score": 0.640625,
+        "final_score": 0.5047664821147919,
+        "rank_position": 5,
+        "stage_a_rank": 5,
+        "stage_b_rank": 4,
+        "final_rank": 4,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004725044167886569,
+          "summary_norm": 1.1197805404663086,
+          "sign_sketch": 4243777372213597338,
+          "quantized_values_preview": [
+            -24,
+            -9,
+            24,
+            20,
+            28,
+            -9,
+            40,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012812130329177135,
+          "mean_per_head_summary_norm": 3.7469039956728616
+        }
+      },
+      {
+        "block_id": 9,
+        "token_start": 144,
+        "token_end": 160,
+        "token_count": 16,
+        "preview_text": "-quarter reporting. The next roadmap item is cross-region failover",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.3779268264770508,
+        "stage_b_score": 0.609375,
+        "final_score": 0.4998018264770508,
+        "rank_position": 4,
+        "stage_a_rank": 4,
+        "stage_b_rank": 5,
+        "final_rank": 5,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004788197870329609,
+          "summary_norm": 1.160491943359375,
+          "sign_sketch": 4170593843925800600,
+          "quantized_values_preview": [
+            -23,
+            -22,
+            37,
+            20,
+            47,
+            -12,
+            59,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012759314825528563,
+          "mean_per_head_summary_norm": 3.8399901588757834
+        }
+      },
+      {
+        "block_id": 10,
+        "token_start": 160,
+        "token_end": 176,
+        "token_count": 16,
+        "preview_text": ". The compliance review noted that audit events older than 18 months are being",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.37084639072418213,
+        "stage_b_score": 0.625,
+        "final_score": 0.49584639072418213,
+        "rank_position": 7,
+        "stage_a_rank": 7,
+        "stage_b_rank": 6,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004539967991235688,
+          "summary_norm": 1.1633142232894897,
+          "sign_sketch": 8711348717978967066,
+          "quantized_values_preview": [
+            -31,
+            -26,
+            19,
+            42,
+            21,
+            -32,
+            5,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012871990131893808,
+          "mean_per_head_summary_norm": 3.770980974038442
+        }
+      },
+      {
+        "block_id": 11,
+        "token_start": 176,
+        "token_end": 192,
+        "token_count": 16,
+        "preview_text": "purged. Question: What encryption standard is used for archival",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.45436611771583557,
+        "stage_b_score": 0.6875,
+        "final_score": 0.5918661177158355,
+        "rank_position": 2,
+        "stage_a_rank": 2,
+        "stage_b_rank": 2,
+        "final_rank": 2,
+        "labeled_relevant": true,
+        "matched_relevance_fragments": [
+          "encryption standard"
+        ],
+        "explanation_hints": [
+          "semantic high-score",
+          "question-adjacent"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.0047498556572621265,
+          "summary_norm": 1.1658331155776978,
+          "sign_sketch": 8711876621536123930,
+          "quantized_values_preview": [
+            -36,
+            -9,
+            23,
+            50,
+            22,
+            -17,
+            16,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012130902625444367,
+          "mean_per_head_summary_norm": 3.4724912643432617
+        }
+      },
+      {
+        "block_id": 12,
+        "token_start": 192,
+        "token_end": 194,
+        "token_count": 2,
+        "preview_text": "backups?",
+        "selected": true,
+        "selected_reason": "recent",
+        "stage_a_score": 0.5337886810302734,
+        "stage_b_score": 0.671875,
+        "final_score": 0.6681636810302735,
+        "rank_position": 1,
+        "stage_a_rank": 1,
+        "stage_b_rank": 1,
+        "final_rank": 1,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "recent rail",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.0048775344383059525,
+          "summary_norm": 1.4735151529312134,
+          "sign_sketch": 8693312467749624841,
+          "quantized_values_preview": [
+            -43,
+            -24,
+            18,
+            79,
+            29,
+            33,
+            23,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.015289402070633696,
+          "mean_per_head_summary_norm": 4.430226067701976
+        }
+      }
+    ],
+    "selected_relevant_blocks": [
+      {
+        "block_id": 7,
+        "token_start": 112,
+        "token_end": 128,
+        "token_count": 16,
+        "preview_text": "logging. The current encryption standard for archival backups is AES-256",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.3743714392185211,
+        "stage_b_score": 0.6875,
+        "final_score": 0.5118714392185211,
+        "rank_position": 6,
+        "stage_a_rank": 6,
+        "stage_b_rank": 3,
+        "final_rank": 3,
+        "labeled_relevant": true,
+        "matched_relevance_fragments": [
+          "AES-256",
+          "archival backups",
+          "encryption standard"
+        ],
+        "explanation_hints": [
+          "semantic high-score",
+          "question-adjacent"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.005327824532516359,
+          "summary_norm": 1.201434850692749,
+          "sign_sketch": 4100014165314327706,
+          "quantized_values_preview": [
+            -18,
+            5,
+            13,
+            17,
+            4,
+            -11,
+            44,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012738638584382263,
+          "mean_per_head_summary_norm": 3.8342588941256204
+        }
+      },
+      {
+        "block_id": 11,
+        "token_start": 176,
+        "token_end": 192,
+        "token_count": 16,
+        "preview_text": "purged. Question: What encryption standard is used for archival",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.45436611771583557,
+        "stage_b_score": 0.6875,
+        "final_score": 0.5918661177158355,
+        "rank_position": 2,
+        "stage_a_rank": 2,
+        "stage_b_rank": 2,
+        "final_rank": 2,
+        "labeled_relevant": true,
+        "matched_relevance_fragments": [
+          "encryption standard"
+        ],
+        "explanation_hints": [
+          "semantic high-score",
+          "question-adjacent"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.0047498556572621265,
+          "summary_norm": 1.1658331155776978,
+          "sign_sketch": 8711876621536123930,
+          "quantized_values_preview": [
+            -36,
+            -9,
+            23,
+            50,
+            22,
+            -17,
+            16,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012130902625444367,
+          "mean_per_head_summary_norm": 3.4724912643432617
+        }
+      }
+    ],
+    "selected_irrelevant_blocks": [
+      {
+        "block_id": 8,
+        "token_start": 128,
+        "token_end": 144,
+        "token_count": 16,
+        "preview_text": "-GCM. The support team reported slow exports during end-of",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.37664148211479187,
+        "stage_b_score": 0.640625,
+        "final_score": 0.5047664821147919,
+        "rank_position": 5,
+        "stage_a_rank": 5,
+        "stage_b_rank": 4,
+        "final_rank": 4,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004725044167886569,
+          "summary_norm": 1.1197805404663086,
+          "sign_sketch": 4243777372213597338,
+          "quantized_values_preview": [
+            -24,
+            -9,
+            24,
+            20,
+            28,
+            -9,
+            40,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012812130329177135,
+          "mean_per_head_summary_norm": 3.7469039956728616
+        }
+      },
+      {
+        "block_id": 9,
+        "token_start": 144,
+        "token_end": 160,
+        "token_count": 16,
+        "preview_text": "-quarter reporting. The next roadmap item is cross-region failover",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.3779268264770508,
+        "stage_b_score": 0.609375,
+        "final_score": 0.4998018264770508,
+        "rank_position": 4,
+        "stage_a_rank": 4,
+        "stage_b_rank": 5,
+        "final_rank": 5,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004788197870329609,
+          "summary_norm": 1.160491943359375,
+          "sign_sketch": 4170593843925800600,
+          "quantized_values_preview": [
+            -23,
+            -22,
+            37,
+            20,
+            47,
+            -12,
+            59,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012759314825528563,
+          "mean_per_head_summary_norm": 3.8399901588757834
+        }
+      },
+      {
+        "block_id": 12,
+        "token_start": 192,
+        "token_end": 194,
+        "token_count": 2,
+        "preview_text": "backups?",
+        "selected": true,
+        "selected_reason": "recent",
+        "stage_a_score": 0.5337886810302734,
+        "stage_b_score": 0.671875,
+        "final_score": 0.6681636810302735,
+        "rank_position": 1,
+        "stage_a_rank": 1,
+        "stage_b_rank": 1,
+        "final_rank": 1,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "recent rail",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.0048775344383059525,
+          "summary_norm": 1.4735151529312134,
+          "sign_sketch": 8693312467749624841,
+          "quantized_values_preview": [
+            -43,
+            -24,
+            18,
+            79,
+            29,
+            33,
+            23,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.015289402070633696,
+          "mean_per_head_summary_norm": 4.430226067701976
+        }
+      }
+    ],
+    "missed_relevant_blocks": [],
+    "high_scoring_near_miss_blocks": [
+      {
+        "block_id": 0,
+        "token_start": 0,
+        "token_end": 16,
+        "token_count": 16,
+        "preview_text": "Project Atlas is a distributed analytics platform used by several internal teams. The",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.3942924439907074,
+        "stage_b_score": 0.484375,
+        "final_score": 0.4911674439907074,
+        "rank_position": 3,
+        "stage_a_rank": 3,
+        "stage_b_rank": 7,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.003817824397500106,
+          "summary_norm": 0.942488431930542,
+          "sign_sketch": 8740968462289231508,
+          "quantized_values_preview": [
+            0,
+            -16,
+            30,
+            16,
+            42,
+            11,
+            41,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.009360343648066984,
+          "mean_per_head_summary_norm": 2.82945982615153
+        }
+      },
+      {
+        "block_id": 1,
+        "token_start": 16,
+        "token_end": 32,
+        "token_count": 16,
+        "preview_text": "ingestion layer receives CSV, JSON, and streaming telemetry data. Files are validated",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.366754412651062,
+        "stage_b_score": 0.609375,
+        "final_score": 0.488629412651062,
+        "rank_position": 8,
+        "stage_a_rank": 8,
+        "stage_b_rank": 8,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004744460263590175,
+          "summary_norm": 0.9145439267158508,
+          "sign_sketch": 4237439658358855321,
+          "quantized_values_preview": [
+            4,
+            -22,
+            34,
+            35,
+            19,
+            1,
+            14,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.01296947407597319,
+          "mean_per_head_summary_norm": 3.8054851293563843
+        }
+      },
+      {
+        "block_id": 2,
+        "token_start": 32,
+        "token_end": 48,
+        "token_count": 16,
+        "preview_text": ", normalized, and routed into storage buckets. The compute layer runs batch",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.35700473189353943,
+        "stage_b_score": 0.5625,
+        "final_score": 0.4695047318935394,
+        "rank_position": 10,
+        "stage_a_rank": 10,
+        "stage_b_rank": 10,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.005057411869679849,
+          "summary_norm": 1.0104836225509644,
+          "sign_sketch": 4173830301497284249,
+          "quantized_values_preview": [
+            13,
+            -5,
+            14,
+            37,
+            22,
+            2,
+            26,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.013123586265433805,
+          "mean_per_head_summary_norm": 3.7520533998807273
+        }
+      },
+      {
+        "block_id": 6,
+        "token_start": 96,
+        "token_end": 112,
+        "token_count": 16,
+        "preview_text": "history. Many teams requested stronger role-based access control and better query",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.36655017733573914,
+        "stage_b_score": 0.546875,
+        "final_score": 0.47592517733573914,
+        "rank_position": 9,
+        "stage_a_rank": 9,
+        "stage_b_rank": 9,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004736771264414149,
+          "summary_norm": 1.158984661102295,
+          "sign_sketch": 4318015263466380952,
+          "quantized_values_preview": [
+            -9,
+            -14,
+            -27,
+            51,
+            26,
+            -25,
+            59,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012812733884871474,
+          "mean_per_head_summary_norm": 3.810878098011017
+        }
+      },
+      {
+        "block_id": 10,
+        "token_start": 160,
+        "token_end": 176,
+        "token_count": 16,
+        "preview_text": ". The compliance review noted that audit events older than 18 months are being",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.37084639072418213,
+        "stage_b_score": 0.625,
+        "final_score": 0.49584639072418213,
+        "rank_position": 7,
+        "stage_a_rank": 7,
+        "stage_b_rank": 6,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004539967991235688,
+          "summary_norm": 1.1633142232894897,
+          "sign_sketch": 8711348717978967066,
+          "quantized_values_preview": [
+            -31,
+            -26,
+            19,
+            42,
+            21,
+            -32,
+            5,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012871990131893808,
+          "mean_per_head_summary_norm": 3.770980974038442
+        }
+      }
+    ]
+  }
+}

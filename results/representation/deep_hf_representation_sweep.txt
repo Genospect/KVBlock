@@ -1,0 +1,146 @@
+REAL-BLOCK REPRESENTATION SWEEP
+model_load_seconds={'distilgpt2': 37.41610012802994, 'gpt2': 2.8185047970036976}
+
+RUNS
+distilgpt2 | long_reference | final_hidden (final_hidden) | selected=[12, 11, 10, 9, 0, 1, 4, 5, 2, 8] | recall=0.500 precision=0.100 hit=True | selector=0.008750s total=5.701926s
+  reasons=0:anchor:0.763, 1:anchor:0.782, 2:semantic:0.785, 4:semantic:0.789, 5:semantic:0.785, 8:semantic:0.784, 9:recent:0.797, 10:recent:0.787, 11:recent:0.834, 12:recent:0.891
+distilgpt2 | needle | final_hidden (final_hidden) | selected=[5, 4, 3, 2, 0, 1] | recall=1.000 precision=0.167 hit=True | selector=0.006259s total=0.258616s
+  reasons=0:anchor:0.795, 1:anchor:0.795, 2:recent:0.795, 3:recent:0.794, 4:recent:0.802, 5:recent:0.895
+distilgpt2 | repeated_reference | final_hidden (final_hidden) | selected=[8, 7, 6, 5, 0, 1, 2, 3, 4] | recall=1.000 precision=0.111 hit=True | selector=0.007887s total=0.366998s
+  reasons=0:anchor:0.788, 1:anchor:0.758, 2:semantic:0.785, 3:semantic:0.785, 4:semantic:0.769, 5:recent:0.796, 6:recent:0.802, 7:recent:0.830, 8:recent:0.900
+distilgpt2 | code_context | final_hidden (final_hidden) | selected=[13, 12, 11, 10, 0, 1, 4, 8, 2, 6] | recall=0.600 precision=0.300 hit=True | selector=0.006457s total=0.600371s
+  reasons=0:anchor:0.781, 1:anchor:0.778, 2:semantic:0.775, 4:semantic:0.781, 6:semantic:0.775, 8:semantic:0.776, 10:recent:0.762, 11:recent:0.749, 12:recent:0.777, 13:recent:0.894
+distilgpt2 | adversarial_semantic | final_hidden (final_hidden) | selected=[5, 4, 3, 2, 0, 1] | recall=1.000 precision=0.167 hit=True | selector=0.005033s total=0.247028s
+  reasons=0:anchor:0.769, 1:anchor:0.782, 2:recent:0.797, 3:recent:0.797, 4:recent:0.823, 5:recent:0.894
+distilgpt2 | long_reference | hidden_layer_index (hidden_layer_1) | selected=[12, 11, 10, 9, 0, 1, 8, 7, 6, 5] | recall=1.000 precision=0.200 hit=True | selector=0.007003s total=0.451290s
+  reasons=0:anchor:0.565, 1:anchor:0.593, 5:semantic:0.630, 6:semantic:0.638, 7:semantic:0.647, 8:semantic:0.673, 9:recent:0.690, 10:recent:0.712, 11:recent:0.753, 12:recent:0.824
+distilgpt2 | needle | hidden_layer_index (hidden_layer_1) | selected=[5, 4, 3, 2, 0, 1] | recall=1.000 precision=0.167 hit=True | selector=0.006785s total=0.237997s
+  reasons=0:anchor:0.610, 1:anchor:0.670, 2:recent:0.694, 3:recent:0.680, 4:recent:0.689, 5:recent:0.821
+distilgpt2 | repeated_reference | hidden_layer_index (hidden_layer_1) | selected=[8, 7, 6, 5, 0, 1, 4, 3, 2] | recall=1.000 precision=0.111 hit=True | selector=0.007090s total=0.325219s
+  reasons=0:anchor:0.583, 1:anchor:0.635, 2:semantic:0.644, 3:semantic:0.678, 4:semantic:0.681, 5:recent:0.674, 6:recent:0.694, 7:recent:0.743, 8:recent:0.900
+distilgpt2 | code_context | hidden_layer_index (hidden_layer_1) | selected=[13, 12, 11, 10, 0, 1, 9, 8, 7, 6] | recall=0.600 precision=0.300 hit=True | selector=0.007520s total=0.494929s
+  reasons=0:anchor:0.511, 1:anchor:0.558, 6:semantic:0.587, 7:semantic:0.592, 8:semantic:0.599, 9:semantic:0.617, 10:recent:0.627, 11:recent:0.638, 12:recent:0.675, 13:recent:0.781
+distilgpt2 | adversarial_semantic | hidden_layer_index (hidden_layer_1) | selected=[5, 4, 3, 2, 0, 1] | recall=1.000 precision=0.167 hit=True | selector=0.005025s total=0.232344s
+  reasons=0:anchor:0.642, 1:anchor:0.689, 2:recent:0.698, 3:recent:0.718, 4:recent:0.739, 5:recent:0.800
+distilgpt2 | long_reference | middle_hidden (middle_hidden_3) | selected=[12, 11, 10, 9, 0, 1, 8, 7, 3, 6] | recall=1.000 precision=0.200 hit=True | selector=0.016408s total=0.476163s
+  reasons=0:anchor:0.591, 1:anchor:0.578, 3:semantic:0.593, 6:semantic:0.581, 7:semantic:0.600, 8:semantic:0.615, 9:recent:0.622, 10:recent:0.648, 11:recent:0.671, 12:recent:0.810
+distilgpt2 | needle | middle_hidden (middle_hidden_3) | selected=[5, 4, 3, 2, 0, 1] | recall=1.000 precision=0.167 hit=True | selector=0.006374s total=0.288307s
+  reasons=0:anchor:0.605, 1:anchor:0.627, 2:recent:0.645, 3:recent:0.621, 4:recent:0.647, 5:recent:0.794
+distilgpt2 | repeated_reference | middle_hidden (middle_hidden_3) | selected=[8, 7, 6, 5, 0, 1, 4, 3, 2] | recall=1.000 precision=0.111 hit=True | selector=0.005085s total=0.308618s
+  reasons=0:anchor:0.596, 1:anchor:0.580, 2:semantic:0.578, 3:semantic:0.606, 4:semantic:0.627, 5:recent:0.590, 6:recent:0.624, 7:recent:0.703, 8:recent:0.900
+distilgpt2 | code_context | middle_hidden (middle_hidden_3) | selected=[13, 12, 11, 10, 0, 1, 9, 8, 6, 5] | recall=0.600 precision=0.300 hit=True | selector=0.006204s total=0.477817s
+  reasons=0:anchor:0.574, 1:anchor:0.558, 5:semantic:0.568, 6:semantic:0.575, 8:semantic:0.575, 9:semantic:0.598, 10:recent:0.591, 11:recent:0.587, 12:recent:0.617, 13:recent:0.769
+distilgpt2 | adversarial_semantic | middle_hidden (middle_hidden_3) | selected=[5, 4, 3, 2, 0, 1] | recall=1.000 precision=0.167 hit=True | selector=0.006179s total=0.232053s
+  reasons=0:anchor:0.598, 1:anchor:0.637, 2:recent:0.634, 3:recent:0.648, 4:recent:0.674, 5:recent:0.741
+distilgpt2 | long_reference | avg_last4_hidden (avg_last4_hidden) | selected=[12, 11, 10, 9, 0, 1, 8, 3, 7, 2] | recall=1.000 precision=0.200 hit=True | selector=0.008853s total=0.438893s
+  reasons=0:anchor:0.688, 1:anchor:0.732, 2:semantic:0.728, 3:semantic:0.732, 7:semantic:0.731, 8:semantic:0.737, 9:recent:0.732, 10:recent:0.747, 11:recent:0.781, 12:recent:0.871
+distilgpt2 | needle | avg_last4_hidden (avg_last4_hidden) | selected=[5, 4, 3, 2, 0, 1] | recall=1.000 precision=0.167 hit=True | selector=0.005336s total=0.233598s
+  reasons=0:anchor:0.670, 1:anchor:0.722, 2:recent:0.720, 3:recent:0.708, 4:recent:0.725, 5:recent:0.864
+distilgpt2 | repeated_reference | avg_last4_hidden (avg_last4_hidden) | selected=[8, 7, 6, 5, 0, 1, 4, 3, 2] | recall=1.000 precision=0.111 hit=True | selector=0.004878s total=0.304601s
+  reasons=0:anchor:0.688, 1:anchor:0.725, 2:semantic:0.701, 3:semantic:0.717, 4:semantic:0.721, 5:recent:0.695, 6:recent:0.727, 7:recent:0.797, 8:recent:0.900
+distilgpt2 | code_context | avg_last4_hidden (avg_last4_hidden) | selected=[13, 12, 11, 10, 0, 1, 4, 2, 8, 7] | recall=0.600 precision=0.300 hit=True | selector=0.005912s total=0.473843s
+  reasons=0:anchor:0.646, 1:anchor:0.712, 2:semantic:0.709, 4:semantic:0.720, 7:semantic:0.691, 8:semantic:0.692, 10:recent:0.682, 11:recent:0.676, 12:recent:0.710, 13:recent:0.829
+distilgpt2 | adversarial_semantic | avg_last4_hidden (avg_last4_hidden) | selected=[5, 4, 3, 2, 0, 1] | recall=1.000 precision=0.167 hit=True | selector=0.004033s total=0.211810s
+  reasons=0:anchor:0.690, 1:anchor:0.742, 2:recent:0.750, 3:recent:0.752, 4:recent:0.777, 5:recent:0.832
+distilgpt2 | long_reference | avg_mid4_hidden (avg_mid_hidden_1_4) | selected=[12, 11, 10, 9, 0, 1, 8, 7, 6, 5] | recall=1.000 precision=0.200 hit=True | selector=0.004576s total=0.418739s
+  reasons=0:anchor:0.608, 1:anchor:0.606, 5:semantic:0.615, 6:semantic:0.616, 7:semantic:0.637, 8:semantic:0.663, 9:recent:0.650, 10:recent:0.679, 11:recent:0.703, 12:recent:0.823
+distilgpt2 | needle | avg_mid4_hidden (avg_mid_hidden_1_4) | selected=[5, 4, 3, 2, 0, 1] | recall=1.000 precision=0.167 hit=True | selector=0.004376s total=0.229171s
+  reasons=0:anchor:0.601, 1:anchor:0.640, 2:recent:0.666, 3:recent:0.631, 4:recent:0.668, 5:recent:0.806
+distilgpt2 | repeated_reference | avg_mid4_hidden (avg_mid_hidden_1_4) | selected=[8, 7, 6, 5, 0, 1, 4, 3, 2] | recall=1.000 precision=0.111 hit=True | selector=0.005928s total=0.304554s
+  reasons=0:anchor:0.600, 1:anchor:0.614, 2:semantic:0.619, 3:semantic:0.645, 4:semantic:0.653, 5:recent:0.634, 6:recent:0.655, 7:recent:0.712, 8:recent:0.900
+distilgpt2 | code_context | avg_mid4_hidden (avg_mid_hidden_1_4) | selected=[13, 12, 11, 10, 0, 1, 9, 7, 5, 8] | recall=0.600 precision=0.300 hit=True | selector=0.004569s total=0.476172s
+  reasons=0:anchor:0.573, 1:anchor:0.584, 5:semantic:0.580, 7:semantic:0.581, 8:semantic:0.579, 9:semantic:0.604, 10:recent:0.586, 11:recent:0.592, 12:recent:0.638, 13:recent:0.771
+distilgpt2 | adversarial_semantic | avg_mid4_hidden (avg_mid_hidden_1_4) | selected=[5, 4, 3, 2, 0, 1] | recall=1.000 precision=0.167 hit=True | selector=0.006014s total=0.227259s
+  reasons=0:anchor:0.604, 1:anchor:0.673, 2:recent:0.677, 3:recent:0.689, 4:recent:0.706, 5:recent:0.780
+gpt2 | long_reference | final_hidden (final_hidden) | selected=[12, 11, 10, 9, 0, 1, 4, 8, 5, 7] | recall=1.000 precision=0.200 hit=True | selector=0.004914s total=0.630515s
+  reasons=0:anchor:0.785, 1:anchor:0.789, 4:semantic:0.789, 5:semantic:0.786, 7:semantic:0.786, 8:semantic:0.787, 9:recent:0.790, 10:recent:0.794, 11:recent:0.832, 12:recent:0.896
+gpt2 | needle | final_hidden (final_hidden) | selected=[5, 4, 3, 2, 0, 1] | recall=1.000 precision=0.167 hit=True | selector=0.004515s total=0.306745s
+  reasons=0:anchor:0.791, 1:anchor:0.786, 2:recent:0.790, 3:recent:0.786, 4:recent:0.802, 5:recent:0.899
+gpt2 | repeated_reference | final_hidden (final_hidden) | selected=[8, 7, 6, 5, 0, 1, 3, 2, 4] | recall=1.000 precision=0.111 hit=True | selector=0.005065s total=0.418212s
+  reasons=0:anchor:0.774, 1:anchor:0.774, 2:semantic:0.774, 3:semantic:0.778, 4:semantic:0.773, 5:recent:0.794, 6:recent:0.781, 7:recent:0.835, 8:recent:0.900
+gpt2 | code_context | final_hidden (final_hidden) | selected=[13, 12, 11, 10, 0, 1, 3, 8, 6, 2] | recall=0.400 precision=0.200 hit=True | selector=0.004601s total=0.663407s
+  reasons=0:anchor:0.789, 1:anchor:0.788, 2:semantic:0.784, 3:semantic:0.786, 6:semantic:0.785, 8:semantic:0.786, 10:recent:0.781, 11:recent:0.618, 12:recent:0.792, 13:recent:0.899
+gpt2 | adversarial_semantic | final_hidden (final_hidden) | selected=[5, 4, 3, 2, 0, 1] | recall=1.000 precision=0.167 hit=True | selector=0.004519s total=0.297180s
+  reasons=0:anchor:0.791, 1:anchor:0.794, 2:recent:0.794, 3:recent:0.800, 4:recent:0.812, 5:recent:0.898
+gpt2 | long_reference | hidden_layer_index (hidden_layer_1) | selected=[12, 11, 10, 9, 0, 1, 8, 7, 6, 5] | recall=1.000 precision=0.200 hit=True | selector=0.005653s total=0.600477s
+  reasons=0:anchor:0.615, 1:anchor:0.600, 5:semantic:0.647, 6:semantic:0.663, 7:semantic:0.673, 8:semantic:0.708, 9:recent:0.711, 10:recent:0.739, 11:recent:0.767, 12:recent:0.826
+gpt2 | needle | hidden_layer_index (hidden_layer_1) | selected=[5, 4, 3, 2, 0, 1] | recall=1.000 precision=0.167 hit=True | selector=0.005893s total=0.313341s
+  reasons=0:anchor:0.655, 1:anchor:0.676, 2:recent:0.710, 3:recent:0.708, 4:recent:0.721, 5:recent:0.831
+gpt2 | repeated_reference | hidden_layer_index (hidden_layer_1) | selected=[8, 7, 6, 5, 0, 1, 4, 3, 2] | recall=1.000 precision=0.111 hit=True | selector=0.004649s total=0.410970s
+  reasons=0:anchor:0.628, 1:anchor:0.660, 2:semantic:0.663, 3:semantic:0.693, 4:semantic:0.696, 5:recent:0.698, 6:recent:0.721, 7:recent:0.763, 8:recent:0.900
+gpt2 | code_context | hidden_layer_index (hidden_layer_1) | selected=[13, 12, 11, 10, 0, 1, 9, 8, 7, 5] | recall=0.600 precision=0.300 hit=True | selector=0.005383s total=0.634459s
+  reasons=0:anchor:0.526, 1:anchor:0.563, 5:semantic:0.608, 7:semantic:0.626, 8:semantic:0.633, 9:semantic:0.664, 10:recent:0.663, 11:recent:0.672, 12:recent:0.716, 13:recent:0.813
+gpt2 | adversarial_semantic | hidden_layer_index (hidden_layer_1) | selected=[5, 4, 3, 2, 0, 1] | recall=1.000 precision=0.167 hit=True | selector=0.004397s total=0.293102s
+  reasons=0:anchor:0.671, 1:anchor:0.705, 2:recent:0.717, 3:recent:0.736, 4:recent:0.758, 5:recent:0.817
+gpt2 | long_reference | middle_hidden (middle_hidden_6) | selected=[12, 11, 10, 9, 0, 1, 8, 7, 5, 6] | recall=1.000 precision=0.200 hit=True | selector=0.005233s total=0.615409s
+  reasons=0:anchor:0.612, 1:anchor:0.581, 5:semantic:0.629, 6:semantic:0.619, 7:semantic:0.642, 8:semantic:0.661, 9:recent:0.661, 10:recent:0.695, 11:recent:0.714, 12:recent:0.823
+gpt2 | needle | middle_hidden (middle_hidden_6) | selected=[5, 4, 3, 2, 0, 1] | recall=1.000 precision=0.167 hit=True | selector=0.005323s total=0.325741s
+  reasons=0:anchor:0.585, 1:anchor:0.635, 2:recent:0.658, 3:recent:0.633, 4:recent:0.661, 5:recent:0.801
+gpt2 | repeated_reference | middle_hidden (middle_hidden_6) | selected=[8, 7, 6, 5, 0, 1, 4, 3, 2] | recall=1.000 precision=0.111 hit=True | selector=0.005929s total=0.440400s
+  reasons=0:anchor:0.600, 1:anchor:0.599, 2:semantic:0.603, 3:semantic:0.635, 4:semantic:0.663, 5:recent:0.616, 6:recent:0.668, 7:recent:0.714, 8:recent:0.900
+gpt2 | code_context | middle_hidden (middle_hidden_6) | selected=[13, 12, 11, 10, 0, 1, 9, 8, 5, 6] | recall=0.600 precision=0.300 hit=True | selector=0.005096s total=0.698785s
+  reasons=0:anchor:0.581, 1:anchor:0.556, 5:semantic:0.604, 6:semantic:0.583, 8:semantic:0.613, 9:semantic:0.629, 10:recent:0.624, 11:recent:0.603, 12:recent:0.661, 13:recent:0.774
+gpt2 | adversarial_semantic | middle_hidden (middle_hidden_6) | selected=[5, 4, 3, 2, 0, 1] | recall=1.000 precision=0.167 hit=True | selector=0.005857s total=0.322304s
+  reasons=0:anchor:0.608, 1:anchor:0.636, 2:recent:0.631, 3:recent:0.678, 4:recent:0.696, 5:recent:0.762
+gpt2 | long_reference | avg_last4_hidden (avg_last4_hidden) | selected=[12, 11, 10, 9, 0, 1, 8, 3, 7, 2] | recall=1.000 precision=0.200 hit=True | selector=0.006882s total=0.642433s
+  reasons=0:anchor:0.674, 1:anchor:0.757, 2:semantic:0.745, 3:semantic:0.754, 7:semantic:0.749, 8:semantic:0.757, 9:recent:0.743, 10:recent:0.762, 11:recent:0.802, 12:recent:0.872
+gpt2 | needle | avg_last4_hidden (avg_last4_hidden) | selected=[5, 4, 3, 2, 0, 1] | recall=1.000 precision=0.167 hit=True | selector=0.005916s total=0.355650s
+  reasons=0:anchor:0.661, 1:anchor:0.742, 2:recent:0.740, 3:recent:0.737, 4:recent:0.730, 5:recent:0.877
+gpt2 | repeated_reference | avg_last4_hidden (avg_last4_hidden) | selected=[8, 7, 6, 5, 0, 1, 4, 3, 2] | recall=1.000 precision=0.111 hit=True | selector=0.007467s total=0.468060s
+  reasons=0:anchor:0.658, 1:anchor:0.718, 2:semantic:0.719, 3:semantic:0.725, 4:semantic:0.744, 5:recent:0.661, 6:recent:0.727, 7:recent:0.819, 8:recent:0.900
+gpt2 | code_context | avg_last4_hidden (avg_last4_hidden) | selected=[13, 12, 11, 10, 0, 1, 4, 2, 3, 8] | recall=0.400 precision=0.200 hit=True | selector=0.005069s total=0.739738s
+  reasons=0:anchor:0.625, 1:anchor:0.734, 2:semantic:0.735, 3:semantic:0.728, 4:semantic:0.744, 8:semantic:0.724, 10:recent:0.725, 11:recent:0.681, 12:recent:0.758, 13:recent:0.847
+gpt2 | adversarial_semantic | avg_last4_hidden (avg_last4_hidden) | selected=[5, 4, 3, 2, 0, 1] | recall=1.000 precision=0.167 hit=True | selector=0.005492s total=0.337722s
+  reasons=0:anchor:0.664, 1:anchor:0.748, 2:recent:0.752, 3:recent:0.752, 4:recent:0.790, 5:recent:0.831
+gpt2 | long_reference | avg_mid4_hidden (avg_mid_hidden_4_7) | selected=[12, 11, 10, 9, 0, 1, 8, 7, 5, 6] | recall=1.000 precision=0.200 hit=True | selector=0.005647s total=0.777722s
+  reasons=0:anchor:0.603, 1:anchor:0.590, 5:semantic:0.644, 6:semantic:0.635, 7:semantic:0.664, 8:semantic:0.686, 9:recent:0.680, 10:recent:0.698, 11:recent:0.730, 12:recent:0.840
+gpt2 | needle | avg_mid4_hidden (avg_mid_hidden_4_7) | selected=[5, 4, 3, 2, 0, 1] | recall=1.000 precision=0.167 hit=True | selector=0.013428s total=0.464935s
+  reasons=0:anchor:0.571, 1:anchor:0.632, 2:recent:0.661, 3:recent:0.636, 4:recent:0.670, 5:recent:0.800
+gpt2 | repeated_reference | avg_mid4_hidden (avg_mid_hidden_4_7) | selected=[8, 7, 6, 5, 0, 1, 4, 3, 2] | recall=1.000 precision=0.111 hit=True | selector=0.006955s total=0.966776s
+  reasons=0:anchor:0.583, 1:anchor:0.592, 2:semantic:0.602, 3:semantic:0.628, 4:semantic:0.655, 5:recent:0.621, 6:recent:0.670, 7:recent:0.716, 8:recent:0.900
+gpt2 | code_context | avg_mid4_hidden (avg_mid_hidden_4_7) | selected=[13, 12, 11, 10, 0, 1, 9, 5, 8, 6] | recall=0.600 precision=0.300 hit=True | selector=0.007053s total=0.817924s
+  reasons=0:anchor:0.575, 1:anchor:0.555, 5:semantic:0.609, 6:semantic:0.604, 8:semantic:0.605, 9:semantic:0.630, 10:recent:0.632, 11:recent:0.604, 12:recent:0.672, 13:recent:0.779
+gpt2 | adversarial_semantic | avg_mid4_hidden (avg_mid_hidden_4_7) | selected=[5, 4, 3, 2, 0, 1] | recall=1.000 precision=0.167 hit=True | selector=0.007490s total=0.374561s
+  reasons=0:anchor:0.599, 1:anchor:0.656, 2:recent:0.646, 3:recent:0.690, 4:recent:0.706, 5:recent:0.770
+
+LAYER DIFFERENCES VS final_hidden
+distilgpt2 | long_reference | hidden_layer_index | jaccard=0.667 recall_delta=0.500 precision_delta=0.100 selector_delta=-0.001748s
+distilgpt2 | long_reference | middle_hidden | jaccard=0.538 recall_delta=0.500 precision_delta=0.100 selector_delta=0.007657s
+distilgpt2 | long_reference | avg_last4_hidden | jaccard=0.667 recall_delta=0.500 precision_delta=0.100 selector_delta=0.000102s
+distilgpt2 | long_reference | avg_mid4_hidden | jaccard=0.667 recall_delta=0.500 precision_delta=0.100 selector_delta=-0.004175s
+distilgpt2 | needle | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000526s
+distilgpt2 | needle | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000115s
+distilgpt2 | needle | avg_last4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000922s
+distilgpt2 | needle | avg_mid4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.001883s
+distilgpt2 | repeated_reference | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000797s
+distilgpt2 | repeated_reference | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.002802s
+distilgpt2 | repeated_reference | avg_last4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.003009s
+distilgpt2 | repeated_reference | avg_mid4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.001959s
+distilgpt2 | code_context | hidden_layer_index | jaccard=0.667 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001063s
+distilgpt2 | code_context | middle_hidden | jaccard=0.667 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000253s
+distilgpt2 | code_context | avg_last4_hidden | jaccard=0.818 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000545s
+distilgpt2 | code_context | avg_mid4_hidden | jaccard=0.538 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.001888s
+distilgpt2 | adversarial_semantic | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000008s
+distilgpt2 | adversarial_semantic | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001146s
+distilgpt2 | adversarial_semantic | avg_last4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000999s
+distilgpt2 | adversarial_semantic | avg_mid4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000982s
+gpt2 | long_reference | hidden_layer_index | jaccard=0.818 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000738s
+gpt2 | long_reference | middle_hidden | jaccard=0.818 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000319s
+gpt2 | long_reference | avg_last4_hidden | jaccard=0.667 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001967s
+gpt2 | long_reference | avg_mid4_hidden | jaccard=0.818 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000733s
+gpt2 | needle | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001378s
+gpt2 | needle | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000808s
+gpt2 | needle | avg_last4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001401s
+gpt2 | needle | avg_mid4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.008913s
+gpt2 | repeated_reference | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000416s
+gpt2 | repeated_reference | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000864s
+gpt2 | repeated_reference | avg_last4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.002403s
+gpt2 | repeated_reference | avg_mid4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001890s
+gpt2 | code_context | hidden_layer_index | jaccard=0.538 recall_delta=0.200 precision_delta=0.100 selector_delta=0.000783s
+gpt2 | code_context | middle_hidden | jaccard=0.667 recall_delta=0.200 precision_delta=0.100 selector_delta=0.000495s
+gpt2 | code_context | avg_last4_hidden | jaccard=0.818 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000469s
+gpt2 | code_context | avg_mid4_hidden | jaccard=0.667 recall_delta=0.200 precision_delta=0.100 selector_delta=0.002452s
+gpt2 | adversarial_semantic | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000122s
+gpt2 | adversarial_semantic | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001338s
+gpt2 | adversarial_semantic | avg_last4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000973s
+gpt2 | adversarial_semantic | avg_mid4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.002971s

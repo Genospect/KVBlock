@@ -1,0 +1,23 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Keep research outputs, but use this scratch area for throwaway runs.
+results/tmp/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+.DS_Store
+.ipynb_checkpoints/
+
+outputs/
+logs/
+benchmarks/results/
+*.pt
+*.bin
+*.safetensors
+.cache/
+results/tmp/

@@ -1,0 +1,596 @@
+{
+  "run_summary": {
+    "runtime_name": "local_hf:gpt2",
+    "representation_name": "query_mean_layer_11_key_mean_layer_11",
+    "token_count": 85,
+    "block_count": 6,
+    "block_size": 16,
+    "summary_dim": 32,
+    "prompt_chars": 362
+  },
+  "selected_block_ids": [
+    5,
+    4,
+    0,
+    2,
+    1
+  ],
+  "query_key_inspection": {
+    "prompt_id": "adverserial_semantic",
+    "prompt_name": "adversarial_semantic",
+    "representation_source": "query_mean_last_layer",
+    "representation_name": "query_mean_layer_11_key_mean_layer_11",
+    "rail_setting": "cli",
+    "selected_block_ids": [
+      5,
+      4,
+      0,
+      2,
+      1
+    ],
+    "missed_relevant_block_ids": [],
+    "relevance_fragments": [
+      "AES-256-GCM",
+      "long-term storage",
+      "archive pipeline"
+    ],
+    "query_summary_metadata": {
+      "summary_dim": 32,
+      "summary_scale": 0.004403795313647413,
+      "summary_norm": 1.1653969287872314,
+      "sign_sketch": 2951790049243010442,
+      "quantized_values_preview": [
+        -23,
+        27,
+        -26,
+        3,
+        127,
+        62,
+        7,
+        -67
+      ],
+      "has_per_head": true,
+      "head_count": 12,
+      "mean_per_head_summary_scale": 0.015419546465861203,
+      "mean_per_head_summary_norm": 4.385987043380737
+    },
+    "comparison_groups": {
+      "selected_relevant_block_ids": [
+        1
+      ],
+      "selected_irrelevant_block_ids": [
+        0,
+        2,
+        4,
+        5
+      ],
+      "missed_relevant_block_ids": [],
+      "high_scoring_near_miss_block_ids": [
+        3
+      ]
+    },
+    "block_records": [
+      {
+        "block_id": 0,
+        "token_start": 0,
+        "token_end": 16,
+        "token_count": 16,
+        "preview_text": "The storage engine uses AES-128 for temporary transport sessions. The backup",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.40860721468925476,
+        "stage_b_score": 0.671875,
+        "final_score": 0.5429822146892548,
+        "rank_position": 3,
+        "stage_a_rank": 3,
+        "stage_b_rank": 3,
+        "final_rank": 3,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004912006104086328,
+          "summary_norm": 0.9844362735748291,
+          "sign_sketch": 4093290110276454107,
+          "quantized_values_preview": [
+            -4,
+            8,
+            31,
+            22,
+            -8,
+            13,
+            0,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.009969022838775253,
+          "mean_per_head_summary_norm": 3.027918974558512
+        }
+      },
+      {
+        "block_id": 1,
+        "token_start": 16,
+        "token_end": 32,
+        "token_count": 16,
+        "preview_text": "archive pipeline uses AES-256-GCM for long-term storage.",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.3658464550971985,
+        "stage_b_score": 0.71875,
+        "final_score": 0.5095964550971985,
+        "rank_position": 6,
+        "stage_a_rank": 6,
+        "stage_b_rank": 5,
+        "final_rank": 5,
+        "labeled_relevant": true,
+        "matched_relevance_fragments": [
+          "AES-256-GCM",
+          "long-term storage",
+          "archive pipeline"
+        ],
+        "explanation_hints": [
+          "semantic high-score",
+          "question-adjacent"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.0053382670785498436,
+          "summary_norm": 1.1393619775772095,
+          "sign_sketch": 4097835491598128859,
+          "quantized_values_preview": [
+            -7,
+            2,
+            42,
+            32,
+            -16,
+            -3,
+            0,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.013886888352591846,
+          "mean_per_head_summary_norm": 3.9982799291610718
+        }
+      },
+      {
+        "block_id": 2,
+        "token_start": 32,
+        "token_end": 48,
+        "token_count": 16,
+        "preview_text": "The web session cookie uses rotating signed tokens. The mobile sync channel",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.40177208185195923,
+        "stage_b_score": 0.65625,
+        "final_score": 0.5330220818519592,
+        "rank_position": 4,
+        "stage_a_rank": 4,
+        "stage_b_rank": 4,
+        "final_rank": 4,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.005798155397880735,
+          "summary_norm": 1.1029918193817139,
+          "sign_sketch": 4093331067084592857,
+          "quantized_values_preview": [
+            8,
+            3,
+            14,
+            26,
+            8,
+            8,
+            10,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012492955122094142,
+          "mean_per_head_summary_norm": 3.678388555844625
+        }
+      },
+      {
+        "block_id": 3,
+        "token_start": 48,
+        "token_end": 64,
+        "token_count": 16,
+        "preview_text": "uses TLS 1.3. The temporary staging cache uses short-lived",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.37410837411880493,
+        "stage_b_score": 0.671875,
+        "final_score": 0.508483374118805,
+        "rank_position": 5,
+        "stage_a_rank": 5,
+        "stage_b_rank": 6,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.005411381327261136,
+          "summary_norm": 1.169198751449585,
+          "sign_sketch": 4322944966786668251,
+          "quantized_values_preview": [
+            -1,
+            12,
+            21,
+            35,
+            1,
+            -5,
+            36,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.014159402509373942,
+          "mean_per_head_summary_norm": 4.0825048089027405
+        }
+      },
+      {
+        "block_id": 4,
+        "token_start": 64,
+        "token_end": 80,
+        "token_count": 16,
+        "preview_text": "encrypted blobs. Question: What encryption method is used for long",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.4441552758216858,
+        "stage_b_score": 0.75,
+        "final_score": 0.5941552758216858,
+        "rank_position": 2,
+        "stage_a_rank": 2,
+        "stage_b_rank": 2,
+        "final_rank": 2,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match",
+          "question-adjacent"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.005360866156150037,
+          "summary_norm": 1.108167290687561,
+          "sign_sketch": 4173971724035020440,
+          "quantized_values_preview": [
+            -3,
+            -5,
+            -12,
+            42,
+            16,
+            -5,
+            21,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.011917957796512314,
+          "mean_per_head_summary_norm": 3.45384818315506
+        }
+      },
+      {
+        "block_id": 5,
+        "token_start": 80,
+        "token_end": 85,
+        "token_count": 5,
+        "preview_text": "-term archive storage?",
+        "selected": true,
+        "selected_reason": "recent",
+        "stage_a_score": 0.5428993105888367,
+        "stage_b_score": 0.703125,
+        "final_score": 0.6835243105888367,
+        "rank_position": 1,
+        "stage_a_rank": 1,
+        "stage_b_rank": 1,
+        "final_rank": 1,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "recent rail",
+          "selected without label match",
+          "question-adjacent"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.005819431909425991,
+          "summary_norm": 1.2616828680038452,
+          "sign_sketch": 4174394486253803161,
+          "quantized_values_preview": [
+            -15,
+            -4,
+            -11,
+            12,
+            35,
+            25,
+            47,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.014140328710160544,
+          "mean_per_head_summary_norm": 4.058571835358937
+        }
+      }
+    ],
+    "selected_relevant_blocks": [
+      {
+        "block_id": 1,
+        "token_start": 16,
+        "token_end": 32,
+        "token_count": 16,
+        "preview_text": "archive pipeline uses AES-256-GCM for long-term storage.",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.3658464550971985,
+        "stage_b_score": 0.71875,
+        "final_score": 0.5095964550971985,
+        "rank_position": 6,
+        "stage_a_rank": 6,
+        "stage_b_rank": 5,
+        "final_rank": 5,
+        "labeled_relevant": true,
+        "matched_relevance_fragments": [
+          "AES-256-GCM",
+          "long-term storage",
+          "archive pipeline"
+        ],
+        "explanation_hints": [
+          "semantic high-score",
+          "question-adjacent"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.0053382670785498436,
+          "summary_norm": 1.1393619775772095,
+          "sign_sketch": 4097835491598128859,
+          "quantized_values_preview": [
+            -7,
+            2,
+            42,
+            32,
+            -16,
+            -3,
+            0,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.013886888352591846,
+          "mean_per_head_summary_norm": 3.9982799291610718
+        }
+      }
+    ],
+    "selected_irrelevant_blocks": [
+      {
+        "block_id": 0,
+        "token_start": 0,
+        "token_end": 16,
+        "token_count": 16,
+        "preview_text": "The storage engine uses AES-128 for temporary transport sessions. The backup",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.40860721468925476,
+        "stage_b_score": 0.671875,
+        "final_score": 0.5429822146892548,
+        "rank_position": 3,
+        "stage_a_rank": 3,
+        "stage_b_rank": 3,
+        "final_rank": 3,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004912006104086328,
+          "summary_norm": 0.9844362735748291,
+          "sign_sketch": 4093290110276454107,
+          "quantized_values_preview": [
+            -4,
+            8,
+            31,
+            22,
+            -8,
+            13,
+            0,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.009969022838775253,
+          "mean_per_head_summary_norm": 3.027918974558512
+        }
+      },
+      {
+        "block_id": 2,
+        "token_start": 32,
+        "token_end": 48,
+        "token_count": 16,
+        "preview_text": "The web session cookie uses rotating signed tokens. The mobile sync channel",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.40177208185195923,
+        "stage_b_score": 0.65625,
+        "final_score": 0.5330220818519592,
+        "rank_position": 4,
+        "stage_a_rank": 4,
+        "stage_b_rank": 4,
+        "final_rank": 4,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.005798155397880735,
+          "summary_norm": 1.1029918193817139,
+          "sign_sketch": 4093331067084592857,
+          "quantized_values_preview": [
+            8,
+            3,
+            14,
+            26,
+            8,
+            8,
+            10,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012492955122094142,
+          "mean_per_head_summary_norm": 3.678388555844625
+        }
+      },
+      {
+        "block_id": 4,
+        "token_start": 64,
+        "token_end": 80,
+        "token_count": 16,
+        "preview_text": "encrypted blobs. Question: What encryption method is used for long",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.4441552758216858,
+        "stage_b_score": 0.75,
+        "final_score": 0.5941552758216858,
+        "rank_position": 2,
+        "stage_a_rank": 2,
+        "stage_b_rank": 2,
+        "final_rank": 2,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match",
+          "question-adjacent"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.005360866156150037,
+          "summary_norm": 1.108167290687561,
+          "sign_sketch": 4173971724035020440,
+          "quantized_values_preview": [
+            -3,
+            -5,
+            -12,
+            42,
+            16,
+            -5,
+            21,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.011917957796512314,
+          "mean_per_head_summary_norm": 3.45384818315506
+        }
+      },
+      {
+        "block_id": 5,
+        "token_start": 80,
+        "token_end": 85,
+        "token_count": 5,
+        "preview_text": "-term archive storage?",
+        "selected": true,
+        "selected_reason": "recent",
+        "stage_a_score": 0.5428993105888367,
+        "stage_b_score": 0.703125,
+        "final_score": 0.6835243105888367,
+        "rank_position": 1,
+        "stage_a_rank": 1,
+        "stage_b_rank": 1,
+        "final_rank": 1,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "recent rail",
+          "selected without label match",
+          "question-adjacent"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.005819431909425991,
+          "summary_norm": 1.2616828680038452,
+          "sign_sketch": 4174394486253803161,
+          "quantized_values_preview": [
+            -15,
+            -4,
+            -11,
+            12,
+            35,
+            25,
+            47,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.014140328710160544,
+          "mean_per_head_summary_norm": 4.058571835358937
+        }
+      }
+    ],
+    "missed_relevant_blocks": [],
+    "high_scoring_near_miss_blocks": [
+      {
+        "block_id": 3,
+        "token_start": 48,
+        "token_end": 64,
+        "token_count": 16,
+        "preview_text": "uses TLS 1.3. The temporary staging cache uses short-lived",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.37410837411880493,
+        "stage_b_score": 0.671875,
+        "final_score": 0.508483374118805,
+        "rank_position": 5,
+        "stage_a_rank": 5,
+        "stage_b_rank": 6,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.005411381327261136,
+          "summary_norm": 1.169198751449585,
+          "sign_sketch": 4322944966786668251,
+          "quantized_values_preview": [
+            -1,
+            12,
+            21,
+            35,
+            1,
+            -5,
+            36,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.014159402509373942,
+          "mean_per_head_summary_norm": 4.0825048089027405
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,3115 @@
+{
+  "model_preload_sec": 9.698158306011464,
+  "runs": [
+    {
+      "prompt": "long_reference",
+      "prompt_file": "prompts/long_reference.txt",
+      "representation_source": "final_hidden",
+      "layer_index": null,
+      "representation_name": "final_hidden",
+      "tokens": 194,
+      "blocks": 13,
+      "selected_ids": [
+        12,
+        11,
+        10,
+        9,
+        0,
+        1,
+        7,
+        6,
+        5,
+        2
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "2": "semantic",
+        "5": "semantic",
+        "6": "semantic",
+        "7": "semantic",
+        "9": "recent",
+        "10": "recent",
+        "11": "recent",
+        "12": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.0011111290659755468,
+          "stage_b_score": 0.1875,
+          "final_score": 0.03861112906597555,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "Project Atlas is a distributed analytics platform used by several internal teams. The"
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.6012195348739624,
+          "stage_b_score": 1.0,
+          "final_score": 0.8012195348739624,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "ingestion layer receives CSV, JSON, and streaming telemetry data. Files are validated"
+        },
+        {
+          "block_id": 2,
+          "reason": "semantic",
+          "stage_a_score": 0.6013513803482056,
+          "stage_b_score": 1.0,
+          "final_score": 0.8013513803482055,
+          "token_start": 32,
+          "token_end": 48,
+          "preview_text": ", normalized, and routed into storage buckets. The compute layer runs batch"
+        },
+        {
+          "block_id": 5,
+          "reason": "semantic",
+          "stage_a_score": 0.6019999980926514,
+          "stage_b_score": 1.0,
+          "final_score": 0.8019999980926513,
+          "token_start": 80,
+          "token_end": 96,
+          "preview_text": ". The user dashboard shows job status, data freshness, and alert"
+        },
+        {
+          "block_id": 6,
+          "reason": "semantic",
+          "stage_a_score": 0.6023809909820557,
+          "stage_b_score": 1.0,
+          "final_score": 0.8023809909820556,
+          "token_start": 96,
+          "token_end": 112,
+          "preview_text": "history. Many teams requested stronger role-based access control and better query"
+        },
+        {
+          "block_id": 7,
+          "reason": "semantic",
+          "stage_a_score": 0.6029412150382996,
+          "stage_b_score": 1.0,
+          "final_score": 0.8029412150382995,
+          "token_start": 112,
+          "token_end": 128,
+          "preview_text": "logging. The current encryption standard for archival backups is AES-256"
+        },
+        {
+          "block_id": 9,
+          "reason": "recent",
+          "stage_a_score": 0.6055555939674377,
+          "stage_b_score": 1.0,
+          "final_score": 0.8055555939674377,
+          "token_start": 144,
+          "token_end": 160,
+          "preview_text": "-quarter reporting. The next roadmap item is cross-region failover"
+        },
+        {
+          "block_id": 10,
+          "reason": "recent",
+          "stage_a_score": 0.6100000143051147,
+          "stage_b_score": 1.0,
+          "final_score": 0.8100000143051147,
+          "token_start": 160,
+          "token_end": 176,
+          "preview_text": ". The compliance review noted that audit events older than 18 months are being"
+        },
+        {
+          "block_id": 11,
+          "reason": "recent",
+          "stage_a_score": 0.6500000357627869,
+          "stage_b_score": 1.0,
+          "final_score": 0.8500000357627868,
+          "token_start": 176,
+          "token_end": 192,
+          "preview_text": "purged. Question: What encryption standard is used for archival"
+        },
+        {
+          "block_id": 12,
+          "reason": "recent",
+          "stage_a_score": 0.7000000476837158,
+          "stage_b_score": 1.0,
+          "final_score": 0.9000000476837158,
+          "token_start": 192,
+          "token_end": 194,
+          "preview_text": "backups?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 3.6539859138429165e-06,
+        "prefill_sec": 1.8720305919996463,
+        "metadata_sec": 0.060764349007513374,
+        "selector_sec": 0.008594874991104007,
+        "inspection_sec": 0.002277742954902351,
+        "total_sec": 1.9438093479839154
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": 0.7600052621215582,
+      "normalized_margin": 0.9484045086330525
+    },
+    {
+      "prompt": "needle",
+      "prompt_file": "prompts/needle.txt",
+      "representation_source": "final_hidden",
+      "layer_index": null,
+      "representation_name": "final_hidden",
+      "tokens": 92,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        4,
+        3,
+        2,
+        0,
+        1
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "2": "recent",
+        "3": "recent",
+        "4": "recent",
+        "5": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.6025641560554504,
+          "stage_b_score": 1.0,
+          "final_score": 0.8025641560554504,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "System logs: request accepted cache warmup started index rebuilt heart"
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.603225827217102,
+          "stage_b_score": 1.0,
+          "final_score": 0.803225827217102,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "beat normal latency nominal replica synced archive prepared diagn"
+        },
+        {
+          "block_id": 2,
+          "reason": "recent",
+          "stage_a_score": 0.004347790498286486,
+          "stage_b_score": 0.1875,
+          "final_score": 0.04184779049828649,
+          "token_start": 32,
+          "token_end": 48,
+          "preview_text": "ostics complete Reference token: ZXQ-4917-BETA"
+        },
+        {
+          "block_id": 3,
+          "reason": "recent",
+          "stage_a_score": 0.0066666672937572,
+          "stage_b_score": 0.1875,
+          "final_score": 0.044166667293757206,
+          "token_start": 48,
+          "token_end": 64,
+          "preview_text": "Additional logs: session opened session closed background merge complete"
+        },
+        {
+          "block_id": 4,
+          "reason": "recent",
+          "stage_a_score": 0.6142857670783997,
+          "stage_b_score": 1.0,
+          "final_score": 0.8142857670783996,
+          "token_start": 64,
+          "token_end": 80,
+          "preview_text": "retry queue empty cpu stable memory stable io stable all services"
+        },
+        {
+          "block_id": 5,
+          "reason": "recent",
+          "stage_a_score": 0.7000000476837158,
+          "stage_b_score": 1.0,
+          "final_score": 0.9000000476837158,
+          "token_start": 80,
+          "token_end": 92,
+          "preview_text": "nominal Question: What was the reference token?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 1.525040715932846e-06,
+        "prefill_sec": 0.023393081035465002,
+        "metadata_sec": 0.033254295005463064,
+        "selector_sec": 0.0052373859798535705,
+        "inspection_sec": 0.001142780005466193,
+        "total_sec": 0.06311574199935421
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0,
+      "normalized_margin": null
+    },
+    {
+      "prompt": "repeated_reference",
+      "prompt_file": "prompts/repeated_reference.txt",
+      "representation_source": "final_hidden",
+      "layer_index": null,
+      "representation_name": "final_hidden",
+      "tokens": 129,
+      "blocks": 9,
+      "selected_ids": [
+        8,
+        7,
+        6,
+        5,
+        0,
+        1,
+        2,
+        4,
+        3
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "2": "semantic",
+        "3": "semantic",
+        "4": "semantic",
+        "5": "recent",
+        "6": "recent",
+        "7": "recent",
+        "8": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.0017391660949215293,
+          "stage_b_score": 0.1875,
+          "final_score": 0.039239166094921535,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "The patient\u2019s baseline ferritin level was 22 ng/mL."
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.6020202040672302,
+          "stage_b_score": 1.0,
+          "final_score": 0.8020202040672302,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "The user began supplementation with iron bisglycinate and vitamin C."
+        },
+        {
+          "block_id": 2,
+          "reason": "semantic",
+          "stage_a_score": 0.6024096608161926,
+          "stage_b_score": 1.0,
+          "final_score": 0.8024096608161926,
+          "token_start": 32,
+          "token_end": 48,
+          "preview_text": "Weekly logs showed improved energy, fewer headaches, and better exercise tolerance"
+        },
+        {
+          "block_id": 3,
+          "reason": "semantic",
+          "stage_a_score": 0.0029850387945771217,
+          "stage_b_score": 0.1875,
+          "final_score": 0.04048503879457713,
+          "token_start": 48,
+          "token_end": 64,
+          "preview_text": ". Additional notes covered sleep quality, hydration, and meal timing."
+        },
+        {
+          "block_id": 4,
+          "reason": "semantic",
+          "stage_a_score": 0.003921568859368563,
+          "stage_b_score": 0.1875,
+          "final_score": 0.04142156885936857,
+          "token_start": 64,
+          "token_end": 80,
+          "preview_text": "Several pages of progress notes followed discussing unrelated biomarkers such as magnes..."
+        },
+        {
+          "block_id": 5,
+          "reason": "recent",
+          "stage_a_score": 0.6057143211364746,
+          "stage_b_score": 1.0,
+          "final_score": 0.8057143211364746,
+          "token_start": 80,
+          "token_end": 96,
+          "preview_text": "B12, sodium, potassium, CRP, ALT, AST, and"
+        },
+        {
+          "block_id": 6,
+          "reason": "recent",
+          "stage_a_score": 0.6105263233184814,
+          "stage_b_score": 1.0,
+          "final_score": 0.8105263233184814,
+          "token_start": 96,
+          "token_end": 112,
+          "preview_text": "vitamin D. Later consultation notes discussed exercise adherence and stress reduction."
+        },
+        {
+          "block_id": 7,
+          "reason": "recent",
+          "stage_a_score": 0.06666670739650726,
+          "stage_b_score": 0.1875,
+          "final_score": 0.10416670739650727,
+          "token_start": 112,
+          "token_end": 128,
+          "preview_text": "Question: What was the patient\u2019s baseline ferritin level"
+        },
+        {
+          "block_id": 8,
+          "reason": "recent",
+          "stage_a_score": 0.7000000476837158,
+          "stage_b_score": 1.0,
+          "final_score": 0.9000000476837158,
+          "token_start": 128,
+          "token_end": 129,
+          "preview_text": "?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 1.401000190526247e-06,
+        "prefill_sec": 0.010891289974097162,
+        "metadata_sec": 0.046318962005898356,
+        "selector_sec": 0.006521795003209263,
+        "inspection_sec": 0.003112017991952598,
+        "total_sec": 0.06691820995183662
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": Infinity,
+      "normalized_margin": null
+    },
+    {
+      "prompt": "code_context",
+      "prompt_file": "prompts/code_context.txt",
+      "representation_source": "final_hidden",
+      "layer_index": null,
+      "representation_name": "final_hidden",
+      "tokens": 216,
+      "blocks": 14,
+      "selected_ids": [
+        13,
+        12,
+        11,
+        10,
+        0,
+        1,
+        9,
+        8,
+        7,
+        6
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "6": "semantic",
+        "7": "semantic",
+        "8": "semantic",
+        "9": "semantic",
+        "10": "recent",
+        "11": "recent",
+        "12": "recent",
+        "13": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.0009901347802951932,
+          "stage_b_score": 0.1875,
+          "final_score": 0.0384901347802952,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "def load_config(path): with open(path)"
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.0010753045789897442,
+          "stage_b_score": 0.1875,
+          "final_score": 0.03857530457898975,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "as f: return json.load("
+        },
+        {
+          "block_id": 6,
+          "reason": "semantic",
+          "stage_a_score": 0.6018868088722229,
+          "stage_b_score": 1.0,
+          "final_score": 0.8018868088722229,
+          "token_start": 96,
+          "token_end": 112,
+          "preview_text": "for item in items: total += item"
+        },
+        {
+          "block_id": 7,
+          "reason": "semantic",
+          "stage_a_score": 0.6022222638130188,
+          "stage_b_score": 1.0,
+          "final_score": 0.8022222638130188,
+          "token_start": 112,
+          "token_end": 128,
+          "preview_text": "[\"price\"] * item[\"qty\"] return total"
+        },
+        {
+          "block_id": 8,
+          "reason": "semantic",
+          "stage_a_score": 0.6027027368545532,
+          "stage_b_score": 1.0,
+          "final_score": 0.8027027368545532,
+          "token_start": 128,
+          "token_end": 144,
+          "preview_text": "def send_receipt(email, total):"
+        },
+        {
+          "block_id": 9,
+          "reason": "semantic",
+          "stage_a_score": 0.6034482717514038,
+          "stage_b_score": 1.0,
+          "final_score": 0.8034482717514038,
+          "token_start": 144,
+          "token_end": 160,
+          "preview_text": "print(\"sending receipt\") def checkout(items, user):"
+        },
+        {
+          "block_id": 10,
+          "reason": "recent",
+          "stage_a_score": 0.6047619581222534,
+          "stage_b_score": 1.0,
+          "final_score": 0.8047619581222534,
+          "token_start": 160,
+          "token_end": 176,
+          "preview_text": "validate_user(user) total = calculate"
+        },
+        {
+          "block_id": 11,
+          "reason": "recent",
+          "stage_a_score": 0.007692308165132999,
+          "stage_b_score": 0.1875,
+          "final_score": 0.045192308165133005,
+          "token_start": 176,
+          "token_end": 192,
+          "preview_text": "_total(items) send_receipt(user"
+        },
+        {
+          "block_id": 12,
+          "reason": "recent",
+          "stage_a_score": 0.6199999451637268,
+          "stage_b_score": 1.0,
+          "final_score": 0.8199999451637268,
+          "token_start": 192,
+          "token_end": 208,
+          "preview_text": "[\"email\"], total) return total Question:"
+        },
+        {
+          "block_id": 13,
+          "reason": "recent",
+          "stage_a_score": 0.10000001639127731,
+          "stage_b_score": 0.1875,
+          "final_score": 0.13750001639127732,
+          "token_start": 208,
+          "token_end": 216,
+          "preview_text": "Which function computes the cart total?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 1.108972355723381e-06,
+        "prefill_sec": 0.054013941960874945,
+        "metadata_sec": 0.07751058205030859,
+        "selector_sec": 0.005183728993870318,
+        "inspection_sec": 0.0022975350148044527,
+        "total_sec": 0.1390946229803376
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0002474188804626465,
+      "normalized_margin": 0.0003085458916709423
+    },
+    {
+      "prompt": "adversarial_semantic",
+      "prompt_file": "prompts/adverserial_semantic.txt",
+      "representation_source": "final_hidden",
+      "layer_index": null,
+      "representation_name": "final_hidden",
+      "tokens": 85,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        4,
+        3,
+        2,
+        0,
+        1
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "2": "recent",
+        "3": "recent",
+        "4": "recent",
+        "5": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.0028169192373752594,
+          "stage_b_score": 0.1875,
+          "final_score": 0.040316919237375265,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "The storage engine uses AES-128 for temporary transport sessions. The backup"
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.6036363244056702,
+          "stage_b_score": 1.0,
+          "final_score": 0.8036363244056701,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "archive pipeline uses AES-256-GCM for long-term storage."
+        },
+        {
+          "block_id": 2,
+          "reason": "recent",
+          "stage_a_score": 0.005128241144120693,
+          "stage_b_score": 0.1875,
+          "final_score": 0.0426282411441207,
+          "token_start": 32,
+          "token_end": 48,
+          "preview_text": "The web session cookie uses rotating signed tokens. The mobile sync channel"
+        },
+        {
+          "block_id": 3,
+          "reason": "recent",
+          "stage_a_score": 0.6086956262588501,
+          "stage_b_score": 1.0,
+          "final_score": 0.80869562625885,
+          "token_start": 48,
+          "token_end": 64,
+          "preview_text": "uses TLS 1.3. The temporary staging cache uses short-lived"
+        },
+        {
+          "block_id": 4,
+          "reason": "recent",
+          "stage_a_score": 0.02857144922018051,
+          "stage_b_score": 0.1875,
+          "final_score": 0.06607144922018052,
+          "token_start": 64,
+          "token_end": 80,
+          "preview_text": "encrypted blobs. Question: What encryption method is used for long"
+        },
+        {
+          "block_id": 5,
+          "reason": "recent",
+          "stage_a_score": 0.7000000476837158,
+          "stage_b_score": 1.0,
+          "final_score": 0.9000000476837158,
+          "token_start": 80,
+          "token_end": 85,
+          "preview_text": "-term archive storage?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 9.67003870755434e-07,
+        "prefill_sec": 0.010426880966406316,
+        "metadata_sec": 0.030897638003807515,
+        "selector_sec": 0.004867066978476942,
+        "inspection_sec": 0.0012771260226145387,
+        "total_sec": 0.047530615993309766
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0,
+      "normalized_margin": null
+    },
+    {
+      "prompt": "long_reference",
+      "prompt_file": "prompts/long_reference.txt",
+      "representation_source": "hidden_layer_index",
+      "layer_index": 1,
+      "representation_name": "hidden_layer_1",
+      "tokens": 194,
+      "blocks": 13,
+      "selected_ids": [
+        12,
+        11,
+        10,
+        9,
+        0,
+        1,
+        7,
+        6,
+        4,
+        3
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "3": "semantic",
+        "4": "semantic",
+        "6": "semantic",
+        "7": "semantic",
+        "9": "recent",
+        "10": "recent",
+        "11": "recent",
+        "12": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.3978230059146881,
+          "stage_b_score": 0.671875,
+          "final_score": 0.5321980059146881,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "Project Atlas is a distributed analytics platform used by several internal teams. The"
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.19575031101703644,
+          "stage_b_score": 0.34375,
+          "final_score": 0.2645003110170364,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "ingestion layer receives CSV, JSON, and streaming telemetry data. Files are validated"
+        },
+        {
+          "block_id": 3,
+          "reason": "semantic",
+          "stage_a_score": 0.4544042646884918,
+          "stage_b_score": 0.6875,
+          "final_score": 0.5919042646884918,
+          "token_start": 48,
+          "token_end": 64,
+          "preview_text": "transforms every hour and can also launch ad-hoc jobs for analysts."
+        },
+        {
+          "block_id": 4,
+          "reason": "semantic",
+          "stage_a_score": 0.45663559436798096,
+          "stage_b_score": 0.6875,
+          "final_score": 0.5941355943679809,
+          "token_start": 64,
+          "token_end": 80,
+          "preview_text": "The metadata service tracks ownership, retention rules, schemas, and audit events"
+        },
+        {
+          "block_id": 6,
+          "reason": "semantic",
+          "stage_a_score": 0.5236045122146606,
+          "stage_b_score": 0.84375,
+          "final_score": 0.6923545122146606,
+          "token_start": 96,
+          "token_end": 112,
+          "preview_text": "history. Many teams requested stronger role-based access control and better query"
+        },
+        {
+          "block_id": 7,
+          "reason": "semantic",
+          "stage_a_score": 0.5598505735397339,
+          "stage_b_score": 0.90625,
+          "final_score": 0.7411005735397339,
+          "token_start": 112,
+          "token_end": 128,
+          "preview_text": "logging. The current encryption standard for archival backups is AES-256"
+        },
+        {
+          "block_id": 9,
+          "reason": "recent",
+          "stage_a_score": 0.4547460675239563,
+          "stage_b_score": 0.796875,
+          "final_score": 0.6141210675239563,
+          "token_start": 144,
+          "token_end": 160,
+          "preview_text": "-quarter reporting. The next roadmap item is cross-region failover"
+        },
+        {
+          "block_id": 10,
+          "reason": "recent",
+          "stage_a_score": 0.43511661887168884,
+          "stage_b_score": 0.734375,
+          "final_score": 0.5819916188716888,
+          "token_start": 160,
+          "token_end": 176,
+          "preview_text": ". The compliance review noted that audit events older than 18 months are being"
+        },
+        {
+          "block_id": 11,
+          "reason": "recent",
+          "stage_a_score": 0.6439487338066101,
+          "stage_b_score": 0.96875,
+          "final_score": 0.8376987338066101,
+          "token_start": 176,
+          "token_end": 192,
+          "preview_text": "purged. Question: What encryption standard is used for archival"
+        },
+        {
+          "block_id": 12,
+          "reason": "recent",
+          "stage_a_score": 0.6817702054977417,
+          "stage_b_score": 0.921875,
+          "final_score": 0.8661452054977417,
+          "token_start": 192,
+          "token_end": 194,
+          "preview_text": "backups?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 5.750334821641445e-07,
+        "prefill_sec": 0.03514437499688938,
+        "metadata_sec": 0.06561256700661033,
+        "selector_sec": 0.005475882033351809,
+        "inspection_sec": 0.004799726011697203,
+        "total_sec": 0.11111388396238908
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": 0.1700871646404266,
+      "normalized_margin": 0.2873558695001806
+    },
+    {
+      "prompt": "needle",
+      "prompt_file": "prompts/needle.txt",
+      "representation_source": "hidden_layer_index",
+      "layer_index": 1,
+      "representation_name": "hidden_layer_1",
+      "tokens": 92,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        4,
+        3,
+        2,
+        0,
+        1
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "2": "recent",
+        "3": "recent",
+        "4": "recent",
+        "5": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.3827270567417145,
+          "stage_b_score": 0.484375,
+          "final_score": 0.47960205674171447,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "System logs: request accepted cache warmup started index rebuilt heart"
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.0847015529870987,
+          "stage_b_score": 0.21875,
+          "final_score": 0.1284515529870987,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "beat normal latency nominal replica synced archive prepared diagn"
+        },
+        {
+          "block_id": 2,
+          "reason": "recent",
+          "stage_a_score": 0.14619529247283936,
+          "stage_b_score": 0.390625,
+          "final_score": 0.22432029247283936,
+          "token_start": 32,
+          "token_end": 48,
+          "preview_text": "ostics complete Reference token: ZXQ-4917-BETA"
+        },
+        {
+          "block_id": 3,
+          "reason": "recent",
+          "stage_a_score": 0.009687978774309158,
+          "stage_b_score": 0.078125,
+          "final_score": 0.02531297877430916,
+          "token_start": 48,
+          "token_end": 64,
+          "preview_text": "Additional logs: session opened session closed background merge complete"
+        },
+        {
+          "block_id": 4,
+          "reason": "recent",
+          "stage_a_score": 0.549643337726593,
+          "stage_b_score": 0.84375,
+          "final_score": 0.718393337726593,
+          "token_start": 64,
+          "token_end": 80,
+          "preview_text": "retry queue empty cpu stable memory stable io stable all services"
+        },
+        {
+          "block_id": 5,
+          "reason": "recent",
+          "stage_a_score": 0.638877809047699,
+          "stage_b_score": 0.8125,
+          "final_score": 0.801377809047699,
+          "token_start": 80,
+          "token_end": 92,
+          "preview_text": "nominal Question: What was the reference token?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 1.1530355550348759e-06,
+        "prefill_sec": 0.013838510029017925,
+        "metadata_sec": 0.028540877043269575,
+        "selector_sec": 0.008128368994221091,
+        "inspection_sec": 0.0016316280234605074,
+        "total_sec": 0.0522020100033842
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0,
+      "normalized_margin": null
+    },
+    {
+      "prompt": "repeated_reference",
+      "prompt_file": "prompts/repeated_reference.txt",
+      "representation_source": "hidden_layer_index",
+      "layer_index": 1,
+      "representation_name": "hidden_layer_1",
+      "tokens": 129,
+      "blocks": 9,
+      "selected_ids": [
+        8,
+        7,
+        6,
+        5,
+        0,
+        1,
+        4,
+        2,
+        3
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "2": "semantic",
+        "3": "semantic",
+        "4": "semantic",
+        "5": "recent",
+        "6": "recent",
+        "7": "recent",
+        "8": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.3578580915927887,
+          "stage_b_score": 0.65625,
+          "final_score": 0.4891080915927887,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "The patient\u2019s baseline ferritin level was 22 ng/mL."
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.4098565876483917,
+          "stage_b_score": 0.703125,
+          "final_score": 0.5504815876483917,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "The user began supplementation with iron bisglycinate and vitamin C."
+        },
+        {
+          "block_id": 2,
+          "reason": "semantic",
+          "stage_a_score": 0.32119935750961304,
+          "stage_b_score": 0.515625,
+          "final_score": 0.42432435750961306,
+          "token_start": 32,
+          "token_end": 48,
+          "preview_text": "Weekly logs showed improved energy, fewer headaches, and better exercise tolerance"
+        },
+        {
+          "block_id": 3,
+          "reason": "semantic",
+          "stage_a_score": 0.004289307631552219,
+          "stage_b_score": 0.09375,
+          "final_score": 0.023039307631552222,
+          "token_start": 48,
+          "token_end": 64,
+          "preview_text": ". Additional notes covered sleep quality, hydration, and meal timing."
+        },
+        {
+          "block_id": 4,
+          "reason": "semantic",
+          "stage_a_score": 0.3600405156612396,
+          "stage_b_score": 0.65625,
+          "final_score": 0.4912905156612396,
+          "token_start": 64,
+          "token_end": 80,
+          "preview_text": "Several pages of progress notes followed discussing unrelated biomarkers such as magnes..."
+        },
+        {
+          "block_id": 5,
+          "reason": "recent",
+          "stage_a_score": 0.043027300387620926,
+          "stage_b_score": 0.171875,
+          "final_score": 0.07740230038762093,
+          "token_start": 80,
+          "token_end": 96,
+          "preview_text": "B12, sodium, potassium, CRP, ALT, AST, and"
+        },
+        {
+          "block_id": 6,
+          "reason": "recent",
+          "stage_a_score": 0.265645295381546,
+          "stage_b_score": 0.484375,
+          "final_score": 0.362520295381546,
+          "token_start": 96,
+          "token_end": 112,
+          "preview_text": "vitamin D. Later consultation notes discussed exercise adherence and stress reduction."
+        },
+        {
+          "block_id": 7,
+          "reason": "recent",
+          "stage_a_score": 0.6023252010345459,
+          "stage_b_score": 0.875,
+          "final_score": 0.7773252010345459,
+          "token_start": 112,
+          "token_end": 128,
+          "preview_text": "Question: What was the patient\u2019s baseline ferritin level"
+        },
+        {
+          "block_id": 8,
+          "reason": "recent",
+          "stage_a_score": 0.7000000476837158,
+          "stage_b_score": 1.0,
+          "final_score": 0.9000000476837158,
+          "token_start": 128,
+          "token_end": 129,
+          "preview_text": "?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 1.2199743650853634e-06,
+        "prefill_sec": 0.019715244008693844,
+        "metadata_sec": 0.040847626980394125,
+        "selector_sec": 0.005636668007355183,
+        "inspection_sec": 0.0027230140403844416,
+        "total_sec": 0.06900220597162843
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": Infinity,
+      "normalized_margin": null
+    },
+    {
+      "prompt": "code_context",
+      "prompt_file": "prompts/code_context.txt",
+      "representation_source": "hidden_layer_index",
+      "layer_index": 1,
+      "representation_name": "hidden_layer_1",
+      "tokens": 216,
+      "blocks": 14,
+      "selected_ids": [
+        13,
+        12,
+        11,
+        10,
+        0,
+        1,
+        9,
+        7,
+        4,
+        6
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "4": "semantic",
+        "6": "semantic",
+        "7": "semantic",
+        "9": "semantic",
+        "10": "recent",
+        "11": "recent",
+        "12": "recent",
+        "13": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.21590667963027954,
+          "stage_b_score": 0.5,
+          "final_score": 0.3159066796302795,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "def load_config(path): with open(path)"
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.42264774441719055,
+          "stage_b_score": 0.625,
+          "final_score": 0.5476477444171906,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "as f: return json.load("
+        },
+        {
+          "block_id": 4,
+          "reason": "semantic",
+          "stage_a_score": 0.5195515751838684,
+          "stage_b_score": 0.84375,
+          "final_score": 0.6883015751838684,
+          "token_start": 64,
+          "token_end": 80,
+          "preview_text": "ValueError(\"missing email\") return True def calculate"
+        },
+        {
+          "block_id": 6,
+          "reason": "semantic",
+          "stage_a_score": 0.4605923891067505,
+          "stage_b_score": 0.75,
+          "final_score": 0.6105923891067505,
+          "token_start": 96,
+          "token_end": 112,
+          "preview_text": "for item in items: total += item"
+        },
+        {
+          "block_id": 7,
+          "reason": "semantic",
+          "stage_a_score": 0.5470080971717834,
+          "stage_b_score": 0.84375,
+          "final_score": 0.7157580971717834,
+          "token_start": 112,
+          "token_end": 128,
+          "preview_text": "[\"price\"] * item[\"qty\"] return total"
+        },
+        {
+          "block_id": 9,
+          "reason": "semantic",
+          "stage_a_score": 0.5767459273338318,
+          "stage_b_score": 0.859375,
+          "final_score": 0.7486209273338318,
+          "token_start": 144,
+          "token_end": 160,
+          "preview_text": "print(\"sending receipt\") def checkout(items, user):"
+        },
+        {
+          "block_id": 10,
+          "reason": "recent",
+          "stage_a_score": 0.41971057653427124,
+          "stage_b_score": 0.625,
+          "final_score": 0.5447105765342712,
+          "token_start": 160,
+          "token_end": 176,
+          "preview_text": "validate_user(user) total = calculate"
+        },
+        {
+          "block_id": 11,
+          "reason": "recent",
+          "stage_a_score": 0.4594811201095581,
+          "stage_b_score": 0.8125,
+          "final_score": 0.6219811201095581,
+          "token_start": 176,
+          "token_end": 192,
+          "preview_text": "_total(items) send_receipt(user"
+        },
+        {
+          "block_id": 12,
+          "reason": "recent",
+          "stage_a_score": 0.6058584451675415,
+          "stage_b_score": 0.859375,
+          "final_score": 0.7777334451675415,
+          "token_start": 192,
+          "token_end": 208,
+          "preview_text": "[\"email\"], total) return total Question:"
+        },
+        {
+          "block_id": 13,
+          "reason": "recent",
+          "stage_a_score": 0.13472571969032288,
+          "stage_b_score": 0.203125,
+          "final_score": 0.17535071969032287,
+          "token_start": 208,
+          "token_end": 216,
+          "preview_text": "Which function computes the cart total?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 1.953041646629572e-06,
+        "prefill_sec": 0.0192471329937689,
+        "metadata_sec": 0.06145326601108536,
+        "selector_sec": 0.0064924960024654865,
+        "inspection_sec": 0.0050968260038644075,
+        "total_sec": 0.09237631998257712
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": 0.08519458174705508,
+      "normalized_margin": 0.1395277492267602
+    },
+    {
+      "prompt": "adversarial_semantic",
+      "prompt_file": "prompts/adverserial_semantic.txt",
+      "representation_source": "hidden_layer_index",
+      "layer_index": 1,
+      "representation_name": "hidden_layer_1",
+      "tokens": 85,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        4,
+        3,
+        2,
+        0,
+        1
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "2": "recent",
+        "3": "recent",
+        "4": "recent",
+        "5": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.5899412631988525,
+          "stage_b_score": 0.828125,
+          "final_score": 0.7555662631988526,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "The storage engine uses AES-128 for temporary transport sessions. The backup"
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.48113346099853516,
+          "stage_b_score": 0.625,
+          "final_score": 0.6061334609985352,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "archive pipeline uses AES-256-GCM for long-term storage."
+        },
+        {
+          "block_id": 2,
+          "reason": "recent",
+          "stage_a_score": 0.2433757185935974,
+          "stage_b_score": 0.65625,
+          "final_score": 0.3746257185935974,
+          "token_start": 32,
+          "token_end": 48,
+          "preview_text": "The web session cookie uses rotating signed tokens. The mobile sync channel"
+        },
+        {
+          "block_id": 3,
+          "reason": "recent",
+          "stage_a_score": 0.38667136430740356,
+          "stage_b_score": 0.46875,
+          "final_score": 0.48042136430740356,
+          "token_start": 48,
+          "token_end": 64,
+          "preview_text": "uses TLS 1.3. The temporary staging cache uses short-lived"
+        },
+        {
+          "block_id": 4,
+          "reason": "recent",
+          "stage_a_score": 0.5114423036575317,
+          "stage_b_score": 0.828125,
+          "final_score": 0.6770673036575318,
+          "token_start": 64,
+          "token_end": 80,
+          "preview_text": "encrypted blobs. Question: What encryption method is used for long"
+        },
+        {
+          "block_id": 5,
+          "reason": "recent",
+          "stage_a_score": 0.6827223300933838,
+          "stage_b_score": 0.828125,
+          "final_score": 0.8483473300933838,
+          "token_start": 80,
+          "token_end": 85,
+          "preview_text": "-term archive storage?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 1.0819640010595322e-06,
+        "prefill_sec": 0.00754113495349884,
+        "metadata_sec": 0.02583131700521335,
+        "selector_sec": 0.007238471007440239,
+        "inspection_sec": 0.0021408090251497924,
+        "total_sec": 0.042835667030885816
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0,
+      "normalized_margin": null
+    },
+    {
+      "prompt": "long_reference",
+      "prompt_file": "prompts/long_reference.txt",
+      "representation_source": "middle_hidden",
+      "layer_index": null,
+      "representation_name": "middle_hidden_1",
+      "tokens": 194,
+      "blocks": 13,
+      "selected_ids": [
+        12,
+        11,
+        10,
+        9,
+        0,
+        1,
+        7,
+        6,
+        4,
+        3
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "3": "semantic",
+        "4": "semantic",
+        "6": "semantic",
+        "7": "semantic",
+        "9": "recent",
+        "10": "recent",
+        "11": "recent",
+        "12": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.3978230059146881,
+          "stage_b_score": 0.671875,
+          "final_score": 0.5321980059146881,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "Project Atlas is a distributed analytics platform used by several internal teams. The"
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.19575031101703644,
+          "stage_b_score": 0.34375,
+          "final_score": 0.2645003110170364,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "ingestion layer receives CSV, JSON, and streaming telemetry data. Files are validated"
+        },
+        {
+          "block_id": 3,
+          "reason": "semantic",
+          "stage_a_score": 0.4544042646884918,
+          "stage_b_score": 0.6875,
+          "final_score": 0.5919042646884918,
+          "token_start": 48,
+          "token_end": 64,
+          "preview_text": "transforms every hour and can also launch ad-hoc jobs for analysts."
+        },
+        {
+          "block_id": 4,
+          "reason": "semantic",
+          "stage_a_score": 0.45663559436798096,
+          "stage_b_score": 0.6875,
+          "final_score": 0.5941355943679809,
+          "token_start": 64,
+          "token_end": 80,
+          "preview_text": "The metadata service tracks ownership, retention rules, schemas, and audit events"
+        },
+        {
+          "block_id": 6,
+          "reason": "semantic",
+          "stage_a_score": 0.5236045122146606,
+          "stage_b_score": 0.84375,
+          "final_score": 0.6923545122146606,
+          "token_start": 96,
+          "token_end": 112,
+          "preview_text": "history. Many teams requested stronger role-based access control and better query"
+        },
+        {
+          "block_id": 7,
+          "reason": "semantic",
+          "stage_a_score": 0.5598505735397339,
+          "stage_b_score": 0.90625,
+          "final_score": 0.7411005735397339,
+          "token_start": 112,
+          "token_end": 128,
+          "preview_text": "logging. The current encryption standard for archival backups is AES-256"
+        },
+        {
+          "block_id": 9,
+          "reason": "recent",
+          "stage_a_score": 0.4547460675239563,
+          "stage_b_score": 0.796875,
+          "final_score": 0.6141210675239563,
+          "token_start": 144,
+          "token_end": 160,
+          "preview_text": "-quarter reporting. The next roadmap item is cross-region failover"
+        },
+        {
+          "block_id": 10,
+          "reason": "recent",
+          "stage_a_score": 0.43511661887168884,
+          "stage_b_score": 0.734375,
+          "final_score": 0.5819916188716888,
+          "token_start": 160,
+          "token_end": 176,
+          "preview_text": ". The compliance review noted that audit events older than 18 months are being"
+        },
+        {
+          "block_id": 11,
+          "reason": "recent",
+          "stage_a_score": 0.6439487338066101,
+          "stage_b_score": 0.96875,
+          "final_score": 0.8376987338066101,
+          "token_start": 176,
+          "token_end": 192,
+          "preview_text": "purged. Question: What encryption standard is used for archival"
+        },
+        {
+          "block_id": 12,
+          "reason": "recent",
+          "stage_a_score": 0.6817702054977417,
+          "stage_b_score": 0.921875,
+          "final_score": 0.8661452054977417,
+          "token_start": 192,
+          "token_end": 194,
+          "preview_text": "backups?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 1.0129879228770733e-06,
+        "prefill_sec": 0.019506331998854876,
+        "metadata_sec": 0.061283260001800954,
+        "selector_sec": 0.003831879992503673,
+        "inspection_sec": 0.004184880992397666,
+        "total_sec": 0.08886284701293334
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": 0.1700871646404266,
+      "normalized_margin": 0.2873558695001806
+    },
+    {
+      "prompt": "needle",
+      "prompt_file": "prompts/needle.txt",
+      "representation_source": "middle_hidden",
+      "layer_index": null,
+      "representation_name": "middle_hidden_1",
+      "tokens": 92,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        4,
+        3,
+        2,
+        0,
+        1
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "2": "recent",
+        "3": "recent",
+        "4": "recent",
+        "5": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.3827270567417145,
+          "stage_b_score": 0.484375,
+          "final_score": 0.47960205674171447,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "System logs: request accepted cache warmup started index rebuilt heart"
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.0847015529870987,
+          "stage_b_score": 0.21875,
+          "final_score": 0.1284515529870987,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "beat normal latency nominal replica synced archive prepared diagn"
+        },
+        {
+          "block_id": 2,
+          "reason": "recent",
+          "stage_a_score": 0.14619529247283936,
+          "stage_b_score": 0.390625,
+          "final_score": 0.22432029247283936,
+          "token_start": 32,
+          "token_end": 48,
+          "preview_text": "ostics complete Reference token: ZXQ-4917-BETA"
+        },
+        {
+          "block_id": 3,
+          "reason": "recent",
+          "stage_a_score": 0.009687978774309158,
+          "stage_b_score": 0.078125,
+          "final_score": 0.02531297877430916,
+          "token_start": 48,
+          "token_end": 64,
+          "preview_text": "Additional logs: session opened session closed background merge complete"
+        },
+        {
+          "block_id": 4,
+          "reason": "recent",
+          "stage_a_score": 0.549643337726593,
+          "stage_b_score": 0.84375,
+          "final_score": 0.718393337726593,
+          "token_start": 64,
+          "token_end": 80,
+          "preview_text": "retry queue empty cpu stable memory stable io stable all services"
+        },
+        {
+          "block_id": 5,
+          "reason": "recent",
+          "stage_a_score": 0.638877809047699,
+          "stage_b_score": 0.8125,
+          "final_score": 0.801377809047699,
+          "token_start": 80,
+          "token_end": 92,
+          "preview_text": "nominal Question: What was the reference token?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 1.2589734978973866e-06,
+        "prefill_sec": 0.022776768018957227,
+        "metadata_sec": 0.022298739990219474,
+        "selector_sec": 0.005444459966383874,
+        "inspection_sec": 0.002054298995062709,
+        "total_sec": 0.05263634101720527
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0,
+      "normalized_margin": null
+    },
+    {
+      "prompt": "repeated_reference",
+      "prompt_file": "prompts/repeated_reference.txt",
+      "representation_source": "middle_hidden",
+      "layer_index": null,
+      "representation_name": "middle_hidden_1",
+      "tokens": 129,
+      "blocks": 9,
+      "selected_ids": [
+        8,
+        7,
+        6,
+        5,
+        0,
+        1,
+        4,
+        2,
+        3
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "2": "semantic",
+        "3": "semantic",
+        "4": "semantic",
+        "5": "recent",
+        "6": "recent",
+        "7": "recent",
+        "8": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.3578580915927887,
+          "stage_b_score": 0.65625,
+          "final_score": 0.4891080915927887,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "The patient\u2019s baseline ferritin level was 22 ng/mL."
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.4098565876483917,
+          "stage_b_score": 0.703125,
+          "final_score": 0.5504815876483917,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "The user began supplementation with iron bisglycinate and vitamin C."
+        },
+        {
+          "block_id": 2,
+          "reason": "semantic",
+          "stage_a_score": 0.32119935750961304,
+          "stage_b_score": 0.515625,
+          "final_score": 0.42432435750961306,
+          "token_start": 32,
+          "token_end": 48,
+          "preview_text": "Weekly logs showed improved energy, fewer headaches, and better exercise tolerance"
+        },
+        {
+          "block_id": 3,
+          "reason": "semantic",
+          "stage_a_score": 0.004289307631552219,
+          "stage_b_score": 0.09375,
+          "final_score": 0.023039307631552222,
+          "token_start": 48,
+          "token_end": 64,
+          "preview_text": ". Additional notes covered sleep quality, hydration, and meal timing."
+        },
+        {
+          "block_id": 4,
+          "reason": "semantic",
+          "stage_a_score": 0.3600405156612396,
+          "stage_b_score": 0.65625,
+          "final_score": 0.4912905156612396,
+          "token_start": 64,
+          "token_end": 80,
+          "preview_text": "Several pages of progress notes followed discussing unrelated biomarkers such as magnes..."
+        },
+        {
+          "block_id": 5,
+          "reason": "recent",
+          "stage_a_score": 0.043027300387620926,
+          "stage_b_score": 0.171875,
+          "final_score": 0.07740230038762093,
+          "token_start": 80,
+          "token_end": 96,
+          "preview_text": "B12, sodium, potassium, CRP, ALT, AST, and"
+        },
+        {
+          "block_id": 6,
+          "reason": "recent",
+          "stage_a_score": 0.265645295381546,
+          "stage_b_score": 0.484375,
+          "final_score": 0.362520295381546,
+          "token_start": 96,
+          "token_end": 112,
+          "preview_text": "vitamin D. Later consultation notes discussed exercise adherence and stress reduction."
+        },
+        {
+          "block_id": 7,
+          "reason": "recent",
+          "stage_a_score": 0.6023252010345459,
+          "stage_b_score": 0.875,
+          "final_score": 0.7773252010345459,
+          "token_start": 112,
+          "token_end": 128,
+          "preview_text": "Question: What was the patient\u2019s baseline ferritin level"
+        },
+        {
+          "block_id": 8,
+          "reason": "recent",
+          "stage_a_score": 0.7000000476837158,
+          "stage_b_score": 1.0,
+          "final_score": 0.9000000476837158,
+          "token_start": 128,
+          "token_end": 129,
+          "preview_text": "?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 1.0959920473396778e-06,
+        "prefill_sec": 0.023935848963446915,
+        "metadata_sec": 0.040447491977829486,
+        "selector_sec": 0.004040811967570335,
+        "inspection_sec": 0.0013624969869852066,
+        "total_sec": 0.06985886197071522
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": Infinity,
+      "normalized_margin": null
+    },
+    {
+      "prompt": "code_context",
+      "prompt_file": "prompts/code_context.txt",
+      "representation_source": "middle_hidden",
+      "layer_index": null,
+      "representation_name": "middle_hidden_1",
+      "tokens": 216,
+      "blocks": 14,
+      "selected_ids": [
+        13,
+        12,
+        11,
+        10,
+        0,
+        1,
+        9,
+        7,
+        4,
+        6
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "4": "semantic",
+        "6": "semantic",
+        "7": "semantic",
+        "9": "semantic",
+        "10": "recent",
+        "11": "recent",
+        "12": "recent",
+        "13": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.21590667963027954,
+          "stage_b_score": 0.5,
+          "final_score": 0.3159066796302795,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "def load_config(path): with open(path)"
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.42264774441719055,
+          "stage_b_score": 0.625,
+          "final_score": 0.5476477444171906,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "as f: return json.load("
+        },
+        {
+          "block_id": 4,
+          "reason": "semantic",
+          "stage_a_score": 0.5195515751838684,
+          "stage_b_score": 0.84375,
+          "final_score": 0.6883015751838684,
+          "token_start": 64,
+          "token_end": 80,
+          "preview_text": "ValueError(\"missing email\") return True def calculate"
+        },
+        {
+          "block_id": 6,
+          "reason": "semantic",
+          "stage_a_score": 0.4605923891067505,
+          "stage_b_score": 0.75,
+          "final_score": 0.6105923891067505,
+          "token_start": 96,
+          "token_end": 112,
+          "preview_text": "for item in items: total += item"
+        },
+        {
+          "block_id": 7,
+          "reason": "semantic",
+          "stage_a_score": 0.5470080971717834,
+          "stage_b_score": 0.84375,
+          "final_score": 0.7157580971717834,
+          "token_start": 112,
+          "token_end": 128,
+          "preview_text": "[\"price\"] * item[\"qty\"] return total"
+        },
+        {
+          "block_id": 9,
+          "reason": "semantic",
+          "stage_a_score": 0.5767459273338318,
+          "stage_b_score": 0.859375,
+          "final_score": 0.7486209273338318,
+          "token_start": 144,
+          "token_end": 160,
+          "preview_text": "print(\"sending receipt\") def checkout(items, user):"
+        },
+        {
+          "block_id": 10,
+          "reason": "recent",
+          "stage_a_score": 0.41971057653427124,
+          "stage_b_score": 0.625,
+          "final_score": 0.5447105765342712,
+          "token_start": 160,
+          "token_end": 176,
+          "preview_text": "validate_user(user) total = calculate"
+        },
+        {
+          "block_id": 11,
+          "reason": "recent",
+          "stage_a_score": 0.4594811201095581,
+          "stage_b_score": 0.8125,
+          "final_score": 0.6219811201095581,
+          "token_start": 176,
+          "token_end": 192,
+          "preview_text": "_total(items) send_receipt(user"
+        },
+        {
+          "block_id": 12,
+          "reason": "recent",
+          "stage_a_score": 0.6058584451675415,
+          "stage_b_score": 0.859375,
+          "final_score": 0.7777334451675415,
+          "token_start": 192,
+          "token_end": 208,
+          "preview_text": "[\"email\"], total) return total Question:"
+        },
+        {
+          "block_id": 13,
+          "reason": "recent",
+          "stage_a_score": 0.13472571969032288,
+          "stage_b_score": 0.203125,
+          "final_score": 0.17535071969032287,
+          "token_start": 208,
+          "token_end": 216,
+          "preview_text": "Which function computes the cart total?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 5.880137905478477e-07,
+        "prefill_sec": 0.017557506973389536,
+        "metadata_sec": 0.06091625499539077,
+        "selector_sec": 0.00783939502434805,
+        "inspection_sec": 0.003742522036191076,
+        "total_sec": 0.09014799701981246
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": 0.08519458174705508,
+      "normalized_margin": 0.1395277492267602
+    },
+    {
+      "prompt": "adversarial_semantic",
+      "prompt_file": "prompts/adverserial_semantic.txt",
+      "representation_source": "middle_hidden",
+      "layer_index": null,
+      "representation_name": "middle_hidden_1",
+      "tokens": 85,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        4,
+        3,
+        2,
+        0,
+        1
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "2": "recent",
+        "3": "recent",
+        "4": "recent",
+        "5": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.5899412631988525,
+          "stage_b_score": 0.828125,
+          "final_score": 0.7555662631988526,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "The storage engine uses AES-128 for temporary transport sessions. The backup"
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.48113346099853516,
+          "stage_b_score": 0.625,
+          "final_score": 0.6061334609985352,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "archive pipeline uses AES-256-GCM for long-term storage."
+        },
+        {
+          "block_id": 2,
+          "reason": "recent",
+          "stage_a_score": 0.2433757185935974,
+          "stage_b_score": 0.65625,
+          "final_score": 0.3746257185935974,
+          "token_start": 32,
+          "token_end": 48,
+          "preview_text": "The web session cookie uses rotating signed tokens. The mobile sync channel"
+        },
+        {
+          "block_id": 3,
+          "reason": "recent",
+          "stage_a_score": 0.38667136430740356,
+          "stage_b_score": 0.46875,
+          "final_score": 0.48042136430740356,
+          "token_start": 48,
+          "token_end": 64,
+          "preview_text": "uses TLS 1.3. The temporary staging cache uses short-lived"
+        },
+        {
+          "block_id": 4,
+          "reason": "recent",
+          "stage_a_score": 0.5114423036575317,
+          "stage_b_score": 0.828125,
+          "final_score": 0.6770673036575318,
+          "token_start": 64,
+          "token_end": 80,
+          "preview_text": "encrypted blobs. Question: What encryption method is used for long"
+        },
+        {
+          "block_id": 5,
+          "reason": "recent",
+          "stage_a_score": 0.6827223300933838,
+          "stage_b_score": 0.828125,
+          "final_score": 0.8483473300933838,
+          "token_start": 80,
+          "token_end": 85,
+          "preview_text": "-term archive storage?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 1.2450036592781544e-06,
+        "prefill_sec": 0.009590815985575318,
+        "metadata_sec": 0.021854871010873467,
+        "selector_sec": 0.005402645969297737,
+        "inspection_sec": 0.0016449270187877119,
+        "total_sec": 0.03856874199118465
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0,
+      "normalized_margin": null
+    },
+    {
+      "prompt": "long_reference",
+      "prompt_file": "prompts/long_reference.txt",
+      "representation_source": "avg_last4_hidden",
+      "layer_index": null,
+      "representation_name": "avg_last3_hidden",
+      "tokens": 194,
+      "blocks": 13,
+      "selected_ids": [
+        12,
+        11,
+        10,
+        9,
+        0,
+        1,
+        7,
+        6,
+        2,
+        5
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "2": "semantic",
+        "5": "semantic",
+        "6": "semantic",
+        "7": "semantic",
+        "9": "recent",
+        "10": "recent",
+        "11": "recent",
+        "12": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.0029062600806355476,
+          "stage_b_score": 0.1875,
+          "final_score": 0.04040626008063555,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "Project Atlas is a distributed analytics platform used by several internal teams. The"
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.5984976291656494,
+          "stage_b_score": 0.875,
+          "final_score": 0.7734976291656495,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "ingestion layer receives CSV, JSON, and streaming telemetry data. Files are validated"
+        },
+        {
+          "block_id": 2,
+          "reason": "semantic",
+          "stage_a_score": 0.5996884703636169,
+          "stage_b_score": 0.875,
+          "final_score": 0.774688470363617,
+          "token_start": 32,
+          "token_end": 48,
+          "preview_text": ", normalized, and routed into storage buckets. The compute layer runs batch"
+        },
+        {
+          "block_id": 5,
+          "reason": "semantic",
+          "stage_a_score": 0.5976486802101135,
+          "stage_b_score": 0.875,
+          "final_score": 0.7726486802101136,
+          "token_start": 80,
+          "token_end": 96,
+          "preview_text": ". The user dashboard shows job status, data freshness, and alert"
+        },
+        {
+          "block_id": 6,
+          "reason": "semantic",
+          "stage_a_score": 0.6003726124763489,
+          "stage_b_score": 0.96875,
+          "final_score": 0.7941226124763489,
+          "token_start": 96,
+          "token_end": 112,
+          "preview_text": "history. Many teams requested stronger role-based access control and better query"
+        },
+        {
+          "block_id": 7,
+          "reason": "semantic",
+          "stage_a_score": 0.602523922920227,
+          "stage_b_score": 1.0,
+          "final_score": 0.802523922920227,
+          "token_start": 112,
+          "token_end": 128,
+          "preview_text": "logging. The current encryption standard for archival backups is AES-256"
+        },
+        {
+          "block_id": 9,
+          "reason": "recent",
+          "stage_a_score": 0.6045644283294678,
+          "stage_b_score": 1.0,
+          "final_score": 0.8045644283294677,
+          "token_start": 144,
+          "token_end": 160,
+          "preview_text": "-quarter reporting. The next roadmap item is cross-region failover"
+        },
+        {
+          "block_id": 10,
+          "reason": "recent",
+          "stage_a_score": 0.6090089082717896,
+          "stage_b_score": 1.0,
+          "final_score": 0.8090089082717895,
+          "token_start": 160,
+          "token_end": 176,
+          "preview_text": ". The compliance review noted that audit events older than 18 months are being"
+        },
+        {
+          "block_id": 11,
+          "reason": "recent",
+          "stage_a_score": 0.6498523950576782,
+          "stage_b_score": 1.0,
+          "final_score": 0.8498523950576782,
+          "token_start": 176,
+          "token_end": 192,
+          "preview_text": "purged. Question: What encryption standard is used for archival"
+        },
+        {
+          "block_id": 12,
+          "reason": "recent",
+          "stage_a_score": 0.6999506950378418,
+          "stage_b_score": 1.0,
+          "final_score": 0.8999506950378418,
+          "token_start": 192,
+          "token_end": 194,
+          "preview_text": "backups?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 9.919749572873116e-07,
+        "prefill_sec": 0.025582918024156243,
+        "metadata_sec": 0.05711919895838946,
+        "selector_sec": 0.003744856978300959,
+        "inspection_sec": 0.002438809024170041,
+        "total_sec": 0.08894191798754036
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": 0.7310378768481315,
+      "normalized_margin": 0.9461452476037797
+    },
+    {
+      "prompt": "needle",
+      "prompt_file": "prompts/needle.txt",
+      "representation_source": "avg_last4_hidden",
+      "layer_index": null,
+      "representation_name": "avg_last3_hidden",
+      "tokens": 92,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        4,
+        3,
+        2,
+        0,
+        1
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "2": "recent",
+        "3": "recent",
+        "4": "recent",
+        "5": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.6021286249160767,
+          "stage_b_score": 0.9375,
+          "final_score": 0.7896286249160767,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "System logs: request accepted cache warmup started index rebuilt heart"
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.5373598337173462,
+          "stage_b_score": 0.765625,
+          "final_score": 0.6904848337173461,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "beat normal latency nominal replica synced archive prepared diagn"
+        },
+        {
+          "block_id": 2,
+          "reason": "recent",
+          "stage_a_score": 0.004664505831897259,
+          "stage_b_score": 0.0625,
+          "final_score": 0.01716450583189726,
+          "token_start": 32,
+          "token_end": 48,
+          "preview_text": "ostics complete Reference token: ZXQ-4917-BETA"
+        },
+        {
+          "block_id": 3,
+          "reason": "recent",
+          "stage_a_score": 0.013246269896626472,
+          "stage_b_score": 0.125,
+          "final_score": 0.038246269896626474,
+          "token_start": 48,
+          "token_end": 64,
+          "preview_text": "Additional logs: session opened session closed background merge complete"
+        },
+        {
+          "block_id": 4,
+          "reason": "recent",
+          "stage_a_score": 0.6142742037773132,
+          "stage_b_score": 1.0,
+          "final_score": 0.8142742037773132,
+          "token_start": 64,
+          "token_end": 80,
+          "preview_text": "retry queue empty cpu stable memory stable io stable all services"
+        },
+        {
+          "block_id": 5,
+          "reason": "recent",
+          "stage_a_score": 0.6999558210372925,
+          "stage_b_score": 1.0,
+          "final_score": 0.8999558210372924,
+          "token_start": 80,
+          "token_end": 92,
+          "preview_text": "nominal Question: What was the reference token?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 1.0880175977945328e-06,
+        "prefill_sec": 0.008148028049618006,
+        "metadata_sec": 0.027571982995141298,
+        "selector_sec": 0.004795798973646015,
+        "inspection_sec": 0.0016831829561851919,
+        "total_sec": 0.042256704007741064
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0,
+      "normalized_margin": null
+    },
+    {
+      "prompt": "repeated_reference",
+      "prompt_file": "prompts/repeated_reference.txt",
+      "representation_source": "avg_last4_hidden",
+      "layer_index": null,
+      "representation_name": "avg_last3_hidden",
+      "tokens": 129,
+      "blocks": 9,
+      "selected_ids": [
+        8,
+        7,
+        6,
+        5,
+        0,
+        1,
+        2,
+        4,
+        3
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "2": "semantic",
+        "3": "semantic",
+        "4": "semantic",
+        "5": "recent",
+        "6": "recent",
+        "7": "recent",
+        "8": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.00825861468911171,
+          "stage_b_score": 0.1875,
+          "final_score": 0.045758614689111715,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "The patient\u2019s baseline ferritin level was 22 ng/mL."
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.601137638092041,
+          "stage_b_score": 1.0,
+          "final_score": 0.801137638092041,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "The user began supplementation with iron bisglycinate and vitamin C."
+        },
+        {
+          "block_id": 2,
+          "reason": "semantic",
+          "stage_a_score": 0.6011236310005188,
+          "stage_b_score": 0.875,
+          "final_score": 0.7761236310005188,
+          "token_start": 32,
+          "token_end": 48,
+          "preview_text": "Weekly logs showed improved energy, fewer headaches, and better exercise tolerance"
+        },
+        {
+          "block_id": 3,
+          "reason": "semantic",
+          "stage_a_score": 0.006275751627981663,
+          "stage_b_score": 0.09375,
+          "final_score": 0.025025751627981666,
+          "token_start": 48,
+          "token_end": 64,
+          "preview_text": ". Additional notes covered sleep quality, hydration, and meal timing."
+        },
+        {
+          "block_id": 4,
+          "reason": "semantic",
+          "stage_a_score": 0.005442989524453878,
+          "stage_b_score": 0.1875,
+          "final_score": 0.042942989524453884,
+          "token_start": 64,
+          "token_end": 80,
+          "preview_text": "Several pages of progress notes followed discussing unrelated biomarkers such as magnes..."
+        },
+        {
+          "block_id": 5,
+          "reason": "recent",
+          "stage_a_score": 0.5924631953239441,
+          "stage_b_score": 0.8125,
+          "final_score": 0.7549631953239441,
+          "token_start": 80,
+          "token_end": 96,
+          "preview_text": "B12, sodium, potassium, CRP, ALT, AST, and"
+        },
+        {
+          "block_id": 6,
+          "reason": "recent",
+          "stage_a_score": 0.6095504760742188,
+          "stage_b_score": 0.9375,
+          "final_score": 0.7970504760742188,
+          "token_start": 96,
+          "token_end": 112,
+          "preview_text": "vitamin D. Later consultation notes discussed exercise adherence and stress reduction."
+        },
+        {
+          "block_id": 7,
+          "reason": "recent",
+          "stage_a_score": 0.07449182122945786,
+          "stage_b_score": 0.1875,
+          "final_score": 0.11199182122945786,
+          "token_start": 112,
+          "token_end": 128,
+          "preview_text": "Question: What was the patient\u2019s baseline ferritin level"
+        },
+        {
+          "block_id": 8,
+          "reason": "recent",
+          "stage_a_score": 0.7000000476837158,
+          "stage_b_score": 1.0,
+          "final_score": 0.9000000476837158,
+          "token_start": 128,
+          "token_end": 129,
+          "preview_text": "?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 1.6660196706652641e-06,
+        "prefill_sec": 0.010961354011669755,
+        "metadata_sec": 0.04108144895872101,
+        "selector_sec": 0.003824956016615033,
+        "inspection_sec": 0.0015201839851215482,
+        "total_sec": 0.057449212996289134
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": Infinity,
+      "normalized_margin": null
+    },
+    {
+      "prompt": "code_context",
+      "prompt_file": "prompts/code_context.txt",
+      "representation_source": "avg_last4_hidden",
+      "layer_index": null,
+      "representation_name": "avg_last3_hidden",
+      "tokens": 216,
+      "blocks": 14,
+      "selected_ids": [
+        13,
+        12,
+        11,
+        10,
+        0,
+        1,
+        9,
+        7,
+        6,
+        8
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "6": "semantic",
+        "7": "semantic",
+        "8": "semantic",
+        "9": "semantic",
+        "10": "recent",
+        "11": "recent",
+        "12": "recent",
+        "13": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.0025444035418331623,
+          "stage_b_score": 0.1875,
+          "final_score": 0.04004440354183317,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "def load_config(path): with open(path)"
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.0013193320482969284,
+          "stage_b_score": 0.0625,
+          "final_score": 0.013819332048296929,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "as f: return json.load("
+        },
+        {
+          "block_id": 6,
+          "reason": "semantic",
+          "stage_a_score": 0.6006757616996765,
+          "stage_b_score": 0.9375,
+          "final_score": 0.7881757616996765,
+          "token_start": 96,
+          "token_end": 112,
+          "preview_text": "for item in items: total += item"
+        },
+        {
+          "block_id": 7,
+          "reason": "semantic",
+          "stage_a_score": 0.6011152863502502,
+          "stage_b_score": 1.0,
+          "final_score": 0.8011152863502502,
+          "token_start": 112,
+          "token_end": 128,
+          "preview_text": "[\"price\"] * item[\"qty\"] return total"
+        },
+        {
+          "block_id": 8,
+          "reason": "semantic",
+          "stage_a_score": 0.6012685298919678,
+          "stage_b_score": 0.875,
+          "final_score": 0.7762685298919678,
+          "token_start": 128,
+          "token_end": 144,
+          "preview_text": "def send_receipt(email, total):"
+        },
+        {
+          "block_id": 9,
+          "reason": "semantic",
+          "stage_a_score": 0.6025376915931702,
+          "stage_b_score": 1.0,
+          "final_score": 0.8025376915931701,
+          "token_start": 144,
+          "token_end": 160,
+          "preview_text": "print(\"sending receipt\") def checkout(items, user):"
+        },
+        {
+          "block_id": 10,
+          "reason": "recent",
+          "stage_a_score": 0.6034420728683472,
+          "stage_b_score": 0.875,
+          "final_score": 0.7784420728683472,
+          "token_start": 160,
+          "token_end": 176,
+          "preview_text": "validate_user(user) total = calculate"
+        },
+        {
+          "block_id": 11,
+          "reason": "recent",
+          "stage_a_score": 0.030200548470020294,
+          "stage_b_score": 0.25,
+          "final_score": 0.0802005484700203,
+          "token_start": 176,
+          "token_end": 192,
+          "preview_text": "_total(items) send_receipt(user"
+        },
+        {
+          "block_id": 12,
+          "reason": "recent",
+          "stage_a_score": 0.6199498772621155,
+          "stage_b_score": 1.0,
+          "final_score": 0.8199498772621154,
+          "token_start": 192,
+          "token_end": 208,
+          "preview_text": "[\"email\"], total) return total Question:"
+        },
+        {
+          "block_id": 13,
+          "reason": "recent",
+          "stage_a_score": 0.1003590077161789,
+          "stage_b_score": 0.0625,
+          "final_score": 0.11285900771617889,
+          "token_start": 208,
+          "token_end": 216,
+          "preview_text": "Which function computes the cart total?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 6.709597073495388e-07,
+        "prefill_sec": 0.019957733049523085,
+        "metadata_sec": 0.06979586195666343,
+        "selector_sec": 0.007175664999522269,
+        "inspection_sec": 0.0034300650004297495,
+        "total_sec": 0.10048920899862424
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0016463398933410645,
+      "normalized_margin": 0.002120838124882099
+    },
+    {
+      "prompt": "adversarial_semantic",
+      "prompt_file": "prompts/adverserial_semantic.txt",
+      "representation_source": "avg_last4_hidden",
+      "layer_index": null,
+      "representation_name": "avg_last3_hidden",
+      "tokens": 85,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        4,
+        3,
+        2,
+        0,
+        1
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "2": "recent",
+        "3": "recent",
+        "4": "recent",
+        "5": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.5184295177459717,
+          "stage_b_score": 0.640625,
+          "final_score": 0.6465545177459717,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "The storage engine uses AES-128 for temporary transport sessions. The backup"
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.6029500961303711,
+          "stage_b_score": 1.0,
+          "final_score": 0.802950096130371,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "archive pipeline uses AES-256-GCM for long-term storage."
+        },
+        {
+          "block_id": 2,
+          "reason": "recent",
+          "stage_a_score": 0.00627869414165616,
+          "stage_b_score": 0.1875,
+          "final_score": 0.043778694141656166,
+          "token_start": 32,
+          "token_end": 48,
+          "preview_text": "The web session cookie uses rotating signed tokens. The mobile sync channel"
+        },
+        {
+          "block_id": 3,
+          "reason": "recent",
+          "stage_a_score": 0.6075452566146851,
+          "stage_b_score": 0.875,
+          "final_score": 0.7825452566146851,
+          "token_start": 48,
+          "token_end": 64,
+          "preview_text": "uses TLS 1.3. The temporary staging cache uses short-lived"
+        },
+        {
+          "block_id": 4,
+          "reason": "recent",
+          "stage_a_score": 0.03879139944911003,
+          "stage_b_score": 0.203125,
+          "final_score": 0.07941639944911003,
+          "token_start": 64,
+          "token_end": 80,
+          "preview_text": "encrypted blobs. Question: What encryption method is used for long"
+        },
+        {
+          "block_id": 5,
+          "reason": "recent",
+          "stage_a_score": 0.6998591423034668,
+          "stage_b_score": 1.0,
+          "final_score": 0.8998591423034668,
+          "token_start": 80,
+          "token_end": 85,
+          "preview_text": "-term archive storage?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 1.1430238373577595e-06,
+        "prefill_sec": 0.03197485598502681,
+        "metadata_sec": 0.034530356992036104,
+        "selector_sec": 0.01206368999555707,
+        "inspection_sec": 0.0017802990041673183,
+        "total_sec": 0.08043340500444174
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0,
+      "normalized_margin": null
+    },
+    {
+      "prompt": "long_reference",
+      "prompt_file": "prompts/long_reference.txt",
+      "representation_source": "avg_mid4_hidden",
+      "layer_index": null,
+      "representation_name": "avg_mid_hidden_0_2",
+      "tokens": 194,
+      "blocks": 13,
+      "selected_ids": [
+        12,
+        11,
+        10,
+        9,
+        0,
+        1,
+        7,
+        6,
+        2,
+        5
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "2": "semantic",
+        "5": "semantic",
+        "6": "semantic",
+        "7": "semantic",
+        "9": "recent",
+        "10": "recent",
+        "11": "recent",
+        "12": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.0029062600806355476,
+          "stage_b_score": 0.1875,
+          "final_score": 0.04040626008063555,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "Project Atlas is a distributed analytics platform used by several internal teams. The"
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.5984976291656494,
+          "stage_b_score": 0.875,
+          "final_score": 0.7734976291656495,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "ingestion layer receives CSV, JSON, and streaming telemetry data. Files are validated"
+        },
+        {
+          "block_id": 2,
+          "reason": "semantic",
+          "stage_a_score": 0.5996884703636169,
+          "stage_b_score": 0.875,
+          "final_score": 0.774688470363617,
+          "token_start": 32,
+          "token_end": 48,
+          "preview_text": ", normalized, and routed into storage buckets. The compute layer runs batch"
+        },
+        {
+          "block_id": 5,
+          "reason": "semantic",
+          "stage_a_score": 0.5976486802101135,
+          "stage_b_score": 0.875,
+          "final_score": 0.7726486802101136,
+          "token_start": 80,
+          "token_end": 96,
+          "preview_text": ". The user dashboard shows job status, data freshness, and alert"
+        },
+        {
+          "block_id": 6,
+          "reason": "semantic",
+          "stage_a_score": 0.6003726124763489,
+          "stage_b_score": 0.96875,
+          "final_score": 0.7941226124763489,
+          "token_start": 96,
+          "token_end": 112,
+          "preview_text": "history. Many teams requested stronger role-based access control and better query"
+        },
+        {
+          "block_id": 7,
+          "reason": "semantic",
+          "stage_a_score": 0.602523922920227,
+          "stage_b_score": 1.0,
+          "final_score": 0.802523922920227,
+          "token_start": 112,
+          "token_end": 128,
+          "preview_text": "logging. The current encryption standard for archival backups is AES-256"
+        },
+        {
+          "block_id": 9,
+          "reason": "recent",
+          "stage_a_score": 0.6045644283294678,
+          "stage_b_score": 1.0,
+          "final_score": 0.8045644283294677,
+          "token_start": 144,
+          "token_end": 160,
+          "preview_text": "-quarter reporting. The next roadmap item is cross-region failover"
+        },
+        {
+          "block_id": 10,
+          "reason": "recent",
+          "stage_a_score": 0.6090089082717896,
+          "stage_b_score": 1.0,
+          "final_score": 0.8090089082717895,
+          "token_start": 160,
+          "token_end": 176,
+          "preview_text": ". The compliance review noted that audit events older than 18 months are being"
+        },
+        {
+          "block_id": 11,
+          "reason": "recent",
+          "stage_a_score": 0.6498523950576782,
+          "stage_b_score": 1.0,
+          "final_score": 0.8498523950576782,
+          "token_start": 176,
+          "token_end": 192,
+          "preview_text": "purged. Question: What encryption standard is used for archival"
+        },
+        {
+          "block_id": 12,
+          "reason": "recent",
+          "stage_a_score": 0.6999506950378418,
+          "stage_b_score": 1.0,
+          "final_score": 0.8999506950378418,
+          "token_start": 192,
+          "token_end": 194,
+          "preview_text": "backups?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 7.050111889839172e-07,
+        "prefill_sec": 0.017387970990967005,
+        "metadata_sec": 0.06927297997754067,
+        "selector_sec": 0.006857116997707635,
+        "inspection_sec": 0.002009322983212769,
+        "total_sec": 0.09565771999768913
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": 0.7310378768481315,
+      "normalized_margin": 0.9461452476037797
+    },
+    {
+      "prompt": "needle",
+      "prompt_file": "prompts/needle.txt",
+      "representation_source": "avg_mid4_hidden",
+      "layer_index": null,
+      "representation_name": "avg_mid_hidden_0_2",
+      "tokens": 92,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        4,
+        3,
+        2,
+        0,
+        1
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "2": "recent",
+        "3": "recent",
+        "4": "recent",
+        "5": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.6021286249160767,
+          "stage_b_score": 0.9375,
+          "final_score": 0.7896286249160767,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "System logs: request accepted cache warmup started index rebuilt heart"
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.5373598337173462,
+          "stage_b_score": 0.765625,
+          "final_score": 0.6904848337173461,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "beat normal latency nominal replica synced archive prepared diagn"
+        },
+        {
+          "block_id": 2,
+          "reason": "recent",
+          "stage_a_score": 0.004664505831897259,
+          "stage_b_score": 0.0625,
+          "final_score": 0.01716450583189726,
+          "token_start": 32,
+          "token_end": 48,
+          "preview_text": "ostics complete Reference token: ZXQ-4917-BETA"
+        },
+        {
+          "block_id": 3,
+          "reason": "recent",
+          "stage_a_score": 0.013246269896626472,
+          "stage_b_score": 0.125,
+          "final_score": 0.038246269896626474,
+          "token_start": 48,
+          "token_end": 64,
+          "preview_text": "Additional logs: session opened session closed background merge complete"
+        },
+        {
+          "block_id": 4,
+          "reason": "recent",
+          "stage_a_score": 0.6142742037773132,
+          "stage_b_score": 1.0,
+          "final_score": 0.8142742037773132,
+          "token_start": 64,
+          "token_end": 80,
+          "preview_text": "retry queue empty cpu stable memory stable io stable all services"
+        },
+        {
+          "block_id": 5,
+          "reason": "recent",
+          "stage_a_score": 0.6999558210372925,
+          "stage_b_score": 1.0,
+          "final_score": 0.8999558210372924,
+          "token_start": 80,
+          "token_end": 92,
+          "preview_text": "nominal Question: What was the reference token?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 6.220070645213127e-07,
+        "prefill_sec": 0.008261125010903925,
+        "metadata_sec": 0.026307681982871145,
+        "selector_sec": 0.0060992949875071645,
+        "inspection_sec": 0.0018779379897750914,
+        "total_sec": 0.04263048799475655
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0,
+      "normalized_margin": null
+    },
+    {
+      "prompt": "repeated_reference",
+      "prompt_file": "prompts/repeated_reference.txt",
+      "representation_source": "avg_mid4_hidden",
+      "layer_index": null,
+      "representation_name": "avg_mid_hidden_0_2",
+      "tokens": 129,
+      "blocks": 9,
+      "selected_ids": [
+        8,
+        7,
+        6,
+        5,
+        0,
+        1,
+        2,
+        4,
+        3
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "2": "semantic",
+        "3": "semantic",
+        "4": "semantic",
+        "5": "recent",
+        "6": "recent",
+        "7": "recent",
+        "8": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.00825861468911171,
+          "stage_b_score": 0.1875,
+          "final_score": 0.045758614689111715,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "The patient\u2019s baseline ferritin level was 22 ng/mL."
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.601137638092041,
+          "stage_b_score": 1.0,
+          "final_score": 0.801137638092041,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "The user began supplementation with iron bisglycinate and vitamin C."
+        },
+        {
+          "block_id": 2,
+          "reason": "semantic",
+          "stage_a_score": 0.6011236310005188,
+          "stage_b_score": 0.875,
+          "final_score": 0.7761236310005188,
+          "token_start": 32,
+          "token_end": 48,
+          "preview_text": "Weekly logs showed improved energy, fewer headaches, and better exercise tolerance"
+        },
+        {
+          "block_id": 3,
+          "reason": "semantic",
+          "stage_a_score": 0.006275751627981663,
+          "stage_b_score": 0.09375,
+          "final_score": 0.025025751627981666,
+          "token_start": 48,
+          "token_end": 64,
+          "preview_text": ". Additional notes covered sleep quality, hydration, and meal timing."
+        },
+        {
+          "block_id": 4,
+          "reason": "semantic",
+          "stage_a_score": 0.005442989524453878,
+          "stage_b_score": 0.1875,
+          "final_score": 0.042942989524453884,
+          "token_start": 64,
+          "token_end": 80,
+          "preview_text": "Several pages of progress notes followed discussing unrelated biomarkers such as magnes..."
+        },
+        {
+          "block_id": 5,
+          "reason": "recent",
+          "stage_a_score": 0.5924631953239441,
+          "stage_b_score": 0.8125,
+          "final_score": 0.7549631953239441,
+          "token_start": 80,
+          "token_end": 96,
+          "preview_text": "B12, sodium, potassium, CRP, ALT, AST, and"
+        },
+        {
+          "block_id": 6,
+          "reason": "recent",
+          "stage_a_score": 0.6095504760742188,
+          "stage_b_score": 0.9375,
+          "final_score": 0.7970504760742188,
+          "token_start": 96,
+          "token_end": 112,
+          "preview_text": "vitamin D. Later consultation notes discussed exercise adherence and stress reduction."
+        },
+        {
+          "block_id": 7,
+          "reason": "recent",
+          "stage_a_score": 0.07449182122945786,
+          "stage_b_score": 0.1875,
+          "final_score": 0.11199182122945786,
+          "token_start": 112,
+          "token_end": 128,
+          "preview_text": "Question: What was the patient\u2019s baseline ferritin level"
+        },
+        {
+          "block_id": 8,
+          "reason": "recent",
+          "stage_a_score": 0.7000000476837158,
+          "stage_b_score": 1.0,
+          "final_score": 0.9000000476837158,
+          "token_start": 128,
+          "token_end": 129,
+          "preview_text": "?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 1.401000190526247e-06,
+        "prefill_sec": 0.02075245400192216,
+        "metadata_sec": 0.041227649024222046,
+        "selector_sec": 0.004161202989052981,
+        "inspection_sec": 0.002550114004407078,
+        "total_sec": 0.06875574099831283
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": Infinity,
+      "normalized_margin": null
+    },
+    {
+      "prompt": "code_context",
+      "prompt_file": "prompts/code_context.txt",
+      "representation_source": "avg_mid4_hidden",
+      "layer_index": null,
+      "representation_name": "avg_mid_hidden_0_2",
+      "tokens": 216,
+      "blocks": 14,
+      "selected_ids": [
+        13,
+        12,
+        11,
+        10,
+        0,
+        1,
+        9,
+        7,
+        6,
+        8
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "6": "semantic",
+        "7": "semantic",
+        "8": "semantic",
+        "9": "semantic",
+        "10": "recent",
+        "11": "recent",
+        "12": "recent",
+        "13": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.0025444035418331623,
+          "stage_b_score": 0.1875,
+          "final_score": 0.04004440354183317,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "def load_config(path): with open(path)"
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.0013193320482969284,
+          "stage_b_score": 0.0625,
+          "final_score": 0.013819332048296929,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "as f: return json.load("
+        },
+        {
+          "block_id": 6,
+          "reason": "semantic",
+          "stage_a_score": 0.6006757616996765,
+          "stage_b_score": 0.9375,
+          "final_score": 0.7881757616996765,
+          "token_start": 96,
+          "token_end": 112,
+          "preview_text": "for item in items: total += item"
+        },
+        {
+          "block_id": 7,
+          "reason": "semantic",
+          "stage_a_score": 0.6011152863502502,
+          "stage_b_score": 1.0,
+          "final_score": 0.8011152863502502,
+          "token_start": 112,
+          "token_end": 128,
+          "preview_text": "[\"price\"] * item[\"qty\"] return total"
+        },
+        {
+          "block_id": 8,
+          "reason": "semantic",
+          "stage_a_score": 0.6012685298919678,
+          "stage_b_score": 0.875,
+          "final_score": 0.7762685298919678,
+          "token_start": 128,
+          "token_end": 144,
+          "preview_text": "def send_receipt(email, total):"
+        },
+        {
+          "block_id": 9,
+          "reason": "semantic",
+          "stage_a_score": 0.6025376915931702,
+          "stage_b_score": 1.0,
+          "final_score": 0.8025376915931701,
+          "token_start": 144,
+          "token_end": 160,
+          "preview_text": "print(\"sending receipt\") def checkout(items, user):"
+        },
+        {
+          "block_id": 10,
+          "reason": "recent",
+          "stage_a_score": 0.6034420728683472,
+          "stage_b_score": 0.875,
+          "final_score": 0.7784420728683472,
+          "token_start": 160,
+          "token_end": 176,
+          "preview_text": "validate_user(user) total = calculate"
+        },
+        {
+          "block_id": 11,
+          "reason": "recent",
+          "stage_a_score": 0.030200548470020294,
+          "stage_b_score": 0.25,
+          "final_score": 0.0802005484700203,
+          "token_start": 176,
+          "token_end": 192,
+          "preview_text": "_total(items) send_receipt(user"
+        },
+        {
+          "block_id": 12,
+          "reason": "recent",
+          "stage_a_score": 0.6199498772621155,
+          "stage_b_score": 1.0,
+          "final_score": 0.8199498772621154,
+          "token_start": 192,
+          "token_end": 208,
+          "preview_text": "[\"email\"], total) return total Question:"
+        },
+        {
+          "block_id": 13,
+          "reason": "recent",
+          "stage_a_score": 0.1003590077161789,
+          "stage_b_score": 0.0625,
+          "final_score": 0.11285900771617889,
+          "token_start": 208,
+          "token_end": 216,
+          "preview_text": "Which function computes the cart total?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 1.0409858077764511e-06,
+        "prefill_sec": 0.016187527042347938,
+        "metadata_sec": 0.07228393596597016,
+        "selector_sec": 0.005042997014243156,
+        "inspection_sec": 0.0029598019900731742,
+        "total_sec": 0.0965453019598499
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0016463398933410645,
+      "normalized_margin": 0.002120838124882099
+    },
+    {
+      "prompt": "adversarial_semantic",
+      "prompt_file": "prompts/adverserial_semantic.txt",
+      "representation_source": "avg_mid4_hidden",
+      "layer_index": null,
+      "representation_name": "avg_mid_hidden_0_2",
+      "tokens": 85,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        4,
+        3,
+        2,
+        0,
+        1
+      ],
+      "selected_reasons": {
+        "0": "anchor",
+        "1": "anchor",
+        "2": "recent",
+        "3": "recent",
+        "4": "recent",
+        "5": "recent"
+      },
+      "selected_scores": [
+        {
+          "block_id": 0,
+          "reason": "anchor",
+          "stage_a_score": 0.5184295177459717,
+          "stage_b_score": 0.640625,
+          "final_score": 0.6465545177459717,
+          "token_start": 0,
+          "token_end": 16,
+          "preview_text": "The storage engine uses AES-128 for temporary transport sessions. The backup"
+        },
+        {
+          "block_id": 1,
+          "reason": "anchor",
+          "stage_a_score": 0.6029500961303711,
+          "stage_b_score": 1.0,
+          "final_score": 0.802950096130371,
+          "token_start": 16,
+          "token_end": 32,
+          "preview_text": "archive pipeline uses AES-256-GCM for long-term storage."
+        },
+        {
+          "block_id": 2,
+          "reason": "recent",
+          "stage_a_score": 0.00627869414165616,
+          "stage_b_score": 0.1875,
+          "final_score": 0.043778694141656166,
+          "token_start": 32,
+          "token_end": 48,
+          "preview_text": "The web session cookie uses rotating signed tokens. The mobile sync channel"
+        },
+        {
+          "block_id": 3,
+          "reason": "recent",
+          "stage_a_score": 0.6075452566146851,
+          "stage_b_score": 0.875,
+          "final_score": 0.7825452566146851,
+          "token_start": 48,
+          "token_end": 64,
+          "preview_text": "uses TLS 1.3. The temporary staging cache uses short-lived"
+        },
+        {
+          "block_id": 4,
+          "reason": "recent",
+          "stage_a_score": 0.03879139944911003,
+          "stage_b_score": 0.203125,
+          "final_score": 0.07941639944911003,
+          "token_start": 64,
+          "token_end": 80,
+          "preview_text": "encrypted blobs. Question: What encryption method is used for long"
+        },
+        {
+          "block_id": 5,
+          "reason": "recent",
+          "stage_a_score": 0.6998591423034668,
+          "stage_b_score": 1.0,
+          "final_score": 0.8998591423034668,
+          "token_start": 80,
+          "token_end": 85,
+          "preview_text": "-term archive storage?"
+        }
+      ],
+      "latency": {
+        "model_load_sec": 7.659546099603176e-07,
+        "prefill_sec": 0.009624682017602026,
+        "metadata_sec": 0.03074578003725037,
+        "selector_sec": 0.0048628089716658,
+        "inspection_sec": 0.0012460509897209704,
+        "total_sec": 0.046552930027246475
+      },
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0,
+      "normalized_margin": null
+    }
+  ]
+}

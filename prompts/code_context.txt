@@ -1,0 +1,26 @@
+def load_config(path):
+    with open(path) as f:
+        return json.load(f)
+
+def validate_user(user):
+    if "email" not in user:
+        raise ValueError("missing email")
+    return True
+
+def calculate_total(items):
+    total = 0
+    for item in items:
+        total += item["price"] * item["qty"]
+    return total
+
+def send_receipt(email, total):
+    print("sending receipt")
+
+def checkout(items, user):
+    validate_user(user)
+    total = calculate_total(items)
+    send_receipt(user["email"], total)
+    return total
+
+Question:
+Which function computes the cart total?

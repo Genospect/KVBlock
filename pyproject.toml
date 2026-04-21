@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kvblock"
+version = "0.1.0"
+description = "Initial scaffold for block-sparse KV cache experiments."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "torch>=2.0",
+]
+
+[project.optional-dependencies]
+hf = ["transformers>=4.0"]
+test = ["pytest>=8.0"]
+yaml = ["PyYAML>=6.0"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

@@ -1,0 +1,24 @@
+System logs:
+request accepted
+cache warmup started
+index rebuilt
+heartbeat normal
+latency nominal
+replica synced
+archive prepared
+diagnostics complete
+
+Reference token: ZXQ-4917-BETA
+
+Additional logs:
+session opened
+session closed
+background merge complete
+retry queue empty
+cpu stable
+memory stable
+io stable
+all services nominal
+
+Question:
+What was the reference token?

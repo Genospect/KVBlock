@@ -1,0 +1,360 @@
+REPRESENTATION SOURCE PROMPT SWEEP
+model=sshleifer/tiny-gpt2
+block_size=16 shortlist_m=16 semantic_k=4 confidence_margin=0.0
+hidden_layer_index uses layer_index=1
+model_preload_sec=9.698158
+
+PROMPT=long_reference SOURCE=final_hidden REPRESENTATION=final_hidden
+tokens=194 blocks=13 fallback_mode=sparse raw_margin=0.7600052621215582
+latency total=1.943809s prefill=1.872031s metadata=0.060764s selector=0.008595s inspection=0.002278s
+selected_ids=[12, 11, 10, 9, 0, 1, 7, 6, 5, 2]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.001111 stage_b=0.187500 final=0.038611 tokens=0:16 text='Project Atlas is a distributed analytics platform used by several internal teams. The'
+  id=1 reason=anchor stage_a=0.601220 stage_b=1.000000 final=0.801220 tokens=16:32 text='ingestion layer receives CSV, JSON, and streaming telemetry data. Files are validated'
+  id=2 reason=semantic stage_a=0.601351 stage_b=1.000000 final=0.801351 tokens=32:48 text=', normalized, and routed into storage buckets. The compute layer runs batch'
+  id=5 reason=semantic stage_a=0.602000 stage_b=1.000000 final=0.802000 tokens=80:96 text='. The user dashboard shows job status, data freshness, and alert'
+  id=6 reason=semantic stage_a=0.602381 stage_b=1.000000 final=0.802381 tokens=96:112 text='history. Many teams requested stronger role-based access control and better query'
+  id=7 reason=semantic stage_a=0.602941 stage_b=1.000000 final=0.802941 tokens=112:128 text='logging. The current encryption standard for archival backups is AES-256'
+  id=9 reason=recent stage_a=0.605556 stage_b=1.000000 final=0.805556 tokens=144:160 text='-quarter reporting. The next roadmap item is cross-region failover'
+  id=10 reason=recent stage_a=0.610000 stage_b=1.000000 final=0.810000 tokens=160:176 text='. The compliance review noted that audit events older than 18 months are being'
+  id=11 reason=recent stage_a=0.650000 stage_b=1.000000 final=0.850000 tokens=176:192 text='purged. Question: What encryption standard is used for archival'
+  id=12 reason=recent stage_a=0.700000 stage_b=1.000000 final=0.900000 tokens=192:194 text='backups?'
+
+PROMPT=needle SOURCE=final_hidden REPRESENTATION=final_hidden
+tokens=92 blocks=6 fallback_mode=sparse raw_margin=0.0
+latency total=0.063116s prefill=0.023393s metadata=0.033254s selector=0.005237s inspection=0.001143s
+selected_ids=[5, 4, 3, 2, 0, 1]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.602564 stage_b=1.000000 final=0.802564 tokens=0:16 text='System logs: request accepted cache warmup started index rebuilt heart'
+  id=1 reason=anchor stage_a=0.603226 stage_b=1.000000 final=0.803226 tokens=16:32 text='beat normal latency nominal replica synced archive prepared diagn'
+  id=2 reason=recent stage_a=0.004348 stage_b=0.187500 final=0.041848 tokens=32:48 text='ostics complete Reference token: ZXQ-4917-BETA'
+  id=3 reason=recent stage_a=0.006667 stage_b=0.187500 final=0.044167 tokens=48:64 text='Additional logs: session opened session closed background merge complete'
+  id=4 reason=recent stage_a=0.614286 stage_b=1.000000 final=0.814286 tokens=64:80 text='retry queue empty cpu stable memory stable io stable all services'
+  id=5 reason=recent stage_a=0.700000 stage_b=1.000000 final=0.900000 tokens=80:92 text='nominal Question: What was the reference token?'
+
+PROMPT=repeated_reference SOURCE=final_hidden REPRESENTATION=final_hidden
+tokens=129 blocks=9 fallback_mode=sparse raw_margin=inf
+latency total=0.066918s prefill=0.010891s metadata=0.046319s selector=0.006522s inspection=0.003112s
+selected_ids=[8, 7, 6, 5, 0, 1, 2, 4, 3]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.001739 stage_b=0.187500 final=0.039239 tokens=0:16 text='The patient’s baseline ferritin level was 22 ng/mL.'
+  id=1 reason=anchor stage_a=0.602020 stage_b=1.000000 final=0.802020 tokens=16:32 text='The user began supplementation with iron bisglycinate and vitamin C.'
+  id=2 reason=semantic stage_a=0.602410 stage_b=1.000000 final=0.802410 tokens=32:48 text='Weekly logs showed improved energy, fewer headaches, and better exercise tolerance'
+  id=3 reason=semantic stage_a=0.002985 stage_b=0.187500 final=0.040485 tokens=48:64 text='. Additional notes covered sleep quality, hydration, and meal timing.'
+  id=4 reason=semantic stage_a=0.003922 stage_b=0.187500 final=0.041422 tokens=64:80 text='Several pages of progress notes followed discussing unrelated biomarkers such as magnes...'
+  id=5 reason=recent stage_a=0.605714 stage_b=1.000000 final=0.805714 tokens=80:96 text='B12, sodium, potassium, CRP, ALT, AST, and'
+  id=6 reason=recent stage_a=0.610526 stage_b=1.000000 final=0.810526 tokens=96:112 text='vitamin D. Later consultation notes discussed exercise adherence and stress reduction.'
+  id=7 reason=recent stage_a=0.066667 stage_b=0.187500 final=0.104167 tokens=112:128 text='Question: What was the patient’s baseline ferritin level'
+  id=8 reason=recent stage_a=0.700000 stage_b=1.000000 final=0.900000 tokens=128:129 text='?'
+
+PROMPT=code_context SOURCE=final_hidden REPRESENTATION=final_hidden
+tokens=216 blocks=14 fallback_mode=sparse raw_margin=0.0002474188804626465
+latency total=0.139095s prefill=0.054014s metadata=0.077511s selector=0.005184s inspection=0.002298s
+selected_ids=[13, 12, 11, 10, 0, 1, 9, 8, 7, 6]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.000990 stage_b=0.187500 final=0.038490 tokens=0:16 text='def load_config(path): with open(path)'
+  id=1 reason=anchor stage_a=0.001075 stage_b=0.187500 final=0.038575 tokens=16:32 text='as f: return json.load('
+  id=6 reason=semantic stage_a=0.601887 stage_b=1.000000 final=0.801887 tokens=96:112 text='for item in items: total += item'
+  id=7 reason=semantic stage_a=0.602222 stage_b=1.000000 final=0.802222 tokens=112:128 text='["price"] * item["qty"] return total'
+  id=8 reason=semantic stage_a=0.602703 stage_b=1.000000 final=0.802703 tokens=128:144 text='def send_receipt(email, total):'
+  id=9 reason=semantic stage_a=0.603448 stage_b=1.000000 final=0.803448 tokens=144:160 text='print("sending receipt") def checkout(items, user):'
+  id=10 reason=recent stage_a=0.604762 stage_b=1.000000 final=0.804762 tokens=160:176 text='validate_user(user) total = calculate'
+  id=11 reason=recent stage_a=0.007692 stage_b=0.187500 final=0.045192 tokens=176:192 text='_total(items) send_receipt(user'
+  id=12 reason=recent stage_a=0.620000 stage_b=1.000000 final=0.820000 tokens=192:208 text='["email"], total) return total Question:'
+  id=13 reason=recent stage_a=0.100000 stage_b=0.187500 final=0.137500 tokens=208:216 text='Which function computes the cart total?'
+
+PROMPT=adversarial_semantic SOURCE=final_hidden REPRESENTATION=final_hidden
+tokens=85 blocks=6 fallback_mode=sparse raw_margin=0.0
+latency total=0.047531s prefill=0.010427s metadata=0.030898s selector=0.004867s inspection=0.001277s
+selected_ids=[5, 4, 3, 2, 0, 1]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.002817 stage_b=0.187500 final=0.040317 tokens=0:16 text='The storage engine uses AES-128 for temporary transport sessions. The backup'
+  id=1 reason=anchor stage_a=0.603636 stage_b=1.000000 final=0.803636 tokens=16:32 text='archive pipeline uses AES-256-GCM for long-term storage.'
+  id=2 reason=recent stage_a=0.005128 stage_b=0.187500 final=0.042628 tokens=32:48 text='The web session cookie uses rotating signed tokens. The mobile sync channel'
+  id=3 reason=recent stage_a=0.608696 stage_b=1.000000 final=0.808696 tokens=48:64 text='uses TLS 1.3. The temporary staging cache uses short-lived'
+  id=4 reason=recent stage_a=0.028571 stage_b=0.187500 final=0.066071 tokens=64:80 text='encrypted blobs. Question: What encryption method is used for long'
+  id=5 reason=recent stage_a=0.700000 stage_b=1.000000 final=0.900000 tokens=80:85 text='-term archive storage?'
+
+PROMPT=long_reference SOURCE=hidden_layer_index REPRESENTATION=hidden_layer_1
+tokens=194 blocks=13 fallback_mode=sparse raw_margin=0.1700871646404266
+latency total=0.111114s prefill=0.035144s metadata=0.065613s selector=0.005476s inspection=0.004800s
+selected_ids=[12, 11, 10, 9, 0, 1, 7, 6, 4, 3]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.397823 stage_b=0.671875 final=0.532198 tokens=0:16 text='Project Atlas is a distributed analytics platform used by several internal teams. The'
+  id=1 reason=anchor stage_a=0.195750 stage_b=0.343750 final=0.264500 tokens=16:32 text='ingestion layer receives CSV, JSON, and streaming telemetry data. Files are validated'
+  id=3 reason=semantic stage_a=0.454404 stage_b=0.687500 final=0.591904 tokens=48:64 text='transforms every hour and can also launch ad-hoc jobs for analysts.'
+  id=4 reason=semantic stage_a=0.456636 stage_b=0.687500 final=0.594136 tokens=64:80 text='The metadata service tracks ownership, retention rules, schemas, and audit events'
+  id=6 reason=semantic stage_a=0.523605 stage_b=0.843750 final=0.692355 tokens=96:112 text='history. Many teams requested stronger role-based access control and better query'
+  id=7 reason=semantic stage_a=0.559851 stage_b=0.906250 final=0.741101 tokens=112:128 text='logging. The current encryption standard for archival backups is AES-256'
+  id=9 reason=recent stage_a=0.454746 stage_b=0.796875 final=0.614121 tokens=144:160 text='-quarter reporting. The next roadmap item is cross-region failover'
+  id=10 reason=recent stage_a=0.435117 stage_b=0.734375 final=0.581992 tokens=160:176 text='. The compliance review noted that audit events older than 18 months are being'
+  id=11 reason=recent stage_a=0.643949 stage_b=0.968750 final=0.837699 tokens=176:192 text='purged. Question: What encryption standard is used for archival'
+  id=12 reason=recent stage_a=0.681770 stage_b=0.921875 final=0.866145 tokens=192:194 text='backups?'
+
+PROMPT=needle SOURCE=hidden_layer_index REPRESENTATION=hidden_layer_1
+tokens=92 blocks=6 fallback_mode=sparse raw_margin=0.0
+latency total=0.052202s prefill=0.013839s metadata=0.028541s selector=0.008128s inspection=0.001632s
+selected_ids=[5, 4, 3, 2, 0, 1]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.382727 stage_b=0.484375 final=0.479602 tokens=0:16 text='System logs: request accepted cache warmup started index rebuilt heart'
+  id=1 reason=anchor stage_a=0.084702 stage_b=0.218750 final=0.128452 tokens=16:32 text='beat normal latency nominal replica synced archive prepared diagn'
+  id=2 reason=recent stage_a=0.146195 stage_b=0.390625 final=0.224320 tokens=32:48 text='ostics complete Reference token: ZXQ-4917-BETA'
+  id=3 reason=recent stage_a=0.009688 stage_b=0.078125 final=0.025313 tokens=48:64 text='Additional logs: session opened session closed background merge complete'
+  id=4 reason=recent stage_a=0.549643 stage_b=0.843750 final=0.718393 tokens=64:80 text='retry queue empty cpu stable memory stable io stable all services'
+  id=5 reason=recent stage_a=0.638878 stage_b=0.812500 final=0.801378 tokens=80:92 text='nominal Question: What was the reference token?'
+
+PROMPT=repeated_reference SOURCE=hidden_layer_index REPRESENTATION=hidden_layer_1
+tokens=129 blocks=9 fallback_mode=sparse raw_margin=inf
+latency total=0.069002s prefill=0.019715s metadata=0.040848s selector=0.005637s inspection=0.002723s
+selected_ids=[8, 7, 6, 5, 0, 1, 4, 2, 3]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.357858 stage_b=0.656250 final=0.489108 tokens=0:16 text='The patient’s baseline ferritin level was 22 ng/mL.'
+  id=1 reason=anchor stage_a=0.409857 stage_b=0.703125 final=0.550482 tokens=16:32 text='The user began supplementation with iron bisglycinate and vitamin C.'
+  id=2 reason=semantic stage_a=0.321199 stage_b=0.515625 final=0.424324 tokens=32:48 text='Weekly logs showed improved energy, fewer headaches, and better exercise tolerance'
+  id=3 reason=semantic stage_a=0.004289 stage_b=0.093750 final=0.023039 tokens=48:64 text='. Additional notes covered sleep quality, hydration, and meal timing.'
+  id=4 reason=semantic stage_a=0.360041 stage_b=0.656250 final=0.491291 tokens=64:80 text='Several pages of progress notes followed discussing unrelated biomarkers such as magnes...'
+  id=5 reason=recent stage_a=0.043027 stage_b=0.171875 final=0.077402 tokens=80:96 text='B12, sodium, potassium, CRP, ALT, AST, and'
+  id=6 reason=recent stage_a=0.265645 stage_b=0.484375 final=0.362520 tokens=96:112 text='vitamin D. Later consultation notes discussed exercise adherence and stress reduction.'
+  id=7 reason=recent stage_a=0.602325 stage_b=0.875000 final=0.777325 tokens=112:128 text='Question: What was the patient’s baseline ferritin level'
+  id=8 reason=recent stage_a=0.700000 stage_b=1.000000 final=0.900000 tokens=128:129 text='?'
+
+PROMPT=code_context SOURCE=hidden_layer_index REPRESENTATION=hidden_layer_1
+tokens=216 blocks=14 fallback_mode=sparse raw_margin=0.08519458174705508
+latency total=0.092376s prefill=0.019247s metadata=0.061453s selector=0.006492s inspection=0.005097s
+selected_ids=[13, 12, 11, 10, 0, 1, 9, 7, 4, 6]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.215907 stage_b=0.500000 final=0.315907 tokens=0:16 text='def load_config(path): with open(path)'
+  id=1 reason=anchor stage_a=0.422648 stage_b=0.625000 final=0.547648 tokens=16:32 text='as f: return json.load('
+  id=4 reason=semantic stage_a=0.519552 stage_b=0.843750 final=0.688302 tokens=64:80 text='ValueError("missing email") return True def calculate'
+  id=6 reason=semantic stage_a=0.460592 stage_b=0.750000 final=0.610592 tokens=96:112 text='for item in items: total += item'
+  id=7 reason=semantic stage_a=0.547008 stage_b=0.843750 final=0.715758 tokens=112:128 text='["price"] * item["qty"] return total'
+  id=9 reason=semantic stage_a=0.576746 stage_b=0.859375 final=0.748621 tokens=144:160 text='print("sending receipt") def checkout(items, user):'
+  id=10 reason=recent stage_a=0.419711 stage_b=0.625000 final=0.544711 tokens=160:176 text='validate_user(user) total = calculate'
+  id=11 reason=recent stage_a=0.459481 stage_b=0.812500 final=0.621981 tokens=176:192 text='_total(items) send_receipt(user'
+  id=12 reason=recent stage_a=0.605858 stage_b=0.859375 final=0.777733 tokens=192:208 text='["email"], total) return total Question:'
+  id=13 reason=recent stage_a=0.134726 stage_b=0.203125 final=0.175351 tokens=208:216 text='Which function computes the cart total?'
+
+PROMPT=adversarial_semantic SOURCE=hidden_layer_index REPRESENTATION=hidden_layer_1
+tokens=85 blocks=6 fallback_mode=sparse raw_margin=0.0
+latency total=0.042836s prefill=0.007541s metadata=0.025831s selector=0.007238s inspection=0.002141s
+selected_ids=[5, 4, 3, 2, 0, 1]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.589941 stage_b=0.828125 final=0.755566 tokens=0:16 text='The storage engine uses AES-128 for temporary transport sessions. The backup'
+  id=1 reason=anchor stage_a=0.481133 stage_b=0.625000 final=0.606133 tokens=16:32 text='archive pipeline uses AES-256-GCM for long-term storage.'
+  id=2 reason=recent stage_a=0.243376 stage_b=0.656250 final=0.374626 tokens=32:48 text='The web session cookie uses rotating signed tokens. The mobile sync channel'
+  id=3 reason=recent stage_a=0.386671 stage_b=0.468750 final=0.480421 tokens=48:64 text='uses TLS 1.3. The temporary staging cache uses short-lived'
+  id=4 reason=recent stage_a=0.511442 stage_b=0.828125 final=0.677067 tokens=64:80 text='encrypted blobs. Question: What encryption method is used for long'
+  id=5 reason=recent stage_a=0.682722 stage_b=0.828125 final=0.848347 tokens=80:85 text='-term archive storage?'
+
+PROMPT=long_reference SOURCE=middle_hidden REPRESENTATION=middle_hidden_1
+tokens=194 blocks=13 fallback_mode=sparse raw_margin=0.1700871646404266
+latency total=0.088863s prefill=0.019506s metadata=0.061283s selector=0.003832s inspection=0.004185s
+selected_ids=[12, 11, 10, 9, 0, 1, 7, 6, 4, 3]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.397823 stage_b=0.671875 final=0.532198 tokens=0:16 text='Project Atlas is a distributed analytics platform used by several internal teams. The'
+  id=1 reason=anchor stage_a=0.195750 stage_b=0.343750 final=0.264500 tokens=16:32 text='ingestion layer receives CSV, JSON, and streaming telemetry data. Files are validated'
+  id=3 reason=semantic stage_a=0.454404 stage_b=0.687500 final=0.591904 tokens=48:64 text='transforms every hour and can also launch ad-hoc jobs for analysts.'
+  id=4 reason=semantic stage_a=0.456636 stage_b=0.687500 final=0.594136 tokens=64:80 text='The metadata service tracks ownership, retention rules, schemas, and audit events'
+  id=6 reason=semantic stage_a=0.523605 stage_b=0.843750 final=0.692355 tokens=96:112 text='history. Many teams requested stronger role-based access control and better query'
+  id=7 reason=semantic stage_a=0.559851 stage_b=0.906250 final=0.741101 tokens=112:128 text='logging. The current encryption standard for archival backups is AES-256'
+  id=9 reason=recent stage_a=0.454746 stage_b=0.796875 final=0.614121 tokens=144:160 text='-quarter reporting. The next roadmap item is cross-region failover'
+  id=10 reason=recent stage_a=0.435117 stage_b=0.734375 final=0.581992 tokens=160:176 text='. The compliance review noted that audit events older than 18 months are being'
+  id=11 reason=recent stage_a=0.643949 stage_b=0.968750 final=0.837699 tokens=176:192 text='purged. Question: What encryption standard is used for archival'
+  id=12 reason=recent stage_a=0.681770 stage_b=0.921875 final=0.866145 tokens=192:194 text='backups?'
+
+PROMPT=needle SOURCE=middle_hidden REPRESENTATION=middle_hidden_1
+tokens=92 blocks=6 fallback_mode=sparse raw_margin=0.0
+latency total=0.052636s prefill=0.022777s metadata=0.022299s selector=0.005444s inspection=0.002054s
+selected_ids=[5, 4, 3, 2, 0, 1]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.382727 stage_b=0.484375 final=0.479602 tokens=0:16 text='System logs: request accepted cache warmup started index rebuilt heart'
+  id=1 reason=anchor stage_a=0.084702 stage_b=0.218750 final=0.128452 tokens=16:32 text='beat normal latency nominal replica synced archive prepared diagn'
+  id=2 reason=recent stage_a=0.146195 stage_b=0.390625 final=0.224320 tokens=32:48 text='ostics complete Reference token: ZXQ-4917-BETA'
+  id=3 reason=recent stage_a=0.009688 stage_b=0.078125 final=0.025313 tokens=48:64 text='Additional logs: session opened session closed background merge complete'
+  id=4 reason=recent stage_a=0.549643 stage_b=0.843750 final=0.718393 tokens=64:80 text='retry queue empty cpu stable memory stable io stable all services'
+  id=5 reason=recent stage_a=0.638878 stage_b=0.812500 final=0.801378 tokens=80:92 text='nominal Question: What was the reference token?'
+
+PROMPT=repeated_reference SOURCE=middle_hidden REPRESENTATION=middle_hidden_1
+tokens=129 blocks=9 fallback_mode=sparse raw_margin=inf
+latency total=0.069859s prefill=0.023936s metadata=0.040447s selector=0.004041s inspection=0.001362s
+selected_ids=[8, 7, 6, 5, 0, 1, 4, 2, 3]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.357858 stage_b=0.656250 final=0.489108 tokens=0:16 text='The patient’s baseline ferritin level was 22 ng/mL.'
+  id=1 reason=anchor stage_a=0.409857 stage_b=0.703125 final=0.550482 tokens=16:32 text='The user began supplementation with iron bisglycinate and vitamin C.'
+  id=2 reason=semantic stage_a=0.321199 stage_b=0.515625 final=0.424324 tokens=32:48 text='Weekly logs showed improved energy, fewer headaches, and better exercise tolerance'
+  id=3 reason=semantic stage_a=0.004289 stage_b=0.093750 final=0.023039 tokens=48:64 text='. Additional notes covered sleep quality, hydration, and meal timing.'
+  id=4 reason=semantic stage_a=0.360041 stage_b=0.656250 final=0.491291 tokens=64:80 text='Several pages of progress notes followed discussing unrelated biomarkers such as magnes...'
+  id=5 reason=recent stage_a=0.043027 stage_b=0.171875 final=0.077402 tokens=80:96 text='B12, sodium, potassium, CRP, ALT, AST, and'
+  id=6 reason=recent stage_a=0.265645 stage_b=0.484375 final=0.362520 tokens=96:112 text='vitamin D. Later consultation notes discussed exercise adherence and stress reduction.'
+  id=7 reason=recent stage_a=0.602325 stage_b=0.875000 final=0.777325 tokens=112:128 text='Question: What was the patient’s baseline ferritin level'
+  id=8 reason=recent stage_a=0.700000 stage_b=1.000000 final=0.900000 tokens=128:129 text='?'
+
+PROMPT=code_context SOURCE=middle_hidden REPRESENTATION=middle_hidden_1
+tokens=216 blocks=14 fallback_mode=sparse raw_margin=0.08519458174705508
+latency total=0.090148s prefill=0.017558s metadata=0.060916s selector=0.007839s inspection=0.003743s
+selected_ids=[13, 12, 11, 10, 0, 1, 9, 7, 4, 6]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.215907 stage_b=0.500000 final=0.315907 tokens=0:16 text='def load_config(path): with open(path)'
+  id=1 reason=anchor stage_a=0.422648 stage_b=0.625000 final=0.547648 tokens=16:32 text='as f: return json.load('
+  id=4 reason=semantic stage_a=0.519552 stage_b=0.843750 final=0.688302 tokens=64:80 text='ValueError("missing email") return True def calculate'
+  id=6 reason=semantic stage_a=0.460592 stage_b=0.750000 final=0.610592 tokens=96:112 text='for item in items: total += item'
+  id=7 reason=semantic stage_a=0.547008 stage_b=0.843750 final=0.715758 tokens=112:128 text='["price"] * item["qty"] return total'
+  id=9 reason=semantic stage_a=0.576746 stage_b=0.859375 final=0.748621 tokens=144:160 text='print("sending receipt") def checkout(items, user):'
+  id=10 reason=recent stage_a=0.419711 stage_b=0.625000 final=0.544711 tokens=160:176 text='validate_user(user) total = calculate'
+  id=11 reason=recent stage_a=0.459481 stage_b=0.812500 final=0.621981 tokens=176:192 text='_total(items) send_receipt(user'
+  id=12 reason=recent stage_a=0.605858 stage_b=0.859375 final=0.777733 tokens=192:208 text='["email"], total) return total Question:'
+  id=13 reason=recent stage_a=0.134726 stage_b=0.203125 final=0.175351 tokens=208:216 text='Which function computes the cart total?'
+
+PROMPT=adversarial_semantic SOURCE=middle_hidden REPRESENTATION=middle_hidden_1
+tokens=85 blocks=6 fallback_mode=sparse raw_margin=0.0
+latency total=0.038569s prefill=0.009591s metadata=0.021855s selector=0.005403s inspection=0.001645s
+selected_ids=[5, 4, 3, 2, 0, 1]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.589941 stage_b=0.828125 final=0.755566 tokens=0:16 text='The storage engine uses AES-128 for temporary transport sessions. The backup'
+  id=1 reason=anchor stage_a=0.481133 stage_b=0.625000 final=0.606133 tokens=16:32 text='archive pipeline uses AES-256-GCM for long-term storage.'
+  id=2 reason=recent stage_a=0.243376 stage_b=0.656250 final=0.374626 tokens=32:48 text='The web session cookie uses rotating signed tokens. The mobile sync channel'
+  id=3 reason=recent stage_a=0.386671 stage_b=0.468750 final=0.480421 tokens=48:64 text='uses TLS 1.3. The temporary staging cache uses short-lived'
+  id=4 reason=recent stage_a=0.511442 stage_b=0.828125 final=0.677067 tokens=64:80 text='encrypted blobs. Question: What encryption method is used for long'
+  id=5 reason=recent stage_a=0.682722 stage_b=0.828125 final=0.848347 tokens=80:85 text='-term archive storage?'
+
+PROMPT=long_reference SOURCE=avg_last4_hidden REPRESENTATION=avg_last3_hidden
+tokens=194 blocks=13 fallback_mode=sparse raw_margin=0.7310378768481315
+latency total=0.088942s prefill=0.025583s metadata=0.057119s selector=0.003745s inspection=0.002439s
+selected_ids=[12, 11, 10, 9, 0, 1, 7, 6, 2, 5]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.002906 stage_b=0.187500 final=0.040406 tokens=0:16 text='Project Atlas is a distributed analytics platform used by several internal teams. The'
+  id=1 reason=anchor stage_a=0.598498 stage_b=0.875000 final=0.773498 tokens=16:32 text='ingestion layer receives CSV, JSON, and streaming telemetry data. Files are validated'
+  id=2 reason=semantic stage_a=0.599688 stage_b=0.875000 final=0.774688 tokens=32:48 text=', normalized, and routed into storage buckets. The compute layer runs batch'
+  id=5 reason=semantic stage_a=0.597649 stage_b=0.875000 final=0.772649 tokens=80:96 text='. The user dashboard shows job status, data freshness, and alert'
+  id=6 reason=semantic stage_a=0.600373 stage_b=0.968750 final=0.794123 tokens=96:112 text='history. Many teams requested stronger role-based access control and better query'
+  id=7 reason=semantic stage_a=0.602524 stage_b=1.000000 final=0.802524 tokens=112:128 text='logging. The current encryption standard for archival backups is AES-256'
+  id=9 reason=recent stage_a=0.604564 stage_b=1.000000 final=0.804564 tokens=144:160 text='-quarter reporting. The next roadmap item is cross-region failover'
+  id=10 reason=recent stage_a=0.609009 stage_b=1.000000 final=0.809009 tokens=160:176 text='. The compliance review noted that audit events older than 18 months are being'
+  id=11 reason=recent stage_a=0.649852 stage_b=1.000000 final=0.849852 tokens=176:192 text='purged. Question: What encryption standard is used for archival'
+  id=12 reason=recent stage_a=0.699951 stage_b=1.000000 final=0.899951 tokens=192:194 text='backups?'
+
+PROMPT=needle SOURCE=avg_last4_hidden REPRESENTATION=avg_last3_hidden
+tokens=92 blocks=6 fallback_mode=sparse raw_margin=0.0
+latency total=0.042257s prefill=0.008148s metadata=0.027572s selector=0.004796s inspection=0.001683s
+selected_ids=[5, 4, 3, 2, 0, 1]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.602129 stage_b=0.937500 final=0.789629 tokens=0:16 text='System logs: request accepted cache warmup started index rebuilt heart'
+  id=1 reason=anchor stage_a=0.537360 stage_b=0.765625 final=0.690485 tokens=16:32 text='beat normal latency nominal replica synced archive prepared diagn'
+  id=2 reason=recent stage_a=0.004665 stage_b=0.062500 final=0.017165 tokens=32:48 text='ostics complete Reference token: ZXQ-4917-BETA'
+  id=3 reason=recent stage_a=0.013246 stage_b=0.125000 final=0.038246 tokens=48:64 text='Additional logs: session opened session closed background merge complete'
+  id=4 reason=recent stage_a=0.614274 stage_b=1.000000 final=0.814274 tokens=64:80 text='retry queue empty cpu stable memory stable io stable all services'
+  id=5 reason=recent stage_a=0.699956 stage_b=1.000000 final=0.899956 tokens=80:92 text='nominal Question: What was the reference token?'
+
+PROMPT=repeated_reference SOURCE=avg_last4_hidden REPRESENTATION=avg_last3_hidden
+tokens=129 blocks=9 fallback_mode=sparse raw_margin=inf
+latency total=0.057449s prefill=0.010961s metadata=0.041081s selector=0.003825s inspection=0.001520s
+selected_ids=[8, 7, 6, 5, 0, 1, 2, 4, 3]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.008259 stage_b=0.187500 final=0.045759 tokens=0:16 text='The patient’s baseline ferritin level was 22 ng/mL.'
+  id=1 reason=anchor stage_a=0.601138 stage_b=1.000000 final=0.801138 tokens=16:32 text='The user began supplementation with iron bisglycinate and vitamin C.'
+  id=2 reason=semantic stage_a=0.601124 stage_b=0.875000 final=0.776124 tokens=32:48 text='Weekly logs showed improved energy, fewer headaches, and better exercise tolerance'
+  id=3 reason=semantic stage_a=0.006276 stage_b=0.093750 final=0.025026 tokens=48:64 text='. Additional notes covered sleep quality, hydration, and meal timing.'
+  id=4 reason=semantic stage_a=0.005443 stage_b=0.187500 final=0.042943 tokens=64:80 text='Several pages of progress notes followed discussing unrelated biomarkers such as magnes...'
+  id=5 reason=recent stage_a=0.592463 stage_b=0.812500 final=0.754963 tokens=80:96 text='B12, sodium, potassium, CRP, ALT, AST, and'
+  id=6 reason=recent stage_a=0.609550 stage_b=0.937500 final=0.797050 tokens=96:112 text='vitamin D. Later consultation notes discussed exercise adherence and stress reduction.'
+  id=7 reason=recent stage_a=0.074492 stage_b=0.187500 final=0.111992 tokens=112:128 text='Question: What was the patient’s baseline ferritin level'
+  id=8 reason=recent stage_a=0.700000 stage_b=1.000000 final=0.900000 tokens=128:129 text='?'
+
+PROMPT=code_context SOURCE=avg_last4_hidden REPRESENTATION=avg_last3_hidden
+tokens=216 blocks=14 fallback_mode=sparse raw_margin=0.0016463398933410645
+latency total=0.100489s prefill=0.019958s metadata=0.069796s selector=0.007176s inspection=0.003430s
+selected_ids=[13, 12, 11, 10, 0, 1, 9, 7, 6, 8]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.002544 stage_b=0.187500 final=0.040044 tokens=0:16 text='def load_config(path): with open(path)'
+  id=1 reason=anchor stage_a=0.001319 stage_b=0.062500 final=0.013819 tokens=16:32 text='as f: return json.load('
+  id=6 reason=semantic stage_a=0.600676 stage_b=0.937500 final=0.788176 tokens=96:112 text='for item in items: total += item'
+  id=7 reason=semantic stage_a=0.601115 stage_b=1.000000 final=0.801115 tokens=112:128 text='["price"] * item["qty"] return total'
+  id=8 reason=semantic stage_a=0.601269 stage_b=0.875000 final=0.776269 tokens=128:144 text='def send_receipt(email, total):'
+  id=9 reason=semantic stage_a=0.602538 stage_b=1.000000 final=0.802538 tokens=144:160 text='print("sending receipt") def checkout(items, user):'
+  id=10 reason=recent stage_a=0.603442 stage_b=0.875000 final=0.778442 tokens=160:176 text='validate_user(user) total = calculate'
+  id=11 reason=recent stage_a=0.030201 stage_b=0.250000 final=0.080201 tokens=176:192 text='_total(items) send_receipt(user'
+  id=12 reason=recent stage_a=0.619950 stage_b=1.000000 final=0.819950 tokens=192:208 text='["email"], total) return total Question:'
+  id=13 reason=recent stage_a=0.100359 stage_b=0.062500 final=0.112859 tokens=208:216 text='Which function computes the cart total?'
+
+PROMPT=adversarial_semantic SOURCE=avg_last4_hidden REPRESENTATION=avg_last3_hidden
+tokens=85 blocks=6 fallback_mode=sparse raw_margin=0.0
+latency total=0.080433s prefill=0.031975s metadata=0.034530s selector=0.012064s inspection=0.001780s
+selected_ids=[5, 4, 3, 2, 0, 1]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.518430 stage_b=0.640625 final=0.646555 tokens=0:16 text='The storage engine uses AES-128 for temporary transport sessions. The backup'
+  id=1 reason=anchor stage_a=0.602950 stage_b=1.000000 final=0.802950 tokens=16:32 text='archive pipeline uses AES-256-GCM for long-term storage.'
+  id=2 reason=recent stage_a=0.006279 stage_b=0.187500 final=0.043779 tokens=32:48 text='The web session cookie uses rotating signed tokens. The mobile sync channel'
+  id=3 reason=recent stage_a=0.607545 stage_b=0.875000 final=0.782545 tokens=48:64 text='uses TLS 1.3. The temporary staging cache uses short-lived'
+  id=4 reason=recent stage_a=0.038791 stage_b=0.203125 final=0.079416 tokens=64:80 text='encrypted blobs. Question: What encryption method is used for long'
+  id=5 reason=recent stage_a=0.699859 stage_b=1.000000 final=0.899859 tokens=80:85 text='-term archive storage?'
+
+PROMPT=long_reference SOURCE=avg_mid4_hidden REPRESENTATION=avg_mid_hidden_0_2
+tokens=194 blocks=13 fallback_mode=sparse raw_margin=0.7310378768481315
+latency total=0.095658s prefill=0.017388s metadata=0.069273s selector=0.006857s inspection=0.002009s
+selected_ids=[12, 11, 10, 9, 0, 1, 7, 6, 2, 5]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.002906 stage_b=0.187500 final=0.040406 tokens=0:16 text='Project Atlas is a distributed analytics platform used by several internal teams. The'
+  id=1 reason=anchor stage_a=0.598498 stage_b=0.875000 final=0.773498 tokens=16:32 text='ingestion layer receives CSV, JSON, and streaming telemetry data. Files are validated'
+  id=2 reason=semantic stage_a=0.599688 stage_b=0.875000 final=0.774688 tokens=32:48 text=', normalized, and routed into storage buckets. The compute layer runs batch'
+  id=5 reason=semantic stage_a=0.597649 stage_b=0.875000 final=0.772649 tokens=80:96 text='. The user dashboard shows job status, data freshness, and alert'
+  id=6 reason=semantic stage_a=0.600373 stage_b=0.968750 final=0.794123 tokens=96:112 text='history. Many teams requested stronger role-based access control and better query'
+  id=7 reason=semantic stage_a=0.602524 stage_b=1.000000 final=0.802524 tokens=112:128 text='logging. The current encryption standard for archival backups is AES-256'
+  id=9 reason=recent stage_a=0.604564 stage_b=1.000000 final=0.804564 tokens=144:160 text='-quarter reporting. The next roadmap item is cross-region failover'
+  id=10 reason=recent stage_a=0.609009 stage_b=1.000000 final=0.809009 tokens=160:176 text='. The compliance review noted that audit events older than 18 months are being'
+  id=11 reason=recent stage_a=0.649852 stage_b=1.000000 final=0.849852 tokens=176:192 text='purged. Question: What encryption standard is used for archival'
+  id=12 reason=recent stage_a=0.699951 stage_b=1.000000 final=0.899951 tokens=192:194 text='backups?'
+
+PROMPT=needle SOURCE=avg_mid4_hidden REPRESENTATION=avg_mid_hidden_0_2
+tokens=92 blocks=6 fallback_mode=sparse raw_margin=0.0
+latency total=0.042630s prefill=0.008261s metadata=0.026308s selector=0.006099s inspection=0.001878s
+selected_ids=[5, 4, 3, 2, 0, 1]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.602129 stage_b=0.937500 final=0.789629 tokens=0:16 text='System logs: request accepted cache warmup started index rebuilt heart'
+  id=1 reason=anchor stage_a=0.537360 stage_b=0.765625 final=0.690485 tokens=16:32 text='beat normal latency nominal replica synced archive prepared diagn'
+  id=2 reason=recent stage_a=0.004665 stage_b=0.062500 final=0.017165 tokens=32:48 text='ostics complete Reference token: ZXQ-4917-BETA'
+  id=3 reason=recent stage_a=0.013246 stage_b=0.125000 final=0.038246 tokens=48:64 text='Additional logs: session opened session closed background merge complete'
+  id=4 reason=recent stage_a=0.614274 stage_b=1.000000 final=0.814274 tokens=64:80 text='retry queue empty cpu stable memory stable io stable all services'
+  id=5 reason=recent stage_a=0.699956 stage_b=1.000000 final=0.899956 tokens=80:92 text='nominal Question: What was the reference token?'
+
+PROMPT=repeated_reference SOURCE=avg_mid4_hidden REPRESENTATION=avg_mid_hidden_0_2
+tokens=129 blocks=9 fallback_mode=sparse raw_margin=inf
+latency total=0.068756s prefill=0.020752s metadata=0.041228s selector=0.004161s inspection=0.002550s
+selected_ids=[8, 7, 6, 5, 0, 1, 2, 4, 3]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.008259 stage_b=0.187500 final=0.045759 tokens=0:16 text='The patient’s baseline ferritin level was 22 ng/mL.'
+  id=1 reason=anchor stage_a=0.601138 stage_b=1.000000 final=0.801138 tokens=16:32 text='The user began supplementation with iron bisglycinate and vitamin C.'
+  id=2 reason=semantic stage_a=0.601124 stage_b=0.875000 final=0.776124 tokens=32:48 text='Weekly logs showed improved energy, fewer headaches, and better exercise tolerance'
+  id=3 reason=semantic stage_a=0.006276 stage_b=0.093750 final=0.025026 tokens=48:64 text='. Additional notes covered sleep quality, hydration, and meal timing.'
+  id=4 reason=semantic stage_a=0.005443 stage_b=0.187500 final=0.042943 tokens=64:80 text='Several pages of progress notes followed discussing unrelated biomarkers such as magnes...'
+  id=5 reason=recent stage_a=0.592463 stage_b=0.812500 final=0.754963 tokens=80:96 text='B12, sodium, potassium, CRP, ALT, AST, and'
+  id=6 reason=recent stage_a=0.609550 stage_b=0.937500 final=0.797050 tokens=96:112 text='vitamin D. Later consultation notes discussed exercise adherence and stress reduction.'
+  id=7 reason=recent stage_a=0.074492 stage_b=0.187500 final=0.111992 tokens=112:128 text='Question: What was the patient’s baseline ferritin level'
+  id=8 reason=recent stage_a=0.700000 stage_b=1.000000 final=0.900000 tokens=128:129 text='?'
+
+PROMPT=code_context SOURCE=avg_mid4_hidden REPRESENTATION=avg_mid_hidden_0_2
+tokens=216 blocks=14 fallback_mode=sparse raw_margin=0.0016463398933410645
+latency total=0.096545s prefill=0.016188s metadata=0.072284s selector=0.005043s inspection=0.002960s
+selected_ids=[13, 12, 11, 10, 0, 1, 9, 7, 6, 8]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.002544 stage_b=0.187500 final=0.040044 tokens=0:16 text='def load_config(path): with open(path)'
+  id=1 reason=anchor stage_a=0.001319 stage_b=0.062500 final=0.013819 tokens=16:32 text='as f: return json.load('
+  id=6 reason=semantic stage_a=0.600676 stage_b=0.937500 final=0.788176 tokens=96:112 text='for item in items: total += item'
+  id=7 reason=semantic stage_a=0.601115 stage_b=1.000000 final=0.801115 tokens=112:128 text='["price"] * item["qty"] return total'
+  id=8 reason=semantic stage_a=0.601269 stage_b=0.875000 final=0.776269 tokens=128:144 text='def send_receipt(email, total):'
+  id=9 reason=semantic stage_a=0.602538 stage_b=1.000000 final=0.802538 tokens=144:160 text='print("sending receipt") def checkout(items, user):'
+  id=10 reason=recent stage_a=0.603442 stage_b=0.875000 final=0.778442 tokens=160:176 text='validate_user(user) total = calculate'
+  id=11 reason=recent stage_a=0.030201 stage_b=0.250000 final=0.080201 tokens=176:192 text='_total(items) send_receipt(user'
+  id=12 reason=recent stage_a=0.619950 stage_b=1.000000 final=0.819950 tokens=192:208 text='["email"], total) return total Question:'
+  id=13 reason=recent stage_a=0.100359 stage_b=0.062500 final=0.112859 tokens=208:216 text='Which function computes the cart total?'
+
+PROMPT=adversarial_semantic SOURCE=avg_mid4_hidden REPRESENTATION=avg_mid_hidden_0_2
+tokens=85 blocks=6 fallback_mode=sparse raw_margin=0.0
+latency total=0.046553s prefill=0.009625s metadata=0.030746s selector=0.004863s inspection=0.001246s
+selected_ids=[5, 4, 3, 2, 0, 1]
+selected_blocks:
+  id=0 reason=anchor stage_a=0.518430 stage_b=0.640625 final=0.646555 tokens=0:16 text='The storage engine uses AES-128 for temporary transport sessions. The backup'
+  id=1 reason=anchor stage_a=0.602950 stage_b=1.000000 final=0.802950 tokens=16:32 text='archive pipeline uses AES-256-GCM for long-term storage.'
+  id=2 reason=recent stage_a=0.006279 stage_b=0.187500 final=0.043779 tokens=32:48 text='The web session cookie uses rotating signed tokens. The mobile sync channel'
+  id=3 reason=recent stage_a=0.607545 stage_b=0.875000 final=0.782545 tokens=48:64 text='uses TLS 1.3. The temporary staging cache uses short-lived'
+  id=4 reason=recent stage_a=0.038791 stage_b=0.203125 final=0.079416 tokens=64:80 text='encrypted blobs. Question: What encryption method is used for long'
+  id=5 reason=recent stage_a=0.699859 stage_b=1.000000 final=0.899859 tokens=80:85 text='-term archive storage?'

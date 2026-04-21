@@ -1,0 +1,626 @@
+{
+  "selected_block_ids": [
+    8,
+    7,
+    6,
+    5,
+    0,
+    1,
+    2,
+    4,
+    3
+  ],
+  "selected_to_semantic_k_ratio": 2.25,
+  "fallback_mode": "sparse",
+  "confidence": {
+    "semantic_candidate_block_ids": [
+      2,
+      4,
+      3
+    ],
+    "semantic_included_count": 3,
+    "raw_margin": Infinity,
+    "normalized_margin": null,
+    "selected_mass": 0.8843162684701382,
+    "normalized_mass": null,
+    "is_confident": true
+  },
+  "run_summary": {
+    "runtime_name": "local_hf:sshleifer/tiny-gpt2",
+    "representation_name": "final_hidden_state",
+    "token_count": 129,
+    "block_count": 9,
+    "block_size": 16,
+    "summary_dim": 32,
+    "prompt_chars": 558
+  },
+  "trace": {
+    "step_id": "real-block-prefill",
+    "query_sign_sketch": 10213688390163461063,
+    "stage_a_scores": [
+      {
+        "block_id": 8,
+        "token_start": 128,
+        "token_len": 1,
+        "approx_similarity_score": 1.0,
+        "recency_score": 0.5,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.7000000476837158,
+        "hamming_similarity": 0.0,
+        "stage_b_score": 0.0,
+        "final_score": 0.7000000476837158
+      },
+      {
+        "block_id": 6,
+        "token_start": 96,
+        "token_len": 16,
+        "approx_similarity_score": 1.0,
+        "recency_score": 0.05263157933950424,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.6105263233184814,
+        "hamming_similarity": 0.0,
+        "stage_b_score": 0.0,
+        "final_score": 0.6105263233184814
+      },
+      {
+        "block_id": 5,
+        "token_start": 80,
+        "token_len": 16,
+        "approx_similarity_score": 1.0,
+        "recency_score": 0.02857142873108387,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.6057143211364746,
+        "hamming_similarity": 0.0,
+        "stage_b_score": 0.0,
+        "final_score": 0.6057143211364746
+      },
+      {
+        "block_id": 2,
+        "token_start": 32,
+        "token_len": 16,
+        "approx_similarity_score": 1.0,
+        "recency_score": 0.012048192322254181,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.6024096608161926,
+        "hamming_similarity": 0.0,
+        "stage_b_score": 0.0,
+        "final_score": 0.6024096608161926
+      },
+      {
+        "block_id": 1,
+        "token_start": 16,
+        "token_len": 16,
+        "approx_similarity_score": 1.0,
+        "recency_score": 0.010101010091602802,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.6020202040672302,
+        "hamming_similarity": 0.0,
+        "stage_b_score": 0.0,
+        "final_score": 0.6020202040672302
+      },
+      {
+        "block_id": 7,
+        "token_start": 112,
+        "token_len": 16,
+        "approx_similarity_score": 5.960464477539063e-08,
+        "recency_score": 0.3333333432674408,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.06666670739650726,
+        "hamming_similarity": 0.0,
+        "stage_b_score": 0.0,
+        "final_score": 0.06666670739650726
+      },
+      {
+        "block_id": 4,
+        "token_start": 64,
+        "token_len": 16,
+        "approx_similarity_score": 0.0,
+        "recency_score": 0.019607843831181526,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.003921568859368563,
+        "hamming_similarity": 0.0,
+        "stage_b_score": 0.0,
+        "final_score": 0.003921568859368563
+      },
+      {
+        "block_id": 3,
+        "token_start": 48,
+        "token_len": 16,
+        "approx_similarity_score": -5.960464477539063e-08,
+        "recency_score": 0.014925372786819935,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.0029850387945771217,
+        "hamming_similarity": 0.0,
+        "stage_b_score": 0.0,
+        "final_score": 0.0029850387945771217
+      },
+      {
+        "block_id": 0,
+        "token_start": 0,
+        "token_len": 16,
+        "approx_similarity_score": 5.960464477539063e-08,
+        "recency_score": 0.008695651777088642,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.0017391660949215293,
+        "hamming_similarity": 0.0,
+        "stage_b_score": 0.0,
+        "final_score": 0.0017391660949215293
+      }
+    ],
+    "stage_a_shortlist_block_ids": [
+      8,
+      6,
+      5,
+      2,
+      1,
+      7,
+      4,
+      3,
+      0
+    ],
+    "stage_b_scores": [
+      {
+        "block_id": 8,
+        "token_start": 128,
+        "token_len": 1,
+        "approx_similarity_score": 1.0,
+        "recency_score": 0.5,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.7000000476837158,
+        "hamming_similarity": 1.0,
+        "stage_b_score": 1.0,
+        "final_score": 0.9000000476837158
+      },
+      {
+        "block_id": 6,
+        "token_start": 96,
+        "token_len": 16,
+        "approx_similarity_score": 1.0,
+        "recency_score": 0.05263157933950424,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.6105263233184814,
+        "hamming_similarity": 1.0,
+        "stage_b_score": 1.0,
+        "final_score": 0.8105263233184814
+      },
+      {
+        "block_id": 5,
+        "token_start": 80,
+        "token_len": 16,
+        "approx_similarity_score": 1.0,
+        "recency_score": 0.02857142873108387,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.6057143211364746,
+        "hamming_similarity": 1.0,
+        "stage_b_score": 1.0,
+        "final_score": 0.8057143211364746
+      },
+      {
+        "block_id": 2,
+        "token_start": 32,
+        "token_len": 16,
+        "approx_similarity_score": 1.0,
+        "recency_score": 0.012048192322254181,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.6024096608161926,
+        "hamming_similarity": 1.0,
+        "stage_b_score": 1.0,
+        "final_score": 0.8024096608161926
+      },
+      {
+        "block_id": 1,
+        "token_start": 16,
+        "token_len": 16,
+        "approx_similarity_score": 1.0,
+        "recency_score": 0.010101010091602802,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.6020202040672302,
+        "hamming_similarity": 1.0,
+        "stage_b_score": 1.0,
+        "final_score": 0.8020202040672302
+      },
+      {
+        "block_id": 7,
+        "token_start": 112,
+        "token_len": 16,
+        "approx_similarity_score": 5.960464477539063e-08,
+        "recency_score": 0.3333333432674408,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.06666670739650726,
+        "hamming_similarity": 0.1875,
+        "stage_b_score": 0.1875,
+        "final_score": 0.10416670739650727
+      },
+      {
+        "block_id": 4,
+        "token_start": 64,
+        "token_len": 16,
+        "approx_similarity_score": 0.0,
+        "recency_score": 0.019607843831181526,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.003921568859368563,
+        "hamming_similarity": 0.1875,
+        "stage_b_score": 0.1875,
+        "final_score": 0.04142156885936857
+      },
+      {
+        "block_id": 3,
+        "token_start": 48,
+        "token_len": 16,
+        "approx_similarity_score": -5.960464477539063e-08,
+        "recency_score": 0.014925372786819935,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.0029850387945771217,
+        "hamming_similarity": 0.1875,
+        "stage_b_score": 0.1875,
+        "final_score": 0.04048503879457713
+      },
+      {
+        "block_id": 0,
+        "token_start": 0,
+        "token_len": 16,
+        "approx_similarity_score": 5.960464477539063e-08,
+        "recency_score": 0.008695651777088642,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.0017391660949215293,
+        "hamming_similarity": 0.1875,
+        "stage_b_score": 0.1875,
+        "final_score": 0.039239166094921535
+      }
+    ],
+    "pre_fallback_selection": {
+      "recent_block_ids": [
+        8,
+        7,
+        6,
+        5
+      ],
+      "anchor_block_ids": [
+        0,
+        1
+      ],
+      "semantic_block_ids": [
+        2,
+        4,
+        3
+      ],
+      "final_selected_block_ids": [
+        8,
+        7,
+        6,
+        5,
+        0,
+        1,
+        2,
+        4,
+        3
+      ],
+      "rail_block_ids": [
+        8,
+        7,
+        6,
+        5,
+        0,
+        1
+      ],
+      "rail_block_count": 6,
+      "semantic_block_count": 3
+    },
+    "final_selection": {
+      "recent_block_ids": [
+        8,
+        7,
+        6,
+        5
+      ],
+      "anchor_block_ids": [
+        0,
+        1
+      ],
+      "semantic_block_ids": [
+        2,
+        4,
+        3
+      ],
+      "final_selected_block_ids": [
+        8,
+        7,
+        6,
+        5,
+        0,
+        1,
+        2,
+        4,
+        3
+      ],
+      "rail_block_ids": [
+        8,
+        7,
+        6,
+        5,
+        0,
+        1
+      ],
+      "rail_block_count": 6,
+      "semantic_block_count": 3
+    },
+    "confidence": {
+      "semantic_candidate_block_ids": [
+        2,
+        4,
+        3
+      ],
+      "semantic_included_count": 3,
+      "raw_margin": Infinity,
+      "normalized_margin": null,
+      "selected_mass": 0.8843162684701382,
+      "normalized_mass": null,
+      "is_confident": true
+    },
+    "fallback": {
+      "action": "keep_sparse",
+      "mode": "sparse",
+      "next_semantic_top_k": 4,
+      "next_keep_recent_blocks": 4,
+      "use_dense_fallback": false,
+      "reason_code": "confident"
+    }
+  },
+  "block_inspections": [
+    {
+      "block_id": 0,
+      "token_start": 0,
+      "token_end": 16,
+      "token_count": 16,
+      "selected": true,
+      "selected_reason": "anchor",
+      "stage_a_score": 0.0017391660949215293,
+      "stage_b_score": 0.1875,
+      "final_score": 0.039239166094921535,
+      "preview_text": "The patient\u2019s baseline ferritin level was 22 ng/mL.",
+      "block_text": null
+    },
+    {
+      "block_id": 1,
+      "token_start": 16,
+      "token_end": 32,
+      "token_count": 16,
+      "selected": true,
+      "selected_reason": "anchor",
+      "stage_a_score": 0.6020202040672302,
+      "stage_b_score": 1.0,
+      "final_score": 0.8020202040672302,
+      "preview_text": "The user began supplementation with iron bisglycinate and vitamin C.",
+      "block_text": null
+    },
+    {
+      "block_id": 2,
+      "token_start": 32,
+      "token_end": 48,
+      "token_count": 16,
+      "selected": true,
+      "selected_reason": "semantic",
+      "stage_a_score": 0.6024096608161926,
+      "stage_b_score": 1.0,
+      "final_score": 0.8024096608161926,
+      "preview_text": "Weekly logs showed improved energy, fewer headaches, and better exercise tolerance",
+      "block_text": null
+    },
+    {
+      "block_id": 3,
+      "token_start": 48,
+      "token_end": 64,
+      "token_count": 16,
+      "selected": true,
+      "selected_reason": "semantic",
+      "stage_a_score": 0.0029850387945771217,
+      "stage_b_score": 0.1875,
+      "final_score": 0.04048503879457713,
+      "preview_text": ". Additional notes covered sleep quality, hydration, and meal timing.",
+      "block_text": null
+    },
+    {
+      "block_id": 4,
+      "token_start": 64,
+      "token_end": 80,
+      "token_count": 16,
+      "selected": true,
+      "selected_reason": "semantic",
+      "stage_a_score": 0.003921568859368563,
+      "stage_b_score": 0.1875,
+      "final_score": 0.04142156885936857,
+      "preview_text": "Several pages of progress notes followed discussing unrelated biomarkers such as magnesium,",
+      "block_text": null
+    },
+    {
+      "block_id": 5,
+      "token_start": 80,
+      "token_end": 96,
+      "token_count": 16,
+      "selected": true,
+      "selected_reason": "recent",
+      "stage_a_score": 0.6057143211364746,
+      "stage_b_score": 1.0,
+      "final_score": 0.8057143211364746,
+      "preview_text": "B12, sodium, potassium, CRP, ALT, AST, and",
+      "block_text": null
+    },
+    {
+      "block_id": 6,
+      "token_start": 96,
+      "token_end": 112,
+      "token_count": 16,
+      "selected": true,
+      "selected_reason": "recent",
+      "stage_a_score": 0.6105263233184814,
+      "stage_b_score": 1.0,
+      "final_score": 0.8105263233184814,
+      "preview_text": "vitamin D. Later consultation notes discussed exercise adherence and stress reduction.",
+      "block_text": null
+    },
+    {
+      "block_id": 7,
+      "token_start": 112,
+      "token_end": 128,
+      "token_count": 16,
+      "selected": true,
+      "selected_reason": "recent",
+      "stage_a_score": 0.06666670739650726,
+      "stage_b_score": 0.1875,
+      "final_score": 0.10416670739650727,
+      "preview_text": "Question: What was the patient\u2019s baseline ferritin level",
+      "block_text": null
+    },
+    {
+      "block_id": 8,
+      "token_start": 128,
+      "token_end": 129,
+      "token_count": 1,
+      "selected": true,
+      "selected_reason": "recent",
+      "stage_a_score": 0.7000000476837158,
+      "stage_b_score": 1.0,
+      "final_score": 0.9000000476837158,
+      "preview_text": "?",
+      "block_text": null
+    }
+  ],
+  "selected_block_inspections": [
+    {
+      "block_id": 0,
+      "token_start": 0,
+      "token_end": 16,
+      "token_count": 16,
+      "selected": true,
+      "selected_reason": "anchor",
+      "stage_a_score": 0.0017391660949215293,
+      "stage_b_score": 0.1875,
+      "final_score": 0.039239166094921535,
+      "preview_text": "The patient\u2019s baseline ferritin level was 22 ng/mL.",
+      "block_text": null
+    },
+    {
+      "block_id": 1,
+      "token_start": 16,
+      "token_end": 32,
+      "token_count": 16,
+      "selected": true,
+      "selected_reason": "anchor",
+      "stage_a_score": 0.6020202040672302,
+      "stage_b_score": 1.0,
+      "final_score": 0.8020202040672302,
+      "preview_text": "The user began supplementation with iron bisglycinate and vitamin C.",
+      "block_text": null
+    },
+    {
+      "block_id": 2,
+      "token_start": 32,
+      "token_end": 48,
+      "token_count": 16,
+      "selected": true,
+      "selected_reason": "semantic",
+      "stage_a_score": 0.6024096608161926,
+      "stage_b_score": 1.0,
+      "final_score": 0.8024096608161926,
+      "preview_text": "Weekly logs showed improved energy, fewer headaches, and better exercise tolerance",
+      "block_text": null
+    },
+    {
+      "block_id": 3,
+      "token_start": 48,
+      "token_end": 64,
+      "token_count": 16,
+      "selected": true,
+      "selected_reason": "semantic",
+      "stage_a_score": 0.0029850387945771217,
+      "stage_b_score": 0.1875,
+      "final_score": 0.04048503879457713,
+      "preview_text": ". Additional notes covered sleep quality, hydration, and meal timing.",
+      "block_text": null
+    },
+    {
+      "block_id": 4,
+      "token_start": 64,
+      "token_end": 80,
+      "token_count": 16,
+      "selected": true,
+      "selected_reason": "semantic",
+      "stage_a_score": 0.003921568859368563,
+      "stage_b_score": 0.1875,
+      "final_score": 0.04142156885936857,
+      "preview_text": "Several pages of progress notes followed discussing unrelated biomarkers such as magnesium,",
+      "block_text": null
+    },
+    {
+      "block_id": 5,
+      "token_start": 80,
+      "token_end": 96,
+      "token_count": 16,
+      "selected": true,
+      "selected_reason": "recent",
+      "stage_a_score": 0.6057143211364746,
+      "stage_b_score": 1.0,
+      "final_score": 0.8057143211364746,
+      "preview_text": "B12, sodium, potassium, CRP, ALT, AST, and",
+      "block_text": null
+    },
+    {
+      "block_id": 6,
+      "token_start": 96,
+      "token_end": 112,
+      "token_count": 16,
+      "selected": true,
+      "selected_reason": "recent",
+      "stage_a_score": 0.6105263233184814,
+      "stage_b_score": 1.0,
+      "final_score": 0.8105263233184814,
+      "preview_text": "vitamin D. Later consultation notes discussed exercise adherence and stress reduction.",
+      "block_text": null
+    },
+    {
+      "block_id": 7,
+      "token_start": 112,
+      "token_end": 128,
+      "token_count": 16,
+      "selected": true,
+      "selected_reason": "recent",
+      "stage_a_score": 0.06666670739650726,
+      "stage_b_score": 0.1875,
+      "final_score": 0.10416670739650727,
+      "preview_text": "Question: What was the patient\u2019s baseline ferritin level",
+      "block_text": null
+    },
+    {
+      "block_id": 8,
+      "token_start": 128,
+      "token_end": 129,
+      "token_count": 1,
+      "selected": true,
+      "selected_reason": "recent",
+      "stage_a_score": 0.7000000476837158,
+      "stage_b_score": 1.0,
+      "final_score": 0.9000000476837158,
+      "preview_text": "?",
+      "block_text": null
+    }
+  ],
+  "unselected_block_inspections": []
+}

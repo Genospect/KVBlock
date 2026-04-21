@@ -1,0 +1,95 @@
+STATIC HEAD-WEIGHT VALIDATION
+model_load_seconds={'distilgpt2': 4.758341153967194, 'gpt2': 1.918769268959295}
+
+SCHEMES
+pooled_mean_heads | mean_heads | Current pooled query/key summary baseline.
+head9_only | weighted_head_mean | Use only head 9, the strongest offline single-head candidate.
+head9_heavy | weighted_head_mean | Uniform weights with head 9 modestly upweighted.
+retrieval_mix | weighted_head_mean | Upweight head 9 plus heads that surfaced in long-reference/needle single-head diagnostics.
+code_mix | weighted_head_mean | Upweight code-context specialists head 2 and head 9.
+
+RANKED AGGREGATES
+head9_only | runs=10 mean_recall=0.680 mean_precision=0.220 mean_selected=5.000 mean_selected/K=1.250 mean_selector=0.004575s d_recall=0.020 d_precision=0.000 d_selected/K=0.000 d_selector=0.001s
+pooled_mean_heads | runs=10 mean_recall=0.660 mean_precision=0.220 mean_selected=5.000 mean_selected/K=1.250 mean_selector=0.003499s d_recall=0.000 d_precision=0.000 d_selected/K=0.000 d_selector=0.000s
+head9_heavy | runs=10 mean_recall=0.570 mean_precision=0.160 mean_selected=5.000 mean_selected/K=1.250 mean_selector=0.004277s d_recall=-0.090 d_precision=-0.060 d_selected/K=0.000 d_selector=0.001s
+retrieval_mix | runs=10 mean_recall=0.570 mean_precision=0.160 mean_selected=5.000 mean_selected/K=1.250 mean_selector=0.004645s d_recall=-0.090 d_precision=-0.060 d_selected/K=0.000 d_selector=0.001s
+code_mix | runs=10 mean_recall=0.490 mean_precision=0.160 mean_selected=5.000 mean_selected/K=1.250 mean_selector=0.004749s d_recall=-0.170 d_precision=-0.060 d_selected/K=0.000 d_selector=0.001s
+
+PER-PROMPT BREAKDOWN
+adversarial_semantic | code_mix | runs=2 mean_recall=0.000 mean_precision=0.000 mean_selected/K=1.250 mean_selector=0.004560s
+adversarial_semantic | head9_heavy | runs=2 mean_recall=0.000 mean_precision=0.000 mean_selected/K=1.250 mean_selector=0.004482s
+adversarial_semantic | head9_only | runs=2 mean_recall=0.500 mean_precision=0.100 mean_selected/K=1.250 mean_selector=0.004623s
+adversarial_semantic | pooled_mean_heads | runs=2 mean_recall=0.500 mean_precision=0.100 mean_selected/K=1.250 mean_selector=0.004114s
+adversarial_semantic | retrieval_mix | runs=2 mean_recall=0.000 mean_precision=0.000 mean_selected/K=1.250 mean_selector=0.005213s
+code_context | code_mix | runs=2 mean_recall=0.200 mean_precision=0.200 mean_selected/K=1.250 mean_selector=0.005014s
+code_context | head9_heavy | runs=2 mean_recall=0.100 mean_precision=0.100 mean_selected/K=1.250 mean_selector=0.005319s
+code_context | head9_only | runs=2 mean_recall=0.400 mean_precision=0.400 mean_selected/K=1.250 mean_selector=0.004489s
+code_context | pooled_mean_heads | runs=2 mean_recall=0.300 mean_precision=0.300 mean_selected/K=1.250 mean_selector=0.003452s
+code_context | retrieval_mix | runs=2 mean_recall=0.100 mean_precision=0.100 mean_selected/K=1.250 mean_selector=0.004368s
+long_reference | code_mix | runs=2 mean_recall=0.750 mean_precision=0.300 mean_selected/K=1.250 mean_selector=0.005583s
+long_reference | head9_heavy | runs=2 mean_recall=0.750 mean_precision=0.300 mean_selected/K=1.250 mean_selector=0.003857s
+long_reference | head9_only | runs=2 mean_recall=0.500 mean_precision=0.200 mean_selected/K=1.250 mean_selector=0.003933s
+long_reference | pooled_mean_heads | runs=2 mean_recall=1.000 mean_precision=0.400 mean_selected/K=1.250 mean_selector=0.003584s
+long_reference | retrieval_mix | runs=2 mean_recall=0.750 mean_precision=0.300 mean_selected/K=1.250 mean_selector=0.004575s
+needle | code_mix | runs=2 mean_recall=0.500 mean_precision=0.100 mean_selected/K=1.250 mean_selector=0.003871s
+needle | head9_heavy | runs=2 mean_recall=1.000 mean_precision=0.200 mean_selected/K=1.250 mean_selector=0.003683s
+needle | head9_only | runs=2 mean_recall=1.000 mean_precision=0.200 mean_selected/K=1.250 mean_selector=0.003816s
+needle | pooled_mean_heads | runs=2 mean_recall=0.500 mean_precision=0.100 mean_selected/K=1.250 mean_selector=0.003111s
+needle | retrieval_mix | runs=2 mean_recall=1.000 mean_precision=0.200 mean_selected/K=1.250 mean_selector=0.004515s
+repeated_reference | code_mix | runs=2 mean_recall=1.000 mean_precision=0.200 mean_selected/K=1.250 mean_selector=0.004716s
+repeated_reference | head9_heavy | runs=2 mean_recall=1.000 mean_precision=0.200 mean_selected/K=1.250 mean_selector=0.004046s
+repeated_reference | head9_only | runs=2 mean_recall=1.000 mean_precision=0.200 mean_selected/K=1.250 mean_selector=0.006015s
+repeated_reference | pooled_mean_heads | runs=2 mean_recall=1.000 mean_precision=0.200 mean_selected/K=1.250 mean_selector=0.003235s
+repeated_reference | retrieval_mix | runs=2 mean_recall=1.000 mean_precision=0.200 mean_selected/K=1.250 mean_selector=0.004554s
+
+RUNS
+distilgpt2 | long_reference | pooled_mean_heads | selected=[12, 11, 1, 8, 7] | recall=1.000 precision=0.400 selected/K=1.250 selector=0.003915s
+distilgpt2 | long_reference | head9_only | selected=[12, 11, 7, 10, 0] | recall=0.500 precision=0.200 selected/K=1.250 selector=0.003262s
+distilgpt2 | long_reference | head9_heavy | selected=[12, 11, 10, 7, 8] | recall=1.000 precision=0.400 selected/K=1.250 selector=0.003285s
+distilgpt2 | long_reference | retrieval_mix | selected=[12, 11, 10, 7, 8] | recall=1.000 precision=0.400 selected/K=1.250 selector=0.004221s
+distilgpt2 | long_reference | code_mix | selected=[12, 11, 10, 7, 8] | recall=1.000 precision=0.400 selected/K=1.250 selector=0.005148s
+distilgpt2 | needle | pooled_mean_heads | selected=[5, 0, 1, 2, 4] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.002930s
+distilgpt2 | needle | head9_only | selected=[5, 0, 2, 1, 3] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.002825s
+distilgpt2 | needle | head9_heavy | selected=[5, 0, 2, 3, 4] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.002800s
+distilgpt2 | needle | retrieval_mix | selected=[5, 0, 2, 3, 4] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.005094s
+distilgpt2 | needle | code_mix | selected=[5, 0, 2, 3, 4] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.002671s
+distilgpt2 | repeated_reference | pooled_mean_heads | selected=[8, 0, 7, 2, 1] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.003262s
+distilgpt2 | repeated_reference | head9_only | selected=[8, 7, 0, 1, 4] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.007626s
+distilgpt2 | repeated_reference | head9_heavy | selected=[8, 7, 0, 1, 4] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.003043s
+distilgpt2 | repeated_reference | retrieval_mix | selected=[8, 7, 0, 1, 4] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.004782s
+distilgpt2 | repeated_reference | code_mix | selected=[8, 7, 0, 1, 2] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.005341s
+distilgpt2 | code_context | pooled_mean_heads | selected=[13, 12, 11, 10, 5] | recall=0.400 precision=0.400 selected/K=1.250 selector=0.003294s
+distilgpt2 | code_context | head9_only | selected=[13, 0, 5, 4, 12] | recall=0.400 precision=0.400 selected/K=1.250 selector=0.003993s
+distilgpt2 | code_context | head9_heavy | selected=[13, 12, 0, 5, 9] | recall=0.200 precision=0.200 selected/K=1.250 selector=0.004223s
+distilgpt2 | code_context | retrieval_mix | selected=[13, 12, 0, 5, 9] | recall=0.200 precision=0.200 selected/K=1.250 selector=0.004112s
+distilgpt2 | code_context | code_mix | selected=[13, 12, 0, 5, 9] | recall=0.200 precision=0.200 selected/K=1.250 selector=0.004741s
+distilgpt2 | adversarial_semantic | pooled_mean_heads | selected=[5, 4, 0, 2, 3] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.003803s
+distilgpt2 | adversarial_semantic | head9_only | selected=[5, 4, 0, 2, 3] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.004967s
+distilgpt2 | adversarial_semantic | head9_heavy | selected=[5, 4, 0, 2, 3] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.004262s
+distilgpt2 | adversarial_semantic | retrieval_mix | selected=[5, 4, 0, 2, 3] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.005374s
+distilgpt2 | adversarial_semantic | code_mix | selected=[5, 4, 0, 2, 3] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.003880s
+gpt2 | long_reference | pooled_mean_heads | selected=[12, 11, 7, 8, 9] | recall=1.000 precision=0.400 selected/K=1.250 selector=0.003253s
+gpt2 | long_reference | head9_only | selected=[12, 11, 7, 0, 10] | recall=0.500 precision=0.200 selected/K=1.250 selector=0.004604s
+gpt2 | long_reference | head9_heavy | selected=[12, 11, 10, 7, 9] | recall=0.500 precision=0.200 selected/K=1.250 selector=0.004428s
+gpt2 | long_reference | retrieval_mix | selected=[12, 11, 10, 7, 9] | recall=0.500 precision=0.200 selected/K=1.250 selector=0.004929s
+gpt2 | long_reference | code_mix | selected=[12, 11, 10, 7, 9] | recall=0.500 precision=0.200 selected/K=1.250 selector=0.006018s
+gpt2 | needle | pooled_mean_heads | selected=[5, 0, 1, 4, 3] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.003292s
+gpt2 | needle | head9_only | selected=[5, 0, 2, 4, 1] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.004806s
+gpt2 | needle | head9_heavy | selected=[5, 0, 4, 1, 2] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.004567s
+gpt2 | needle | retrieval_mix | selected=[5, 0, 4, 2, 3] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.003936s
+gpt2 | needle | code_mix | selected=[5, 0, 4, 3, 1] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.005071s
+gpt2 | repeated_reference | pooled_mean_heads | selected=[8, 7, 0, 2, 1] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.003209s
+gpt2 | repeated_reference | head9_only | selected=[8, 7, 0, 2, 4] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.004403s
+gpt2 | repeated_reference | head9_heavy | selected=[8, 7, 0, 2, 6] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.005049s
+gpt2 | repeated_reference | retrieval_mix | selected=[8, 7, 0, 2, 3] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.004327s
+gpt2 | repeated_reference | code_mix | selected=[8, 7, 0, 2, 6] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.004092s
+gpt2 | code_context | pooled_mean_heads | selected=[13, 12, 10, 0, 5] | recall=0.200 precision=0.200 selected/K=1.250 selector=0.003609s
+gpt2 | code_context | head9_only | selected=[13, 0, 5, 9, 4] | recall=0.400 precision=0.400 selected/K=1.250 selector=0.004985s
+gpt2 | code_context | head9_heavy | selected=[13, 12, 9, 10, 0] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.006415s
+gpt2 | code_context | retrieval_mix | selected=[13, 12, 9, 0, 10] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.004624s
+gpt2 | code_context | code_mix | selected=[13, 12, 9, 10, 4] | recall=0.200 precision=0.200 selected/K=1.250 selector=0.005287s
+gpt2 | adversarial_semantic | pooled_mean_heads | selected=[5, 4, 0, 2, 1] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.004424s
+gpt2 | adversarial_semantic | head9_only | selected=[5, 4, 0, 2, 1] | recall=1.000 precision=0.200 selected/K=1.250 selector=0.004280s
+gpt2 | adversarial_semantic | head9_heavy | selected=[5, 4, 0, 2, 3] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.004701s
+gpt2 | adversarial_semantic | retrieval_mix | selected=[5, 4, 0, 2, 3] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.005052s
+gpt2 | adversarial_semantic | code_mix | selected=[5, 4, 0, 2, 3] | recall=0.000 precision=0.000 selected/K=1.250 selector=0.005240s

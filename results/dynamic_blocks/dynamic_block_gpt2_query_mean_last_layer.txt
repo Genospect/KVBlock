@@ -1,0 +1,71 @@
+DYNAMIC BLOCK BENCHMARK
+model_load_seconds={'gpt2': 6.617916249029804}
+
+RANKED AGGREGATES
+fixed_40 | runs=4 mean_recall=0.688 mean_precision=0.188 mean_selected=3.750 mean_selected/K=0.938 mean_candidates=4.500 mean_selector=0.004017s d_recall_vs_best_fixed=0.000 d_precision_vs_best_fixed=0.000 d_selected/K_vs_best_fixed=0.000 d_selector_vs_best_fixed=0.000s
+fixed_24 | runs=4 mean_recall=0.625 mean_precision=0.188 mean_selected=4.000 mean_selected/K=1.000 mean_candidates=7.000 mean_selector=0.003714s d_recall_vs_best_fixed=-0.062 d_precision_vs_best_fixed=0.000 d_selected/K_vs_best_fixed=0.062 d_selector_vs_best_fixed=-0.000s
+fixed_16 | runs=4 mean_recall=0.625 mean_precision=0.188 mean_selected=4.000 mean_selected/K=1.000 mean_candidates=10.500 mean_selector=0.003870s d_recall_vs_best_fixed=-0.062 d_precision_vs_best_fixed=0.000 d_selected/K_vs_best_fixed=0.062 d_selector_vs_best_fixed=-0.000s
+fixed_32 | runs=4 mean_recall=0.500 mean_precision=0.208 mean_selected=3.750 mean_selected/K=0.938 mean_candidates=5.500 mean_selector=0.004141s d_recall_vs_best_fixed=-0.188 d_precision_vs_best_fixed=0.021 d_selected/K_vs_best_fixed=0.000 d_selector_vs_best_fixed=0.000s
+overlap_16_stride_8 | runs=4 mean_recall=0.500 mean_precision=0.188 mean_selected=4.000 mean_selected/K=1.000 mean_candidates=19.250 mean_selector=0.004463s d_recall_vs_best_fixed=-0.188 d_precision_vs_best_fixed=0.000 d_selected/K_vs_best_fixed=0.062 d_selector_vs_best_fixed=0.000s
+multiscale_16_32 | runs=4 mean_recall=0.000 mean_precision=0.000 mean_selected=4.000 mean_selected/K=1.000 mean_candidates=16.000 mean_selector=0.004187s d_recall_vs_best_fixed=-0.688 d_precision_vs_best_fixed=-0.188 d_selected/K_vs_best_fixed=0.062 d_selector_vs_best_fixed=0.000s
+multiscale_16_24_32 | runs=4 mean_recall=0.000 mean_precision=0.000 mean_selected=4.000 mean_selected/K=1.000 mean_candidates=23.000 mean_selector=0.006173s d_recall_vs_best_fixed=-0.688 d_precision_vs_best_fixed=-0.188 d_selected/K_vs_best_fixed=0.062 d_selector_vs_best_fixed=0.002s
+
+PER-PROMPT BREAKDOWN
+code_context | fixed_16 | qk=block_max | runs=1 mean_recall=0.000 mean_precision=0.000 mean_selected/K=1.000 mean_candidates=14.000 mean_selector=0.004002s
+code_context | fixed_24 | qk=block_max | runs=1 mean_recall=0.500 mean_precision=0.250 mean_selected/K=1.000 mean_candidates=9.000 mean_selector=0.004177s
+code_context | fixed_32 | qk=block_max | runs=1 mean_recall=0.500 mean_precision=0.250 mean_selected/K=1.000 mean_candidates=7.000 mean_selector=0.005803s
+code_context | fixed_40 | qk=block_max | runs=1 mean_recall=0.750 mean_precision=0.250 mean_selected/K=1.000 mean_candidates=6.000 mean_selector=0.003955s
+code_context | multiscale_16_24_32 | qk=block_max | runs=1 mean_recall=0.000 mean_precision=0.000 mean_selected/K=1.000 mean_candidates=30.000 mean_selector=0.005613s
+code_context | multiscale_16_32 | qk=block_max | runs=1 mean_recall=0.000 mean_precision=0.000 mean_selected/K=1.000 mean_candidates=21.000 mean_selector=0.003821s
+code_context | overlap_16_stride_8 | qk=block_max | runs=1 mean_recall=0.000 mean_precision=0.000 mean_selected/K=1.000 mean_candidates=26.000 mean_selector=0.003753s
+long_reference | fixed_16 | qk=block_max | runs=1 mean_recall=0.500 mean_precision=0.250 mean_selected/K=1.000 mean_candidates=13.000 mean_selector=0.004191s
+long_reference | fixed_24 | qk=block_max | runs=1 mean_recall=1.000 mean_precision=0.250 mean_selected/K=1.000 mean_candidates=9.000 mean_selector=0.003419s
+long_reference | fixed_32 | qk=block_max | runs=1 mean_recall=0.500 mean_precision=0.250 mean_selected/K=1.000 mean_candidates=7.000 mean_selector=0.003877s
+long_reference | fixed_40 | qk=block_max | runs=1 mean_recall=1.000 mean_precision=0.250 mean_selected/K=1.000 mean_candidates=5.000 mean_selector=0.004073s
+long_reference | multiscale_16_24_32 | qk=block_max | runs=1 mean_recall=0.000 mean_precision=0.000 mean_selected/K=1.000 mean_candidates=29.000 mean_selector=0.005236s
+long_reference | multiscale_16_32 | qk=block_max | runs=1 mean_recall=0.000 mean_precision=0.000 mean_selected/K=1.000 mean_candidates=20.000 mean_selector=0.003589s
+long_reference | overlap_16_stride_8 | qk=block_max | runs=1 mean_recall=1.000 mean_precision=0.500 mean_selected/K=1.000 mean_candidates=24.000 mean_selector=0.004678s
+needle | fixed_16 | qk=top_token_mean | runs=1 mean_recall=1.000 mean_precision=0.250 mean_selected/K=1.000 mean_candidates=6.000 mean_selector=0.003338s
+needle | fixed_24 | qk=top_token_mean | runs=1 mean_recall=1.000 mean_precision=0.250 mean_selected/K=1.000 mean_candidates=4.000 mean_selector=0.003420s
+needle | fixed_32 | qk=top_token_mean | runs=1 mean_recall=1.000 mean_precision=0.333 mean_selected/K=0.750 mean_candidates=3.000 mean_selector=0.003434s
+needle | fixed_40 | qk=top_token_mean | runs=1 mean_recall=0.000 mean_precision=0.000 mean_selected/K=0.750 mean_candidates=3.000 mean_selector=0.003965s
+needle | multiscale_16_24_32 | qk=top_token_mean | runs=1 mean_recall=0.000 mean_precision=0.000 mean_selected/K=1.000 mean_candidates=13.000 mean_selector=0.008578s
+needle | multiscale_16_32 | qk=top_token_mean | runs=1 mean_recall=0.000 mean_precision=0.000 mean_selected/K=1.000 mean_candidates=9.000 mean_selector=0.003765s
+needle | overlap_16_stride_8 | qk=top_token_mean | runs=1 mean_recall=0.000 mean_precision=0.000 mean_selected/K=1.000 mean_candidates=11.000 mean_selector=0.004529s
+repeated_reference | fixed_16 | qk=block_max | runs=1 mean_recall=1.000 mean_precision=0.250 mean_selected/K=1.000 mean_candidates=9.000 mean_selector=0.003950s
+repeated_reference | fixed_24 | qk=block_max | runs=1 mean_recall=0.000 mean_precision=0.000 mean_selected/K=1.000 mean_candidates=6.000 mean_selector=0.003838s
+repeated_reference | fixed_32 | qk=block_max | runs=1 mean_recall=0.000 mean_precision=0.000 mean_selected/K=1.000 mean_candidates=5.000 mean_selector=0.003449s
+repeated_reference | fixed_40 | qk=block_max | runs=1 mean_recall=1.000 mean_precision=0.250 mean_selected/K=1.000 mean_candidates=4.000 mean_selector=0.004073s
+repeated_reference | multiscale_16_24_32 | qk=block_max | runs=1 mean_recall=0.000 mean_precision=0.000 mean_selected/K=1.000 mean_candidates=20.000 mean_selector=0.005264s
+repeated_reference | multiscale_16_32 | qk=block_max | runs=1 mean_recall=0.000 mean_precision=0.000 mean_selected/K=1.000 mean_candidates=14.000 mean_selector=0.005574s
+repeated_reference | overlap_16_stride_8 | qk=block_max | runs=1 mean_recall=1.000 mean_precision=0.250 mean_selected/K=1.000 mean_candidates=16.000 mean_selector=0.004892s
+
+RUNS
+gpt2 | needle | fixed_16 | qk=top_token_mean | candidates=6 | selected=['s16_stride16_t0_16', 's16_stride16_t16_32', 's16_stride16_t32_48', 's16_stride16_t80_92'] | recall=1.000 precision=0.250 selected/K=1.000 selector=0.003338s
+gpt2 | long_reference | fixed_16 | qk=block_max | candidates=13 | selected=['s16_stride16_t80_96', 's16_stride16_t128_144', 's16_stride16_t176_192', 's16_stride16_t192_194'] | recall=0.500 precision=0.250 selected/K=1.000 selector=0.004191s
+gpt2 | code_context | fixed_16 | qk=block_max | candidates=14 | selected=['s16_stride16_t128_144', 's16_stride16_t144_160', 's16_stride16_t192_208', 's16_stride16_t208_216'] | recall=0.000 precision=0.000 selected/K=1.000 selector=0.004002s
+gpt2 | repeated_reference | fixed_16 | qk=block_max | candidates=9 | selected=['s16_stride16_t0_16', 's16_stride16_t96_112', 's16_stride16_t112_128', 's16_stride16_t128_129'] | recall=1.000 precision=0.250 selected/K=1.000 selector=0.003950s
+gpt2 | needle | fixed_24 | qk=top_token_mean | candidates=4 | selected=['s24_stride24_t0_24', 's24_stride24_t24_48', 's24_stride24_t48_72', 's24_stride24_t72_92'] | recall=1.000 precision=0.250 selected/K=1.000 selector=0.003420s
+gpt2 | long_reference | fixed_24 | qk=block_max | candidates=9 | selected=['s24_stride24_t24_48', 's24_stride24_t120_144', 's24_stride24_t168_192', 's24_stride24_t192_194'] | recall=1.000 precision=0.250 selected/K=1.000 selector=0.003419s
+gpt2 | code_context | fixed_24 | qk=block_max | candidates=9 | selected=['s24_stride24_t72_96', 's24_stride24_t120_144', 's24_stride24_t144_168', 's24_stride24_t192_216'] | recall=0.500 precision=0.250 selected/K=1.000 selector=0.004177s
+gpt2 | repeated_reference | fixed_24 | qk=block_max | candidates=6 | selected=['s24_stride24_t24_48', 's24_stride24_t48_72', 's24_stride24_t96_120', 's24_stride24_t120_129'] | recall=0.000 precision=0.000 selected/K=1.000 selector=0.003838s
+gpt2 | needle | fixed_32 | qk=top_token_mean | candidates=3 | selected=['s32_stride32_t0_32', 's32_stride32_t32_64', 's32_stride32_t64_92'] | recall=1.000 precision=0.333 selected/K=0.750 selector=0.003434s
+gpt2 | long_reference | fixed_32 | qk=block_max | candidates=7 | selected=['s32_stride32_t32_64', 's32_stride32_t128_160', 's32_stride32_t160_192', 's32_stride32_t192_194'] | recall=0.500 precision=0.250 selected/K=1.000 selector=0.003877s
+gpt2 | code_context | fixed_32 | qk=block_max | candidates=7 | selected=['s32_stride32_t0_32', 's32_stride32_t96_128', 's32_stride32_t128_160', 's32_stride32_t192_216'] | recall=0.500 precision=0.250 selected/K=1.000 selector=0.005803s
+gpt2 | repeated_reference | fixed_32 | qk=block_max | candidates=5 | selected=['s32_stride32_t32_64', 's32_stride32_t64_96', 's32_stride32_t96_128', 's32_stride32_t128_129'] | recall=0.000 precision=0.000 selected/K=1.000 selector=0.003449s
+gpt2 | needle | fixed_40 | qk=top_token_mean | candidates=3 | selected=['s40_stride40_t0_40', 's40_stride40_t40_80', 's40_stride40_t80_92'] | recall=0.000 precision=0.000 selected/K=0.750 selector=0.003965s
+gpt2 | long_reference | fixed_40 | qk=block_max | candidates=5 | selected=['s40_stride40_t0_40', 's40_stride40_t80_120', 's40_stride40_t120_160', 's40_stride40_t160_194'] | recall=1.000 precision=0.250 selected/K=1.000 selector=0.004073s
+gpt2 | code_context | fixed_40 | qk=block_max | candidates=6 | selected=['s40_stride40_t0_40', 's40_stride40_t80_120', 's40_stride40_t120_160', 's40_stride40_t200_216'] | recall=0.750 precision=0.250 selected/K=1.000 selector=0.003955s
+gpt2 | repeated_reference | fixed_40 | qk=block_max | candidates=4 | selected=['s40_stride40_t0_40', 's40_stride40_t40_80', 's40_stride40_t80_120', 's40_stride40_t120_129'] | recall=1.000 precision=0.250 selected/K=1.000 selector=0.004073s
+gpt2 | needle | multiscale_16_32 | qk=top_token_mean | candidates=9 | selected=['s16_stride16_t0_16', 's16_stride16_t80_92', 's32_stride32_t0_32', 's32_stride32_t64_92'] | recall=0.000 precision=0.000 selected/K=1.000 selector=0.003765s
+gpt2 | long_reference | multiscale_16_32 | qk=block_max | candidates=20 | selected=['s16_stride16_t176_192', 's16_stride16_t192_194', 's32_stride32_t160_192', 's32_stride32_t192_194'] | recall=0.000 precision=0.000 selected/K=1.000 selector=0.003589s
+gpt2 | code_context | multiscale_16_32 | qk=block_max | candidates=21 | selected=['s16_stride16_t144_160', 's16_stride16_t192_208', 's16_stride16_t208_216', 's32_stride32_t192_216'] | recall=0.000 precision=0.000 selected/K=1.000 selector=0.003821s
+gpt2 | repeated_reference | multiscale_16_32 | qk=block_max | candidates=14 | selected=['s16_stride16_t112_128', 's16_stride16_t128_129', 's32_stride32_t96_128', 's32_stride32_t128_129'] | recall=0.000 precision=0.000 selected/K=1.000 selector=0.005574s
+gpt2 | needle | multiscale_16_24_32 | qk=top_token_mean | candidates=13 | selected=['s16_stride16_t80_92', 's24_stride24_t72_92', 's32_stride32_t0_32', 's32_stride32_t64_92'] | recall=0.000 precision=0.000 selected/K=1.000 selector=0.008578s
+gpt2 | long_reference | multiscale_16_24_32 | qk=block_max | candidates=29 | selected=['s16_stride16_t176_192', 's16_stride16_t192_194', 's24_stride24_t192_194', 's32_stride32_t192_194'] | recall=0.000 precision=0.000 selected/K=1.000 selector=0.005236s
+gpt2 | code_context | multiscale_16_24_32 | qk=block_max | candidates=30 | selected=['s16_stride16_t192_208', 's16_stride16_t208_216', 's24_stride24_t192_216', 's32_stride32_t192_216'] | recall=0.000 precision=0.000 selected/K=1.000 selector=0.005613s
+gpt2 | repeated_reference | multiscale_16_24_32 | qk=block_max | candidates=20 | selected=['s16_stride16_t112_128', 's16_stride16_t128_129', 's24_stride24_t120_129', 's32_stride32_t128_129'] | recall=0.000 precision=0.000 selected/K=1.000 selector=0.005264s
+gpt2 | needle | overlap_16_stride_8 | qk=top_token_mean | candidates=11 | selected=['s16_stride8_t0_16', 's16_stride8_t8_24', 's16_stride8_t72_88', 's16_stride8_t80_92'] | recall=0.000 precision=0.000 selected/K=1.000 selector=0.004529s
+gpt2 | long_reference | overlap_16_stride_8 | qk=block_max | candidates=24 | selected=['s16_stride8_t120_136', 's16_stride8_t128_144', 's16_stride8_t176_192', 's16_stride8_t184_194'] | recall=1.000 precision=0.500 selected/K=1.000 selector=0.004678s
+gpt2 | code_context | overlap_16_stride_8 | qk=block_max | candidates=26 | selected=['s16_stride8_t24_40', 's16_stride8_t152_168', 's16_stride8_t192_208', 's16_stride8_t200_216'] | recall=0.000 precision=0.000 selected/K=1.000 selector=0.003753s
+gpt2 | repeated_reference | overlap_16_stride_8 | qk=block_max | candidates=16 | selected=['s16_stride8_t0_16', 's16_stride8_t96_112', 's16_stride8_t112_128', 's16_stride8_t120_129'] | recall=1.000 precision=0.250 selected/K=1.000 selector=0.004892s

@@ -1,0 +1,673 @@
+{
+  "run_summary": {
+    "runtime_name": "local_hf:gpt2",
+    "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_block_max",
+    "token_count": 194,
+    "block_count": 7,
+    "block_size": 32,
+    "summary_dim": 32,
+    "prompt_chars": 900
+  },
+  "selected_block_ids": [
+    6,
+    5,
+    4,
+    1
+  ],
+  "query_key_inspection": {
+    "prompt_id": "long_reference",
+    "prompt_name": "long_reference",
+    "representation_source": "query_mean_last_layer",
+    "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_block_max",
+    "qk_aggregation_strategy": "block_max",
+    "rail_setting": "cli",
+    "selected_block_ids": [
+      6,
+      5,
+      4,
+      1
+    ],
+    "missed_relevant_block_ids": [
+      3
+    ],
+    "relevance_fragments": [
+      "AES-256",
+      "GCM"
+    ],
+    "query_summary_metadata": {
+      "summary_dim": 32,
+      "summary_scale": 0.0035198147841325896,
+      "summary_norm": 1.0112757682800293,
+      "sign_sketch": 2951790651897349515,
+      "quantized_values_preview": [
+        4,
+        26,
+        -21,
+        -9,
+        127,
+        55,
+        -18,
+        -44
+      ],
+      "has_per_head": true,
+      "head_count": 12,
+      "mean_per_head_summary_scale": 0.01597825670492618,
+      "mean_per_head_summary_norm": 4.5357043743133545
+    },
+    "comparison_groups": {
+      "selected_relevant_block_ids": [
+        4
+      ],
+      "selected_irrelevant_block_ids": [
+        1,
+        5,
+        6
+      ],
+      "missed_relevant_block_ids": [
+        3
+      ],
+      "high_scoring_near_miss_block_ids": [
+        0,
+        2
+      ]
+    },
+    "block_records": [
+      {
+        "block_id": 0,
+        "token_start": 0,
+        "token_end": 32,
+        "token_count": 32,
+        "preview_text": "Project Atlas is a distributed analytics platform used by several internal teams. The ingestion layer receives CSV, J...",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.3282904028892517,
+        "stage_b_score": 0.53125,
+        "final_score": 0.4345404028892517,
+        "rank_position": 5,
+        "stage_a_rank": 5,
+        "stage_b_rank": 6,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.007646412361325241,
+          "summary_norm": 2.46431303024292,
+          "sign_sketch": 8882817737289025309,
+          "quantized_values_preview": [
+            0,
+            -53,
+            55,
+            73,
+            25,
+            6,
+            8,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.010612543642990233,
+          "mean_per_head_summary_norm": 3.1045793692270913
+        }
+      },
+      {
+        "block_id": 1,
+        "token_start": 32,
+        "token_end": 64,
+        "token_count": 32,
+        "preview_text": ", normalized, and routed into storage buckets. The compute layer runs batch transforms every hour and can also launch...",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.3579446077346802,
+        "stage_b_score": 0.5625,
+        "final_score": 0.47044460773468016,
+        "rank_position": 4,
+        "stage_a_rank": 4,
+        "stage_b_rank": 4,
+        "final_rank": 4,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.00829970179580328,
+          "summary_norm": 2.3644769191741943,
+          "sign_sketch": 8702903414295975448,
+          "quantized_values_preview": [
+            10,
+            0,
+            20,
+            73,
+            12,
+            66,
+            8,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.01311398522434585,
+          "mean_per_head_summary_norm": 3.7018370230992637
+        }
+      },
+      {
+        "block_id": 2,
+        "token_start": 64,
+        "token_end": 96,
+        "token_count": 32,
+        "preview_text": "The metadata service tracks ownership, retention rules, schemas, and audit events. The user dashboard shows job statu...",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.3144844174385071,
+        "stage_b_score": 0.53125,
+        "final_score": 0.4207344174385071,
+        "rank_position": 7,
+        "stage_a_rank": 7,
+        "stage_b_rank": 7,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.008247758459857129,
+          "summary_norm": 2.435589551925659,
+          "sign_sketch": 4314567205771662490,
+          "quantized_values_preview": [
+            -7,
+            -14,
+            -53,
+            66,
+            5,
+            -2,
+            63,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.013262158929519452,
+          "mean_per_head_summary_norm": 3.8257113695144653
+        }
+      },
+      {
+        "block_id": 3,
+        "token_start": 96,
+        "token_end": 128,
+        "token_count": 32,
+        "preview_text": "history. Many teams requested stronger role-based access control and better query logging. The current encryption sta...",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.32206663489341736,
+        "stage_b_score": 0.625,
+        "final_score": 0.44706663489341736,
+        "rank_position": 6,
+        "stage_a_rank": 6,
+        "stage_b_rank": 5,
+        "final_rank": null,
+        "labeled_relevant": true,
+        "matched_relevance_fragments": [
+          "AES-256"
+        ],
+        "explanation_hints": [
+          "missed despite relevance"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.008748722827340674,
+          "summary_norm": 2.7450428009033203,
+          "sign_sketch": 4243217181797602458,
+          "quantized_values_preview": [
+            -60,
+            9,
+            60,
+            65,
+            14,
+            -18,
+            69,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012206737528948646,
+          "mean_per_head_summary_norm": 3.7127527793248496
+        }
+      },
+      {
+        "block_id": 4,
+        "token_start": 128,
+        "token_end": 160,
+        "token_count": 32,
+        "preview_text": "-GCM. The support team reported slow exports during end-of-quarter reporting. The next roadmap item is cross-region f...",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.3621370196342468,
+        "stage_b_score": 0.59375,
+        "final_score": 0.48088701963424685,
+        "rank_position": 3,
+        "stage_a_rank": 3,
+        "stage_b_rank": 3,
+        "final_rank": 3,
+        "labeled_relevant": true,
+        "matched_relevance_fragments": [
+          "GCM"
+        ],
+        "explanation_hints": [
+          "semantic high-score"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.0088883112734697,
+          "summary_norm": 3.2940311431884766,
+          "sign_sketch": 13470530141039908026,
+          "quantized_values_preview": [
+            -66,
+            -16,
+            81,
+            67,
+            82,
+            -16,
+            72,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012587331606960045,
+          "mean_per_head_summary_norm": 3.733983854452769
+        }
+      },
+      {
+        "block_id": 5,
+        "token_start": 160,
+        "token_end": 192,
+        "token_count": 32,
+        "preview_text": ". The compliance review noted that audit events older than 18 months are being purged. Question: What encryption stan...",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.4408096969127655,
+        "stage_b_score": 0.609375,
+        "final_score": 0.5626846969127655,
+        "rank_position": 2,
+        "stage_a_rank": 2,
+        "stage_b_rank": 2,
+        "final_rank": 2,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.008974298717468743,
+          "summary_norm": 2.9234566688537598,
+          "sign_sketch": 8855477238019185690,
+          "quantized_values_preview": [
+            -60,
+            -15,
+            61,
+            77,
+            74,
+            -40,
+            13,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012293046931895058,
+          "mean_per_head_summary_norm": 3.551856597264608
+        }
+      },
+      {
+        "block_id": 6,
+        "token_start": 192,
+        "token_end": 194,
+        "token_count": 2,
+        "preview_text": "backups?",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.5090216994285583,
+        "stage_b_score": 0.578125,
+        "final_score": 0.6246466994285583,
+        "rank_position": 1,
+        "stage_a_rank": 1,
+        "stage_b_rank": 1,
+        "final_rank": 1,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.005993010490898072,
+          "summary_norm": 2.004420518875122,
+          "sign_sketch": 8765374537011354640,
+          "quantized_values_preview": [
+            -48,
+            -17,
+            27,
+            87,
+            17,
+            37,
+            24,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.015289402070633696,
+          "mean_per_head_summary_norm": 4.430226067701976
+        }
+      }
+    ],
+    "selected_relevant_blocks": [
+      {
+        "block_id": 4,
+        "token_start": 128,
+        "token_end": 160,
+        "token_count": 32,
+        "preview_text": "-GCM. The support team reported slow exports during end-of-quarter reporting. The next roadmap item is cross-region f...",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.3621370196342468,
+        "stage_b_score": 0.59375,
+        "final_score": 0.48088701963424685,
+        "rank_position": 3,
+        "stage_a_rank": 3,
+        "stage_b_rank": 3,
+        "final_rank": 3,
+        "labeled_relevant": true,
+        "matched_relevance_fragments": [
+          "GCM"
+        ],
+        "explanation_hints": [
+          "semantic high-score"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.0088883112734697,
+          "summary_norm": 3.2940311431884766,
+          "sign_sketch": 13470530141039908026,
+          "quantized_values_preview": [
+            -66,
+            -16,
+            81,
+            67,
+            82,
+            -16,
+            72,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012587331606960045,
+          "mean_per_head_summary_norm": 3.733983854452769
+        }
+      }
+    ],
+    "selected_irrelevant_blocks": [
+      {
+        "block_id": 1,
+        "token_start": 32,
+        "token_end": 64,
+        "token_count": 32,
+        "preview_text": ", normalized, and routed into storage buckets. The compute layer runs batch transforms every hour and can also launch...",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.3579446077346802,
+        "stage_b_score": 0.5625,
+        "final_score": 0.47044460773468016,
+        "rank_position": 4,
+        "stage_a_rank": 4,
+        "stage_b_rank": 4,
+        "final_rank": 4,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.00829970179580328,
+          "summary_norm": 2.3644769191741943,
+          "sign_sketch": 8702903414295975448,
+          "quantized_values_preview": [
+            10,
+            0,
+            20,
+            73,
+            12,
+            66,
+            8,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.01311398522434585,
+          "mean_per_head_summary_norm": 3.7018370230992637
+        }
+      },
+      {
+        "block_id": 5,
+        "token_start": 160,
+        "token_end": 192,
+        "token_count": 32,
+        "preview_text": ". The compliance review noted that audit events older than 18 months are being purged. Question: What encryption stan...",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.4408096969127655,
+        "stage_b_score": 0.609375,
+        "final_score": 0.5626846969127655,
+        "rank_position": 2,
+        "stage_a_rank": 2,
+        "stage_b_rank": 2,
+        "final_rank": 2,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.008974298717468743,
+          "summary_norm": 2.9234566688537598,
+          "sign_sketch": 8855477238019185690,
+          "quantized_values_preview": [
+            -60,
+            -15,
+            61,
+            77,
+            74,
+            -40,
+            13,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012293046931895058,
+          "mean_per_head_summary_norm": 3.551856597264608
+        }
+      },
+      {
+        "block_id": 6,
+        "token_start": 192,
+        "token_end": 194,
+        "token_count": 2,
+        "preview_text": "backups?",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.5090216994285583,
+        "stage_b_score": 0.578125,
+        "final_score": 0.6246466994285583,
+        "rank_position": 1,
+        "stage_a_rank": 1,
+        "stage_b_rank": 1,
+        "final_rank": 1,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.005993010490898072,
+          "summary_norm": 2.004420518875122,
+          "sign_sketch": 8765374537011354640,
+          "quantized_values_preview": [
+            -48,
+            -17,
+            27,
+            87,
+            17,
+            37,
+            24,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.015289402070633696,
+          "mean_per_head_summary_norm": 4.430226067701976
+        }
+      }
+    ],
+    "missed_relevant_blocks": [
+      {
+        "block_id": 3,
+        "token_start": 96,
+        "token_end": 128,
+        "token_count": 32,
+        "preview_text": "history. Many teams requested stronger role-based access control and better query logging. The current encryption sta...",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.32206663489341736,
+        "stage_b_score": 0.625,
+        "final_score": 0.44706663489341736,
+        "rank_position": 6,
+        "stage_a_rank": 6,
+        "stage_b_rank": 5,
+        "final_rank": null,
+        "labeled_relevant": true,
+        "matched_relevance_fragments": [
+          "AES-256"
+        ],
+        "explanation_hints": [
+          "missed despite relevance"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.008748722827340674,
+          "summary_norm": 2.7450428009033203,
+          "sign_sketch": 4243217181797602458,
+          "quantized_values_preview": [
+            -60,
+            9,
+            60,
+            65,
+            14,
+            -18,
+            69,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012206737528948646,
+          "mean_per_head_summary_norm": 3.7127527793248496
+        }
+      }
+    ],
+    "high_scoring_near_miss_blocks": [
+      {
+        "block_id": 0,
+        "token_start": 0,
+        "token_end": 32,
+        "token_count": 32,
+        "preview_text": "Project Atlas is a distributed analytics platform used by several internal teams. The ingestion layer receives CSV, J...",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.3282904028892517,
+        "stage_b_score": 0.53125,
+        "final_score": 0.4345404028892517,
+        "rank_position": 5,
+        "stage_a_rank": 5,
+        "stage_b_rank": 6,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.007646412361325241,
+          "summary_norm": 2.46431303024292,
+          "sign_sketch": 8882817737289025309,
+          "quantized_values_preview": [
+            0,
+            -53,
+            55,
+            73,
+            25,
+            6,
+            8,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.010612543642990233,
+          "mean_per_head_summary_norm": 3.1045793692270913
+        }
+      },
+      {
+        "block_id": 2,
+        "token_start": 64,
+        "token_end": 96,
+        "token_count": 32,
+        "preview_text": "The metadata service tracks ownership, retention rules, schemas, and audit events. The user dashboard shows job statu...",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.3144844174385071,
+        "stage_b_score": 0.53125,
+        "final_score": 0.4207344174385071,
+        "rank_position": 7,
+        "stage_a_rank": 7,
+        "stage_b_rank": 7,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.008247758459857129,
+          "summary_norm": 2.435589551925659,
+          "sign_sketch": 4314567205771662490,
+          "quantized_values_preview": [
+            -7,
+            -14,
+            -53,
+            66,
+            5,
+            -2,
+            63,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.013262158929519452,
+          "mean_per_head_summary_norm": 3.8257113695144653
+        }
+      }
+    ]
+  }
+}

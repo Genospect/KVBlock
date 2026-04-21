@@ -1,0 +1,133 @@
+REAL-BLOCK SELECTOR PROMPT SWEEP
+model=sshleifer/tiny-gpt2
+block_size=16
+shortlist_m=16
+confidence_margin=0.0
+representation=final_hidden_state
+
+NOTE: The adversarial prompt file is named prompts/adverserial_semantic.txt in this workspace.
+
+PROMPT: long_reference
+CONFIG: K=4
+tokens=194
+blocks=13
+selected_block_ids=[12, 11, 10, 9, 0, 1, 7, 6, 5, 2]
+selected/K=2.50
+fallback_mode=sparse
+raw_margin=0.760005
+normalized_margin=0.948405
+selected_mass=3.208673584461212
+intuitive_check=partially reasonable: preserves question/recent blocks, anchors, and selects the archival-encryption region around blocks 7 and 11-12, but also selects several broad context spans.
+
+PROMPT: needle
+CONFIG: K=4
+tokens=92
+blocks=6
+selected_block_ids=[5, 4, 3, 2, 0, 1]
+selected/K=1.50
+fallback_mode=sparse
+raw_margin=0.000000
+normalized_margin=n/a
+selected_mass=0.0
+intuitive_check=not meaningfully sparse: all 6 blocks are selected, including the needle block 2 and question block 5.
+
+PROMPT: repeated_reference
+CONFIG: K=4
+tokens=129
+blocks=9
+selected_block_ids=[8, 7, 6, 5, 0, 1, 2, 4, 3]
+selected/K=2.25
+fallback_mode=sparse
+raw_margin=inf
+normalized_margin=n/a
+selected_mass=0.8843162684701382
+intuitive_check=not meaningfully sparse: all 9 blocks are selected, including the early ferritin answer block 0 and question blocks 7-8.
+
+PROMPT: code_context
+CONFIG: K=4
+tokens=216
+blocks=14
+selected_block_ids=[13, 12, 11, 10, 0, 1, 9, 8, 7, 6]
+selected/K=2.50
+fallback_mode=sparse
+raw_margin=0.000247
+normalized_margin=0.000309
+selected_mass=3.2102600812911986
+intuitive_check=partially reasonable: includes question/recent checkout region and calculate_total body blocks 6-7, but misses the function definition start around blocks 4-5 at K=4.
+
+PROMPT: adversarial_semantic
+CONFIG: K=4
+tokens=85
+blocks=6
+selected_block_ids=[5, 4, 3, 2, 0, 1]
+selected/K=1.50
+fallback_mode=sparse
+raw_margin=0.000000
+normalized_margin=n/a
+selected_mass=0.0
+intuitive_check=not meaningfully sparse: all 6 blocks are selected, including the correct archive block 1 and competing AES-128 block 0.
+
+PROMPT: long_reference
+CONFIG: K=10
+tokens=194
+blocks=13
+selected_block_ids=[12, 11, 10, 9, 0, 1, 7, 6, 5, 2, 8, 4, 3]
+selected/K=1.30
+fallback_mode=sparse
+raw_margin=inf
+normalized_margin=n/a
+selected_mass=3.3282589921960604
+intuitive_check=not meaningfully sparse: all 13 blocks are selected.
+
+PROMPT: needle
+CONFIG: K=10
+tokens=92
+blocks=6
+selected_block_ids=[5, 4, 3, 2, 0, 1]
+selected/K=0.60
+fallback_mode=sparse
+raw_margin=0.000000
+normalized_margin=n/a
+selected_mass=0.0
+intuitive_check=not meaningfully sparse: all 6 blocks are selected.
+
+PROMPT: repeated_reference
+CONFIG: K=10
+tokens=129
+blocks=9
+selected_block_ids=[8, 7, 6, 5, 0, 1, 2, 4, 3]
+selected/K=0.90
+fallback_mode=sparse
+raw_margin=inf
+normalized_margin=n/a
+selected_mass=0.8843162684701382
+intuitive_check=not meaningfully sparse: all 9 blocks are selected.
+
+PROMPT: code_context
+CONFIG: K=10
+tokens=216
+blocks=14
+selected_block_ids=[13, 12, 11, 10, 0, 1, 9, 8, 7, 6, 5, 3, 2, 4]
+selected/K=1.40
+fallback_mode=sparse
+raw_margin=inf
+normalized_margin=n/a
+selected_mass=5.653323954786174
+intuitive_check=not meaningfully sparse: all 14 blocks are selected, though this does cover the full calculate_total definition and call chain.
+
+PROMPT: adversarial_semantic
+CONFIG: K=10
+tokens=85
+blocks=6
+selected_block_ids=[5, 4, 3, 2, 0, 1]
+selected/K=0.60
+fallback_mode=sparse
+raw_margin=0.000000
+normalized_margin=n/a
+selected_mass=0.0
+intuitive_check=not meaningfully sparse: all 6 blocks are selected.
+
+SUMMARY
+K=4 keeps sparse mode but still selects 6-10 blocks because recent rails, anchors, and semantic picks overlap with very small block populations.
+K=10 selects all blocks for every prompt in this set, so it is not useful as a sparsity setting for these short prompts.
+Confidence margin 0.0 makes zero-margin and no-excluded-candidate cases confident, which is expected from the current policy but not analytically strong.

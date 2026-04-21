@@ -1,0 +1,588 @@
+{
+  "run_summary": {
+    "runtime_name": "local_hf:gpt2",
+    "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_top_token_mean",
+    "token_count": 92,
+    "block_count": 6,
+    "block_size": 16,
+    "summary_dim": 32,
+    "prompt_chars": 371
+  },
+  "selected_block_ids": [
+    5,
+    0,
+    1,
+    2
+  ],
+  "query_key_inspection": {
+    "prompt_id": "needle",
+    "prompt_name": "needle",
+    "representation_source": "query_mean_last_layer",
+    "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_top_token_mean",
+    "qk_aggregation_strategy": "top_token_mean",
+    "rail_setting": "cli",
+    "selected_block_ids": [
+      5,
+      0,
+      1,
+      2
+    ],
+    "missed_relevant_block_ids": [],
+    "relevance_fragments": [
+      "ZXQ-4917-BETA",
+      "Reference token"
+    ],
+    "query_summary_metadata": {
+      "summary_dim": 32,
+      "summary_scale": 0.003862237836432269,
+      "summary_norm": 1.0767544507980347,
+      "sign_sketch": 5401748230692734344,
+      "quantized_values_preview": [
+        -49,
+        3,
+        -22,
+        -1,
+        127,
+        67,
+        -41,
+        -4
+      ],
+      "has_per_head": true,
+      "head_count": 12,
+      "mean_per_head_summary_scale": 0.015244846034237718,
+      "mean_per_head_summary_norm": 4.141308089097341
+    },
+    "comparison_groups": {
+      "selected_relevant_block_ids": [
+        2
+      ],
+      "selected_irrelevant_block_ids": [
+        0,
+        1,
+        5
+      ],
+      "missed_relevant_block_ids": [],
+      "high_scoring_near_miss_block_ids": [
+        3,
+        4
+      ]
+    },
+    "block_records": [
+      {
+        "block_id": 0,
+        "token_start": 0,
+        "token_end": 16,
+        "token_count": 16,
+        "preview_text": "System logs: request accepted cache warmup started index rebuilt heart",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.39387187361717224,
+        "stage_b_score": 0.546875,
+        "final_score": 0.5032468736171722,
+        "rank_position": 2,
+        "stage_a_rank": 2,
+        "stage_b_rank": 2,
+        "final_rank": 2,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.0029112342305070774,
+          "summary_norm": 0.829200029373169,
+          "sign_sketch": 6941843539390482271,
+          "quantized_values_preview": [
+            -37,
+            5,
+            81,
+            22,
+            32,
+            6,
+            -5,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.011154374425492575,
+          "mean_per_head_summary_norm": 3.236023505528768
+        }
+      },
+      {
+        "block_id": 1,
+        "token_start": 16,
+        "token_end": 32,
+        "token_count": 16,
+        "preview_text": "beat normal latency nominal replica synced archive prepared diagn",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.32515186071395874,
+        "stage_b_score": 0.578125,
+        "final_score": 0.4407768607139587,
+        "rank_position": 5,
+        "stage_a_rank": 5,
+        "stage_b_rank": 3,
+        "final_rank": 3,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.00477095429352888,
+          "summary_norm": 1.026902198791504,
+          "sign_sketch": 8853635873214125657,
+          "quantized_values_preview": [
+            -31,
+            2,
+            73,
+            14,
+            24,
+            4,
+            -9,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.013678807755467773,
+          "mean_per_head_summary_norm": 3.861482560634613
+        }
+      },
+      {
+        "block_id": 2,
+        "token_start": 32,
+        "token_end": 48,
+        "token_count": 16,
+        "preview_text": "ostics complete Reference token: ZXQ-4917-BETA",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.3268606960773468,
+        "stage_b_score": 0.546875,
+        "final_score": 0.4362356960773468,
+        "rank_position": 4,
+        "stage_a_rank": 4,
+        "stage_b_rank": 4,
+        "final_rank": 4,
+        "labeled_relevant": true,
+        "matched_relevance_fragments": [
+          "ZXQ-4917-BETA",
+          "Reference token"
+        ],
+        "explanation_hints": [
+          "semantic high-score",
+          "question-adjacent"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.0030369315091080553,
+          "summary_norm": 0.8797546625137329,
+          "sign_sketch": 8848779873934989020,
+          "quantized_values_preview": [
+            -13,
+            -13,
+            54,
+            30,
+            16,
+            -36,
+            57,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.015105441486428728,
+          "mean_per_head_summary_norm": 4.050522863864899
+        }
+      },
+      {
+        "block_id": 3,
+        "token_start": 48,
+        "token_end": 64,
+        "token_count": 16,
+        "preview_text": "Additional logs: session opened session closed background merge complete",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.3335827589035034,
+        "stage_b_score": 0.46875,
+        "final_score": 0.4273327589035034,
+        "rank_position": 3,
+        "stage_a_rank": 3,
+        "stage_b_rank": 5,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.005226288254805437,
+          "summary_norm": 1.1178325414657593,
+          "sign_sketch": 4164816743543723741,
+          "quantized_values_preview": [
+            -19,
+            -6,
+            31,
+            37,
+            36,
+            -18,
+            32,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.014213638512168343,
+          "mean_per_head_summary_norm": 3.9654337962468467
+        }
+      },
+      {
+        "block_id": 4,
+        "token_start": 64,
+        "token_end": 80,
+        "token_count": 16,
+        "preview_text": "retry queue empty cpu stable memory stable io stable all services",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.3223966062068939,
+        "stage_b_score": 0.46875,
+        "final_score": 0.4161466062068939,
+        "rank_position": 6,
+        "stage_a_rank": 6,
+        "stage_b_rank": 6,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004615856906560462,
+          "summary_norm": 1.162651777267456,
+          "sign_sketch": 13600430844804454105,
+          "quantized_values_preview": [
+            -19,
+            -58,
+            40,
+            26,
+            -13,
+            7,
+            4,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.01471161764124873,
+          "mean_per_head_summary_norm": 4.3869080146153765
+        }
+      },
+      {
+        "block_id": 5,
+        "token_start": 80,
+        "token_end": 92,
+        "token_count": 12,
+        "preview_text": "nominal Question: What was the reference token?",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.4599071145057678,
+        "stage_b_score": 0.625,
+        "final_score": 0.5849071145057678,
+        "rank_position": 1,
+        "stage_a_rank": 1,
+        "stage_b_rank": 1,
+        "final_rank": 1,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match",
+          "question-adjacent"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004382549777744323,
+          "summary_norm": 1.3378561735153198,
+          "sign_sketch": 8711348866018038808,
+          "quantized_values_preview": [
+            -20,
+            -17,
+            -19,
+            76,
+            41,
+            39,
+            8,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.013042867261906621,
+          "mean_per_head_summary_norm": 3.7213903268178306
+        }
+      }
+    ],
+    "selected_relevant_blocks": [
+      {
+        "block_id": 2,
+        "token_start": 32,
+        "token_end": 48,
+        "token_count": 16,
+        "preview_text": "ostics complete Reference token: ZXQ-4917-BETA",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.3268606960773468,
+        "stage_b_score": 0.546875,
+        "final_score": 0.4362356960773468,
+        "rank_position": 4,
+        "stage_a_rank": 4,
+        "stage_b_rank": 4,
+        "final_rank": 4,
+        "labeled_relevant": true,
+        "matched_relevance_fragments": [
+          "ZXQ-4917-BETA",
+          "Reference token"
+        ],
+        "explanation_hints": [
+          "semantic high-score",
+          "question-adjacent"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.0030369315091080553,
+          "summary_norm": 0.8797546625137329,
+          "sign_sketch": 8848779873934989020,
+          "quantized_values_preview": [
+            -13,
+            -13,
+            54,
+            30,
+            16,
+            -36,
+            57,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.015105441486428728,
+          "mean_per_head_summary_norm": 4.050522863864899
+        }
+      }
+    ],
+    "selected_irrelevant_blocks": [
+      {
+        "block_id": 0,
+        "token_start": 0,
+        "token_end": 16,
+        "token_count": 16,
+        "preview_text": "System logs: request accepted cache warmup started index rebuilt heart",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.39387187361717224,
+        "stage_b_score": 0.546875,
+        "final_score": 0.5032468736171722,
+        "rank_position": 2,
+        "stage_a_rank": 2,
+        "stage_b_rank": 2,
+        "final_rank": 2,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.0029112342305070774,
+          "summary_norm": 0.829200029373169,
+          "sign_sketch": 6941843539390482271,
+          "quantized_values_preview": [
+            -37,
+            5,
+            81,
+            22,
+            32,
+            6,
+            -5,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.011154374425492575,
+          "mean_per_head_summary_norm": 3.236023505528768
+        }
+      },
+      {
+        "block_id": 1,
+        "token_start": 16,
+        "token_end": 32,
+        "token_count": 16,
+        "preview_text": "beat normal latency nominal replica synced archive prepared diagn",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.32515186071395874,
+        "stage_b_score": 0.578125,
+        "final_score": 0.4407768607139587,
+        "rank_position": 5,
+        "stage_a_rank": 5,
+        "stage_b_rank": 3,
+        "final_rank": 3,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.00477095429352888,
+          "summary_norm": 1.026902198791504,
+          "sign_sketch": 8853635873214125657,
+          "quantized_values_preview": [
+            -31,
+            2,
+            73,
+            14,
+            24,
+            4,
+            -9,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.013678807755467773,
+          "mean_per_head_summary_norm": 3.861482560634613
+        }
+      },
+      {
+        "block_id": 5,
+        "token_start": 80,
+        "token_end": 92,
+        "token_count": 12,
+        "preview_text": "nominal Question: What was the reference token?",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.4599071145057678,
+        "stage_b_score": 0.625,
+        "final_score": 0.5849071145057678,
+        "rank_position": 1,
+        "stage_a_rank": 1,
+        "stage_b_rank": 1,
+        "final_rank": 1,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match",
+          "question-adjacent"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004382549777744323,
+          "summary_norm": 1.3378561735153198,
+          "sign_sketch": 8711348866018038808,
+          "quantized_values_preview": [
+            -20,
+            -17,
+            -19,
+            76,
+            41,
+            39,
+            8,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.013042867261906621,
+          "mean_per_head_summary_norm": 3.7213903268178306
+        }
+      }
+    ],
+    "missed_relevant_blocks": [],
+    "high_scoring_near_miss_blocks": [
+      {
+        "block_id": 3,
+        "token_start": 48,
+        "token_end": 64,
+        "token_count": 16,
+        "preview_text": "Additional logs: session opened session closed background merge complete",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.3335827589035034,
+        "stage_b_score": 0.46875,
+        "final_score": 0.4273327589035034,
+        "rank_position": 3,
+        "stage_a_rank": 3,
+        "stage_b_rank": 5,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.005226288254805437,
+          "summary_norm": 1.1178325414657593,
+          "sign_sketch": 4164816743543723741,
+          "quantized_values_preview": [
+            -19,
+            -6,
+            31,
+            37,
+            36,
+            -18,
+            32,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.014213638512168343,
+          "mean_per_head_summary_norm": 3.9654337962468467
+        }
+      },
+      {
+        "block_id": 4,
+        "token_start": 64,
+        "token_end": 80,
+        "token_count": 16,
+        "preview_text": "retry queue empty cpu stable memory stable io stable all services",
+        "selected": false,
+        "selected_reason": "unselected",
+        "stage_a_score": 0.3223966062068939,
+        "stage_b_score": 0.46875,
+        "final_score": 0.4161466062068939,
+        "rank_position": 6,
+        "stage_a_rank": 6,
+        "stage_b_rank": 6,
+        "final_rank": null,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "high-scoring near-miss"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004615856906560462,
+          "summary_norm": 1.162651777267456,
+          "sign_sketch": 13600430844804454105,
+          "quantized_values_preview": [
+            -19,
+            -58,
+            40,
+            26,
+            -13,
+            7,
+            4,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.01471161764124873,
+          "mean_per_head_summary_norm": 4.3869080146153765
+        }
+      }
+    ]
+  }
+}

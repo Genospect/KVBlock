@@ -1,0 +1,431 @@
+{
+  "selected_block_ids": [
+    5,
+    4,
+    1,
+    0
+  ],
+  "selected_to_semantic_k_ratio": 1.0,
+  "fallback_mode": "sparse",
+  "confidence": {
+    "semantic_candidate_block_ids": [
+      5,
+      4,
+      1,
+      0,
+      3,
+      2
+    ],
+    "semantic_included_count": 4,
+    "raw_margin": 0.7583974887616932,
+    "normalized_margin": 0.9449680540047621,
+    "selected_mass": 3.320075798034668,
+    "normalized_mass": null,
+    "is_confident": true
+  },
+  "run_summary": {
+    "runtime_name": "local_hf:sshleifer/tiny-gpt2",
+    "representation_name": "final_hidden_state",
+    "token_count": 92,
+    "block_count": 6,
+    "block_size": 16,
+    "summary_dim": 32,
+    "prompt_chars": 371
+  },
+  "trace": {
+    "step_id": "real-block-prefill",
+    "query_sign_sketch": 18047033696238079550,
+    "stage_a_scores": [
+      {
+        "block_id": 5,
+        "token_start": 80,
+        "token_len": 12,
+        "approx_similarity_score": 1.0,
+        "recency_score": 0.5,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.7000000476837158,
+        "hamming_similarity": 0.0,
+        "stage_b_score": 0.0,
+        "final_score": 0.7000000476837158
+      },
+      {
+        "block_id": 4,
+        "token_start": 64,
+        "token_len": 16,
+        "approx_similarity_score": 1.0,
+        "recency_score": 0.0714285746216774,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.6142857670783997,
+        "hamming_similarity": 0.0,
+        "stage_b_score": 0.0,
+        "final_score": 0.6142857670783997
+      },
+      {
+        "block_id": 1,
+        "token_start": 16,
+        "token_len": 16,
+        "approx_similarity_score": 1.0,
+        "recency_score": 0.016129031777381897,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.603225827217102,
+        "hamming_similarity": 0.0,
+        "stage_b_score": 0.0,
+        "final_score": 0.603225827217102
+      },
+      {
+        "block_id": 0,
+        "token_start": 0,
+        "token_len": 16,
+        "approx_similarity_score": 1.0,
+        "recency_score": 0.012820512987673283,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.6025641560554504,
+        "hamming_similarity": 0.0,
+        "stage_b_score": 0.0,
+        "final_score": 0.6025641560554504
+      },
+      {
+        "block_id": 3,
+        "token_start": 48,
+        "token_len": 16,
+        "approx_similarity_score": 0.0,
+        "recency_score": 0.03333333507180214,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.0066666672937572,
+        "hamming_similarity": 0.0,
+        "stage_b_score": 0.0,
+        "final_score": 0.0066666672937572
+      },
+      {
+        "block_id": 2,
+        "token_start": 32,
+        "token_len": 16,
+        "approx_similarity_score": -5.960464477539063e-08,
+        "recency_score": 0.021739130839705467,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.004347790498286486,
+        "hamming_similarity": 0.0,
+        "stage_b_score": 0.0,
+        "final_score": 0.004347790498286486
+      }
+    ],
+    "stage_a_shortlist_block_ids": [
+      5,
+      4,
+      1,
+      0,
+      3,
+      2
+    ],
+    "stage_b_scores": [
+      {
+        "block_id": 5,
+        "token_start": 80,
+        "token_len": 12,
+        "approx_similarity_score": 1.0,
+        "recency_score": 0.5,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.7000000476837158,
+        "hamming_similarity": 1.0,
+        "stage_b_score": 1.0,
+        "final_score": 0.9000000476837158
+      },
+      {
+        "block_id": 4,
+        "token_start": 64,
+        "token_len": 16,
+        "approx_similarity_score": 1.0,
+        "recency_score": 0.0714285746216774,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.6142857670783997,
+        "hamming_similarity": 1.0,
+        "stage_b_score": 1.0,
+        "final_score": 0.8142857670783996
+      },
+      {
+        "block_id": 1,
+        "token_start": 16,
+        "token_len": 16,
+        "approx_similarity_score": 1.0,
+        "recency_score": 0.016129031777381897,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.603225827217102,
+        "hamming_similarity": 1.0,
+        "stage_b_score": 1.0,
+        "final_score": 0.803225827217102
+      },
+      {
+        "block_id": 0,
+        "token_start": 0,
+        "token_len": 16,
+        "approx_similarity_score": 1.0,
+        "recency_score": 0.012820512987673283,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.6025641560554504,
+        "hamming_similarity": 1.0,
+        "stage_b_score": 1.0,
+        "final_score": 0.8025641560554504
+      },
+      {
+        "block_id": 3,
+        "token_start": 48,
+        "token_len": 16,
+        "approx_similarity_score": 0.0,
+        "recency_score": 0.03333333507180214,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.0066666672937572,
+        "hamming_similarity": 0.1875,
+        "stage_b_score": 0.1875,
+        "final_score": 0.044166667293757206
+      },
+      {
+        "block_id": 2,
+        "token_start": 32,
+        "token_len": 16,
+        "approx_similarity_score": -5.960464477539063e-08,
+        "recency_score": 0.021739130839705467,
+        "attn_score": 0.0,
+        "priority_score": 0.0,
+        "stage_a_score": 0.004347790498286486,
+        "hamming_similarity": 0.1875,
+        "stage_b_score": 0.1875,
+        "final_score": 0.04184779049828649
+      }
+    ],
+    "pre_fallback_selection": {
+      "recent_block_ids": [],
+      "anchor_block_ids": [],
+      "semantic_block_ids": [
+        5,
+        4,
+        1,
+        0
+      ],
+      "final_selected_block_ids": [
+        5,
+        4,
+        1,
+        0
+      ],
+      "rail_block_ids": [],
+      "rail_block_count": 0,
+      "semantic_block_count": 4
+    },
+    "final_selection": {
+      "recent_block_ids": [],
+      "anchor_block_ids": [],
+      "semantic_block_ids": [
+        5,
+        4,
+        1,
+        0
+      ],
+      "final_selected_block_ids": [
+        5,
+        4,
+        1,
+        0
+      ],
+      "rail_block_ids": [],
+      "rail_block_count": 0,
+      "semantic_block_count": 4
+    },
+    "confidence": {
+      "semantic_candidate_block_ids": [
+        5,
+        4,
+        1,
+        0,
+        3,
+        2
+      ],
+      "semantic_included_count": 4,
+      "raw_margin": 0.7583974887616932,
+      "normalized_margin": 0.9449680540047621,
+      "selected_mass": 3.320075798034668,
+      "normalized_mass": null,
+      "is_confident": true
+    },
+    "fallback": {
+      "action": "keep_sparse",
+      "mode": "sparse",
+      "next_semantic_top_k": 4,
+      "next_keep_recent_blocks": 0,
+      "use_dense_fallback": false,
+      "reason_code": "confident"
+    }
+  },
+  "block_inspections": [
+    {
+      "block_id": 0,
+      "token_start": 0,
+      "token_end": 16,
+      "token_count": 16,
+      "selected": true,
+      "selected_reason": "semantic",
+      "stage_a_score": 0.6025641560554504,
+      "stage_b_score": 1.0,
+      "final_score": 0.8025641560554504,
+      "preview_text": "System logs: request accepted cache warmup started index rebuilt heart",
+      "block_text": null
+    },
+    {
+      "block_id": 1,
+      "token_start": 16,
+      "token_end": 32,
+      "token_count": 16,
+      "selected": true,
+      "selected_reason": "semantic",
+      "stage_a_score": 0.603225827217102,
+      "stage_b_score": 1.0,
+      "final_score": 0.803225827217102,
+      "preview_text": "beat normal latency nominal replica synced archive prepared diagn",
+      "block_text": null
+    },
+    {
+      "block_id": 2,
+      "token_start": 32,
+      "token_end": 48,
+      "token_count": 16,
+      "selected": false,
+      "selected_reason": "unselected",
+      "stage_a_score": 0.004347790498286486,
+      "stage_b_score": 0.1875,
+      "final_score": 0.04184779049828649,
+      "preview_text": "ostics complete Reference token: ZXQ-4917-BETA",
+      "block_text": null
+    },
+    {
+      "block_id": 3,
+      "token_start": 48,
+      "token_end": 64,
+      "token_count": 16,
+      "selected": false,
+      "selected_reason": "unselected",
+      "stage_a_score": 0.0066666672937572,
+      "stage_b_score": 0.1875,
+      "final_score": 0.044166667293757206,
+      "preview_text": "Additional logs: session opened session closed background merge complete",
+      "block_text": null
+    },
+    {
+      "block_id": 4,
+      "token_start": 64,
+      "token_end": 80,
+      "token_count": 16,
+      "selected": true,
+      "selected_reason": "semantic",
+      "stage_a_score": 0.6142857670783997,
+      "stage_b_score": 1.0,
+      "final_score": 0.8142857670783996,
+      "preview_text": "retry queue empty cpu stable memory stable io stable all services",
+      "block_text": null
+    },
+    {
+      "block_id": 5,
+      "token_start": 80,
+      "token_end": 92,
+      "token_count": 12,
+      "selected": true,
+      "selected_reason": "semantic",
+      "stage_a_score": 0.7000000476837158,
+      "stage_b_score": 1.0,
+      "final_score": 0.9000000476837158,
+      "preview_text": "nominal Question: What was the reference token?",
+      "block_text": null
+    }
+  ],
+  "selected_block_inspections": [
+    {
+      "block_id": 0,
+      "token_start": 0,
+      "token_end": 16,
+      "token_count": 16,
+      "selected": true,
+      "selected_reason": "semantic",
+      "stage_a_score": 0.6025641560554504,
+      "stage_b_score": 1.0,
+      "final_score": 0.8025641560554504,
+      "preview_text": "System logs: request accepted cache warmup started index rebuilt heart",
+      "block_text": null
+    },
+    {
+      "block_id": 1,
+      "token_start": 16,
+      "token_end": 32,
+      "token_count": 16,
+      "selected": true,
+      "selected_reason": "semantic",
+      "stage_a_score": 0.603225827217102,
+      "stage_b_score": 1.0,
+      "final_score": 0.803225827217102,
+      "preview_text": "beat normal latency nominal replica synced archive prepared diagn",
+      "block_text": null
+    },
+    {
+      "block_id": 4,
+      "token_start": 64,
+      "token_end": 80,
+      "token_count": 16,
+      "selected": true,
+      "selected_reason": "semantic",
+      "stage_a_score": 0.6142857670783997,
+      "stage_b_score": 1.0,
+      "final_score": 0.8142857670783996,
+      "preview_text": "retry queue empty cpu stable memory stable io stable all services",
+      "block_text": null
+    },
+    {
+      "block_id": 5,
+      "token_start": 80,
+      "token_end": 92,
+      "token_count": 12,
+      "selected": true,
+      "selected_reason": "semantic",
+      "stage_a_score": 0.7000000476837158,
+      "stage_b_score": 1.0,
+      "final_score": 0.9000000476837158,
+      "preview_text": "nominal Question: What was the reference token?",
+      "block_text": null
+    }
+  ],
+  "unselected_block_inspections": [
+    {
+      "block_id": 2,
+      "token_start": 32,
+      "token_end": 48,
+      "token_count": 16,
+      "selected": false,
+      "selected_reason": "unselected",
+      "stage_a_score": 0.004347790498286486,
+      "stage_b_score": 0.1875,
+      "final_score": 0.04184779049828649,
+      "preview_text": "ostics complete Reference token: ZXQ-4917-BETA",
+      "block_text": null
+    },
+    {
+      "block_id": 3,
+      "token_start": 48,
+      "token_end": 64,
+      "token_count": 16,
+      "selected": false,
+      "selected_reason": "unselected",
+      "stage_a_score": 0.0066666672937572,
+      "stage_b_score": 0.1875,
+      "final_score": 0.044166667293757206,
+      "preview_text": "Additional logs: session opened session closed background merge complete",
+      "block_text": null
+    }
+  ]
+}

@@ -1,0 +1,3867 @@
+{
+  "rows": [
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "long_reference",
+      "prompt_file": "prompts/long_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "pooled_mean_heads",
+      "scheme_description": "Current pooled query/key summary baseline.",
+      "head_scoring_mode": "mean_heads",
+      "head_weights": [],
+      "tokens": 194,
+      "blocks": 13,
+      "selected_ids": [
+        12,
+        11,
+        1,
+        8,
+        7
+      ],
+      "selected_reasons": {
+        "1": "semantic",
+        "7": "semantic",
+        "8": "semantic",
+        "11": "semantic",
+        "12": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.003915006993338466,
+      "total_latency_sec": 2.7448416240513325,
+      "prefill_latency_sec": 2.681791508977767,
+      "metadata_latency_sec": 0.05646655702730641,
+      "inspection_latency_sec": 0.0025859809829853475,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0007570326328277255,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          7,
+          8
+        ],
+        "selected_expected_block_ids": [
+          8,
+          7
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          12,
+          11,
+          1
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.4,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "long_reference",
+      "prompt_file": "prompts/long_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "head9_only",
+      "scheme_description": "Use only head 9, the strongest offline single-head candidate.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "tokens": 194,
+      "blocks": 13,
+      "selected_ids": [
+        12,
+        11,
+        7,
+        10,
+        0
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "7": "semantic",
+        "10": "semantic",
+        "11": "semantic",
+        "12": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.0032623010338284075,
+      "total_latency_sec": 0.29775695805437863,
+      "prefill_latency_sec": 0.23436440201476216,
+      "metadata_latency_sec": 0.0588683319510892,
+      "inspection_latency_sec": 0.0012000050046481192,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.030387070775032,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          7,
+          8
+        ],
+        "selected_expected_block_ids": [
+          7
+        ],
+        "missed_expected_block_ids": [
+          8
+        ],
+        "extra_selected_block_ids": [
+          12,
+          11,
+          10,
+          0
+        ],
+        "target_recall": 0.5,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "long_reference",
+      "prompt_file": "prompts/long_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "head9_heavy",
+      "scheme_description": "Uniform weights with head 9 modestly upweighted.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0
+      ],
+      "tokens": 194,
+      "blocks": 13,
+      "selected_ids": [
+        12,
+        11,
+        10,
+        7,
+        8
+      ],
+      "selected_reasons": {
+        "7": "semantic",
+        "8": "semantic",
+        "10": "semantic",
+        "11": "semantic",
+        "12": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.0032854900346137583,
+      "total_latency_sec": 0.2980885899742134,
+      "prefill_latency_sec": 0.23732109495904297,
+      "metadata_latency_sec": 0.056229664012789726,
+      "inspection_latency_sec": 0.0012057379935868084,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0052321732044220415,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          7,
+          8
+        ],
+        "selected_expected_block_ids": [
+          7,
+          8
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          12,
+          11,
+          10
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.4,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "long_reference",
+      "prompt_file": "prompts/long_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "retrieval_mix",
+      "scheme_description": "Upweight head 9 plus heads that surfaced in long-reference/needle single-head diagnostics.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        2.0,
+        1.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        2.0
+      ],
+      "tokens": 194,
+      "blocks": 13,
+      "selected_ids": [
+        12,
+        11,
+        10,
+        7,
+        8
+      ],
+      "selected_reasons": {
+        "7": "semantic",
+        "8": "semantic",
+        "10": "semantic",
+        "11": "semantic",
+        "12": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.004220995993819088,
+      "total_latency_sec": 0.32027116598328575,
+      "prefill_latency_sec": 0.24922703905031085,
+      "metadata_latency_sec": 0.06524337397422642,
+      "inspection_latency_sec": 0.0015199650079011917,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0030773609876633135,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          7,
+          8
+        ],
+        "selected_expected_block_ids": [
+          7,
+          8
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          12,
+          11,
+          10
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.4,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "long_reference",
+      "prompt_file": "prompts/long_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "code_mix",
+      "scheme_description": "Upweight code-context specialists head 2 and head 9.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0
+      ],
+      "tokens": 194,
+      "blocks": 13,
+      "selected_ids": [
+        12,
+        11,
+        10,
+        7,
+        8
+      ],
+      "selected_reasons": {
+        "7": "semantic",
+        "8": "semantic",
+        "10": "semantic",
+        "11": "semantic",
+        "12": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.005147535004653037,
+      "total_latency_sec": 0.2894237219588831,
+      "prefill_latency_sec": 0.23051749099977314,
+      "metadata_latency_sec": 0.051388064050115645,
+      "inspection_latency_sec": 0.0022692009806632996,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.007947111129760764,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          7,
+          8
+        ],
+        "selected_expected_block_ids": [
+          7,
+          8
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          12,
+          11,
+          10
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.4,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "needle",
+      "prompt_file": "prompts/needle.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "pooled_mean_heads",
+      "scheme_description": "Current pooled query/key summary baseline.",
+      "head_scoring_mode": "mean_heads",
+      "head_weights": [],
+      "tokens": 92,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        0,
+        1,
+        2,
+        4
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "1": "semantic",
+        "2": "semantic",
+        "4": "semantic",
+        "5": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.0029304560157470405,
+      "total_latency_sec": 0.17951300804270431,
+      "prefill_latency_sec": 0.1464280239888467,
+      "metadata_latency_sec": 0.02934676397126168,
+      "inspection_latency_sec": 0.0007581280078738928,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0012327730655670166,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          2
+        ],
+        "selected_expected_block_ids": [
+          2
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          5,
+          0,
+          1,
+          4
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "needle",
+      "prompt_file": "prompts/needle.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "head9_only",
+      "scheme_description": "Use only head 9, the strongest offline single-head candidate.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "tokens": 92,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        0,
+        2,
+        1,
+        3
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "1": "semantic",
+        "2": "semantic",
+        "3": "semantic",
+        "5": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.0028248780290596187,
+      "total_latency_sec": 0.15766256203642115,
+      "prefill_latency_sec": 0.12760324199916795,
+      "metadata_latency_sec": 0.026570321002509445,
+      "inspection_latency_sec": 0.0006150929839350283,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.01909320056438446,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          2
+        ],
+        "selected_expected_block_ids": [
+          2
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          5,
+          0,
+          1,
+          3
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "needle",
+      "prompt_file": "prompts/needle.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "head9_heavy",
+      "scheme_description": "Uniform weights with head 9 modestly upweighted.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0
+      ],
+      "tokens": 92,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        0,
+        2,
+        3,
+        4
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "2": "semantic",
+        "3": "semantic",
+        "4": "semantic",
+        "5": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.0027997440192848444,
+      "total_latency_sec": 0.14304266800172627,
+      "prefill_latency_sec": 0.11748722300399095,
+      "metadata_latency_sec": 0.022062927950173616,
+      "inspection_latency_sec": 0.0006473860121332109,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.002716535329818748,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          2
+        ],
+        "selected_expected_block_ids": [
+          2
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          5,
+          0,
+          3,
+          4
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "needle",
+      "prompt_file": "prompts/needle.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "retrieval_mix",
+      "scheme_description": "Upweight head 9 plus heads that surfaced in long-reference/needle single-head diagnostics.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        2.0,
+        1.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        2.0
+      ],
+      "tokens": 92,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        0,
+        2,
+        3,
+        4
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "2": "semantic",
+        "3": "semantic",
+        "4": "semantic",
+        "5": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.005094451014883816,
+      "total_latency_sec": 0.17915432300651446,
+      "prefill_latency_sec": 0.14398124004947022,
+      "metadata_latency_sec": 0.029158984019886702,
+      "inspection_latency_sec": 0.0008376080077141523,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0028680950403213723,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          2
+        ],
+        "selected_expected_block_ids": [
+          2
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          5,
+          0,
+          3,
+          4
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "needle",
+      "prompt_file": "prompts/needle.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "code_mix",
+      "scheme_description": "Upweight code-context specialists head 2 and head 9.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0
+      ],
+      "tokens": 92,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        0,
+        2,
+        3,
+        4
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "2": "semantic",
+        "3": "semantic",
+        "4": "semantic",
+        "5": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.0026706649805419147,
+      "total_latency_sec": 0.1524858659831807,
+      "prefill_latency_sec": 0.12607013201341033,
+      "metadata_latency_sec": 0.023070900002494454,
+      "inspection_latency_sec": 0.0006009879871271551,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.004416131973266624,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          2
+        ],
+        "selected_expected_block_ids": [
+          2
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          5,
+          0,
+          3,
+          4
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "repeated_reference",
+      "prompt_file": "prompts/repeated_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "pooled_mean_heads",
+      "scheme_description": "Current pooled query/key summary baseline.",
+      "head_scoring_mode": "mean_heads",
+      "head_weights": [],
+      "tokens": 129,
+      "blocks": 9,
+      "selected_ids": [
+        8,
+        0,
+        7,
+        2,
+        1
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "1": "semantic",
+        "2": "semantic",
+        "7": "semantic",
+        "8": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.0032617609831504524,
+      "total_latency_sec": 0.21867025800747797,
+      "prefill_latency_sec": 0.17214385798433796,
+      "metadata_latency_sec": 0.04212876001838595,
+      "inspection_latency_sec": 0.001048436970449984,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.00782577395439149,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          0
+        ],
+        "selected_expected_block_ids": [
+          0
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          8,
+          7,
+          2,
+          1
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "repeated_reference",
+      "prompt_file": "prompts/repeated_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "head9_only",
+      "scheme_description": "Use only head 9, the strongest offline single-head candidate.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "tokens": 129,
+      "blocks": 9,
+      "selected_ids": [
+        8,
+        7,
+        0,
+        1,
+        4
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "1": "semantic",
+        "4": "semantic",
+        "7": "semantic",
+        "8": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.007626474020071328,
+      "total_latency_sec": 0.2240050089894794,
+      "prefill_latency_sec": 0.1802863699849695,
+      "metadata_latency_sec": 0.034545567992608994,
+      "inspection_latency_sec": 0.0014886170392856002,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.004856598377227794,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          0
+        ],
+        "selected_expected_block_ids": [
+          0
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          8,
+          7,
+          1,
+          4
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "repeated_reference",
+      "prompt_file": "prompts/repeated_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "head9_heavy",
+      "scheme_description": "Uniform weights with head 9 modestly upweighted.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0
+      ],
+      "tokens": 129,
+      "blocks": 9,
+      "selected_ids": [
+        8,
+        7,
+        0,
+        1,
+        4
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "1": "semantic",
+        "4": "semantic",
+        "7": "semantic",
+        "8": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.0030432019848376513,
+      "total_latency_sec": 0.2118024089722894,
+      "prefill_latency_sec": 0.16763568902388215,
+      "metadata_latency_sec": 0.040249205951113254,
+      "inspection_latency_sec": 0.0008267530356533825,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.00018207430839539684,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          0
+        ],
+        "selected_expected_block_ids": [
+          0
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          8,
+          7,
+          1,
+          4
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "repeated_reference",
+      "prompt_file": "prompts/repeated_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "retrieval_mix",
+      "scheme_description": "Upweight head 9 plus heads that surfaced in long-reference/needle single-head diagnostics.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        2.0,
+        1.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        2.0
+      ],
+      "tokens": 129,
+      "blocks": 9,
+      "selected_ids": [
+        8,
+        7,
+        0,
+        1,
+        4
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "1": "semantic",
+        "4": "semantic",
+        "7": "semantic",
+        "8": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.004781876981724054,
+      "total_latency_sec": 0.22735675401054323,
+      "prefill_latency_sec": 0.17821608495432884,
+      "metadata_latency_sec": 0.04269774496788159,
+      "inspection_latency_sec": 0.0016021360061131418,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0009314537048339955,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          0
+        ],
+        "selected_expected_block_ids": [
+          0
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          8,
+          7,
+          1,
+          4
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "repeated_reference",
+      "prompt_file": "prompts/repeated_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "code_mix",
+      "scheme_description": "Upweight code-context specialists head 2 and head 9.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0
+      ],
+      "tokens": 129,
+      "blocks": 9,
+      "selected_ids": [
+        8,
+        7,
+        0,
+        1,
+        2
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "1": "semantic",
+        "2": "semantic",
+        "7": "semantic",
+        "8": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.005341454001609236,
+      "total_latency_sec": 0.2097159310360439,
+      "prefill_latency_sec": 0.1681918990216218,
+      "metadata_latency_sec": 0.03486762201646343,
+      "inspection_latency_sec": 0.0012592650018632412,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.001359272003173817,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          0
+        ],
+        "selected_expected_block_ids": [
+          0
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          8,
+          7,
+          1,
+          2
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "code_context",
+      "prompt_file": "prompts/code_context.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "pooled_mean_heads",
+      "scheme_description": "Current pooled query/key summary baseline.",
+      "head_scoring_mode": "mean_heads",
+      "head_weights": [],
+      "tokens": 216,
+      "blocks": 14,
+      "selected_ids": [
+        13,
+        12,
+        11,
+        10,
+        5
+      ],
+      "selected_reasons": {
+        "5": "semantic",
+        "10": "semantic",
+        "11": "semantic",
+        "12": "semantic",
+        "13": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.0032939150114543736,
+      "total_latency_sec": 0.3535540730226785,
+      "prefill_latency_sec": 0.2877352299983613,
+      "metadata_latency_sec": 0.06062125397147611,
+      "inspection_latency_sec": 0.00185350701212883,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.002084302902221724,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          4,
+          5,
+          6,
+          7,
+          11
+        ],
+        "selected_expected_block_ids": [
+          11,
+          5
+        ],
+        "missed_expected_block_ids": [
+          4,
+          6,
+          7
+        ],
+        "extra_selected_block_ids": [
+          13,
+          12,
+          10
+        ],
+        "target_recall": 0.4,
+        "selected_precision": 0.4,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "code_context",
+      "prompt_file": "prompts/code_context.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "head9_only",
+      "scheme_description": "Use only head 9, the strongest offline single-head candidate.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "tokens": 216,
+      "blocks": 14,
+      "selected_ids": [
+        13,
+        0,
+        5,
+        4,
+        12
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "4": "semantic",
+        "5": "semantic",
+        "12": "semantic",
+        "13": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.003992884012404829,
+      "total_latency_sec": 0.3270466480171308,
+      "prefill_latency_sec": 0.25426985998637974,
+      "metadata_latency_sec": 0.06687119702110067,
+      "inspection_latency_sec": 0.0018515930278226733,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0015670895576477273,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          4,
+          5,
+          6,
+          7,
+          11
+        ],
+        "selected_expected_block_ids": [
+          5,
+          4
+        ],
+        "missed_expected_block_ids": [
+          6,
+          7,
+          11
+        ],
+        "extra_selected_block_ids": [
+          13,
+          0,
+          12
+        ],
+        "target_recall": 0.4,
+        "selected_precision": 0.4,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "code_context",
+      "prompt_file": "prompts/code_context.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "head9_heavy",
+      "scheme_description": "Uniform weights with head 9 modestly upweighted.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0
+      ],
+      "tokens": 216,
+      "blocks": 14,
+      "selected_ids": [
+        13,
+        12,
+        0,
+        5,
+        9
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "5": "semantic",
+        "9": "semantic",
+        "12": "semantic",
+        "13": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.004222683026455343,
+      "total_latency_sec": 0.32127789402147755,
+      "prefill_latency_sec": 0.254723172984086,
+      "metadata_latency_sec": 0.06034400698263198,
+      "inspection_latency_sec": 0.0019227880402468145,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.004862603545188859,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          4,
+          5,
+          6,
+          7,
+          11
+        ],
+        "selected_expected_block_ids": [
+          5
+        ],
+        "missed_expected_block_ids": [
+          4,
+          6,
+          7,
+          11
+        ],
+        "extra_selected_block_ids": [
+          13,
+          12,
+          0,
+          9
+        ],
+        "target_recall": 0.2,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "code_context",
+      "prompt_file": "prompts/code_context.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "retrieval_mix",
+      "scheme_description": "Upweight head 9 plus heads that surfaced in long-reference/needle single-head diagnostics.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        2.0,
+        1.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        2.0
+      ],
+      "tokens": 216,
+      "blocks": 14,
+      "selected_ids": [
+        13,
+        12,
+        0,
+        5,
+        9
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "5": "semantic",
+        "9": "semantic",
+        "12": "semantic",
+        "13": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.004112226015422493,
+      "total_latency_sec": 0.3185479720123112,
+      "prefill_latency_sec": 0.24737941101193428,
+      "metadata_latency_sec": 0.06537454400677234,
+      "inspection_latency_sec": 0.0016273889923468232,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.005538207292556718,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          4,
+          5,
+          6,
+          7,
+          11
+        ],
+        "selected_expected_block_ids": [
+          5
+        ],
+        "missed_expected_block_ids": [
+          4,
+          6,
+          7,
+          11
+        ],
+        "extra_selected_block_ids": [
+          13,
+          12,
+          0,
+          9
+        ],
+        "target_recall": 0.2,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "code_context",
+      "prompt_file": "prompts/code_context.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "code_mix",
+      "scheme_description": "Upweight code-context specialists head 2 and head 9.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0
+      ],
+      "tokens": 216,
+      "blocks": 14,
+      "selected_ids": [
+        13,
+        12,
+        0,
+        5,
+        9
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "5": "semantic",
+        "9": "semantic",
+        "12": "semantic",
+        "13": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.004740817996207625,
+      "total_latency_sec": 0.45727415598230436,
+      "prefill_latency_sec": 0.37669788603670895,
+      "metadata_latency_sec": 0.07319980097236112,
+      "inspection_latency_sec": 0.0025750930071808398,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.006068450212478593,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          4,
+          5,
+          6,
+          7,
+          11
+        ],
+        "selected_expected_block_ids": [
+          5
+        ],
+        "missed_expected_block_ids": [
+          4,
+          6,
+          7,
+          11
+        ],
+        "extra_selected_block_ids": [
+          13,
+          12,
+          0,
+          9
+        ],
+        "target_recall": 0.2,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "adversarial_semantic",
+      "prompt_file": "prompts/adverserial_semantic.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "pooled_mean_heads",
+      "scheme_description": "Current pooled query/key summary baseline.",
+      "head_scoring_mode": "mean_heads",
+      "head_weights": [],
+      "tokens": 85,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        4,
+        0,
+        2,
+        3
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "2": "semantic",
+        "3": "semantic",
+        "4": "semantic",
+        "5": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.00380339496769011,
+      "total_latency_sec": 0.1605223049991764,
+      "prefill_latency_sec": 0.12564282899256796,
+      "metadata_latency_sec": 0.02977675397414714,
+      "inspection_latency_sec": 0.0012466110056266189,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.010210877656936623,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          1
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          1
+        ],
+        "extra_selected_block_ids": [
+          5,
+          4,
+          0,
+          2,
+          3
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "adversarial_semantic",
+      "prompt_file": "prompts/adverserial_semantic.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "head9_only",
+      "scheme_description": "Use only head 9, the strongest offline single-head candidate.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "tokens": 85,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        4,
+        0,
+        2,
+        3
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "2": "semantic",
+        "3": "semantic",
+        "4": "semantic",
+        "5": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.0049668269930407405,
+      "total_latency_sec": 0.14965897501679137,
+      "prefill_latency_sec": 0.11501466203480959,
+      "metadata_latency_sec": 0.028759241045918316,
+      "inspection_latency_sec": 0.0008177050040103495,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.013492694497108437,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          1
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          1
+        ],
+        "extra_selected_block_ids": [
+          5,
+          4,
+          0,
+          2,
+          3
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "adversarial_semantic",
+      "prompt_file": "prompts/adverserial_semantic.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "head9_heavy",
+      "scheme_description": "Uniform weights with head 9 modestly upweighted.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0
+      ],
+      "tokens": 85,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        4,
+        0,
+        2,
+        3
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "2": "semantic",
+        "3": "semantic",
+        "4": "semantic",
+        "5": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.004262245027348399,
+      "total_latency_sec": 0.16443710605381057,
+      "prefill_latency_sec": 0.12685690401121974,
+      "metadata_latency_sec": 0.032391477026976645,
+      "inspection_latency_sec": 0.0008713980205357075,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.027014634013175942,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          1
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          1
+        ],
+        "extra_selected_block_ids": [
+          5,
+          4,
+          0,
+          2,
+          3
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "adversarial_semantic",
+      "prompt_file": "prompts/adverserial_semantic.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "retrieval_mix",
+      "scheme_description": "Upweight head 9 plus heads that surfaced in long-reference/needle single-head diagnostics.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        2.0,
+        1.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        2.0
+      ],
+      "tokens": 85,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        4,
+        0,
+        2,
+        3
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "2": "semantic",
+        "3": "semantic",
+        "4": "semantic",
+        "5": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.005373683001380414,
+      "total_latency_sec": 0.15475710399914533,
+      "prefill_latency_sec": 0.11876380402827635,
+      "metadata_latency_sec": 0.029382993991021067,
+      "inspection_latency_sec": 0.0011776590254157782,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.025688400864601113,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          1
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          1
+        ],
+        "extra_selected_block_ids": [
+          5,
+          4,
+          0,
+          2,
+          3
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "adversarial_semantic",
+      "prompt_file": "prompts/adverserial_semantic.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "code_mix",
+      "scheme_description": "Upweight code-context specialists head 2 and head 9.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0
+      ],
+      "tokens": 85,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        4,
+        0,
+        2,
+        3
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "2": "semantic",
+        "3": "semantic",
+        "4": "semantic",
+        "5": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.0038797750021331012,
+      "total_latency_sec": 0.1582632149802521,
+      "prefill_latency_sec": 0.12347961496561766,
+      "metadata_latency_sec": 0.030030566034838557,
+      "inspection_latency_sec": 0.0008158300188370049,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.028313672542572,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          1
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          1
+        ],
+        "extra_selected_block_ids": [
+          5,
+          4,
+          0,
+          2,
+          3
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "long_reference",
+      "prompt_file": "prompts/long_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "pooled_mean_heads",
+      "scheme_description": "Current pooled query/key summary baseline.",
+      "head_scoring_mode": "mean_heads",
+      "head_weights": [],
+      "tokens": 194,
+      "blocks": 13,
+      "selected_ids": [
+        12,
+        11,
+        7,
+        8,
+        9
+      ],
+      "selected_reasons": {
+        "7": "semantic",
+        "8": "semantic",
+        "9": "semantic",
+        "11": "semantic",
+        "12": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.003252557013183832,
+      "total_latency_sec": 0.4892055399832316,
+      "prefill_latency_sec": 0.4258595479768701,
+      "metadata_latency_sec": 0.05823173903627321,
+      "inspection_latency_sec": 0.0017928219749592245,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0039554357528686634,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          7,
+          8
+        ],
+        "selected_expected_block_ids": [
+          7,
+          8
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          12,
+          11,
+          9
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.4,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "long_reference",
+      "prompt_file": "prompts/long_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "head9_only",
+      "scheme_description": "Use only head 9, the strongest offline single-head candidate.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "tokens": 194,
+      "blocks": 13,
+      "selected_ids": [
+        12,
+        11,
+        7,
+        0,
+        10
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "7": "semantic",
+        "10": "semantic",
+        "11": "semantic",
+        "12": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.0046039369772188365,
+      "total_latency_sec": 0.44556731201009825,
+      "prefill_latency_sec": 0.37467453599674627,
+      "metadata_latency_sec": 0.06455694598844275,
+      "inspection_latency_sec": 0.001647090946789831,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.006911414861679066,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          7,
+          8
+        ],
+        "selected_expected_block_ids": [
+          7
+        ],
+        "missed_expected_block_ids": [
+          8
+        ],
+        "extra_selected_block_ids": [
+          12,
+          11,
+          0,
+          10
+        ],
+        "target_recall": 0.5,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "long_reference",
+      "prompt_file": "prompts/long_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "head9_heavy",
+      "scheme_description": "Uniform weights with head 9 modestly upweighted.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0
+      ],
+      "tokens": 194,
+      "blocks": 13,
+      "selected_ids": [
+        12,
+        11,
+        10,
+        7,
+        9
+      ],
+      "selected_reasons": {
+        "7": "semantic",
+        "9": "semantic",
+        "10": "semantic",
+        "11": "semantic",
+        "12": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.004427790001500398,
+      "total_latency_sec": 0.44906591199105605,
+      "prefill_latency_sec": 0.3826293309684843,
+      "metadata_latency_sec": 0.05968546395888552,
+      "inspection_latency_sec": 0.002264373004436493,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.007958585023880027,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          7,
+          8
+        ],
+        "selected_expected_block_ids": [
+          7
+        ],
+        "missed_expected_block_ids": [
+          8
+        ],
+        "extra_selected_block_ids": [
+          12,
+          11,
+          10,
+          9
+        ],
+        "target_recall": 0.5,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "long_reference",
+      "prompt_file": "prompts/long_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "retrieval_mix",
+      "scheme_description": "Upweight head 9 plus heads that surfaced in long-reference/needle single-head diagnostics.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        2.0,
+        1.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        2.0
+      ],
+      "tokens": 194,
+      "blocks": 13,
+      "selected_ids": [
+        12,
+        11,
+        10,
+        7,
+        9
+      ],
+      "selected_reasons": {
+        "7": "semantic",
+        "9": "semantic",
+        "10": "semantic",
+        "11": "semantic",
+        "12": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.004928946029394865,
+      "total_latency_sec": 0.4518983490415849,
+      "prefill_latency_sec": 0.37859441904583946,
+      "metadata_latency_sec": 0.0652925560134463,
+      "inspection_latency_sec": 0.0030250059789977968,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0028895080089569314,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          7,
+          8
+        ],
+        "selected_expected_block_ids": [
+          7
+        ],
+        "missed_expected_block_ids": [
+          8
+        ],
+        "extra_selected_block_ids": [
+          12,
+          11,
+          10,
+          9
+        ],
+        "target_recall": 0.5,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "long_reference",
+      "prompt_file": "prompts/long_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "code_mix",
+      "scheme_description": "Upweight code-context specialists head 2 and head 9.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0
+      ],
+      "tokens": 194,
+      "blocks": 13,
+      "selected_ids": [
+        12,
+        11,
+        10,
+        7,
+        9
+      ],
+      "selected_reasons": {
+        "7": "semantic",
+        "9": "semantic",
+        "10": "semantic",
+        "11": "semantic",
+        "12": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.006017580046318471,
+      "total_latency_sec": 0.4765733510139398,
+      "prefill_latency_sec": 0.39835774700623006,
+      "metadata_latency_sec": 0.0696020929608494,
+      "inspection_latency_sec": 0.0024789529852569103,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.01727041006088259,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          7,
+          8
+        ],
+        "selected_expected_block_ids": [
+          7
+        ],
+        "missed_expected_block_ids": [
+          8
+        ],
+        "extra_selected_block_ids": [
+          12,
+          11,
+          10,
+          9
+        ],
+        "target_recall": 0.5,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "needle",
+      "prompt_file": "prompts/needle.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "pooled_mean_heads",
+      "scheme_description": "Current pooled query/key summary baseline.",
+      "head_scoring_mode": "mean_heads",
+      "head_weights": [],
+      "tokens": 92,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        0,
+        1,
+        4,
+        3
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "1": "semantic",
+        "3": "semantic",
+        "4": "semantic",
+        "5": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.0032924970146268606,
+      "total_latency_sec": 0.26335917896358296,
+      "prefill_latency_sec": 0.2262831560219638,
+      "metadata_latency_sec": 0.03285569202853367,
+      "inspection_latency_sec": 0.0008716440061107278,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.006564438343048096,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          2
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          2
+        ],
+        "extra_selected_block_ids": [
+          5,
+          0,
+          1,
+          4,
+          3
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "needle",
+      "prompt_file": "prompts/needle.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "head9_only",
+      "scheme_description": "Use only head 9, the strongest offline single-head candidate.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "tokens": 92,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        0,
+        2,
+        4,
+        1
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "1": "semantic",
+        "2": "semantic",
+        "4": "semantic",
+        "5": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.004806242999620736,
+      "total_latency_sec": 0.2722209499916062,
+      "prefill_latency_sec": 0.23276500799693167,
+      "metadata_latency_sec": 0.033678387000691146,
+      "inspection_latency_sec": 0.0009004029561765492,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.018836086988449074,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          2
+        ],
+        "selected_expected_block_ids": [
+          2
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          5,
+          0,
+          4,
+          1
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "needle",
+      "prompt_file": "prompts/needle.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "head9_heavy",
+      "scheme_description": "Uniform weights with head 9 modestly upweighted.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0
+      ],
+      "tokens": 92,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        0,
+        4,
+        1,
+        2
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "1": "semantic",
+        "2": "semantic",
+        "4": "semantic",
+        "5": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.004567018942907453,
+      "total_latency_sec": 0.251384507981129,
+      "prefill_latency_sec": 0.2104775210027583,
+      "metadata_latency_sec": 0.03537436400074512,
+      "inspection_latency_sec": 0.0008945069857873023,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0005753934383392334,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          2
+        ],
+        "selected_expected_block_ids": [
+          2
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          5,
+          0,
+          4,
+          1
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "needle",
+      "prompt_file": "prompts/needle.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "retrieval_mix",
+      "scheme_description": "Upweight head 9 plus heads that surfaced in long-reference/needle single-head diagnostics.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        2.0,
+        1.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        2.0
+      ],
+      "tokens": 92,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        0,
+        4,
+        2,
+        3
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "2": "semantic",
+        "3": "semantic",
+        "4": "semantic",
+        "5": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.0039360320079140365,
+      "total_latency_sec": 0.2582811370375566,
+      "prefill_latency_sec": 0.22225648100720719,
+      "metadata_latency_sec": 0.0311586830066517,
+      "inspection_latency_sec": 0.0008699150057509542,
+      "fallback_mode": "sparse",
+      "raw_margin": 6.697475910188988e-05,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          2
+        ],
+        "selected_expected_block_ids": [
+          2
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          5,
+          0,
+          4,
+          3
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "needle",
+      "prompt_file": "prompts/needle.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "code_mix",
+      "scheme_description": "Upweight code-context specialists head 2 and head 9.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0
+      ],
+      "tokens": 92,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        0,
+        4,
+        3,
+        1
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "1": "semantic",
+        "3": "semantic",
+        "4": "semantic",
+        "5": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.005070651997812092,
+      "total_latency_sec": 0.2418536469922401,
+      "prefill_latency_sec": 0.2049600810278207,
+      "metadata_latency_sec": 0.030678240989800543,
+      "inspection_latency_sec": 0.0010863940115086734,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.00014241635799405739,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          2
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          2
+        ],
+        "extra_selected_block_ids": [
+          5,
+          0,
+          4,
+          3,
+          1
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "repeated_reference",
+      "prompt_file": "prompts/repeated_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "pooled_mean_heads",
+      "scheme_description": "Current pooled query/key summary baseline.",
+      "head_scoring_mode": "mean_heads",
+      "head_weights": [],
+      "tokens": 129,
+      "blocks": 9,
+      "selected_ids": [
+        8,
+        7,
+        0,
+        2,
+        1
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "1": "semantic",
+        "2": "semantic",
+        "7": "semantic",
+        "8": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.003209227987099439,
+      "total_latency_sec": 0.340347456978634,
+      "prefill_latency_sec": 0.28760402399348095,
+      "metadata_latency_sec": 0.04829771298682317,
+      "inspection_latency_sec": 0.0011818840284831822,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0007595360279082919,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          0
+        ],
+        "selected_expected_block_ids": [
+          0
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          8,
+          7,
+          2,
+          1
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "repeated_reference",
+      "prompt_file": "prompts/repeated_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "head9_only",
+      "scheme_description": "Use only head 9, the strongest offline single-head candidate.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "tokens": 129,
+      "blocks": 9,
+      "selected_ids": [
+        8,
+        7,
+        0,
+        2,
+        4
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "2": "semantic",
+        "4": "semantic",
+        "7": "semantic",
+        "8": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.004403305996675044,
+      "total_latency_sec": 0.3421801300137304,
+      "prefill_latency_sec": 0.2877793859806843,
+      "metadata_latency_sec": 0.0487113919807598,
+      "inspection_latency_sec": 0.0012142370105721056,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.018355238437652577,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          0
+        ],
+        "selected_expected_block_ids": [
+          0
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          8,
+          7,
+          2,
+          4
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "repeated_reference",
+      "prompt_file": "prompts/repeated_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "head9_heavy",
+      "scheme_description": "Uniform weights with head 9 modestly upweighted.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0
+      ],
+      "tokens": 129,
+      "blocks": 9,
+      "selected_ids": [
+        8,
+        7,
+        0,
+        2,
+        6
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "2": "semantic",
+        "6": "semantic",
+        "7": "semantic",
+        "8": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.005048715975135565,
+      "total_latency_sec": 0.32447521097492427,
+      "prefill_latency_sec": 0.2714012649958022,
+      "metadata_latency_sec": 0.04667652596253902,
+      "inspection_latency_sec": 0.0012875249958597124,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0010633051395416149,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          0
+        ],
+        "selected_expected_block_ids": [
+          0
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          8,
+          7,
+          2,
+          6
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "repeated_reference",
+      "prompt_file": "prompts/repeated_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "retrieval_mix",
+      "scheme_description": "Upweight head 9 plus heads that surfaced in long-reference/needle single-head diagnostics.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        2.0,
+        1.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        2.0
+      ],
+      "tokens": 129,
+      "blocks": 9,
+      "selected_ids": [
+        8,
+        7,
+        0,
+        2,
+        3
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "2": "semantic",
+        "3": "semantic",
+        "7": "semantic",
+        "8": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.004326800990384072,
+      "total_latency_sec": 0.339449307997711,
+      "prefill_latency_sec": 0.28551540500484407,
+      "metadata_latency_sec": 0.04833845101529732,
+      "inspection_latency_sec": 0.0012010060017928481,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0006364405155181996,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          0
+        ],
+        "selected_expected_block_ids": [
+          0
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          8,
+          7,
+          2,
+          3
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "repeated_reference",
+      "prompt_file": "prompts/repeated_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "code_mix",
+      "scheme_description": "Upweight code-context specialists head 2 and head 9.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0
+      ],
+      "tokens": 129,
+      "blocks": 9,
+      "selected_ids": [
+        8,
+        7,
+        0,
+        2,
+        6
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "2": "semantic",
+        "6": "semantic",
+        "7": "semantic",
+        "8": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.004091545008122921,
+      "total_latency_sec": 0.33729666797444224,
+      "prefill_latency_sec": 0.28341660799924284,
+      "metadata_latency_sec": 0.048527236038353294,
+      "inspection_latency_sec": 0.0012029670178890228,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.004160678386688266,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          0
+        ],
+        "selected_expected_block_ids": [
+          0
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          8,
+          7,
+          2,
+          6
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "code_context",
+      "prompt_file": "prompts/code_context.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "pooled_mean_heads",
+      "scheme_description": "Current pooled query/key summary baseline.",
+      "head_scoring_mode": "mean_heads",
+      "head_weights": [],
+      "tokens": 216,
+      "blocks": 14,
+      "selected_ids": [
+        13,
+        12,
+        10,
+        0,
+        5
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "5": "semantic",
+        "10": "semantic",
+        "12": "semantic",
+        "13": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.0036094580427743495,
+      "total_latency_sec": 0.5348270680406131,
+      "prefill_latency_sec": 0.4535870990366675,
+      "metadata_latency_sec": 0.07569575496017933,
+      "inspection_latency_sec": 0.0018636530148796737,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.008824408054351807,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          4,
+          5,
+          6,
+          7,
+          11
+        ],
+        "selected_expected_block_ids": [
+          5
+        ],
+        "missed_expected_block_ids": [
+          4,
+          6,
+          7,
+          11
+        ],
+        "extra_selected_block_ids": [
+          13,
+          12,
+          10,
+          0
+        ],
+        "target_recall": 0.2,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "code_context",
+      "prompt_file": "prompts/code_context.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "head9_only",
+      "scheme_description": "Use only head 9, the strongest offline single-head candidate.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "tokens": 216,
+      "blocks": 14,
+      "selected_ids": [
+        13,
+        0,
+        5,
+        9,
+        4
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "4": "semantic",
+        "5": "semantic",
+        "9": "semantic",
+        "13": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.004984553961548954,
+      "total_latency_sec": 0.6589042530395091,
+      "prefill_latency_sec": 0.5794579460052773,
+      "metadata_latency_sec": 0.07251975894905627,
+      "inspection_latency_sec": 0.0018753960030153394,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.006423270702362038,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          4,
+          5,
+          6,
+          7,
+          11
+        ],
+        "selected_expected_block_ids": [
+          5,
+          4
+        ],
+        "missed_expected_block_ids": [
+          6,
+          7,
+          11
+        ],
+        "extra_selected_block_ids": [
+          13,
+          0,
+          9
+        ],
+        "target_recall": 0.4,
+        "selected_precision": 0.4,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "code_context",
+      "prompt_file": "prompts/code_context.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "head9_heavy",
+      "scheme_description": "Uniform weights with head 9 modestly upweighted.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0
+      ],
+      "tokens": 216,
+      "blocks": 14,
+      "selected_ids": [
+        13,
+        12,
+        9,
+        10,
+        0
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "9": "semantic",
+        "10": "semantic",
+        "12": "semantic",
+        "13": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.006414992036297917,
+      "total_latency_sec": 0.5256491310428828,
+      "prefill_latency_sec": 0.4396711779991165,
+      "metadata_latency_sec": 0.07611986098345369,
+      "inspection_latency_sec": 0.0033715329482220113,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0032447963953017855,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          4,
+          5,
+          6,
+          7,
+          11
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          4,
+          5,
+          6,
+          7,
+          11
+        ],
+        "extra_selected_block_ids": [
+          13,
+          12,
+          9,
+          10,
+          0
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "code_context",
+      "prompt_file": "prompts/code_context.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "retrieval_mix",
+      "scheme_description": "Upweight head 9 plus heads that surfaced in long-reference/needle single-head diagnostics.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        2.0,
+        1.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        2.0
+      ],
+      "tokens": 216,
+      "blocks": 14,
+      "selected_ids": [
+        13,
+        12,
+        9,
+        0,
+        10
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "9": "semantic",
+        "10": "semantic",
+        "12": "semantic",
+        "13": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.0046244830009527504,
+      "total_latency_sec": 0.5284146949998103,
+      "prefill_latency_sec": 0.44536455802153796,
+      "metadata_latency_sec": 0.07635868998477235,
+      "inspection_latency_sec": 0.002004516019951552,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.007250744104385365,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          4,
+          5,
+          6,
+          7,
+          11
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          4,
+          5,
+          6,
+          7,
+          11
+        ],
+        "extra_selected_block_ids": [
+          13,
+          12,
+          9,
+          0,
+          10
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "code_context",
+      "prompt_file": "prompts/code_context.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "code_mix",
+      "scheme_description": "Upweight code-context specialists head 2 and head 9.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0
+      ],
+      "tokens": 216,
+      "blocks": 14,
+      "selected_ids": [
+        13,
+        12,
+        9,
+        10,
+        4
+      ],
+      "selected_reasons": {
+        "4": "semantic",
+        "9": "semantic",
+        "10": "semantic",
+        "12": "semantic",
+        "13": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.005286830011755228,
+      "total_latency_sec": 0.5322221050155349,
+      "prefill_latency_sec": 0.4506001260015182,
+      "metadata_latency_sec": 0.07378681795671582,
+      "inspection_latency_sec": 0.00248986401129514,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.00041820108890533447,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          4,
+          5,
+          6,
+          7,
+          11
+        ],
+        "selected_expected_block_ids": [
+          4
+        ],
+        "missed_expected_block_ids": [
+          5,
+          6,
+          7,
+          11
+        ],
+        "extra_selected_block_ids": [
+          13,
+          12,
+          9,
+          10
+        ],
+        "target_recall": 0.2,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "adversarial_semantic",
+      "prompt_file": "prompts/adverserial_semantic.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "pooled_mean_heads",
+      "scheme_description": "Current pooled query/key summary baseline.",
+      "head_scoring_mode": "mean_heads",
+      "head_weights": [],
+      "tokens": 85,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        4,
+        0,
+        2,
+        1
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "1": "semantic",
+        "2": "semantic",
+        "4": "semantic",
+        "5": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.004424007958732545,
+      "total_latency_sec": 0.2526584270526655,
+      "prefill_latency_sec": 0.21315114299068227,
+      "metadata_latency_sec": 0.034189573023468256,
+      "inspection_latency_sec": 0.0008358970517292619,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.001113080978393577,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          1
+        ],
+        "selected_expected_block_ids": [
+          1
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          5,
+          4,
+          0,
+          2
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "adversarial_semantic",
+      "prompt_file": "prompts/adverserial_semantic.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "head9_only",
+      "scheme_description": "Use only head 9, the strongest offline single-head candidate.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "tokens": 85,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        4,
+        0,
+        2,
+        1
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "1": "semantic",
+        "2": "semantic",
+        "4": "semantic",
+        "5": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.004279561049770564,
+      "total_latency_sec": 0.30722732696449384,
+      "prefill_latency_sec": 0.2591931030037813,
+      "metadata_latency_sec": 0.0426794919767417,
+      "inspection_latency_sec": 0.0010105110122822225,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.002176979184150718,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          1
+        ],
+        "selected_expected_block_ids": [
+          1
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          5,
+          4,
+          0,
+          2
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.2,
+        "target_hit": true
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "adversarial_semantic",
+      "prompt_file": "prompts/adverserial_semantic.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "head9_heavy",
+      "scheme_description": "Uniform weights with head 9 modestly upweighted.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0
+      ],
+      "tokens": 85,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        4,
+        0,
+        2,
+        3
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "2": "semantic",
+        "3": "semantic",
+        "4": "semantic",
+        "5": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.004701336030848324,
+      "total_latency_sec": 0.23709822999080643,
+      "prefill_latency_sec": 0.1983331439550966,
+      "metadata_latency_sec": 0.032738348993007094,
+      "inspection_latency_sec": 0.0012673859600909054,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.008565983176231362,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          1
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          1
+        ],
+        "extra_selected_block_ids": [
+          5,
+          4,
+          0,
+          2,
+          3
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "adversarial_semantic",
+      "prompt_file": "prompts/adverserial_semantic.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "retrieval_mix",
+      "scheme_description": "Upweight head 9 plus heads that surfaced in long-reference/needle single-head diagnostics.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        2.0,
+        1.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        2.0
+      ],
+      "tokens": 85,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        4,
+        0,
+        2,
+        3
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "2": "semantic",
+        "3": "semantic",
+        "4": "semantic",
+        "5": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.005052302032709122,
+      "total_latency_sec": 0.22743500699289143,
+      "prefill_latency_sec": 0.19184377399506047,
+      "metadata_latency_sec": 0.029607296048197895,
+      "inspection_latency_sec": 0.0008355809841305017,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.008791124820709206,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          1
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          1
+        ],
+        "extra_selected_block_ids": [
+          5,
+          4,
+          0,
+          2,
+          3
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "adversarial_semantic",
+      "prompt_file": "prompts/adverserial_semantic.txt",
+      "representation_source": "query_mean_last_layer",
+      "scheme_name": "code_mix",
+      "scheme_description": "Upweight code-context specialists head 2 and head 9.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0
+      ],
+      "tokens": 85,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        4,
+        0,
+        2,
+        3
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "2": "semantic",
+        "3": "semantic",
+        "4": "semantic",
+        "5": "recent"
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.005240143975242972,
+      "total_latency_sec": 0.24010067898780107,
+      "prefill_latency_sec": 0.2036390250432305,
+      "metadata_latency_sec": 0.03031788201769814,
+      "inspection_latency_sec": 0.0008258979651145637,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.010307109355926491,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          1
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          1
+        ],
+        "extra_selected_block_ids": [
+          5,
+          4,
+          0,
+          2,
+          3
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      }
+    }
+  ],
+  "aggregate_summaries": [
+    {
+      "scheme_name": "code_mix",
+      "scheme_description": "Upweight code-context specialists head 2 and head 9.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0
+      ],
+      "run_count": 10,
+      "mean_recall": 0.49000000000000005,
+      "mean_precision": 0.16,
+      "mean_selected_count": 5.0,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.00474869980243966,
+      "recall_delta_vs_pooled": -0.16999999999999987,
+      "precision_delta_vs_pooled": -0.060000000000000026,
+      "selected_to_k_delta_vs_pooled": 0.0,
+      "selector_latency_delta_vs_pooled_sec": 0.0012494716036599131
+    },
+    {
+      "scheme_name": "head9_heavy",
+      "scheme_description": "Uniform weights with head 9 modestly upweighted.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0
+      ],
+      "run_count": 10,
+      "mean_recall": 0.5700000000000001,
+      "mean_precision": 0.16,
+      "mean_selected_count": 5.0,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.004277321707922966,
+      "recall_delta_vs_pooled": -0.08999999999999986,
+      "precision_delta_vs_pooled": -0.060000000000000026,
+      "selected_to_k_delta_vs_pooled": 0.0,
+      "selector_latency_delta_vs_pooled_sec": 0.0007780935091432186
+    },
+    {
+      "scheme_name": "head9_only",
+      "scheme_description": "Use only head 9, the strongest offline single-head candidate.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "run_count": 10,
+      "mean_recall": 0.6799999999999999,
+      "mean_precision": 0.22000000000000003,
+      "mean_selected_count": 5.0,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.004575096507323906,
+      "recall_delta_vs_pooled": 0.020000000000000018,
+      "precision_delta_vs_pooled": 0.0,
+      "selected_to_k_delta_vs_pooled": 0.0,
+      "selector_latency_delta_vs_pooled_sec": 0.0010758683085441588
+    },
+    {
+      "scheme_name": "pooled_mean_heads",
+      "scheme_description": "Current pooled query/key summary baseline.",
+      "head_scoring_mode": "mean_heads",
+      "head_weights": [],
+      "run_count": 10,
+      "mean_recall": 0.6599999999999999,
+      "mean_precision": 0.22000000000000003,
+      "mean_selected_count": 5.0,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.003499228198779747,
+      "recall_delta_vs_pooled": 0.0,
+      "precision_delta_vs_pooled": 0.0,
+      "selected_to_k_delta_vs_pooled": 0.0,
+      "selector_latency_delta_vs_pooled_sec": 0.0
+    },
+    {
+      "scheme_name": "retrieval_mix",
+      "scheme_description": "Upweight head 9 plus heads that surfaced in long-reference/needle single-head diagnostics.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        2.0,
+        1.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        2.0
+      ],
+      "run_count": 10,
+      "mean_recall": 0.5700000000000001,
+      "mean_precision": 0.16,
+      "mean_selected_count": 5.0,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.004645179706858471,
+      "recall_delta_vs_pooled": -0.08999999999999986,
+      "precision_delta_vs_pooled": -0.060000000000000026,
+      "selected_to_k_delta_vs_pooled": 0.0,
+      "selector_latency_delta_vs_pooled_sec": 0.0011459515080787241
+    }
+  ],
+  "prompt_breakdowns": [
+    {
+      "prompt_name": "adversarial_semantic",
+      "scheme_name": "code_mix",
+      "run_count": 2,
+      "mean_recall": 0.0,
+      "mean_precision": 0.0,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.004559959488688037
+    },
+    {
+      "prompt_name": "adversarial_semantic",
+      "scheme_name": "head9_heavy",
+      "run_count": 2,
+      "mean_recall": 0.0,
+      "mean_precision": 0.0,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.004481790529098362
+    },
+    {
+      "prompt_name": "adversarial_semantic",
+      "scheme_name": "head9_only",
+      "run_count": 2,
+      "mean_recall": 0.5,
+      "mean_precision": 0.1,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.004623194021405652
+    },
+    {
+      "prompt_name": "adversarial_semantic",
+      "scheme_name": "pooled_mean_heads",
+      "run_count": 2,
+      "mean_recall": 0.5,
+      "mean_precision": 0.1,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.004113701463211328
+    },
+    {
+      "prompt_name": "adversarial_semantic",
+      "scheme_name": "retrieval_mix",
+      "run_count": 2,
+      "mean_recall": 0.0,
+      "mean_precision": 0.0,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.005212992517044768
+    },
+    {
+      "prompt_name": "code_context",
+      "scheme_name": "code_mix",
+      "run_count": 2,
+      "mean_recall": 0.2,
+      "mean_precision": 0.2,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.005013824003981426
+    },
+    {
+      "prompt_name": "code_context",
+      "scheme_name": "head9_heavy",
+      "run_count": 2,
+      "mean_recall": 0.1,
+      "mean_precision": 0.1,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.00531883753137663
+    },
+    {
+      "prompt_name": "code_context",
+      "scheme_name": "head9_only",
+      "run_count": 2,
+      "mean_recall": 0.4,
+      "mean_precision": 0.4,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.004488718986976892
+    },
+    {
+      "prompt_name": "code_context",
+      "scheme_name": "pooled_mean_heads",
+      "run_count": 2,
+      "mean_recall": 0.30000000000000004,
+      "mean_precision": 0.30000000000000004,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.0034516865271143615
+    },
+    {
+      "prompt_name": "code_context",
+      "scheme_name": "retrieval_mix",
+      "run_count": 2,
+      "mean_recall": 0.1,
+      "mean_precision": 0.1,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.004368354508187622
+    },
+    {
+      "prompt_name": "long_reference",
+      "scheme_name": "code_mix",
+      "run_count": 2,
+      "mean_recall": 0.75,
+      "mean_precision": 0.30000000000000004,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.005582557525485754
+    },
+    {
+      "prompt_name": "long_reference",
+      "scheme_name": "head9_heavy",
+      "run_count": 2,
+      "mean_recall": 0.75,
+      "mean_precision": 0.30000000000000004,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.003856640018057078
+    },
+    {
+      "prompt_name": "long_reference",
+      "scheme_name": "head9_only",
+      "run_count": 2,
+      "mean_recall": 0.5,
+      "mean_precision": 0.2,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.003933119005523622
+    },
+    {
+      "prompt_name": "long_reference",
+      "scheme_name": "pooled_mean_heads",
+      "run_count": 2,
+      "mean_recall": 1.0,
+      "mean_precision": 0.4,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.003583782003261149
+    },
+    {
+      "prompt_name": "long_reference",
+      "scheme_name": "retrieval_mix",
+      "run_count": 2,
+      "mean_recall": 0.75,
+      "mean_precision": 0.30000000000000004,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.004574971011606976
+    },
+    {
+      "prompt_name": "needle",
+      "scheme_name": "code_mix",
+      "run_count": 2,
+      "mean_recall": 0.5,
+      "mean_precision": 0.1,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.0038706584891770035
+    },
+    {
+      "prompt_name": "needle",
+      "scheme_name": "head9_heavy",
+      "run_count": 2,
+      "mean_recall": 1.0,
+      "mean_precision": 0.2,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.0036833814810961485
+    },
+    {
+      "prompt_name": "needle",
+      "scheme_name": "head9_only",
+      "run_count": 2,
+      "mean_recall": 1.0,
+      "mean_precision": 0.2,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.003815560514340177
+    },
+    {
+      "prompt_name": "needle",
+      "scheme_name": "pooled_mean_heads",
+      "run_count": 2,
+      "mean_recall": 0.5,
+      "mean_precision": 0.1,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.0031114765151869506
+    },
+    {
+      "prompt_name": "needle",
+      "scheme_name": "retrieval_mix",
+      "run_count": 2,
+      "mean_recall": 1.0,
+      "mean_precision": 0.2,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.004515241511398926
+    },
+    {
+      "prompt_name": "repeated_reference",
+      "scheme_name": "code_mix",
+      "run_count": 2,
+      "mean_recall": 1.0,
+      "mean_precision": 0.2,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.0047164995048660785
+    },
+    {
+      "prompt_name": "repeated_reference",
+      "scheme_name": "head9_heavy",
+      "run_count": 2,
+      "mean_recall": 1.0,
+      "mean_precision": 0.2,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.004045958979986608
+    },
+    {
+      "prompt_name": "repeated_reference",
+      "scheme_name": "head9_only",
+      "run_count": 2,
+      "mean_recall": 1.0,
+      "mean_precision": 0.2,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.006014890008373186
+    },
+    {
+      "prompt_name": "repeated_reference",
+      "scheme_name": "pooled_mean_heads",
+      "run_count": 2,
+      "mean_recall": 1.0,
+      "mean_precision": 0.2,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.0032354944851249456
+    },
+    {
+      "prompt_name": "repeated_reference",
+      "scheme_name": "retrieval_mix",
+      "run_count": 2,
+      "mean_recall": 1.0,
+      "mean_precision": 0.2,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.004554338986054063
+    }
+  ],
+  "ranked_summaries": [
+    {
+      "scheme_name": "head9_only",
+      "scheme_description": "Use only head 9, the strongest offline single-head candidate.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "run_count": 10,
+      "mean_recall": 0.6799999999999999,
+      "mean_precision": 0.22000000000000003,
+      "mean_selected_count": 5.0,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.004575096507323906,
+      "recall_delta_vs_pooled": 0.020000000000000018,
+      "precision_delta_vs_pooled": 0.0,
+      "selected_to_k_delta_vs_pooled": 0.0,
+      "selector_latency_delta_vs_pooled_sec": 0.0010758683085441588
+    },
+    {
+      "scheme_name": "pooled_mean_heads",
+      "scheme_description": "Current pooled query/key summary baseline.",
+      "head_scoring_mode": "mean_heads",
+      "head_weights": [],
+      "run_count": 10,
+      "mean_recall": 0.6599999999999999,
+      "mean_precision": 0.22000000000000003,
+      "mean_selected_count": 5.0,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.003499228198779747,
+      "recall_delta_vs_pooled": 0.0,
+      "precision_delta_vs_pooled": 0.0,
+      "selected_to_k_delta_vs_pooled": 0.0,
+      "selector_latency_delta_vs_pooled_sec": 0.0
+    },
+    {
+      "scheme_name": "head9_heavy",
+      "scheme_description": "Uniform weights with head 9 modestly upweighted.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0
+      ],
+      "run_count": 10,
+      "mean_recall": 0.5700000000000001,
+      "mean_precision": 0.16,
+      "mean_selected_count": 5.0,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.004277321707922966,
+      "recall_delta_vs_pooled": -0.08999999999999986,
+      "precision_delta_vs_pooled": -0.060000000000000026,
+      "selected_to_k_delta_vs_pooled": 0.0,
+      "selector_latency_delta_vs_pooled_sec": 0.0007780935091432186
+    },
+    {
+      "scheme_name": "retrieval_mix",
+      "scheme_description": "Upweight head 9 plus heads that surfaced in long-reference/needle single-head diagnostics.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        2.0,
+        1.0,
+        1.0,
+        2.0,
+        2.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        2.0
+      ],
+      "run_count": 10,
+      "mean_recall": 0.5700000000000001,
+      "mean_precision": 0.16,
+      "mean_selected_count": 5.0,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.004645179706858471,
+      "recall_delta_vs_pooled": -0.08999999999999986,
+      "precision_delta_vs_pooled": -0.060000000000000026,
+      "selected_to_k_delta_vs_pooled": 0.0,
+      "selector_latency_delta_vs_pooled_sec": 0.0011459515080787241
+    },
+    {
+      "scheme_name": "code_mix",
+      "scheme_description": "Upweight code-context specialists head 2 and head 9.",
+      "head_scoring_mode": "weighted_head_mean",
+      "head_weights": [
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        3.0,
+        1.0,
+        1.0
+      ],
+      "run_count": 10,
+      "mean_recall": 0.49000000000000005,
+      "mean_precision": 0.16,
+      "mean_selected_count": 5.0,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.00474869980243966,
+      "recall_delta_vs_pooled": -0.16999999999999987,
+      "precision_delta_vs_pooled": -0.060000000000000026,
+      "selected_to_k_delta_vs_pooled": 0.0,
+      "selector_latency_delta_vs_pooled_sec": 0.0012494716036599131
+    }
+  ],
+  "schemes": [
+    {
+      "name": "pooled_mean_heads",
+      "head_scoring_mode": "mean_heads",
+      "description": "Current pooled query/key summary baseline.",
+      "base_weight": 1.0,
+      "boosts": [],
+      "head_only": null
+    },
+    {
+      "name": "head9_only",
+      "head_scoring_mode": "weighted_head_mean",
+      "description": "Use only head 9, the strongest offline single-head candidate.",
+      "base_weight": 1.0,
+      "boosts": [],
+      "head_only": 9
+    },
+    {
+      "name": "head9_heavy",
+      "head_scoring_mode": "weighted_head_mean",
+      "description": "Uniform weights with head 9 modestly upweighted.",
+      "base_weight": 1.0,
+      "boosts": [
+        [
+          9,
+          3.0
+        ]
+      ],
+      "head_only": null
+    },
+    {
+      "name": "retrieval_mix",
+      "head_scoring_mode": "weighted_head_mean",
+      "description": "Upweight head 9 plus heads that surfaced in long-reference/needle single-head diagnostics.",
+      "base_weight": 1.0,
+      "boosts": [
+        [
+          1,
+          2.0
+        ],
+        [
+          4,
+          2.0
+        ],
+        [
+          5,
+          2.0
+        ],
+        [
+          9,
+          3.0
+        ],
+        [
+          11,
+          2.0
+        ]
+      ],
+      "head_only": null
+    },
+    {
+      "name": "code_mix",
+      "head_scoring_mode": "weighted_head_mean",
+      "description": "Upweight code-context specialists head 2 and head 9.",
+      "base_weight": 1.0,
+      "boosts": [
+        [
+          2,
+          3.0
+        ],
+        [
+          9,
+          3.0
+        ]
+      ],
+      "head_only": null
+    }
+  ],
+  "model_load_seconds": {
+    "distilgpt2": 4.758341153967194,
+    "gpt2": 1.918769268959295
+  }
+}

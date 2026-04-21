@@ -1,0 +1,1062 @@
+{
+  "run_summary": {
+    "runtime_name": "local_hf:gpt2",
+    "representation_name": "query_mean_layer_11_key_mean_layer_11",
+    "token_count": 194,
+    "block_count": 13,
+    "block_size": 16,
+    "summary_dim": 32,
+    "prompt_chars": 900
+  },
+  "selected_block_ids": [
+    12,
+    11,
+    7,
+    8,
+    9
+  ],
+  "head_diagnostic_summary": {
+    "prompt_name": null,
+    "block_count": 13,
+    "selected_count": 5,
+    "correct_selected_count": null,
+    "head_count": 12,
+    "top_head_counts": [
+      {
+        "head_index": 8,
+        "count": 13,
+        "fraction": 1.0
+      }
+    ],
+    "selected_top_head_counts": [
+      {
+        "head_index": 8,
+        "count": 5,
+        "fraction": 1.0
+      }
+    ],
+    "correct_selected_top_head_counts": [],
+    "mean_head_scores": [
+      0.4606240483430716,
+      0.46968001356491673,
+      0.4190292152074667,
+      0.34957078099250793,
+      0.39748650330763596,
+      0.47287678260069627,
+      0.3731635854794429,
+      0.48363062739372253,
+      0.6533275017371545,
+      0.341700193973688,
+      0.3655882248511681,
+      0.3952284363599924
+    ],
+    "selected_mean_head_scores": [
+      0.5221713960170746,
+      0.5091137528419495,
+      0.480467164516449,
+      0.4054278075695038,
+      0.4287675619125366,
+      0.5353138506412506,
+      0.41236903667449953,
+      0.5198600172996521,
+      0.69164137840271,
+      0.40462982654571533,
+      0.4218434035778046,
+      0.4246688365936279
+    ]
+  },
+  "head_diagnostics": [
+    {
+      "block_id": 0,
+      "selected": false,
+      "selected_reason": "unselected",
+      "head_scores": [
+        0.5336073637008667,
+        0.5106115937232971,
+        0.40634244680404663,
+        0.3490711450576782,
+        0.5014337301254272,
+        0.5301385521888733,
+        0.421269029378891,
+        0.4922911524772644,
+        0.7058349251747131,
+        0.43731164932250977,
+        0.36838388442993164,
+        0.5478154420852661
+      ],
+      "top_contributing_heads": [
+        {
+          "head_index": 8,
+          "score": 0.7058349251747131,
+          "rank": 1
+        },
+        {
+          "head_index": 11,
+          "score": 0.5478154420852661,
+          "rank": 2
+        },
+        {
+          "head_index": 0,
+          "score": 0.5336073637008667,
+          "rank": 3
+        },
+        {
+          "head_index": 5,
+          "score": 0.5301385521888733,
+          "rank": 4
+        },
+        {
+          "head_index": 1,
+          "score": 0.5106115937232971,
+          "rank": 5
+        }
+      ],
+      "aggregated_score": 0.6553021669387817,
+      "token_start": 0,
+      "token_end": 16,
+      "token_count": 16,
+      "preview_text": "Project Atlas is a distributed analytics platform used by several internal teams. The",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11",
+      "rail_setting": "cli",
+      "prompt_name": null
+    },
+    {
+      "block_id": 1,
+      "selected": false,
+      "selected_reason": "unselected",
+      "head_scores": [
+        0.4078534245491028,
+        0.4734034538269043,
+        0.36785274744033813,
+        0.29082557559013367,
+        0.37639766931533813,
+        0.4385669231414795,
+        0.36286601424217224,
+        0.4282970726490021,
+        0.6194525957107544,
+        0.2861008644104004,
+        0.31045156717300415,
+        0.4336852729320526
+      ],
+      "top_contributing_heads": [
+        {
+          "head_index": 8,
+          "score": 0.6194525957107544,
+          "rank": 1
+        },
+        {
+          "head_index": 1,
+          "score": 0.4734034538269043,
+          "rank": 2
+        },
+        {
+          "head_index": 5,
+          "score": 0.4385669231414795,
+          "rank": 3
+        },
+        {
+          "head_index": 11,
+          "score": 0.4336852729320526,
+          "rank": 4
+        },
+        {
+          "head_index": 7,
+          "score": 0.4282970726490021,
+          "rank": 5
+        }
+      ],
+      "aggregated_score": 0.609224796295166,
+      "token_start": 16,
+      "token_end": 32,
+      "token_count": 16,
+      "preview_text": "ingestion layer receives CSV, JSON, and streaming telemetry data. Files are validated",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11",
+      "rail_setting": "cli",
+      "prompt_name": null
+    },
+    {
+      "block_id": 2,
+      "selected": false,
+      "selected_reason": "unselected",
+      "head_scores": [
+        0.3952033817768097,
+        0.42851975560188293,
+        0.3732125163078308,
+        0.28515195846557617,
+        0.3961246609687805,
+        0.40917208790779114,
+        0.3327946662902832,
+        0.42472004890441895,
+        0.6054172515869141,
+        0.2419380247592926,
+        0.2792850732803345,
+        0.3380269706249237
+      ],
+      "top_contributing_heads": [
+        {
+          "head_index": 8,
+          "score": 0.6054172515869141,
+          "rank": 1
+        },
+        {
+          "head_index": 1,
+          "score": 0.42851975560188293,
+          "rank": 2
+        },
+        {
+          "head_index": 7,
+          "score": 0.42472004890441895,
+          "rank": 3
+        },
+        {
+          "head_index": 5,
+          "score": 0.40917208790779114,
+          "rank": 4
+        },
+        {
+          "head_index": 4,
+          "score": 0.3961246609687805,
+          "rank": 5
+        }
+      ],
+      "aggregated_score": 0.5927556753158569,
+      "token_start": 32,
+      "token_end": 48,
+      "token_count": 16,
+      "preview_text": ", normalized, and routed into storage buckets. The compute layer runs batch",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11",
+      "rail_setting": "cli",
+      "prompt_name": null
+    },
+    {
+      "block_id": 3,
+      "selected": false,
+      "selected_reason": "unselected",
+      "head_scores": [
+        0.3875189423561096,
+        0.3937855362892151,
+        0.3545973300933838,
+        0.2980559468269348,
+        0.3457057476043701,
+        0.3359137773513794,
+        0.3218356966972351,
+        0.41227295994758606,
+        0.5688847303390503,
+        0.22549113631248474,
+        0.30279356241226196,
+        0.2698827385902405
+      ],
+      "top_contributing_heads": [
+        {
+          "head_index": 8,
+          "score": 0.5688847303390503,
+          "rank": 1
+        },
+        {
+          "head_index": 7,
+          "score": 0.41227295994758606,
+          "rank": 2
+        },
+        {
+          "head_index": 1,
+          "score": 0.3937855362892151,
+          "rank": 3
+        },
+        {
+          "head_index": 0,
+          "score": 0.3875189423561096,
+          "rank": 4
+        },
+        {
+          "head_index": 2,
+          "score": 0.3545973300933838,
+          "rank": 5
+        }
+      ],
+      "aggregated_score": 0.5713958740234375,
+      "token_start": 48,
+      "token_end": 64,
+      "token_count": 16,
+      "preview_text": "transforms every hour and can also launch ad-hoc jobs for analysts.",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11",
+      "rail_setting": "cli",
+      "prompt_name": null
+    },
+    {
+      "block_id": 4,
+      "selected": false,
+      "selected_reason": "unselected",
+      "head_scores": [
+        0.36571335792541504,
+        0.40652748942375183,
+        0.32999566197395325,
+        0.2917059063911438,
+        0.31115520000457764,
+        0.4366797208786011,
+        0.3497389256954193,
+        0.48227378726005554,
+        0.6131676435470581,
+        0.29172587394714355,
+        0.27175581455230713,
+        0.3260940909385681
+      ],
+      "top_contributing_heads": [
+        {
+          "head_index": 8,
+          "score": 0.6131676435470581,
+          "rank": 1
+        },
+        {
+          "head_index": 7,
+          "score": 0.48227378726005554,
+          "rank": 2
+        },
+        {
+          "head_index": 5,
+          "score": 0.4366797208786011,
+          "rank": 3
+        },
+        {
+          "head_index": 1,
+          "score": 0.40652748942375183,
+          "rank": 4
+        },
+        {
+          "head_index": 0,
+          "score": 0.36571335792541504,
+          "rank": 5
+        }
+      ],
+      "aggregated_score": 0.5730265378952026,
+      "token_start": 64,
+      "token_end": 80,
+      "token_count": 16,
+      "preview_text": "The metadata service tracks ownership, retention rules, schemas, and audit events",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11",
+      "rail_setting": "cli",
+      "prompt_name": null
+    },
+    {
+      "block_id": 5,
+      "selected": false,
+      "selected_reason": "unselected",
+      "head_scores": [
+        0.3946775496006012,
+        0.4074963629245758,
+        0.35065680742263794,
+        0.3026459217071533,
+        0.30266958475112915,
+        0.40859419107437134,
+        0.31780773401260376,
+        0.4778301417827606,
+        0.625800371170044,
+        0.20361760258674622,
+        0.358745813369751,
+        0.2849729657173157
+      ],
+      "top_contributing_heads": [
+        {
+          "head_index": 8,
+          "score": 0.625800371170044,
+          "rank": 1
+        },
+        {
+          "head_index": 7,
+          "score": 0.4778301417827606,
+          "rank": 2
+        },
+        {
+          "head_index": 5,
+          "score": 0.40859419107437134,
+          "rank": 3
+        },
+        {
+          "head_index": 1,
+          "score": 0.4074963629245758,
+          "rank": 4
+        },
+        {
+          "head_index": 0,
+          "score": 0.3946775496006012,
+          "rank": 5
+        }
+      ],
+      "aggregated_score": 0.5693765878677368,
+      "token_start": 80,
+      "token_end": 96,
+      "token_count": 16,
+      "preview_text": ". The user dashboard shows job status, data freshness, and alert",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11",
+      "rail_setting": "cli",
+      "prompt_name": null
+    },
+    {
+      "block_id": 6,
+      "selected": false,
+      "selected_reason": "unselected",
+      "head_scores": [
+        0.453704833984375,
+        0.45073145627975464,
+        0.39499813318252563,
+        0.3018675744533539,
+        0.37529250979423523,
+        0.40555649995803833,
+        0.27059483528137207,
+        0.4806223213672638,
+        0.6359730362892151,
+        0.3724512457847595,
+        0.29305461049079895,
+        0.3627273440361023
+      ],
+      "top_contributing_heads": [
+        {
+          "head_index": 8,
+          "score": 0.6359730362892151,
+          "rank": 1
+        },
+        {
+          "head_index": 7,
+          "score": 0.4806223213672638,
+          "rank": 2
+        },
+        {
+          "head_index": 0,
+          "score": 0.453704833984375,
+          "rank": 3
+        },
+        {
+          "head_index": 1,
+          "score": 0.45073145627975464,
+          "rank": 4
+        },
+        {
+          "head_index": 5,
+          "score": 0.40555649995803833,
+          "rank": 5
+        }
+      ],
+      "aggregated_score": 0.6069486737251282,
+      "token_start": 96,
+      "token_end": 112,
+      "token_count": 16,
+      "preview_text": "history. Many teams requested stronger role-based access control and better query",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11",
+      "rail_setting": "cli",
+      "prompt_name": null
+    },
+    {
+      "block_id": 7,
+      "selected": true,
+      "selected_reason": "semantic",
+      "head_scores": [
+        0.4790286719799042,
+        0.45764362812042236,
+        0.42921337485313416,
+        0.35424381494522095,
+        0.44127658009529114,
+        0.4660795331001282,
+        0.3323378562927246,
+        0.4717921018600464,
+        0.6525560617446899,
+        0.41227298974990845,
+        0.3573804199695587,
+        0.3683178424835205
+      ],
+      "top_contributing_heads": [
+        {
+          "head_index": 8,
+          "score": 0.6525560617446899,
+          "rank": 1
+        },
+        {
+          "head_index": 0,
+          "score": 0.4790286719799042,
+          "rank": 2
+        },
+        {
+          "head_index": 7,
+          "score": 0.4717921018600464,
+          "rank": 3
+        },
+        {
+          "head_index": 5,
+          "score": 0.4660795331001282,
+          "rank": 4
+        },
+        {
+          "head_index": 1,
+          "score": 0.45764362812042236,
+          "rank": 5
+        }
+      ],
+      "aggregated_score": 0.6190503835678101,
+      "token_start": 112,
+      "token_end": 128,
+      "token_count": 16,
+      "preview_text": "logging. The current encryption standard for archival backups is AES-256",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11",
+      "rail_setting": "cli",
+      "prompt_name": null
+    },
+    {
+      "block_id": 8,
+      "selected": true,
+      "selected_reason": "semantic",
+      "head_scores": [
+        0.43265828490257263,
+        0.4702315926551819,
+        0.4127454161643982,
+        0.34559500217437744,
+        0.41417741775512695,
+        0.453025221824646,
+        0.36619967222213745,
+        0.4768599569797516,
+        0.6432215571403503,
+        0.32111993432044983,
+        0.39818865060806274,
+        0.35376402735710144
+      ],
+      "top_contributing_heads": [
+        {
+          "head_index": 8,
+          "score": 0.6432215571403503,
+          "rank": 1
+        },
+        {
+          "head_index": 7,
+          "score": 0.4768599569797516,
+          "rank": 2
+        },
+        {
+          "head_index": 1,
+          "score": 0.4702315926551819,
+          "rank": 3
+        },
+        {
+          "head_index": 5,
+          "score": 0.453025221824646,
+          "rank": 4
+        },
+        {
+          "head_index": 0,
+          "score": 0.43265828490257263,
+          "rank": 5
+        }
+      ],
+      "aggregated_score": 0.6213254928588867,
+      "token_start": 128,
+      "token_end": 144,
+      "token_count": 16,
+      "preview_text": "-GCM. The support team reported slow exports during end-of",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11",
+      "rail_setting": "cli",
+      "prompt_name": null
+    },
+    {
+      "block_id": 9,
+      "selected": true,
+      "selected_reason": "semantic",
+      "head_scores": [
+        0.4403739273548126,
+        0.5115506649017334,
+        0.4946901500225067,
+        0.39463549852371216,
+        0.39456531405448914,
+        0.4825071394443512,
+        0.40387845039367676,
+        0.455814391374588,
+        0.6701343059539795,
+        0.36141371726989746,
+        0.4389404356479645,
+        0.40606558322906494
+      ],
+      "top_contributing_heads": [
+        {
+          "head_index": 8,
+          "score": 0.6701343059539795,
+          "rank": 1
+        },
+        {
+          "head_index": 1,
+          "score": 0.5115506649017334,
+          "rank": 2
+        },
+        {
+          "head_index": 2,
+          "score": 0.4946901500225067,
+          "rank": 3
+        },
+        {
+          "head_index": 5,
+          "score": 0.4825071394443512,
+          "rank": 4
+        },
+        {
+          "head_index": 7,
+          "score": 0.455814391374588,
+          "rank": 5
+        }
+      ],
+      "aggregated_score": 0.6206187605857849,
+      "token_start": 144,
+      "token_end": 160,
+      "token_count": 16,
+      "preview_text": "-quarter reporting. The next roadmap item is cross-region failover",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11",
+      "rail_setting": "cli",
+      "prompt_name": null
+    },
+    {
+      "block_id": 10,
+      "selected": false,
+      "selected_reason": "unselected",
+      "head_scores": [
+        0.43897679448127747,
+        0.4891957640647888,
+        0.4673883318901062,
+        0.39795708656311035,
+        0.41470763087272644,
+        0.5062071681022644,
+        0.4123745262622833,
+        0.489590585231781,
+        0.660520076751709,
+        0.3603169918060303,
+        0.45895957946777344,
+        0.4514206647872925
+      ],
+      "top_contributing_heads": [
+        {
+          "head_index": 8,
+          "score": 0.660520076751709,
+          "rank": 1
+        },
+        {
+          "head_index": 5,
+          "score": 0.5062071681022644,
+          "rank": 2
+        },
+        {
+          "head_index": 7,
+          "score": 0.489590585231781,
+          "rank": 3
+        },
+        {
+          "head_index": 1,
+          "score": 0.4891957640647888,
+          "rank": 4
+        },
+        {
+          "head_index": 2,
+          "score": 0.4673883318901062,
+          "rank": 5
+        }
+      ],
+      "aggregated_score": 0.6014106273651123,
+      "token_start": 160,
+      "token_end": 176,
+      "token_count": 16,
+      "preview_text": ". The compliance review noted that audit events older than 18 months are being",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11",
+      "rail_setting": "cli",
+      "prompt_name": null
+    },
+    {
+      "block_id": 11,
+      "selected": true,
+      "selected_reason": "semantic",
+      "head_scores": [
+        0.5898391008377075,
+        0.5479723811149597,
+        0.5026702284812927,
+        0.45903658866882324,
+        0.43378257751464844,
+        0.6081449389457703,
+        0.41379863023757935,
+        0.5495030879974365,
+        0.7474862337112427,
+        0.41333267092704773,
+        0.44503116607666016,
+        0.48664286732673645
+      ],
+      "top_contributing_heads": [
+        {
+          "head_index": 8,
+          "score": 0.7474862337112427,
+          "rank": 1
+        },
+        {
+          "head_index": 5,
+          "score": 0.6081449389457703,
+          "rank": 2
+        },
+        {
+          "head_index": 0,
+          "score": 0.5898391008377075,
+          "rank": 3
+        },
+        {
+          "head_index": 7,
+          "score": 0.5495030879974365,
+          "rank": 4
+        },
+        {
+          "head_index": 1,
+          "score": 0.5479723811149597,
+          "rank": 5
+        }
+      ],
+      "aggregated_score": 0.6739434599876404,
+      "token_start": 176,
+      "token_end": 192,
+      "token_count": 16,
+      "preview_text": "purged. Question: What encryption standard is used for archival",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11",
+      "rail_setting": "cli",
+      "prompt_name": null
+    },
+    {
+      "block_id": 12,
+      "selected": true,
+      "selected_reason": "recent",
+      "head_scores": [
+        0.668956995010376,
+        0.55817049741745,
+        0.5630166530609131,
+        0.47362813353538513,
+        0.46003592014312744,
+        0.6668124198913574,
+        0.5456305742263794,
+        0.645330548286438,
+        0.7448087334632874,
+        0.5150098204612732,
+        0.46967634558677673,
+        0.5085538625717163
+      ],
+      "top_contributing_heads": [
+        {
+          "head_index": 8,
+          "score": 0.7448087334632874,
+          "rank": 1
+        },
+        {
+          "head_index": 0,
+          "score": 0.668956995010376,
+          "rank": 2
+        },
+        {
+          "head_index": 5,
+          "score": 0.6668124198913574,
+          "rank": 3
+        },
+        {
+          "head_index": 7,
+          "score": 0.645330548286438,
+          "rank": 4
+        },
+        {
+          "head_index": 2,
+          "score": 0.5630166530609131,
+          "rank": 5
+        }
+      ],
+      "aggregated_score": 0.7229810953140259,
+      "token_start": 192,
+      "token_end": 194,
+      "token_count": 2,
+      "preview_text": "backups?",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11",
+      "rail_setting": "cli",
+      "prompt_name": null
+    }
+  ],
+  "selected_head_diagnostics": [
+    {
+      "block_id": 7,
+      "selected": true,
+      "selected_reason": "semantic",
+      "head_scores": [
+        0.4790286719799042,
+        0.45764362812042236,
+        0.42921337485313416,
+        0.35424381494522095,
+        0.44127658009529114,
+        0.4660795331001282,
+        0.3323378562927246,
+        0.4717921018600464,
+        0.6525560617446899,
+        0.41227298974990845,
+        0.3573804199695587,
+        0.3683178424835205
+      ],
+      "top_contributing_heads": [
+        {
+          "head_index": 8,
+          "score": 0.6525560617446899,
+          "rank": 1
+        },
+        {
+          "head_index": 0,
+          "score": 0.4790286719799042,
+          "rank": 2
+        },
+        {
+          "head_index": 7,
+          "score": 0.4717921018600464,
+          "rank": 3
+        },
+        {
+          "head_index": 5,
+          "score": 0.4660795331001282,
+          "rank": 4
+        },
+        {
+          "head_index": 1,
+          "score": 0.45764362812042236,
+          "rank": 5
+        }
+      ],
+      "aggregated_score": 0.6190503835678101,
+      "token_start": 112,
+      "token_end": 128,
+      "token_count": 16,
+      "preview_text": "logging. The current encryption standard for archival backups is AES-256",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11",
+      "rail_setting": "cli",
+      "prompt_name": null
+    },
+    {
+      "block_id": 8,
+      "selected": true,
+      "selected_reason": "semantic",
+      "head_scores": [
+        0.43265828490257263,
+        0.4702315926551819,
+        0.4127454161643982,
+        0.34559500217437744,
+        0.41417741775512695,
+        0.453025221824646,
+        0.36619967222213745,
+        0.4768599569797516,
+        0.6432215571403503,
+        0.32111993432044983,
+        0.39818865060806274,
+        0.35376402735710144
+      ],
+      "top_contributing_heads": [
+        {
+          "head_index": 8,
+          "score": 0.6432215571403503,
+          "rank": 1
+        },
+        {
+          "head_index": 7,
+          "score": 0.4768599569797516,
+          "rank": 2
+        },
+        {
+          "head_index": 1,
+          "score": 0.4702315926551819,
+          "rank": 3
+        },
+        {
+          "head_index": 5,
+          "score": 0.453025221824646,
+          "rank": 4
+        },
+        {
+          "head_index": 0,
+          "score": 0.43265828490257263,
+          "rank": 5
+        }
+      ],
+      "aggregated_score": 0.6213254928588867,
+      "token_start": 128,
+      "token_end": 144,
+      "token_count": 16,
+      "preview_text": "-GCM. The support team reported slow exports during end-of",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11",
+      "rail_setting": "cli",
+      "prompt_name": null
+    },
+    {
+      "block_id": 9,
+      "selected": true,
+      "selected_reason": "semantic",
+      "head_scores": [
+        0.4403739273548126,
+        0.5115506649017334,
+        0.4946901500225067,
+        0.39463549852371216,
+        0.39456531405448914,
+        0.4825071394443512,
+        0.40387845039367676,
+        0.455814391374588,
+        0.6701343059539795,
+        0.36141371726989746,
+        0.4389404356479645,
+        0.40606558322906494
+      ],
+      "top_contributing_heads": [
+        {
+          "head_index": 8,
+          "score": 0.6701343059539795,
+          "rank": 1
+        },
+        {
+          "head_index": 1,
+          "score": 0.5115506649017334,
+          "rank": 2
+        },
+        {
+          "head_index": 2,
+          "score": 0.4946901500225067,
+          "rank": 3
+        },
+        {
+          "head_index": 5,
+          "score": 0.4825071394443512,
+          "rank": 4
+        },
+        {
+          "head_index": 7,
+          "score": 0.455814391374588,
+          "rank": 5
+        }
+      ],
+      "aggregated_score": 0.6206187605857849,
+      "token_start": 144,
+      "token_end": 160,
+      "token_count": 16,
+      "preview_text": "-quarter reporting. The next roadmap item is cross-region failover",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11",
+      "rail_setting": "cli",
+      "prompt_name": null
+    },
+    {
+      "block_id": 11,
+      "selected": true,
+      "selected_reason": "semantic",
+      "head_scores": [
+        0.5898391008377075,
+        0.5479723811149597,
+        0.5026702284812927,
+        0.45903658866882324,
+        0.43378257751464844,
+        0.6081449389457703,
+        0.41379863023757935,
+        0.5495030879974365,
+        0.7474862337112427,
+        0.41333267092704773,
+        0.44503116607666016,
+        0.48664286732673645
+      ],
+      "top_contributing_heads": [
+        {
+          "head_index": 8,
+          "score": 0.7474862337112427,
+          "rank": 1
+        },
+        {
+          "head_index": 5,
+          "score": 0.6081449389457703,
+          "rank": 2
+        },
+        {
+          "head_index": 0,
+          "score": 0.5898391008377075,
+          "rank": 3
+        },
+        {
+          "head_index": 7,
+          "score": 0.5495030879974365,
+          "rank": 4
+        },
+        {
+          "head_index": 1,
+          "score": 0.5479723811149597,
+          "rank": 5
+        }
+      ],
+      "aggregated_score": 0.6739434599876404,
+      "token_start": 176,
+      "token_end": 192,
+      "token_count": 16,
+      "preview_text": "purged. Question: What encryption standard is used for archival",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11",
+      "rail_setting": "cli",
+      "prompt_name": null
+    },
+    {
+      "block_id": 12,
+      "selected": true,
+      "selected_reason": "recent",
+      "head_scores": [
+        0.668956995010376,
+        0.55817049741745,
+        0.5630166530609131,
+        0.47362813353538513,
+        0.46003592014312744,
+        0.6668124198913574,
+        0.5456305742263794,
+        0.645330548286438,
+        0.7448087334632874,
+        0.5150098204612732,
+        0.46967634558677673,
+        0.5085538625717163
+      ],
+      "top_contributing_heads": [
+        {
+          "head_index": 8,
+          "score": 0.7448087334632874,
+          "rank": 1
+        },
+        {
+          "head_index": 0,
+          "score": 0.668956995010376,
+          "rank": 2
+        },
+        {
+          "head_index": 5,
+          "score": 0.6668124198913574,
+          "rank": 3
+        },
+        {
+          "head_index": 7,
+          "score": 0.645330548286438,
+          "rank": 4
+        },
+        {
+          "head_index": 2,
+          "score": 0.5630166530609131,
+          "rank": 5
+        }
+      ],
+      "aggregated_score": 0.7229810953140259,
+      "token_start": 192,
+      "token_end": 194,
+      "token_count": 2,
+      "preview_text": "backups?",
+      "representation_source": "query_mean_last_layer",
+      "representation_name": "query_mean_layer_11_key_mean_layer_11",
+      "rail_setting": "cli",
+      "prompt_name": null
+    }
+  ]
+}

@@ -1,0 +1,758 @@
+REAL-BLOCK REPRESENTATION SWEEP
+model_load_seconds={'distilgpt2': 6.2055674670264125, 'gpt2': 0.9626814929652028}
+
+RUNS
+distilgpt2 | long_reference | final_hidden (final_hidden) | rail=default(recent=4,anchors=2) | selected=[12, 11, 10, 9, 0, 1, 4, 5, 2, 8] | selected/K=2.500 | recall=0.500 precision=0.100 hit=True | selector=0.007102s total=2.134837s
+  reasons=0:anchor:0.763, 1:anchor:0.782, 2:semantic:0.785, 4:semantic:0.789, 5:semantic:0.785, 8:semantic:0.784, 9:recent:0.797, 10:recent:0.787, 11:recent:0.834, 12:recent:0.891
+distilgpt2 | needle | final_hidden (final_hidden) | rail=default(recent=4,anchors=2) | selected=[5, 4, 3, 2, 0, 1] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005922s total=0.226153s
+  reasons=0:anchor:0.795, 1:anchor:0.795, 2:recent:0.795, 3:recent:0.794, 4:recent:0.802, 5:recent:0.895
+distilgpt2 | repeated_reference | final_hidden (final_hidden) | rail=default(recent=4,anchors=2) | selected=[8, 7, 6, 5, 0, 1, 2, 3, 4] | selected/K=2.250 | recall=1.000 precision=0.111 hit=True | selector=0.006102s total=0.300714s
+  reasons=0:anchor:0.788, 1:anchor:0.758, 2:semantic:0.785, 3:semantic:0.785, 4:semantic:0.769, 5:recent:0.796, 6:recent:0.802, 7:recent:0.830, 8:recent:0.900
+distilgpt2 | code_context | final_hidden (final_hidden) | rail=default(recent=4,anchors=2) | selected=[13, 12, 11, 10, 0, 1, 4, 8, 2, 6] | selected/K=2.500 | recall=0.600 precision=0.300 hit=True | selector=0.006069s total=0.538704s
+  reasons=0:anchor:0.781, 1:anchor:0.778, 2:semantic:0.775, 4:semantic:0.781, 6:semantic:0.775, 8:semantic:0.776, 10:recent:0.762, 11:recent:0.749, 12:recent:0.777, 13:recent:0.894
+distilgpt2 | adversarial_semantic | final_hidden (final_hidden) | rail=default(recent=4,anchors=2) | selected=[5, 4, 3, 2, 0, 1] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005813s total=0.226593s
+  reasons=0:anchor:0.769, 1:anchor:0.782, 2:recent:0.797, 3:recent:0.797, 4:recent:0.823, 5:recent:0.894
+distilgpt2 | long_reference | hidden_layer_index (hidden_layer_1) | rail=default(recent=4,anchors=2) | selected=[12, 11, 10, 9, 0, 1, 8, 7, 6, 5] | selected/K=2.500 | recall=1.000 precision=0.200 hit=True | selector=0.007363s total=0.521493s
+  reasons=0:anchor:0.565, 1:anchor:0.593, 5:semantic:0.630, 6:semantic:0.638, 7:semantic:0.647, 8:semantic:0.673, 9:recent:0.690, 10:recent:0.712, 11:recent:0.753, 12:recent:0.824
+distilgpt2 | needle | hidden_layer_index (hidden_layer_1) | rail=default(recent=4,anchors=2) | selected=[5, 4, 3, 2, 0, 1] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005469s total=0.228839s
+  reasons=0:anchor:0.610, 1:anchor:0.670, 2:recent:0.694, 3:recent:0.680, 4:recent:0.689, 5:recent:0.821
+distilgpt2 | repeated_reference | hidden_layer_index (hidden_layer_1) | rail=default(recent=4,anchors=2) | selected=[8, 7, 6, 5, 0, 1, 4, 3, 2] | selected/K=2.250 | recall=1.000 precision=0.111 hit=True | selector=0.007195s total=0.314587s
+  reasons=0:anchor:0.583, 1:anchor:0.635, 2:semantic:0.644, 3:semantic:0.678, 4:semantic:0.681, 5:recent:0.674, 6:recent:0.694, 7:recent:0.743, 8:recent:0.900
+distilgpt2 | code_context | hidden_layer_index (hidden_layer_1) | rail=default(recent=4,anchors=2) | selected=[13, 12, 11, 10, 0, 1, 9, 8, 7, 6] | selected/K=2.500 | recall=0.600 precision=0.300 hit=True | selector=0.005684s total=0.484403s
+  reasons=0:anchor:0.511, 1:anchor:0.558, 6:semantic:0.587, 7:semantic:0.592, 8:semantic:0.599, 9:semantic:0.617, 10:recent:0.627, 11:recent:0.638, 12:recent:0.675, 13:recent:0.781
+distilgpt2 | adversarial_semantic | hidden_layer_index (hidden_layer_1) | rail=default(recent=4,anchors=2) | selected=[5, 4, 3, 2, 0, 1] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.006306s total=0.224806s
+  reasons=0:anchor:0.642, 1:anchor:0.689, 2:recent:0.698, 3:recent:0.718, 4:recent:0.739, 5:recent:0.800
+distilgpt2 | long_reference | middle_hidden (middle_hidden_3) | rail=default(recent=4,anchors=2) | selected=[12, 11, 10, 9, 0, 1, 8, 7, 3, 6] | selected/K=2.500 | recall=1.000 precision=0.200 hit=True | selector=0.005960s total=0.441889s
+  reasons=0:anchor:0.591, 1:anchor:0.578, 3:semantic:0.593, 6:semantic:0.581, 7:semantic:0.600, 8:semantic:0.615, 9:recent:0.622, 10:recent:0.648, 11:recent:0.671, 12:recent:0.810
+distilgpt2 | needle | middle_hidden (middle_hidden_3) | rail=default(recent=4,anchors=2) | selected=[5, 4, 3, 2, 0, 1] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005990s total=0.251759s
+  reasons=0:anchor:0.605, 1:anchor:0.627, 2:recent:0.645, 3:recent:0.621, 4:recent:0.647, 5:recent:0.794
+distilgpt2 | repeated_reference | middle_hidden (middle_hidden_3) | rail=default(recent=4,anchors=2) | selected=[8, 7, 6, 5, 0, 1, 4, 3, 2] | selected/K=2.250 | recall=1.000 precision=0.111 hit=True | selector=0.005921s total=0.333900s
+  reasons=0:anchor:0.596, 1:anchor:0.580, 2:semantic:0.578, 3:semantic:0.606, 4:semantic:0.627, 5:recent:0.590, 6:recent:0.624, 7:recent:0.703, 8:recent:0.900
+distilgpt2 | code_context | middle_hidden (middle_hidden_3) | rail=default(recent=4,anchors=2) | selected=[13, 12, 11, 10, 0, 1, 9, 8, 6, 5] | selected/K=2.500 | recall=0.600 precision=0.300 hit=True | selector=0.005084s total=0.508932s
+  reasons=0:anchor:0.574, 1:anchor:0.558, 5:semantic:0.568, 6:semantic:0.575, 8:semantic:0.575, 9:semantic:0.598, 10:recent:0.591, 11:recent:0.587, 12:recent:0.617, 13:recent:0.769
+distilgpt2 | adversarial_semantic | middle_hidden (middle_hidden_3) | rail=default(recent=4,anchors=2) | selected=[5, 4, 3, 2, 0, 1] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.004798s total=0.232916s
+  reasons=0:anchor:0.598, 1:anchor:0.637, 2:recent:0.634, 3:recent:0.648, 4:recent:0.674, 5:recent:0.741
+distilgpt2 | long_reference | avg_last4_hidden (avg_last4_hidden) | rail=default(recent=4,anchors=2) | selected=[12, 11, 10, 9, 0, 1, 8, 3, 7, 2] | selected/K=2.500 | recall=1.000 precision=0.200 hit=True | selector=0.007335s total=0.466042s
+  reasons=0:anchor:0.688, 1:anchor:0.732, 2:semantic:0.728, 3:semantic:0.732, 7:semantic:0.731, 8:semantic:0.737, 9:recent:0.732, 10:recent:0.747, 11:recent:0.781, 12:recent:0.871
+distilgpt2 | needle | avg_last4_hidden (avg_last4_hidden) | rail=default(recent=4,anchors=2) | selected=[5, 4, 3, 2, 0, 1] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.007445s total=0.247189s
+  reasons=0:anchor:0.670, 1:anchor:0.722, 2:recent:0.720, 3:recent:0.708, 4:recent:0.725, 5:recent:0.864
+distilgpt2 | repeated_reference | avg_last4_hidden (avg_last4_hidden) | rail=default(recent=4,anchors=2) | selected=[8, 7, 6, 5, 0, 1, 4, 3, 2] | selected/K=2.250 | recall=1.000 precision=0.111 hit=True | selector=0.005134s total=0.320394s
+  reasons=0:anchor:0.688, 1:anchor:0.725, 2:semantic:0.701, 3:semantic:0.717, 4:semantic:0.721, 5:recent:0.695, 6:recent:0.727, 7:recent:0.797, 8:recent:0.900
+distilgpt2 | code_context | avg_last4_hidden (avg_last4_hidden) | rail=default(recent=4,anchors=2) | selected=[13, 12, 11, 10, 0, 1, 4, 2, 8, 7] | selected/K=2.500 | recall=0.600 precision=0.300 hit=True | selector=0.006463s total=0.543763s
+  reasons=0:anchor:0.646, 1:anchor:0.712, 2:semantic:0.709, 4:semantic:0.720, 7:semantic:0.691, 8:semantic:0.692, 10:recent:0.682, 11:recent:0.676, 12:recent:0.710, 13:recent:0.829
+distilgpt2 | adversarial_semantic | avg_last4_hidden (avg_last4_hidden) | rail=default(recent=4,anchors=2) | selected=[5, 4, 3, 2, 0, 1] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.007206s total=0.235619s
+  reasons=0:anchor:0.690, 1:anchor:0.742, 2:recent:0.750, 3:recent:0.752, 4:recent:0.777, 5:recent:0.832
+distilgpt2 | long_reference | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=default(recent=4,anchors=2) | selected=[12, 11, 10, 9, 0, 1, 8, 7, 6, 5] | selected/K=2.500 | recall=1.000 precision=0.200 hit=True | selector=0.005210s total=0.451625s
+  reasons=0:anchor:0.608, 1:anchor:0.606, 5:semantic:0.615, 6:semantic:0.616, 7:semantic:0.637, 8:semantic:0.663, 9:recent:0.650, 10:recent:0.679, 11:recent:0.703, 12:recent:0.823
+distilgpt2 | needle | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=default(recent=4,anchors=2) | selected=[5, 4, 3, 2, 0, 1] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005880s total=0.242660s
+  reasons=0:anchor:0.601, 1:anchor:0.640, 2:recent:0.666, 3:recent:0.631, 4:recent:0.668, 5:recent:0.806
+distilgpt2 | repeated_reference | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=default(recent=4,anchors=2) | selected=[8, 7, 6, 5, 0, 1, 4, 3, 2] | selected/K=2.250 | recall=1.000 precision=0.111 hit=True | selector=0.005530s total=0.335333s
+  reasons=0:anchor:0.600, 1:anchor:0.614, 2:semantic:0.619, 3:semantic:0.645, 4:semantic:0.653, 5:recent:0.634, 6:recent:0.655, 7:recent:0.712, 8:recent:0.900
+distilgpt2 | code_context | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=default(recent=4,anchors=2) | selected=[13, 12, 11, 10, 0, 1, 9, 7, 5, 8] | selected/K=2.500 | recall=0.600 precision=0.300 hit=True | selector=0.007426s total=0.522364s
+  reasons=0:anchor:0.573, 1:anchor:0.584, 5:semantic:0.580, 7:semantic:0.581, 8:semantic:0.579, 9:semantic:0.604, 10:recent:0.586, 11:recent:0.592, 12:recent:0.638, 13:recent:0.771
+distilgpt2 | adversarial_semantic | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=default(recent=4,anchors=2) | selected=[5, 4, 3, 2, 0, 1] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005242s total=0.239007s
+  reasons=0:anchor:0.604, 1:anchor:0.673, 2:recent:0.677, 3:recent:0.689, 4:recent:0.706, 5:recent:0.780
+distilgpt2 | long_reference | final_hidden (final_hidden) | rail=no_rails(recent=0,anchors=0) | selected=[12, 11, 9, 4] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.004878s total=0.477677s
+  reasons=4:semantic:0.789, 9:semantic:0.797, 11:semantic:0.834, 12:semantic:0.891
+distilgpt2 | needle | final_hidden (final_hidden) | rail=no_rails(recent=0,anchors=0) | selected=[5, 4, 0, 2] | selected/K=1.000 | recall=1.000 precision=0.250 hit=True | selector=0.004742s total=0.238504s
+  reasons=0:semantic:0.795, 2:semantic:0.795, 4:semantic:0.802, 5:semantic:0.895
+distilgpt2 | repeated_reference | final_hidden (final_hidden) | rail=no_rails(recent=0,anchors=0) | selected=[8, 7, 6, 5] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.004816s total=0.325861s
+  reasons=5:semantic:0.796, 6:semantic:0.802, 7:semantic:0.830, 8:semantic:0.900
+distilgpt2 | code_context | final_hidden (final_hidden) | rail=no_rails(recent=0,anchors=0) | selected=[13, 4, 0, 1] | selected/K=1.000 | recall=0.200 precision=0.250 hit=True | selector=0.005033s total=0.518179s
+  reasons=0:semantic:0.781, 1:semantic:0.778, 4:semantic:0.781, 13:semantic:0.894
+distilgpt2 | adversarial_semantic | final_hidden (final_hidden) | rail=no_rails(recent=0,anchors=0) | selected=[5, 4, 3, 2] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.005725s total=0.241894s
+  reasons=2:semantic:0.797, 3:semantic:0.797, 4:semantic:0.823, 5:semantic:0.894
+distilgpt2 | long_reference | hidden_layer_index (hidden_layer_1) | rail=no_rails(recent=0,anchors=0) | selected=[12, 11, 10, 9] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.005591s total=0.460283s
+  reasons=9:semantic:0.690, 10:semantic:0.712, 11:semantic:0.753, 12:semantic:0.824
+distilgpt2 | needle | hidden_layer_index (hidden_layer_1) | rail=no_rails(recent=0,anchors=0) | selected=[5, 2, 4, 3] | selected/K=1.000 | recall=1.000 precision=0.250 hit=True | selector=0.006072s total=0.250422s
+  reasons=2:semantic:0.694, 3:semantic:0.680, 4:semantic:0.689, 5:semantic:0.821
+distilgpt2 | repeated_reference | hidden_layer_index (hidden_layer_1) | rail=no_rails(recent=0,anchors=0) | selected=[8, 7, 6, 4] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.006838s total=0.323462s
+  reasons=4:semantic:0.681, 6:semantic:0.694, 7:semantic:0.743, 8:semantic:0.900
+distilgpt2 | code_context | hidden_layer_index (hidden_layer_1) | rail=no_rails(recent=0,anchors=0) | selected=[13, 12, 11, 10] | selected/K=1.000 | recall=0.200 precision=0.250 hit=True | selector=0.005227s total=0.508941s
+  reasons=10:semantic:0.627, 11:semantic:0.638, 12:semantic:0.675, 13:semantic:0.781
+distilgpt2 | adversarial_semantic | hidden_layer_index (hidden_layer_1) | rail=no_rails(recent=0,anchors=0) | selected=[5, 4, 3, 2] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.005233s total=0.237479s
+  reasons=2:semantic:0.698, 3:semantic:0.718, 4:semantic:0.739, 5:semantic:0.800
+distilgpt2 | long_reference | middle_hidden (middle_hidden_3) | rail=no_rails(recent=0,anchors=0) | selected=[12, 11, 10, 9] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.004727s total=0.463341s
+  reasons=9:semantic:0.622, 10:semantic:0.648, 11:semantic:0.671, 12:semantic:0.810
+distilgpt2 | needle | middle_hidden (middle_hidden_3) | rail=no_rails(recent=0,anchors=0) | selected=[5, 4, 2, 1] | selected/K=1.000 | recall=1.000 precision=0.250 hit=True | selector=0.006241s total=0.246967s
+  reasons=1:semantic:0.627, 2:semantic:0.645, 4:semantic:0.647, 5:semantic:0.794
+distilgpt2 | repeated_reference | middle_hidden (middle_hidden_3) | rail=no_rails(recent=0,anchors=0) | selected=[8, 7, 4, 6] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.005214s total=0.323972s
+  reasons=4:semantic:0.627, 6:semantic:0.624, 7:semantic:0.703, 8:semantic:0.900
+distilgpt2 | code_context | middle_hidden (middle_hidden_3) | rail=no_rails(recent=0,anchors=0) | selected=[13, 12, 9, 10] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.009137s total=0.509171s
+  reasons=9:semantic:0.598, 10:semantic:0.591, 12:semantic:0.617, 13:semantic:0.769
+distilgpt2 | adversarial_semantic | middle_hidden (middle_hidden_3) | rail=no_rails(recent=0,anchors=0) | selected=[5, 4, 3, 1] | selected/K=1.000 | recall=1.000 precision=0.250 hit=True | selector=0.006940s total=0.239022s
+  reasons=1:semantic:0.637, 3:semantic:0.648, 4:semantic:0.674, 5:semantic:0.741
+distilgpt2 | long_reference | avg_last4_hidden (avg_last4_hidden) | rail=no_rails(recent=0,anchors=0) | selected=[12, 11, 10, 8] | selected/K=1.000 | recall=0.500 precision=0.250 hit=True | selector=0.006044s total=0.459421s
+  reasons=8:semantic:0.737, 10:semantic:0.747, 11:semantic:0.781, 12:semantic:0.871
+distilgpt2 | needle | avg_last4_hidden (avg_last4_hidden) | rail=no_rails(recent=0,anchors=0) | selected=[5, 4, 1, 2] | selected/K=1.000 | recall=1.000 precision=0.250 hit=True | selector=0.006524s total=0.243312s
+  reasons=1:semantic:0.722, 2:semantic:0.720, 4:semantic:0.725, 5:semantic:0.864
+distilgpt2 | repeated_reference | avg_last4_hidden (avg_last4_hidden) | rail=no_rails(recent=0,anchors=0) | selected=[8, 7, 6, 1] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.007294s total=0.329869s
+  reasons=1:semantic:0.725, 6:semantic:0.727, 7:semantic:0.797, 8:semantic:0.900
+distilgpt2 | code_context | avg_last4_hidden (avg_last4_hidden) | rail=no_rails(recent=0,anchors=0) | selected=[13, 4, 1, 12] | selected/K=1.000 | recall=0.200 precision=0.250 hit=True | selector=0.005484s total=0.505446s
+  reasons=1:semantic:0.712, 4:semantic:0.720, 12:semantic:0.710, 13:semantic:0.829
+distilgpt2 | adversarial_semantic | avg_last4_hidden (avg_last4_hidden) | rail=no_rails(recent=0,anchors=0) | selected=[5, 4, 3, 2] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.004638s total=0.238446s
+  reasons=2:semantic:0.750, 3:semantic:0.752, 4:semantic:0.777, 5:semantic:0.832
+distilgpt2 | long_reference | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=no_rails(recent=0,anchors=0) | selected=[12, 11, 10, 8] | selected/K=1.000 | recall=0.500 precision=0.250 hit=True | selector=0.007219s total=0.528493s
+  reasons=8:semantic:0.663, 10:semantic:0.679, 11:semantic:0.703, 12:semantic:0.823
+distilgpt2 | needle | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=no_rails(recent=0,anchors=0) | selected=[5, 4, 2, 1] | selected/K=1.000 | recall=1.000 precision=0.250 hit=True | selector=0.005856s total=0.247462s
+  reasons=1:semantic:0.640, 2:semantic:0.666, 4:semantic:0.668, 5:semantic:0.806
+distilgpt2 | repeated_reference | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=no_rails(recent=0,anchors=0) | selected=[8, 7, 6, 4] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.005928s total=0.324435s
+  reasons=4:semantic:0.653, 6:semantic:0.655, 7:semantic:0.712, 8:semantic:0.900
+distilgpt2 | code_context | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=no_rails(recent=0,anchors=0) | selected=[13, 12, 9, 11] | selected/K=1.000 | recall=0.200 precision=0.250 hit=True | selector=0.005144s total=0.478217s
+  reasons=9:semantic:0.604, 11:semantic:0.592, 12:semantic:0.638, 13:semantic:0.771
+distilgpt2 | adversarial_semantic | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=no_rails(recent=0,anchors=0) | selected=[5, 4, 3, 2] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.007138s total=0.230472s
+  reasons=2:semantic:0.677, 3:semantic:0.689, 4:semantic:0.706, 5:semantic:0.780
+distilgpt2 | long_reference | final_hidden (final_hidden) | rail=recent_only(recent=4,anchors=0) | selected=[12, 11, 10, 9, 4, 5, 2, 8] | selected/K=2.000 | recall=0.500 precision=0.125 hit=True | selector=0.006334s total=0.439152s
+  reasons=2:semantic:0.785, 4:semantic:0.789, 5:semantic:0.785, 8:semantic:0.784, 9:recent:0.797, 10:recent:0.787, 11:recent:0.834, 12:recent:0.891
+distilgpt2 | needle | final_hidden (final_hidden) | rail=recent_only(recent=4,anchors=0) | selected=[5, 4, 3, 2, 0, 1] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.004667s total=0.230847s
+  reasons=0:semantic:0.795, 1:semantic:0.795, 2:recent:0.795, 3:recent:0.794, 4:recent:0.802, 5:recent:0.895
+distilgpt2 | repeated_reference | final_hidden (final_hidden) | rail=recent_only(recent=4,anchors=0) | selected=[8, 7, 6, 5, 0, 2, 3, 4] | selected/K=2.000 | recall=1.000 precision=0.125 hit=True | selector=0.005447s total=0.309882s
+  reasons=0:semantic:0.788, 2:semantic:0.785, 3:semantic:0.785, 4:semantic:0.769, 5:recent:0.796, 6:recent:0.802, 7:recent:0.830, 8:recent:0.900
+distilgpt2 | code_context | final_hidden (final_hidden) | rail=recent_only(recent=4,anchors=0) | selected=[13, 12, 11, 10, 4, 0, 1, 8] | selected/K=2.000 | recall=0.400 precision=0.250 hit=True | selector=0.005080s total=0.488762s
+  reasons=0:semantic:0.781, 1:semantic:0.778, 4:semantic:0.781, 8:semantic:0.776, 10:recent:0.762, 11:recent:0.749, 12:recent:0.777, 13:recent:0.894
+distilgpt2 | adversarial_semantic | final_hidden (final_hidden) | rail=recent_only(recent=4,anchors=0) | selected=[5, 4, 3, 2, 1, 0] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.006855s total=0.236631s
+  reasons=0:semantic:0.769, 1:semantic:0.782, 2:recent:0.797, 3:recent:0.797, 4:recent:0.823, 5:recent:0.894
+distilgpt2 | long_reference | hidden_layer_index (hidden_layer_1) | rail=recent_only(recent=4,anchors=0) | selected=[12, 11, 10, 9, 8, 7, 6, 5] | selected/K=2.000 | recall=1.000 precision=0.250 hit=True | selector=0.006249s total=0.442567s
+  reasons=5:semantic:0.630, 6:semantic:0.638, 7:semantic:0.647, 8:semantic:0.673, 9:recent:0.690, 10:recent:0.712, 11:recent:0.753, 12:recent:0.824
+distilgpt2 | needle | hidden_layer_index (hidden_layer_1) | rail=recent_only(recent=4,anchors=0) | selected=[5, 4, 3, 2, 1, 0] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.006075s total=0.234043s
+  reasons=0:semantic:0.610, 1:semantic:0.670, 2:recent:0.694, 3:recent:0.680, 4:recent:0.689, 5:recent:0.821
+distilgpt2 | repeated_reference | hidden_layer_index (hidden_layer_1) | rail=recent_only(recent=4,anchors=0) | selected=[8, 7, 6, 5, 4, 3, 2, 1] | selected/K=2.000 | recall=0.000 precision=0.000 hit=False | selector=0.006015s total=0.323498s
+  reasons=1:semantic:0.635, 2:semantic:0.644, 3:semantic:0.678, 4:semantic:0.681, 5:recent:0.674, 6:recent:0.694, 7:recent:0.743, 8:recent:0.900
+distilgpt2 | code_context | hidden_layer_index (hidden_layer_1) | rail=recent_only(recent=4,anchors=0) | selected=[13, 12, 11, 10, 9, 8, 7, 6] | selected/K=2.000 | recall=0.600 precision=0.375 hit=True | selector=0.005982s total=0.499320s
+  reasons=6:semantic:0.587, 7:semantic:0.592, 8:semantic:0.599, 9:semantic:0.617, 10:recent:0.627, 11:recent:0.638, 12:recent:0.675, 13:recent:0.781
+distilgpt2 | adversarial_semantic | hidden_layer_index (hidden_layer_1) | rail=recent_only(recent=4,anchors=0) | selected=[5, 4, 3, 2, 1, 0] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.006188s total=0.231132s
+  reasons=0:semantic:0.642, 1:semantic:0.689, 2:recent:0.698, 3:recent:0.718, 4:recent:0.739, 5:recent:0.800
+distilgpt2 | long_reference | middle_hidden (middle_hidden_3) | rail=recent_only(recent=4,anchors=0) | selected=[12, 11, 10, 9, 8, 7, 3, 0] | selected/K=2.000 | recall=1.000 precision=0.250 hit=True | selector=0.004877s total=0.481060s
+  reasons=0:semantic:0.591, 3:semantic:0.593, 7:semantic:0.600, 8:semantic:0.615, 9:recent:0.622, 10:recent:0.648, 11:recent:0.671, 12:recent:0.810
+distilgpt2 | needle | middle_hidden (middle_hidden_3) | rail=recent_only(recent=4,anchors=0) | selected=[5, 4, 3, 2, 1, 0] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.006544s total=0.228248s
+  reasons=0:semantic:0.605, 1:semantic:0.627, 2:recent:0.645, 3:recent:0.621, 4:recent:0.647, 5:recent:0.794
+distilgpt2 | repeated_reference | middle_hidden (middle_hidden_3) | rail=recent_only(recent=4,anchors=0) | selected=[8, 7, 6, 5, 4, 3, 0, 1] | selected/K=2.000 | recall=1.000 precision=0.125 hit=True | selector=0.006583s total=0.306864s
+  reasons=0:semantic:0.596, 1:semantic:0.580, 3:semantic:0.606, 4:semantic:0.627, 5:recent:0.590, 6:recent:0.624, 7:recent:0.703, 8:recent:0.900
+distilgpt2 | code_context | middle_hidden (middle_hidden_3) | rail=recent_only(recent=4,anchors=0) | selected=[13, 12, 11, 10, 9, 8, 6, 0] | selected/K=2.000 | recall=0.400 precision=0.250 hit=True | selector=0.005620s total=0.476655s
+  reasons=0:semantic:0.574, 6:semantic:0.575, 8:semantic:0.575, 9:semantic:0.598, 10:recent:0.591, 11:recent:0.587, 12:recent:0.617, 13:recent:0.769
+distilgpt2 | adversarial_semantic | middle_hidden (middle_hidden_3) | rail=recent_only(recent=4,anchors=0) | selected=[5, 4, 3, 2, 1, 0] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005823s total=0.232362s
+  reasons=0:semantic:0.598, 1:semantic:0.637, 2:recent:0.634, 3:recent:0.648, 4:recent:0.674, 5:recent:0.741
+distilgpt2 | long_reference | avg_last4_hidden (avg_last4_hidden) | rail=recent_only(recent=4,anchors=0) | selected=[12, 11, 10, 9, 8, 1, 3, 7] | selected/K=2.000 | recall=1.000 precision=0.250 hit=True | selector=0.005925s total=0.436024s
+  reasons=1:semantic:0.732, 3:semantic:0.732, 7:semantic:0.731, 8:semantic:0.737, 9:recent:0.732, 10:recent:0.747, 11:recent:0.781, 12:recent:0.871
+distilgpt2 | needle | avg_last4_hidden (avg_last4_hidden) | rail=recent_only(recent=4,anchors=0) | selected=[5, 4, 3, 2, 1, 0] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.004614s total=0.216937s
+  reasons=0:semantic:0.670, 1:semantic:0.722, 2:recent:0.720, 3:recent:0.708, 4:recent:0.725, 5:recent:0.864
+distilgpt2 | repeated_reference | avg_last4_hidden (avg_last4_hidden) | rail=recent_only(recent=4,anchors=0) | selected=[8, 7, 6, 5, 1, 4, 3, 2] | selected/K=2.000 | recall=0.000 precision=0.000 hit=False | selector=0.004923s total=0.309368s
+  reasons=1:semantic:0.725, 2:semantic:0.701, 3:semantic:0.717, 4:semantic:0.721, 5:recent:0.695, 6:recent:0.727, 7:recent:0.797, 8:recent:0.900
+distilgpt2 | code_context | avg_last4_hidden (avg_last4_hidden) | rail=recent_only(recent=4,anchors=0) | selected=[13, 12, 11, 10, 4, 1, 2, 8] | selected/K=2.000 | recall=0.400 precision=0.250 hit=True | selector=0.006484s total=0.593991s
+  reasons=1:semantic:0.712, 2:semantic:0.709, 4:semantic:0.720, 8:semantic:0.692, 10:recent:0.682, 11:recent:0.676, 12:recent:0.710, 13:recent:0.829
+distilgpt2 | adversarial_semantic | avg_last4_hidden (avg_last4_hidden) | rail=recent_only(recent=4,anchors=0) | selected=[5, 4, 3, 2, 1, 0] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.007801s total=0.363637s
+  reasons=0:semantic:0.690, 1:semantic:0.742, 2:recent:0.750, 3:recent:0.752, 4:recent:0.777, 5:recent:0.832
+distilgpt2 | long_reference | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=recent_only(recent=4,anchors=0) | selected=[12, 11, 10, 9, 8, 7, 6, 5] | selected/K=2.000 | recall=1.000 precision=0.250 hit=True | selector=0.004212s total=0.608405s
+  reasons=5:semantic:0.615, 6:semantic:0.616, 7:semantic:0.637, 8:semantic:0.663, 9:recent:0.650, 10:recent:0.679, 11:recent:0.703, 12:recent:0.823
+distilgpt2 | needle | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=recent_only(recent=4,anchors=0) | selected=[5, 4, 3, 2, 1, 0] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.006127s total=0.237835s
+  reasons=0:semantic:0.601, 1:semantic:0.640, 2:recent:0.666, 3:recent:0.631, 4:recent:0.668, 5:recent:0.806
+distilgpt2 | repeated_reference | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=recent_only(recent=4,anchors=0) | selected=[8, 7, 6, 5, 4, 3, 2, 1] | selected/K=2.000 | recall=0.000 precision=0.000 hit=False | selector=0.005436s total=0.445926s
+  reasons=1:semantic:0.614, 2:semantic:0.619, 3:semantic:0.645, 4:semantic:0.653, 5:recent:0.634, 6:recent:0.655, 7:recent:0.712, 8:recent:0.900
+distilgpt2 | code_context | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=recent_only(recent=4,anchors=0) | selected=[13, 12, 11, 10, 9, 1, 7, 5] | selected/K=2.000 | recall=0.600 precision=0.375 hit=True | selector=0.004366s total=1.069717s
+  reasons=1:semantic:0.584, 5:semantic:0.580, 7:semantic:0.581, 9:semantic:0.604, 10:recent:0.586, 11:recent:0.592, 12:recent:0.638, 13:recent:0.771
+distilgpt2 | adversarial_semantic | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=recent_only(recent=4,anchors=0) | selected=[5, 4, 3, 2, 1, 0] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005992s total=0.221184s
+  reasons=0:semantic:0.604, 1:semantic:0.673, 2:recent:0.677, 3:recent:0.689, 4:recent:0.706, 5:recent:0.780
+distilgpt2 | long_reference | final_hidden (final_hidden) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 12, 11, 9, 4] | selected/K=1.500 | recall=0.000 precision=0.000 hit=False | selector=0.005584s total=0.493534s
+  reasons=0:anchor:0.763, 1:anchor:0.782, 4:semantic:0.789, 9:semantic:0.797, 11:semantic:0.834, 12:semantic:0.891
+distilgpt2 | needle | final_hidden (final_hidden) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 5, 4, 2, 3] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005258s total=0.308795s
+  reasons=0:anchor:0.795, 1:anchor:0.795, 2:semantic:0.795, 3:semantic:0.794, 4:semantic:0.802, 5:semantic:0.895
+distilgpt2 | repeated_reference | final_hidden (final_hidden) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 8, 7, 6, 5] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.004441s total=0.301449s
+  reasons=0:anchor:0.788, 1:anchor:0.758, 5:semantic:0.796, 6:semantic:0.802, 7:semantic:0.830, 8:semantic:0.900
+distilgpt2 | code_context | final_hidden (final_hidden) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 13, 4, 12, 8] | selected/K=1.500 | recall=0.200 precision=0.167 hit=True | selector=0.005857s total=0.478215s
+  reasons=0:anchor:0.781, 1:anchor:0.778, 4:semantic:0.781, 8:semantic:0.776, 12:semantic:0.777, 13:semantic:0.894
+distilgpt2 | adversarial_semantic | final_hidden (final_hidden) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 5, 4, 3, 2] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.004712s total=0.223211s
+  reasons=0:anchor:0.769, 1:anchor:0.782, 2:semantic:0.797, 3:semantic:0.797, 4:semantic:0.823, 5:semantic:0.894
+distilgpt2 | long_reference | hidden_layer_index (hidden_layer_1) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 12, 11, 10, 9] | selected/K=1.500 | recall=0.000 precision=0.000 hit=False | selector=0.007755s total=0.426470s
+  reasons=0:anchor:0.565, 1:anchor:0.593, 9:semantic:0.690, 10:semantic:0.712, 11:semantic:0.753, 12:semantic:0.824
+distilgpt2 | needle | hidden_layer_index (hidden_layer_1) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 5, 2, 4, 3] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005301s total=0.232379s
+  reasons=0:anchor:0.610, 1:anchor:0.670, 2:semantic:0.694, 3:semantic:0.680, 4:semantic:0.689, 5:semantic:0.821
+distilgpt2 | repeated_reference | hidden_layer_index (hidden_layer_1) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 8, 7, 6, 4] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.007252s total=0.309190s
+  reasons=0:anchor:0.583, 1:anchor:0.635, 4:semantic:0.681, 6:semantic:0.694, 7:semantic:0.743, 8:semantic:0.900
+distilgpt2 | code_context | hidden_layer_index (hidden_layer_1) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 13, 12, 11, 10] | selected/K=1.500 | recall=0.200 precision=0.167 hit=True | selector=0.005899s total=0.473958s
+  reasons=0:anchor:0.511, 1:anchor:0.558, 10:semantic:0.627, 11:semantic:0.638, 12:semantic:0.675, 13:semantic:0.781
+distilgpt2 | adversarial_semantic | hidden_layer_index (hidden_layer_1) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 5, 4, 3, 2] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.004161s total=0.221582s
+  reasons=0:anchor:0.642, 1:anchor:0.689, 2:semantic:0.698, 3:semantic:0.718, 4:semantic:0.739, 5:semantic:0.800
+distilgpt2 | long_reference | middle_hidden (middle_hidden_3) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 12, 11, 10, 9] | selected/K=1.500 | recall=0.000 precision=0.000 hit=False | selector=0.007282s total=0.430809s
+  reasons=0:anchor:0.591, 1:anchor:0.578, 9:semantic:0.622, 10:semantic:0.648, 11:semantic:0.671, 12:semantic:0.810
+distilgpt2 | needle | middle_hidden (middle_hidden_3) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 5, 4, 2, 3] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.006611s total=0.238712s
+  reasons=0:anchor:0.605, 1:anchor:0.627, 2:semantic:0.645, 3:semantic:0.621, 4:semantic:0.647, 5:semantic:0.794
+distilgpt2 | repeated_reference | middle_hidden (middle_hidden_3) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 8, 7, 4, 6] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.007183s total=0.372240s
+  reasons=0:anchor:0.596, 1:anchor:0.580, 4:semantic:0.627, 6:semantic:0.624, 7:semantic:0.703, 8:semantic:0.900
+distilgpt2 | code_context | middle_hidden (middle_hidden_3) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 13, 12, 9, 10] | selected/K=1.500 | recall=0.000 precision=0.000 hit=False | selector=0.007321s total=0.514393s
+  reasons=0:anchor:0.574, 1:anchor:0.558, 9:semantic:0.598, 10:semantic:0.591, 12:semantic:0.617, 13:semantic:0.769
+distilgpt2 | adversarial_semantic | middle_hidden (middle_hidden_3) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 5, 4, 3, 2] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.006599s total=0.235821s
+  reasons=0:anchor:0.598, 1:anchor:0.637, 2:semantic:0.634, 3:semantic:0.648, 4:semantic:0.674, 5:semantic:0.741
+distilgpt2 | long_reference | avg_last4_hidden (avg_last4_hidden) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 12, 11, 10, 8] | selected/K=1.500 | recall=0.500 precision=0.167 hit=True | selector=0.005601s total=0.467940s
+  reasons=0:anchor:0.688, 1:anchor:0.732, 8:semantic:0.737, 10:semantic:0.747, 11:semantic:0.781, 12:semantic:0.871
+distilgpt2 | needle | avg_last4_hidden (avg_last4_hidden) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 5, 4, 2, 3] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005976s total=0.246002s
+  reasons=0:anchor:0.670, 1:anchor:0.722, 2:semantic:0.720, 3:semantic:0.708, 4:semantic:0.725, 5:semantic:0.864
+distilgpt2 | repeated_reference | avg_last4_hidden (avg_last4_hidden) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 8, 7, 6, 4] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.007679s total=0.321099s
+  reasons=0:anchor:0.688, 1:anchor:0.725, 4:semantic:0.721, 6:semantic:0.727, 7:semantic:0.797, 8:semantic:0.900
+distilgpt2 | code_context | avg_last4_hidden (avg_last4_hidden) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 13, 4, 12, 2] | selected/K=1.500 | recall=0.200 precision=0.167 hit=True | selector=0.005000s total=0.497038s
+  reasons=0:anchor:0.646, 1:anchor:0.712, 2:semantic:0.709, 4:semantic:0.720, 12:semantic:0.710, 13:semantic:0.829
+distilgpt2 | adversarial_semantic | avg_last4_hidden (avg_last4_hidden) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 5, 4, 3, 2] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005607s total=0.230443s
+  reasons=0:anchor:0.690, 1:anchor:0.742, 2:semantic:0.750, 3:semantic:0.752, 4:semantic:0.777, 5:semantic:0.832
+distilgpt2 | long_reference | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 12, 11, 10, 8] | selected/K=1.500 | recall=0.500 precision=0.167 hit=True | selector=0.004687s total=0.444316s
+  reasons=0:anchor:0.608, 1:anchor:0.606, 8:semantic:0.663, 10:semantic:0.679, 11:semantic:0.703, 12:semantic:0.823
+distilgpt2 | needle | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 5, 4, 2, 3] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.004980s total=0.235564s
+  reasons=0:anchor:0.601, 1:anchor:0.640, 2:semantic:0.666, 3:semantic:0.631, 4:semantic:0.668, 5:semantic:0.806
+distilgpt2 | repeated_reference | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 8, 7, 6, 4] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005246s total=0.319399s
+  reasons=0:anchor:0.600, 1:anchor:0.614, 4:semantic:0.653, 6:semantic:0.655, 7:semantic:0.712, 8:semantic:0.900
+distilgpt2 | code_context | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 13, 12, 9, 11] | selected/K=1.500 | recall=0.200 precision=0.167 hit=True | selector=0.008366s total=0.497786s
+  reasons=0:anchor:0.573, 1:anchor:0.584, 9:semantic:0.604, 11:semantic:0.592, 12:semantic:0.638, 13:semantic:0.771
+distilgpt2 | adversarial_semantic | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 5, 4, 3, 2] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.006141s total=0.230044s
+  reasons=0:anchor:0.604, 1:anchor:0.673, 2:semantic:0.677, 3:semantic:0.689, 4:semantic:0.706, 5:semantic:0.780
+distilgpt2 | long_reference | final_hidden (final_hidden) | rail=reduced(recent=1,anchors=0) | selected=[12, 11, 9, 4, 10] | selected/K=1.250 | recall=0.000 precision=0.000 hit=False | selector=0.005572s total=0.448807s
+  reasons=4:semantic:0.789, 9:semantic:0.797, 10:semantic:0.787, 11:semantic:0.834, 12:recent:0.891
+distilgpt2 | needle | final_hidden (final_hidden) | rail=reduced(recent=1,anchors=0) | selected=[5, 4, 0, 2, 1] | selected/K=1.250 | recall=1.000 precision=0.200 hit=True | selector=0.005813s total=0.238682s
+  reasons=0:semantic:0.795, 1:semantic:0.795, 2:semantic:0.795, 4:semantic:0.802, 5:recent:0.895
+distilgpt2 | repeated_reference | final_hidden (final_hidden) | rail=reduced(recent=1,anchors=0) | selected=[8, 7, 6, 5, 0] | selected/K=1.250 | recall=1.000 precision=0.200 hit=True | selector=0.007313s total=0.311629s
+  reasons=0:semantic:0.788, 5:semantic:0.796, 6:semantic:0.802, 7:semantic:0.830, 8:recent:0.900
+distilgpt2 | code_context | final_hidden (final_hidden) | rail=reduced(recent=1,anchors=0) | selected=[13, 4, 0, 1, 12] | selected/K=1.250 | recall=0.200 precision=0.200 hit=True | selector=0.008028s total=0.500020s
+  reasons=0:semantic:0.781, 1:semantic:0.778, 4:semantic:0.781, 12:semantic:0.777, 13:recent:0.894
+distilgpt2 | adversarial_semantic | final_hidden (final_hidden) | rail=reduced(recent=1,anchors=0) | selected=[5, 4, 3, 2, 1] | selected/K=1.250 | recall=1.000 precision=0.200 hit=True | selector=0.004193s total=0.232557s
+  reasons=1:semantic:0.782, 2:semantic:0.797, 3:semantic:0.797, 4:semantic:0.823, 5:recent:0.894
+distilgpt2 | long_reference | hidden_layer_index (hidden_layer_1) | rail=reduced(recent=1,anchors=0) | selected=[12, 11, 10, 9, 8] | selected/K=1.250 | recall=0.500 precision=0.200 hit=True | selector=0.006621s total=0.442229s
+  reasons=8:semantic:0.673, 9:semantic:0.690, 10:semantic:0.712, 11:semantic:0.753, 12:recent:0.824
+distilgpt2 | needle | hidden_layer_index (hidden_layer_1) | rail=reduced(recent=1,anchors=0) | selected=[5, 2, 4, 3, 1] | selected/K=1.250 | recall=1.000 precision=0.200 hit=True | selector=0.007015s total=0.228107s
+  reasons=1:semantic:0.670, 2:semantic:0.694, 3:semantic:0.680, 4:semantic:0.689, 5:recent:0.821
+distilgpt2 | repeated_reference | hidden_layer_index (hidden_layer_1) | rail=reduced(recent=1,anchors=0) | selected=[8, 7, 6, 4, 3] | selected/K=1.250 | recall=0.000 precision=0.000 hit=False | selector=0.005580s total=0.310187s
+  reasons=3:semantic:0.678, 4:semantic:0.681, 6:semantic:0.694, 7:semantic:0.743, 8:recent:0.900
+distilgpt2 | code_context | hidden_layer_index (hidden_layer_1) | rail=reduced(recent=1,anchors=0) | selected=[13, 12, 11, 10, 9] | selected/K=1.250 | recall=0.200 precision=0.200 hit=True | selector=0.006298s total=0.503129s
+  reasons=9:semantic:0.617, 10:semantic:0.627, 11:semantic:0.638, 12:semantic:0.675, 13:recent:0.781
+distilgpt2 | adversarial_semantic | hidden_layer_index (hidden_layer_1) | rail=reduced(recent=1,anchors=0) | selected=[5, 4, 3, 2, 1] | selected/K=1.250 | recall=1.000 precision=0.200 hit=True | selector=0.006299s total=0.228658s
+  reasons=1:semantic:0.689, 2:semantic:0.698, 3:semantic:0.718, 4:semantic:0.739, 5:recent:0.800
+distilgpt2 | long_reference | middle_hidden (middle_hidden_3) | rail=reduced(recent=1,anchors=0) | selected=[12, 11, 10, 9, 8] | selected/K=1.250 | recall=0.500 precision=0.200 hit=True | selector=0.006692s total=0.454986s
+  reasons=8:semantic:0.615, 9:semantic:0.622, 10:semantic:0.648, 11:semantic:0.671, 12:recent:0.810
+distilgpt2 | needle | middle_hidden (middle_hidden_3) | rail=reduced(recent=1,anchors=0) | selected=[5, 4, 2, 1, 3] | selected/K=1.250 | recall=1.000 precision=0.200 hit=True | selector=0.005570s total=0.231666s
+  reasons=1:semantic:0.627, 2:semantic:0.645, 3:semantic:0.621, 4:semantic:0.647, 5:recent:0.794
+distilgpt2 | repeated_reference | middle_hidden (middle_hidden_3) | rail=reduced(recent=1,anchors=0) | selected=[8, 7, 4, 6, 3] | selected/K=1.250 | recall=0.000 precision=0.000 hit=False | selector=0.009190s total=0.328556s
+  reasons=3:semantic:0.606, 4:semantic:0.627, 6:semantic:0.624, 7:semantic:0.703, 8:recent:0.900
+distilgpt2 | code_context | middle_hidden (middle_hidden_3) | rail=reduced(recent=1,anchors=0) | selected=[13, 12, 9, 10, 11] | selected/K=1.250 | recall=0.200 precision=0.200 hit=True | selector=0.005168s total=0.575344s
+  reasons=9:semantic:0.598, 10:semantic:0.591, 11:semantic:0.587, 12:semantic:0.617, 13:recent:0.769
+distilgpt2 | adversarial_semantic | middle_hidden (middle_hidden_3) | rail=reduced(recent=1,anchors=0) | selected=[5, 4, 3, 1, 2] | selected/K=1.250 | recall=1.000 precision=0.200 hit=True | selector=0.006859s total=0.244301s
+  reasons=1:semantic:0.637, 2:semantic:0.634, 3:semantic:0.648, 4:semantic:0.674, 5:recent:0.741
+distilgpt2 | long_reference | avg_last4_hidden (avg_last4_hidden) | rail=reduced(recent=1,anchors=0) | selected=[12, 11, 10, 8, 1] | selected/K=1.250 | recall=0.500 precision=0.200 hit=True | selector=0.008359s total=0.466801s
+  reasons=1:semantic:0.732, 8:semantic:0.737, 10:semantic:0.747, 11:semantic:0.781, 12:recent:0.871
+distilgpt2 | needle | avg_last4_hidden (avg_last4_hidden) | rail=reduced(recent=1,anchors=0) | selected=[5, 4, 1, 2, 3] | selected/K=1.250 | recall=1.000 precision=0.200 hit=True | selector=0.006314s total=0.247572s
+  reasons=1:semantic:0.722, 2:semantic:0.720, 3:semantic:0.708, 4:semantic:0.725, 5:recent:0.864
+distilgpt2 | repeated_reference | avg_last4_hidden (avg_last4_hidden) | rail=reduced(recent=1,anchors=0) | selected=[8, 7, 6, 1, 4] | selected/K=1.250 | recall=0.000 precision=0.000 hit=False | selector=0.004480s total=0.326700s
+  reasons=1:semantic:0.725, 4:semantic:0.721, 6:semantic:0.727, 7:semantic:0.797, 8:recent:0.900
+distilgpt2 | code_context | avg_last4_hidden (avg_last4_hidden) | rail=reduced(recent=1,anchors=0) | selected=[13, 4, 1, 12, 2] | selected/K=1.250 | recall=0.200 precision=0.200 hit=True | selector=0.004693s total=0.512145s
+  reasons=1:semantic:0.712, 2:semantic:0.709, 4:semantic:0.720, 12:semantic:0.710, 13:recent:0.829
+distilgpt2 | adversarial_semantic | avg_last4_hidden (avg_last4_hidden) | rail=reduced(recent=1,anchors=0) | selected=[5, 4, 3, 2, 1] | selected/K=1.250 | recall=1.000 precision=0.200 hit=True | selector=0.007609s total=0.246339s
+  reasons=1:semantic:0.742, 2:semantic:0.750, 3:semantic:0.752, 4:semantic:0.777, 5:recent:0.832
+distilgpt2 | long_reference | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=reduced(recent=1,anchors=0) | selected=[12, 11, 10, 8, 9] | selected/K=1.250 | recall=0.500 precision=0.200 hit=True | selector=0.004783s total=0.449329s
+  reasons=8:semantic:0.663, 9:semantic:0.650, 10:semantic:0.679, 11:semantic:0.703, 12:recent:0.823
+distilgpt2 | needle | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=reduced(recent=1,anchors=0) | selected=[5, 4, 2, 1, 3] | selected/K=1.250 | recall=1.000 precision=0.200 hit=True | selector=0.005020s total=0.241296s
+  reasons=1:semantic:0.640, 2:semantic:0.666, 3:semantic:0.631, 4:semantic:0.668, 5:recent:0.806
+distilgpt2 | repeated_reference | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=reduced(recent=1,anchors=0) | selected=[8, 7, 6, 4, 3] | selected/K=1.250 | recall=0.000 precision=0.000 hit=False | selector=0.004892s total=0.314840s
+  reasons=3:semantic:0.645, 4:semantic:0.653, 6:semantic:0.655, 7:semantic:0.712, 8:recent:0.900
+distilgpt2 | code_context | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=reduced(recent=1,anchors=0) | selected=[13, 12, 9, 11, 10] | selected/K=1.250 | recall=0.200 precision=0.200 hit=True | selector=0.005645s total=0.502099s
+  reasons=9:semantic:0.604, 10:semantic:0.586, 11:semantic:0.592, 12:semantic:0.638, 13:recent:0.771
+distilgpt2 | adversarial_semantic | avg_mid4_hidden (avg_mid_hidden_1_4) | rail=reduced(recent=1,anchors=0) | selected=[5, 4, 3, 2, 1] | selected/K=1.250 | recall=1.000 precision=0.200 hit=True | selector=0.006769s total=0.230210s
+  reasons=1:semantic:0.673, 2:semantic:0.677, 3:semantic:0.689, 4:semantic:0.706, 5:recent:0.780
+gpt2 | long_reference | final_hidden (final_hidden) | rail=default(recent=4,anchors=2) | selected=[12, 11, 10, 9, 0, 1, 4, 8, 5, 7] | selected/K=2.500 | recall=1.000 precision=0.200 hit=True | selector=0.004575s total=0.695103s
+  reasons=0:anchor:0.785, 1:anchor:0.789, 4:semantic:0.789, 5:semantic:0.786, 7:semantic:0.786, 8:semantic:0.787, 9:recent:0.790, 10:recent:0.794, 11:recent:0.832, 12:recent:0.896
+gpt2 | needle | final_hidden (final_hidden) | rail=default(recent=4,anchors=2) | selected=[5, 4, 3, 2, 0, 1] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005576s total=0.342426s
+  reasons=0:anchor:0.791, 1:anchor:0.786, 2:recent:0.790, 3:recent:0.786, 4:recent:0.802, 5:recent:0.899
+gpt2 | repeated_reference | final_hidden (final_hidden) | rail=default(recent=4,anchors=2) | selected=[8, 7, 6, 5, 0, 1, 3, 2, 4] | selected/K=2.250 | recall=1.000 precision=0.111 hit=True | selector=0.005098s total=0.471530s
+  reasons=0:anchor:0.774, 1:anchor:0.774, 2:semantic:0.774, 3:semantic:0.778, 4:semantic:0.773, 5:recent:0.794, 6:recent:0.781, 7:recent:0.835, 8:recent:0.900
+gpt2 | code_context | final_hidden (final_hidden) | rail=default(recent=4,anchors=2) | selected=[13, 12, 11, 10, 0, 1, 3, 8, 6, 2] | selected/K=2.500 | recall=0.400 precision=0.200 hit=True | selector=0.004385s total=0.718911s
+  reasons=0:anchor:0.789, 1:anchor:0.788, 2:semantic:0.784, 3:semantic:0.786, 6:semantic:0.785, 8:semantic:0.786, 10:recent:0.781, 11:recent:0.618, 12:recent:0.792, 13:recent:0.899
+gpt2 | adversarial_semantic | final_hidden (final_hidden) | rail=default(recent=4,anchors=2) | selected=[5, 4, 3, 2, 0, 1] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.004992s total=0.332331s
+  reasons=0:anchor:0.791, 1:anchor:0.794, 2:recent:0.794, 3:recent:0.800, 4:recent:0.812, 5:recent:0.898
+gpt2 | long_reference | hidden_layer_index (hidden_layer_1) | rail=default(recent=4,anchors=2) | selected=[12, 11, 10, 9, 0, 1, 8, 7, 6, 5] | selected/K=2.500 | recall=1.000 precision=0.200 hit=True | selector=0.004784s total=0.680746s
+  reasons=0:anchor:0.615, 1:anchor:0.600, 5:semantic:0.647, 6:semantic:0.663, 7:semantic:0.673, 8:semantic:0.708, 9:recent:0.711, 10:recent:0.739, 11:recent:0.767, 12:recent:0.826
+gpt2 | needle | hidden_layer_index (hidden_layer_1) | rail=default(recent=4,anchors=2) | selected=[5, 4, 3, 2, 0, 1] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.006449s total=0.350006s
+  reasons=0:anchor:0.655, 1:anchor:0.676, 2:recent:0.710, 3:recent:0.708, 4:recent:0.721, 5:recent:0.831
+gpt2 | repeated_reference | hidden_layer_index (hidden_layer_1) | rail=default(recent=4,anchors=2) | selected=[8, 7, 6, 5, 0, 1, 4, 3, 2] | selected/K=2.250 | recall=1.000 precision=0.111 hit=True | selector=0.005211s total=0.463239s
+  reasons=0:anchor:0.628, 1:anchor:0.660, 2:semantic:0.663, 3:semantic:0.693, 4:semantic:0.696, 5:recent:0.698, 6:recent:0.721, 7:recent:0.763, 8:recent:0.900
+gpt2 | code_context | hidden_layer_index (hidden_layer_1) | rail=default(recent=4,anchors=2) | selected=[13, 12, 11, 10, 0, 1, 9, 8, 7, 5] | selected/K=2.500 | recall=0.600 precision=0.300 hit=True | selector=0.005956s total=0.721829s
+  reasons=0:anchor:0.526, 1:anchor:0.563, 5:semantic:0.608, 7:semantic:0.626, 8:semantic:0.633, 9:semantic:0.664, 10:recent:0.663, 11:recent:0.672, 12:recent:0.716, 13:recent:0.813
+gpt2 | adversarial_semantic | hidden_layer_index (hidden_layer_1) | rail=default(recent=4,anchors=2) | selected=[5, 4, 3, 2, 0, 1] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005255s total=0.320896s
+  reasons=0:anchor:0.671, 1:anchor:0.705, 2:recent:0.717, 3:recent:0.736, 4:recent:0.758, 5:recent:0.817
+gpt2 | long_reference | middle_hidden (middle_hidden_6) | rail=default(recent=4,anchors=2) | selected=[12, 11, 10, 9, 0, 1, 8, 7, 5, 6] | selected/K=2.500 | recall=1.000 precision=0.200 hit=True | selector=0.006989s total=0.651087s
+  reasons=0:anchor:0.612, 1:anchor:0.581, 5:semantic:0.629, 6:semantic:0.619, 7:semantic:0.642, 8:semantic:0.661, 9:recent:0.661, 10:recent:0.695, 11:recent:0.714, 12:recent:0.823
+gpt2 | needle | middle_hidden (middle_hidden_6) | rail=default(recent=4,anchors=2) | selected=[5, 4, 3, 2, 0, 1] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.004787s total=0.346180s
+  reasons=0:anchor:0.585, 1:anchor:0.635, 2:recent:0.658, 3:recent:0.633, 4:recent:0.661, 5:recent:0.801
+gpt2 | repeated_reference | middle_hidden (middle_hidden_6) | rail=default(recent=4,anchors=2) | selected=[8, 7, 6, 5, 0, 1, 4, 3, 2] | selected/K=2.250 | recall=1.000 precision=0.111 hit=True | selector=0.005668s total=0.437178s
+  reasons=0:anchor:0.600, 1:anchor:0.599, 2:semantic:0.603, 3:semantic:0.635, 4:semantic:0.663, 5:recent:0.616, 6:recent:0.668, 7:recent:0.714, 8:recent:0.900
+gpt2 | code_context | middle_hidden (middle_hidden_6) | rail=default(recent=4,anchors=2) | selected=[13, 12, 11, 10, 0, 1, 9, 8, 5, 6] | selected/K=2.500 | recall=0.600 precision=0.300 hit=True | selector=0.004645s total=0.695954s
+  reasons=0:anchor:0.581, 1:anchor:0.556, 5:semantic:0.604, 6:semantic:0.583, 8:semantic:0.613, 9:semantic:0.629, 10:recent:0.624, 11:recent:0.603, 12:recent:0.661, 13:recent:0.774
+gpt2 | adversarial_semantic | middle_hidden (middle_hidden_6) | rail=default(recent=4,anchors=2) | selected=[5, 4, 3, 2, 0, 1] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.004333s total=0.319973s
+  reasons=0:anchor:0.608, 1:anchor:0.636, 2:recent:0.631, 3:recent:0.678, 4:recent:0.696, 5:recent:0.762
+gpt2 | long_reference | avg_last4_hidden (avg_last4_hidden) | rail=default(recent=4,anchors=2) | selected=[12, 11, 10, 9, 0, 1, 8, 3, 7, 2] | selected/K=2.500 | recall=1.000 precision=0.200 hit=True | selector=0.010963s total=0.623773s
+  reasons=0:anchor:0.674, 1:anchor:0.757, 2:semantic:0.745, 3:semantic:0.754, 7:semantic:0.749, 8:semantic:0.757, 9:recent:0.743, 10:recent:0.762, 11:recent:0.802, 12:recent:0.872
+gpt2 | needle | avg_last4_hidden (avg_last4_hidden) | rail=default(recent=4,anchors=2) | selected=[5, 4, 3, 2, 0, 1] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.004378s total=0.316623s
+  reasons=0:anchor:0.661, 1:anchor:0.742, 2:recent:0.740, 3:recent:0.737, 4:recent:0.730, 5:recent:0.877
+gpt2 | repeated_reference | avg_last4_hidden (avg_last4_hidden) | rail=default(recent=4,anchors=2) | selected=[8, 7, 6, 5, 0, 1, 4, 3, 2] | selected/K=2.250 | recall=1.000 precision=0.111 hit=True | selector=0.005697s total=0.477234s
+  reasons=0:anchor:0.658, 1:anchor:0.718, 2:semantic:0.719, 3:semantic:0.725, 4:semantic:0.744, 5:recent:0.661, 6:recent:0.727, 7:recent:0.819, 8:recent:0.900
+gpt2 | code_context | avg_last4_hidden (avg_last4_hidden) | rail=default(recent=4,anchors=2) | selected=[13, 12, 11, 10, 0, 1, 4, 2, 3, 8] | selected/K=2.500 | recall=0.400 precision=0.200 hit=True | selector=0.005420s total=0.673762s
+  reasons=0:anchor:0.625, 1:anchor:0.734, 2:semantic:0.735, 3:semantic:0.728, 4:semantic:0.744, 8:semantic:0.724, 10:recent:0.725, 11:recent:0.681, 12:recent:0.758, 13:recent:0.847
+gpt2 | adversarial_semantic | avg_last4_hidden (avg_last4_hidden) | rail=default(recent=4,anchors=2) | selected=[5, 4, 3, 2, 0, 1] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.007638s total=0.315388s
+  reasons=0:anchor:0.664, 1:anchor:0.748, 2:recent:0.752, 3:recent:0.752, 4:recent:0.790, 5:recent:0.831
+gpt2 | long_reference | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=default(recent=4,anchors=2) | selected=[12, 11, 10, 9, 0, 1, 8, 7, 5, 6] | selected/K=2.500 | recall=1.000 precision=0.200 hit=True | selector=0.005975s total=0.620431s
+  reasons=0:anchor:0.603, 1:anchor:0.590, 5:semantic:0.644, 6:semantic:0.635, 7:semantic:0.664, 8:semantic:0.686, 9:recent:0.680, 10:recent:0.698, 11:recent:0.730, 12:recent:0.840
+gpt2 | needle | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=default(recent=4,anchors=2) | selected=[5, 4, 3, 2, 0, 1] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.004571s total=0.325026s
+  reasons=0:anchor:0.571, 1:anchor:0.632, 2:recent:0.661, 3:recent:0.636, 4:recent:0.670, 5:recent:0.800
+gpt2 | repeated_reference | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=default(recent=4,anchors=2) | selected=[8, 7, 6, 5, 0, 1, 4, 3, 2] | selected/K=2.250 | recall=1.000 precision=0.111 hit=True | selector=0.005971s total=0.427173s
+  reasons=0:anchor:0.583, 1:anchor:0.592, 2:semantic:0.602, 3:semantic:0.628, 4:semantic:0.655, 5:recent:0.621, 6:recent:0.670, 7:recent:0.716, 8:recent:0.900
+gpt2 | code_context | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=default(recent=4,anchors=2) | selected=[13, 12, 11, 10, 0, 1, 9, 5, 8, 6] | selected/K=2.500 | recall=0.600 precision=0.300 hit=True | selector=0.005938s total=0.705615s
+  reasons=0:anchor:0.575, 1:anchor:0.555, 5:semantic:0.609, 6:semantic:0.604, 8:semantic:0.605, 9:semantic:0.630, 10:recent:0.632, 11:recent:0.604, 12:recent:0.672, 13:recent:0.779
+gpt2 | adversarial_semantic | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=default(recent=4,anchors=2) | selected=[5, 4, 3, 2, 0, 1] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005775s total=0.298740s
+  reasons=0:anchor:0.599, 1:anchor:0.656, 2:recent:0.646, 3:recent:0.690, 4:recent:0.706, 5:recent:0.770
+gpt2 | long_reference | final_hidden (final_hidden) | rail=no_rails(recent=0,anchors=0) | selected=[12, 11, 10, 9] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.006694s total=0.749921s
+  reasons=9:semantic:0.790, 10:semantic:0.794, 11:semantic:0.832, 12:semantic:0.896
+gpt2 | needle | final_hidden (final_hidden) | rail=no_rails(recent=0,anchors=0) | selected=[5, 4, 0, 2] | selected/K=1.000 | recall=1.000 precision=0.250 hit=True | selector=0.009423s total=0.598732s
+  reasons=0:semantic:0.791, 2:semantic:0.790, 4:semantic:0.802, 5:semantic:0.899
+gpt2 | repeated_reference | final_hidden (final_hidden) | rail=no_rails(recent=0,anchors=0) | selected=[8, 7, 5, 6] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.005569s total=0.660643s
+  reasons=5:semantic:0.794, 6:semantic:0.781, 7:semantic:0.835, 8:semantic:0.900
+gpt2 | code_context | final_hidden (final_hidden) | rail=no_rails(recent=0,anchors=0) | selected=[13, 12, 0, 1] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.004835s total=0.701434s
+  reasons=0:semantic:0.789, 1:semantic:0.788, 12:semantic:0.792, 13:semantic:0.899
+gpt2 | adversarial_semantic | final_hidden (final_hidden) | rail=no_rails(recent=0,anchors=0) | selected=[5, 4, 3, 1] | selected/K=1.000 | recall=1.000 precision=0.250 hit=True | selector=0.006243s total=0.301942s
+  reasons=1:semantic:0.794, 3:semantic:0.800, 4:semantic:0.812, 5:semantic:0.898
+gpt2 | long_reference | hidden_layer_index (hidden_layer_1) | rail=no_rails(recent=0,anchors=0) | selected=[12, 11, 10, 9] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.006555s total=0.682056s
+  reasons=9:semantic:0.711, 10:semantic:0.739, 11:semantic:0.767, 12:semantic:0.826
+gpt2 | needle | hidden_layer_index (hidden_layer_1) | rail=no_rails(recent=0,anchors=0) | selected=[5, 4, 2, 3] | selected/K=1.000 | recall=1.000 precision=0.250 hit=True | selector=0.006301s total=0.317744s
+  reasons=2:semantic:0.710, 3:semantic:0.708, 4:semantic:0.721, 5:semantic:0.831
+gpt2 | repeated_reference | hidden_layer_index (hidden_layer_1) | rail=no_rails(recent=0,anchors=0) | selected=[8, 7, 6, 5] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.006264s total=0.417561s
+  reasons=5:semantic:0.698, 6:semantic:0.721, 7:semantic:0.763, 8:semantic:0.900
+gpt2 | code_context | hidden_layer_index (hidden_layer_1) | rail=no_rails(recent=0,anchors=0) | selected=[13, 12, 11, 9] | selected/K=1.000 | recall=0.200 precision=0.250 hit=True | selector=0.005731s total=0.665432s
+  reasons=9:semantic:0.664, 11:semantic:0.672, 12:semantic:0.716, 13:semantic:0.813
+gpt2 | adversarial_semantic | hidden_layer_index (hidden_layer_1) | rail=no_rails(recent=0,anchors=0) | selected=[5, 4, 3, 2] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.005921s total=0.317473s
+  reasons=2:semantic:0.717, 3:semantic:0.736, 4:semantic:0.758, 5:semantic:0.817
+gpt2 | long_reference | middle_hidden (middle_hidden_6) | rail=no_rails(recent=0,anchors=0) | selected=[12, 11, 10, 9] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.004874s total=0.622225s
+  reasons=9:semantic:0.661, 10:semantic:0.695, 11:semantic:0.714, 12:semantic:0.823
+gpt2 | needle | middle_hidden (middle_hidden_6) | rail=no_rails(recent=0,anchors=0) | selected=[5, 4, 2, 1] | selected/K=1.000 | recall=1.000 precision=0.250 hit=True | selector=0.004333s total=0.315020s
+  reasons=1:semantic:0.635, 2:semantic:0.658, 4:semantic:0.661, 5:semantic:0.801
+gpt2 | repeated_reference | middle_hidden (middle_hidden_6) | rail=no_rails(recent=0,anchors=0) | selected=[8, 7, 6, 4] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.004909s total=0.423837s
+  reasons=4:semantic:0.663, 6:semantic:0.668, 7:semantic:0.714, 8:semantic:0.900
+gpt2 | code_context | middle_hidden (middle_hidden_6) | rail=no_rails(recent=0,anchors=0) | selected=[13, 12, 9, 10] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.006214s total=0.665520s
+  reasons=9:semantic:0.629, 10:semantic:0.624, 12:semantic:0.661, 13:semantic:0.774
+gpt2 | adversarial_semantic | middle_hidden (middle_hidden_6) | rail=no_rails(recent=0,anchors=0) | selected=[5, 4, 3, 1] | selected/K=1.000 | recall=1.000 precision=0.250 hit=True | selector=0.004547s total=0.307566s
+  reasons=1:semantic:0.636, 3:semantic:0.678, 4:semantic:0.696, 5:semantic:0.762
+gpt2 | long_reference | avg_last4_hidden (avg_last4_hidden) | rail=no_rails(recent=0,anchors=0) | selected=[12, 11, 10, 8] | selected/K=1.000 | recall=0.500 precision=0.250 hit=True | selector=0.005352s total=0.704371s
+  reasons=8:semantic:0.757, 10:semantic:0.762, 11:semantic:0.802, 12:semantic:0.872
+gpt2 | needle | avg_last4_hidden (avg_last4_hidden) | rail=no_rails(recent=0,anchors=0) | selected=[5, 1, 2, 3] | selected/K=1.000 | recall=1.000 precision=0.250 hit=True | selector=0.005652s total=0.331302s
+  reasons=1:semantic:0.742, 2:semantic:0.740, 3:semantic:0.737, 5:semantic:0.877
+gpt2 | repeated_reference | avg_last4_hidden (avg_last4_hidden) | rail=no_rails(recent=0,anchors=0) | selected=[8, 7, 4, 6] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.005798s total=0.419740s
+  reasons=4:semantic:0.744, 6:semantic:0.727, 7:semantic:0.819, 8:semantic:0.900
+gpt2 | code_context | avg_last4_hidden (avg_last4_hidden) | rail=no_rails(recent=0,anchors=0) | selected=[13, 12, 4, 2] | selected/K=1.000 | recall=0.200 precision=0.250 hit=True | selector=0.005651s total=0.683469s
+  reasons=2:semantic:0.735, 4:semantic:0.744, 12:semantic:0.758, 13:semantic:0.847
+gpt2 | adversarial_semantic | avg_last4_hidden (avg_last4_hidden) | rail=no_rails(recent=0,anchors=0) | selected=[5, 4, 2, 3] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.005621s total=0.301059s
+  reasons=2:semantic:0.752, 3:semantic:0.752, 4:semantic:0.790, 5:semantic:0.831
+gpt2 | long_reference | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=no_rails(recent=0,anchors=0) | selected=[12, 11, 10, 8] | selected/K=1.000 | recall=0.500 precision=0.250 hit=True | selector=0.005953s total=0.631863s
+  reasons=8:semantic:0.686, 10:semantic:0.698, 11:semantic:0.730, 12:semantic:0.840
+gpt2 | needle | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=no_rails(recent=0,anchors=0) | selected=[5, 4, 2, 3] | selected/K=1.000 | recall=1.000 precision=0.250 hit=True | selector=0.005452s total=0.313111s
+  reasons=2:semantic:0.661, 3:semantic:0.636, 4:semantic:0.670, 5:semantic:0.800
+gpt2 | repeated_reference | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=no_rails(recent=0,anchors=0) | selected=[8, 7, 6, 4] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.004811s total=0.445096s
+  reasons=4:semantic:0.655, 6:semantic:0.670, 7:semantic:0.716, 8:semantic:0.900
+gpt2 | code_context | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=no_rails(recent=0,anchors=0) | selected=[13, 12, 10, 9] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.004643s total=0.682797s
+  reasons=9:semantic:0.630, 10:semantic:0.632, 12:semantic:0.672, 13:semantic:0.779
+gpt2 | adversarial_semantic | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=no_rails(recent=0,anchors=0) | selected=[5, 4, 3, 1] | selected/K=1.000 | recall=1.000 precision=0.250 hit=True | selector=0.004591s total=0.307468s
+  reasons=1:semantic:0.656, 3:semantic:0.690, 4:semantic:0.706, 5:semantic:0.770
+gpt2 | long_reference | final_hidden (final_hidden) | rail=recent_only(recent=4,anchors=0) | selected=[12, 11, 10, 9, 4, 1, 8, 5] | selected/K=2.000 | recall=0.500 precision=0.125 hit=True | selector=0.005899s total=0.616506s
+  reasons=1:semantic:0.789, 4:semantic:0.789, 5:semantic:0.786, 8:semantic:0.787, 9:recent:0.790, 10:recent:0.794, 11:recent:0.832, 12:recent:0.896
+gpt2 | needle | final_hidden (final_hidden) | rail=recent_only(recent=4,anchors=0) | selected=[5, 4, 3, 2, 0, 1] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005893s total=0.344916s
+  reasons=0:semantic:0.791, 1:semantic:0.786, 2:recent:0.790, 3:recent:0.786, 4:recent:0.802, 5:recent:0.899
+gpt2 | repeated_reference | final_hidden (final_hidden) | rail=recent_only(recent=4,anchors=0) | selected=[8, 7, 6, 5, 3, 1, 2, 0] | selected/K=2.000 | recall=1.000 precision=0.125 hit=True | selector=0.005327s total=0.438938s
+  reasons=0:semantic:0.774, 1:semantic:0.774, 2:semantic:0.774, 3:semantic:0.778, 5:recent:0.794, 6:recent:0.781, 7:recent:0.835, 8:recent:0.900
+gpt2 | code_context | final_hidden (final_hidden) | rail=recent_only(recent=4,anchors=0) | selected=[13, 12, 11, 10, 0, 1, 3, 8] | selected/K=2.000 | recall=0.200 precision=0.125 hit=True | selector=0.004323s total=0.673818s
+  reasons=0:semantic:0.789, 1:semantic:0.788, 3:semantic:0.786, 8:semantic:0.786, 10:recent:0.781, 11:recent:0.618, 12:recent:0.792, 13:recent:0.899
+gpt2 | adversarial_semantic | final_hidden (final_hidden) | rail=recent_only(recent=4,anchors=0) | selected=[5, 4, 3, 2, 1, 0] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.004496s total=0.300855s
+  reasons=0:semantic:0.791, 1:semantic:0.794, 2:recent:0.794, 3:recent:0.800, 4:recent:0.812, 5:recent:0.898
+gpt2 | long_reference | hidden_layer_index (hidden_layer_1) | rail=recent_only(recent=4,anchors=0) | selected=[12, 11, 10, 9, 8, 7, 6, 5] | selected/K=2.000 | recall=1.000 precision=0.250 hit=True | selector=0.006115s total=0.606908s
+  reasons=5:semantic:0.647, 6:semantic:0.663, 7:semantic:0.673, 8:semantic:0.708, 9:recent:0.711, 10:recent:0.739, 11:recent:0.767, 12:recent:0.826
+gpt2 | needle | hidden_layer_index (hidden_layer_1) | rail=recent_only(recent=4,anchors=0) | selected=[5, 4, 3, 2, 1, 0] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.004203s total=0.315076s
+  reasons=0:semantic:0.655, 1:semantic:0.676, 2:recent:0.710, 3:recent:0.708, 4:recent:0.721, 5:recent:0.831
+gpt2 | repeated_reference | hidden_layer_index (hidden_layer_1) | rail=recent_only(recent=4,anchors=0) | selected=[8, 7, 6, 5, 4, 3, 2, 1] | selected/K=2.000 | recall=0.000 precision=0.000 hit=False | selector=0.005871s total=0.429944s
+  reasons=1:semantic:0.660, 2:semantic:0.663, 3:semantic:0.693, 4:semantic:0.696, 5:recent:0.698, 6:recent:0.721, 7:recent:0.763, 8:recent:0.900
+gpt2 | code_context | hidden_layer_index (hidden_layer_1) | rail=recent_only(recent=4,anchors=0) | selected=[13, 12, 11, 10, 9, 8, 7, 5] | selected/K=2.000 | recall=0.600 precision=0.375 hit=True | selector=0.005643s total=0.658644s
+  reasons=5:semantic:0.608, 7:semantic:0.626, 8:semantic:0.633, 9:semantic:0.664, 10:recent:0.663, 11:recent:0.672, 12:recent:0.716, 13:recent:0.813
+gpt2 | adversarial_semantic | hidden_layer_index (hidden_layer_1) | rail=recent_only(recent=4,anchors=0) | selected=[5, 4, 3, 2, 1, 0] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005967s total=0.292260s
+  reasons=0:semantic:0.671, 1:semantic:0.705, 2:recent:0.717, 3:recent:0.736, 4:recent:0.758, 5:recent:0.817
+gpt2 | long_reference | middle_hidden (middle_hidden_6) | rail=recent_only(recent=4,anchors=0) | selected=[12, 11, 10, 9, 8, 7, 5, 6] | selected/K=2.000 | recall=1.000 precision=0.250 hit=True | selector=0.004649s total=0.633551s
+  reasons=5:semantic:0.629, 6:semantic:0.619, 7:semantic:0.642, 8:semantic:0.661, 9:recent:0.661, 10:recent:0.695, 11:recent:0.714, 12:recent:0.823
+gpt2 | needle | middle_hidden (middle_hidden_6) | rail=recent_only(recent=4,anchors=0) | selected=[5, 4, 3, 2, 1, 0] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.006709s total=0.388720s
+  reasons=0:semantic:0.585, 1:semantic:0.635, 2:recent:0.658, 3:recent:0.633, 4:recent:0.661, 5:recent:0.801
+gpt2 | repeated_reference | middle_hidden (middle_hidden_6) | rail=recent_only(recent=4,anchors=0) | selected=[8, 7, 6, 5, 4, 3, 2, 0] | selected/K=2.000 | recall=1.000 precision=0.125 hit=True | selector=0.005574s total=0.442520s
+  reasons=0:semantic:0.600, 2:semantic:0.603, 3:semantic:0.635, 4:semantic:0.663, 5:recent:0.616, 6:recent:0.668, 7:recent:0.714, 8:recent:0.900
+gpt2 | code_context | middle_hidden (middle_hidden_6) | rail=recent_only(recent=4,anchors=0) | selected=[13, 12, 11, 10, 9, 8, 5, 6] | selected/K=2.000 | recall=0.600 precision=0.375 hit=True | selector=0.005552s total=0.678376s
+  reasons=5:semantic:0.604, 6:semantic:0.583, 8:semantic:0.613, 9:semantic:0.629, 10:recent:0.624, 11:recent:0.603, 12:recent:0.661, 13:recent:0.774
+gpt2 | adversarial_semantic | middle_hidden (middle_hidden_6) | rail=recent_only(recent=4,anchors=0) | selected=[5, 4, 3, 2, 1, 0] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005266s total=0.320900s
+  reasons=0:semantic:0.608, 1:semantic:0.636, 2:recent:0.631, 3:recent:0.678, 4:recent:0.696, 5:recent:0.762
+gpt2 | long_reference | avg_last4_hidden (avg_last4_hidden) | rail=recent_only(recent=4,anchors=0) | selected=[12, 11, 10, 9, 8, 1, 3, 7] | selected/K=2.000 | recall=1.000 precision=0.250 hit=True | selector=0.006122s total=0.613162s
+  reasons=1:semantic:0.757, 3:semantic:0.754, 7:semantic:0.749, 8:semantic:0.757, 9:recent:0.743, 10:recent:0.762, 11:recent:0.802, 12:recent:0.872
+gpt2 | needle | avg_last4_hidden (avg_last4_hidden) | rail=recent_only(recent=4,anchors=0) | selected=[5, 4, 3, 2, 1, 0] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005356s total=0.325435s
+  reasons=0:semantic:0.661, 1:semantic:0.742, 2:recent:0.740, 3:recent:0.737, 4:recent:0.730, 5:recent:0.877
+gpt2 | repeated_reference | avg_last4_hidden (avg_last4_hidden) | rail=recent_only(recent=4,anchors=0) | selected=[8, 7, 6, 5, 4, 3, 2, 1] | selected/K=2.000 | recall=0.000 precision=0.000 hit=False | selector=0.004545s total=0.426225s
+  reasons=1:semantic:0.718, 2:semantic:0.719, 3:semantic:0.725, 4:semantic:0.744, 5:recent:0.661, 6:recent:0.727, 7:recent:0.819, 8:recent:0.900
+gpt2 | code_context | avg_last4_hidden (avg_last4_hidden) | rail=recent_only(recent=4,anchors=0) | selected=[13, 12, 11, 10, 4, 2, 1, 3] | selected/K=2.000 | recall=0.400 precision=0.250 hit=True | selector=0.005346s total=0.675802s
+  reasons=1:semantic:0.734, 2:semantic:0.735, 3:semantic:0.728, 4:semantic:0.744, 10:recent:0.725, 11:recent:0.681, 12:recent:0.758, 13:recent:0.847
+gpt2 | adversarial_semantic | avg_last4_hidden (avg_last4_hidden) | rail=recent_only(recent=4,anchors=0) | selected=[5, 4, 3, 2, 1, 0] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.004366s total=0.310357s
+  reasons=0:semantic:0.664, 1:semantic:0.748, 2:recent:0.752, 3:recent:0.752, 4:recent:0.790, 5:recent:0.831
+gpt2 | long_reference | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=recent_only(recent=4,anchors=0) | selected=[12, 11, 10, 9, 8, 7, 5, 6] | selected/K=2.000 | recall=1.000 precision=0.250 hit=True | selector=0.006452s total=0.634435s
+  reasons=5:semantic:0.644, 6:semantic:0.635, 7:semantic:0.664, 8:semantic:0.686, 9:recent:0.680, 10:recent:0.698, 11:recent:0.730, 12:recent:0.840
+gpt2 | needle | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=recent_only(recent=4,anchors=0) | selected=[5, 4, 3, 2, 1, 0] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005215s total=0.315865s
+  reasons=0:semantic:0.571, 1:semantic:0.632, 2:recent:0.661, 3:recent:0.636, 4:recent:0.670, 5:recent:0.800
+gpt2 | repeated_reference | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=recent_only(recent=4,anchors=0) | selected=[8, 7, 6, 5, 4, 3, 2, 1] | selected/K=2.000 | recall=0.000 precision=0.000 hit=False | selector=0.005528s total=0.431336s
+  reasons=1:semantic:0.592, 2:semantic:0.602, 3:semantic:0.628, 4:semantic:0.655, 5:recent:0.621, 6:recent:0.670, 7:recent:0.716, 8:recent:0.900
+gpt2 | code_context | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=recent_only(recent=4,anchors=0) | selected=[13, 12, 11, 10, 9, 5, 8, 6] | selected/K=2.000 | recall=0.600 precision=0.375 hit=True | selector=0.005479s total=0.663097s
+  reasons=5:semantic:0.609, 6:semantic:0.604, 8:semantic:0.605, 9:semantic:0.630, 10:recent:0.632, 11:recent:0.604, 12:recent:0.672, 13:recent:0.779
+gpt2 | adversarial_semantic | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=recent_only(recent=4,anchors=0) | selected=[5, 4, 3, 2, 1, 0] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.004994s total=0.309663s
+  reasons=0:semantic:0.599, 1:semantic:0.656, 2:recent:0.646, 3:recent:0.690, 4:recent:0.706, 5:recent:0.770
+gpt2 | long_reference | final_hidden (final_hidden) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 12, 11, 10, 9] | selected/K=1.500 | recall=0.000 precision=0.000 hit=False | selector=0.004765s total=0.615474s
+  reasons=0:anchor:0.785, 1:anchor:0.789, 9:semantic:0.790, 10:semantic:0.794, 11:semantic:0.832, 12:semantic:0.896
+gpt2 | needle | final_hidden (final_hidden) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 5, 4, 2, 3] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005178s total=0.324137s
+  reasons=0:anchor:0.791, 1:anchor:0.786, 2:semantic:0.790, 3:semantic:0.786, 4:semantic:0.802, 5:semantic:0.899
+gpt2 | repeated_reference | final_hidden (final_hidden) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 8, 7, 5, 6] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005702s total=0.434085s
+  reasons=0:anchor:0.774, 1:anchor:0.774, 5:semantic:0.794, 6:semantic:0.781, 7:semantic:0.835, 8:semantic:0.900
+gpt2 | code_context | final_hidden (final_hidden) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 13, 12, 3, 8] | selected/K=1.500 | recall=0.000 precision=0.000 hit=False | selector=0.005196s total=0.671541s
+  reasons=0:anchor:0.789, 1:anchor:0.788, 3:semantic:0.786, 8:semantic:0.786, 12:semantic:0.792, 13:semantic:0.899
+gpt2 | adversarial_semantic | final_hidden (final_hidden) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 5, 4, 3, 2] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005385s total=0.325514s
+  reasons=0:anchor:0.791, 1:anchor:0.794, 2:semantic:0.794, 3:semantic:0.800, 4:semantic:0.812, 5:semantic:0.898
+gpt2 | long_reference | hidden_layer_index (hidden_layer_1) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 12, 11, 10, 9] | selected/K=1.500 | recall=0.000 precision=0.000 hit=False | selector=0.005366s total=0.629646s
+  reasons=0:anchor:0.615, 1:anchor:0.600, 9:semantic:0.711, 10:semantic:0.739, 11:semantic:0.767, 12:semantic:0.826
+gpt2 | needle | hidden_layer_index (hidden_layer_1) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 5, 4, 2, 3] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005612s total=0.312591s
+  reasons=0:anchor:0.655, 1:anchor:0.676, 2:semantic:0.710, 3:semantic:0.708, 4:semantic:0.721, 5:semantic:0.831
+gpt2 | repeated_reference | hidden_layer_index (hidden_layer_1) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 8, 7, 6, 5] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.004313s total=0.434529s
+  reasons=0:anchor:0.628, 1:anchor:0.660, 5:semantic:0.698, 6:semantic:0.721, 7:semantic:0.763, 8:semantic:0.900
+gpt2 | code_context | hidden_layer_index (hidden_layer_1) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 13, 12, 11, 9] | selected/K=1.500 | recall=0.200 precision=0.167 hit=True | selector=0.006938s total=0.697943s
+  reasons=0:anchor:0.526, 1:anchor:0.563, 9:semantic:0.664, 11:semantic:0.672, 12:semantic:0.716, 13:semantic:0.813
+gpt2 | adversarial_semantic | hidden_layer_index (hidden_layer_1) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 5, 4, 3, 2] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.004742s total=0.346172s
+  reasons=0:anchor:0.671, 1:anchor:0.705, 2:semantic:0.717, 3:semantic:0.736, 4:semantic:0.758, 5:semantic:0.817
+gpt2 | long_reference | middle_hidden (middle_hidden_6) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 12, 11, 10, 9] | selected/K=1.500 | recall=0.000 precision=0.000 hit=False | selector=0.006113s total=0.662511s
+  reasons=0:anchor:0.612, 1:anchor:0.581, 9:semantic:0.661, 10:semantic:0.695, 11:semantic:0.714, 12:semantic:0.823
+gpt2 | needle | middle_hidden (middle_hidden_6) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 5, 4, 2, 3] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005460s total=0.336464s
+  reasons=0:anchor:0.585, 1:anchor:0.635, 2:semantic:0.658, 3:semantic:0.633, 4:semantic:0.661, 5:semantic:0.801
+gpt2 | repeated_reference | middle_hidden (middle_hidden_6) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 8, 7, 6, 4] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.008154s total=0.430689s
+  reasons=0:anchor:0.600, 1:anchor:0.599, 4:semantic:0.663, 6:semantic:0.668, 7:semantic:0.714, 8:semantic:0.900
+gpt2 | code_context | middle_hidden (middle_hidden_6) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 13, 12, 9, 10] | selected/K=1.500 | recall=0.000 precision=0.000 hit=False | selector=0.005487s total=0.678657s
+  reasons=0:anchor:0.581, 1:anchor:0.556, 9:semantic:0.629, 10:semantic:0.624, 12:semantic:0.661, 13:semantic:0.774
+gpt2 | adversarial_semantic | middle_hidden (middle_hidden_6) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 5, 4, 3, 2] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.004883s total=0.306662s
+  reasons=0:anchor:0.608, 1:anchor:0.636, 2:semantic:0.631, 3:semantic:0.678, 4:semantic:0.696, 5:semantic:0.762
+gpt2 | long_reference | avg_last4_hidden (avg_last4_hidden) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 12, 11, 10, 8] | selected/K=1.500 | recall=0.500 precision=0.167 hit=True | selector=0.007181s total=0.651246s
+  reasons=0:anchor:0.674, 1:anchor:0.757, 8:semantic:0.757, 10:semantic:0.762, 11:semantic:0.802, 12:semantic:0.872
+gpt2 | needle | avg_last4_hidden (avg_last4_hidden) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 5, 2, 3, 4] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.004196s total=0.325512s
+  reasons=0:anchor:0.661, 1:anchor:0.742, 2:semantic:0.740, 3:semantic:0.737, 4:semantic:0.730, 5:semantic:0.877
+gpt2 | repeated_reference | avg_last4_hidden (avg_last4_hidden) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 8, 7, 4, 6] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.008070s total=0.529800s
+  reasons=0:anchor:0.658, 1:anchor:0.718, 4:semantic:0.744, 6:semantic:0.727, 7:semantic:0.819, 8:semantic:0.900
+gpt2 | code_context | avg_last4_hidden (avg_last4_hidden) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 13, 12, 4, 2] | selected/K=1.500 | recall=0.200 precision=0.167 hit=True | selector=0.007977s total=0.781275s
+  reasons=0:anchor:0.625, 1:anchor:0.734, 2:semantic:0.735, 4:semantic:0.744, 12:semantic:0.758, 13:semantic:0.847
+gpt2 | adversarial_semantic | avg_last4_hidden (avg_last4_hidden) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 5, 4, 2, 3] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.004823s total=0.398228s
+  reasons=0:anchor:0.664, 1:anchor:0.748, 2:semantic:0.752, 3:semantic:0.752, 4:semantic:0.790, 5:semantic:0.831
+gpt2 | long_reference | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 12, 11, 10, 8] | selected/K=1.500 | recall=0.500 precision=0.167 hit=True | selector=0.010805s total=0.848060s
+  reasons=0:anchor:0.603, 1:anchor:0.590, 8:semantic:0.686, 10:semantic:0.698, 11:semantic:0.730, 12:semantic:0.840
+gpt2 | needle | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 5, 4, 2, 3] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005678s total=0.446347s
+  reasons=0:anchor:0.571, 1:anchor:0.632, 2:semantic:0.661, 3:semantic:0.636, 4:semantic:0.670, 5:semantic:0.800
+gpt2 | repeated_reference | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 8, 7, 6, 4] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.006288s total=0.415656s
+  reasons=0:anchor:0.583, 1:anchor:0.592, 4:semantic:0.655, 6:semantic:0.670, 7:semantic:0.716, 8:semantic:0.900
+gpt2 | code_context | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 13, 12, 10, 9] | selected/K=1.500 | recall=0.000 precision=0.000 hit=False | selector=0.005667s total=0.658699s
+  reasons=0:anchor:0.575, 1:anchor:0.555, 9:semantic:0.630, 10:semantic:0.632, 12:semantic:0.672, 13:semantic:0.779
+gpt2 | adversarial_semantic | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=anchor_only(recent=0,anchors=2) | selected=[0, 1, 5, 4, 3, 2] | selected/K=1.500 | recall=1.000 precision=0.167 hit=True | selector=0.005682s total=0.294271s
+  reasons=0:anchor:0.599, 1:anchor:0.656, 2:semantic:0.646, 3:semantic:0.690, 4:semantic:0.706, 5:semantic:0.770
+gpt2 | long_reference | final_hidden (final_hidden) | rail=reduced(recent=1,anchors=0) | selected=[12, 11, 10, 9, 4] | selected/K=1.250 | recall=0.000 precision=0.000 hit=False | selector=0.005866s total=0.589853s
+  reasons=4:semantic:0.789, 9:semantic:0.790, 10:semantic:0.794, 11:semantic:0.832, 12:recent:0.896
+gpt2 | needle | final_hidden (final_hidden) | rail=reduced(recent=1,anchors=0) | selected=[5, 4, 0, 2, 3] | selected/K=1.250 | recall=1.000 precision=0.200 hit=True | selector=0.005123s total=0.305661s
+  reasons=0:semantic:0.791, 2:semantic:0.790, 3:semantic:0.786, 4:semantic:0.802, 5:recent:0.899
+gpt2 | repeated_reference | final_hidden (final_hidden) | rail=reduced(recent=1,anchors=0) | selected=[8, 7, 5, 6, 3] | selected/K=1.250 | recall=0.000 precision=0.000 hit=False | selector=0.006205s total=0.411217s
+  reasons=3:semantic:0.778, 5:semantic:0.794, 6:semantic:0.781, 7:semantic:0.835, 8:recent:0.900
+gpt2 | code_context | final_hidden (final_hidden) | rail=reduced(recent=1,anchors=0) | selected=[13, 12, 0, 1, 3] | selected/K=1.250 | recall=0.000 precision=0.000 hit=False | selector=0.004417s total=0.660931s
+  reasons=0:semantic:0.789, 1:semantic:0.788, 3:semantic:0.786, 12:semantic:0.792, 13:recent:0.899
+gpt2 | adversarial_semantic | final_hidden (final_hidden) | rail=reduced(recent=1,anchors=0) | selected=[5, 4, 3, 1, 2] | selected/K=1.250 | recall=1.000 precision=0.200 hit=True | selector=0.005563s total=0.310138s
+  reasons=1:semantic:0.794, 2:semantic:0.794, 3:semantic:0.800, 4:semantic:0.812, 5:recent:0.898
+gpt2 | long_reference | hidden_layer_index (hidden_layer_1) | rail=reduced(recent=1,anchors=0) | selected=[12, 11, 10, 9, 8] | selected/K=1.250 | recall=0.500 precision=0.200 hit=True | selector=0.005193s total=0.588852s
+  reasons=8:semantic:0.708, 9:semantic:0.711, 10:semantic:0.739, 11:semantic:0.767, 12:recent:0.826
+gpt2 | needle | hidden_layer_index (hidden_layer_1) | rail=reduced(recent=1,anchors=0) | selected=[5, 4, 2, 3, 1] | selected/K=1.250 | recall=1.000 precision=0.200 hit=True | selector=0.004110s total=0.307580s
+  reasons=1:semantic:0.676, 2:semantic:0.710, 3:semantic:0.708, 4:semantic:0.721, 5:recent:0.831
+gpt2 | repeated_reference | hidden_layer_index (hidden_layer_1) | rail=reduced(recent=1,anchors=0) | selected=[8, 7, 6, 5, 4] | selected/K=1.250 | recall=0.000 precision=0.000 hit=False | selector=0.004931s total=0.416555s
+  reasons=4:semantic:0.696, 5:semantic:0.698, 6:semantic:0.721, 7:semantic:0.763, 8:recent:0.900
+gpt2 | code_context | hidden_layer_index (hidden_layer_1) | rail=reduced(recent=1,anchors=0) | selected=[13, 12, 11, 9, 10] | selected/K=1.250 | recall=0.200 precision=0.200 hit=True | selector=0.006228s total=0.666411s
+  reasons=9:semantic:0.664, 10:semantic:0.663, 11:semantic:0.672, 12:semantic:0.716, 13:recent:0.813
+gpt2 | adversarial_semantic | hidden_layer_index (hidden_layer_1) | rail=reduced(recent=1,anchors=0) | selected=[5, 4, 3, 2, 1] | selected/K=1.250 | recall=1.000 precision=0.200 hit=True | selector=0.006061s total=0.294627s
+  reasons=1:semantic:0.705, 2:semantic:0.717, 3:semantic:0.736, 4:semantic:0.758, 5:recent:0.817
+gpt2 | long_reference | middle_hidden (middle_hidden_6) | rail=reduced(recent=1,anchors=0) | selected=[12, 11, 10, 9, 8] | selected/K=1.250 | recall=0.500 precision=0.200 hit=True | selector=0.007411s total=0.597847s
+  reasons=8:semantic:0.661, 9:semantic:0.661, 10:semantic:0.695, 11:semantic:0.714, 12:recent:0.823
+gpt2 | needle | middle_hidden (middle_hidden_6) | rail=reduced(recent=1,anchors=0) | selected=[5, 4, 2, 1, 3] | selected/K=1.250 | recall=1.000 precision=0.200 hit=True | selector=0.004766s total=0.332691s
+  reasons=1:semantic:0.635, 2:semantic:0.658, 3:semantic:0.633, 4:semantic:0.661, 5:recent:0.801
+gpt2 | repeated_reference | middle_hidden (middle_hidden_6) | rail=reduced(recent=1,anchors=0) | selected=[8, 7, 6, 4, 3] | selected/K=1.250 | recall=0.000 precision=0.000 hit=False | selector=0.006454s total=0.410535s
+  reasons=3:semantic:0.635, 4:semantic:0.663, 6:semantic:0.668, 7:semantic:0.714, 8:recent:0.900
+gpt2 | code_context | middle_hidden (middle_hidden_6) | rail=reduced(recent=1,anchors=0) | selected=[13, 12, 9, 10, 8] | selected/K=1.250 | recall=0.000 precision=0.000 hit=False | selector=0.005903s total=0.664155s
+  reasons=8:semantic:0.613, 9:semantic:0.629, 10:semantic:0.624, 12:semantic:0.661, 13:recent:0.774
+gpt2 | adversarial_semantic | middle_hidden (middle_hidden_6) | rail=reduced(recent=1,anchors=0) | selected=[5, 4, 3, 1, 2] | selected/K=1.250 | recall=1.000 precision=0.200 hit=True | selector=0.004369s total=0.318538s
+  reasons=1:semantic:0.636, 2:semantic:0.631, 3:semantic:0.678, 4:semantic:0.696, 5:recent:0.762
+gpt2 | long_reference | avg_last4_hidden (avg_last4_hidden) | rail=reduced(recent=1,anchors=0) | selected=[12, 11, 10, 8, 1] | selected/K=1.250 | recall=0.500 precision=0.200 hit=True | selector=0.004762s total=0.642990s
+  reasons=1:semantic:0.757, 8:semantic:0.757, 10:semantic:0.762, 11:semantic:0.802, 12:recent:0.872
+gpt2 | needle | avg_last4_hidden (avg_last4_hidden) | rail=reduced(recent=1,anchors=0) | selected=[5, 1, 2, 3, 4] | selected/K=1.250 | recall=1.000 precision=0.200 hit=True | selector=0.004383s total=0.329526s
+  reasons=1:semantic:0.742, 2:semantic:0.740, 3:semantic:0.737, 4:semantic:0.730, 5:recent:0.877
+gpt2 | repeated_reference | avg_last4_hidden (avg_last4_hidden) | rail=reduced(recent=1,anchors=0) | selected=[8, 7, 4, 6, 3] | selected/K=1.250 | recall=0.000 precision=0.000 hit=False | selector=0.004253s total=0.422536s
+  reasons=3:semantic:0.725, 4:semantic:0.744, 6:semantic:0.727, 7:semantic:0.819, 8:recent:0.900
+gpt2 | code_context | avg_last4_hidden (avg_last4_hidden) | rail=reduced(recent=1,anchors=0) | selected=[13, 12, 4, 2, 1] | selected/K=1.250 | recall=0.200 precision=0.200 hit=True | selector=0.007038s total=0.692989s
+  reasons=1:semantic:0.734, 2:semantic:0.735, 4:semantic:0.744, 12:semantic:0.758, 13:recent:0.847
+gpt2 | adversarial_semantic | avg_last4_hidden (avg_last4_hidden) | rail=reduced(recent=1,anchors=0) | selected=[5, 4, 2, 3, 1] | selected/K=1.250 | recall=1.000 precision=0.200 hit=True | selector=0.004815s total=0.308358s
+  reasons=1:semantic:0.748, 2:semantic:0.752, 3:semantic:0.752, 4:semantic:0.790, 5:recent:0.831
+gpt2 | long_reference | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=reduced(recent=1,anchors=0) | selected=[12, 11, 10, 8, 9] | selected/K=1.250 | recall=0.500 precision=0.200 hit=True | selector=0.005798s total=0.632581s
+  reasons=8:semantic:0.686, 9:semantic:0.680, 10:semantic:0.698, 11:semantic:0.730, 12:recent:0.840
+gpt2 | needle | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=reduced(recent=1,anchors=0) | selected=[5, 4, 2, 3, 1] | selected/K=1.250 | recall=1.000 precision=0.200 hit=True | selector=0.004243s total=0.310235s
+  reasons=1:semantic:0.632, 2:semantic:0.661, 3:semantic:0.636, 4:semantic:0.670, 5:recent:0.800
+gpt2 | repeated_reference | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=reduced(recent=1,anchors=0) | selected=[8, 7, 6, 4, 3] | selected/K=1.250 | recall=0.000 precision=0.000 hit=False | selector=0.005345s total=0.438376s
+  reasons=3:semantic:0.628, 4:semantic:0.655, 6:semantic:0.670, 7:semantic:0.716, 8:recent:0.900
+gpt2 | code_context | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=reduced(recent=1,anchors=0) | selected=[13, 12, 10, 9, 5] | selected/K=1.250 | recall=0.200 precision=0.200 hit=True | selector=0.004768s total=0.680927s
+  reasons=5:semantic:0.609, 9:semantic:0.630, 10:semantic:0.632, 12:semantic:0.672, 13:recent:0.779
+gpt2 | adversarial_semantic | avg_mid4_hidden (avg_mid_hidden_4_7) | rail=reduced(recent=1,anchors=0) | selected=[5, 4, 3, 1, 2] | selected/K=1.250 | recall=1.000 precision=0.200 hit=True | selector=0.006084s total=0.308945s
+  reasons=1:semantic:0.656, 2:semantic:0.646, 3:semantic:0.690, 4:semantic:0.706, 5:recent:0.770
+
+AGGREGATES BY MODEL / REPRESENTATION / RAILS
+distilgpt2 | avg_last4_hidden | rail=anchor_only(recent=0,anchors=2) | runs=5 mean_recall=0.740 mean_precision=0.167 mean_selected=6.000 mean_selected/K=1.500 mean_selector=0.005972s
+distilgpt2 | avg_last4_hidden | rail=default(recent=4,anchors=2) | runs=5 mean_recall=0.920 mean_precision=0.189 mean_selected=8.200 mean_selected/K=2.050 mean_selector=0.006717s
+distilgpt2 | avg_last4_hidden | rail=no_rails(recent=0,anchors=0) | runs=5 mean_recall=0.340 mean_precision=0.150 mean_selected=4.000 mean_selected/K=1.000 mean_selector=0.005997s
+distilgpt2 | avg_last4_hidden | rail=recent_only(recent=4,anchors=0) | runs=5 mean_recall=0.680 mean_precision=0.167 mean_selected=7.200 mean_selected/K=1.800 mean_selector=0.005950s
+distilgpt2 | avg_last4_hidden | rail=reduced(recent=1,anchors=0) | runs=5 mean_recall=0.540 mean_precision=0.160 mean_selected=5.000 mean_selected/K=1.250 mean_selector=0.006291s
+distilgpt2 | avg_mid4_hidden | rail=anchor_only(recent=0,anchors=2) | runs=5 mean_recall=0.740 mean_precision=0.167 mean_selected=6.000 mean_selected/K=1.500 mean_selector=0.005884s
+distilgpt2 | avg_mid4_hidden | rail=default(recent=4,anchors=2) | runs=5 mean_recall=0.920 mean_precision=0.189 mean_selected=8.200 mean_selected/K=2.050 mean_selector=0.005858s
+distilgpt2 | avg_mid4_hidden | rail=no_rails(recent=0,anchors=0) | runs=5 mean_recall=0.340 mean_precision=0.150 mean_selected=4.000 mean_selected/K=1.000 mean_selector=0.006257s
+distilgpt2 | avg_mid4_hidden | rail=recent_only(recent=4,anchors=0) | runs=5 mean_recall=0.720 mean_precision=0.192 mean_selected=7.200 mean_selected/K=1.800 mean_selector=0.005227s
+distilgpt2 | avg_mid4_hidden | rail=reduced(recent=1,anchors=0) | runs=5 mean_recall=0.540 mean_precision=0.160 mean_selected=5.000 mean_selected/K=1.250 mean_selector=0.005422s
+distilgpt2 | final_hidden | rail=anchor_only(recent=0,anchors=2) | runs=5 mean_recall=0.640 mean_precision=0.133 mean_selected=6.000 mean_selected/K=1.500 mean_selector=0.005170s
+distilgpt2 | final_hidden | rail=default(recent=4,anchors=2) | runs=5 mean_recall=0.820 mean_precision=0.169 mean_selected=8.200 mean_selected/K=2.050 mean_selector=0.006202s
+distilgpt2 | final_hidden | rail=no_rails(recent=0,anchors=0) | runs=5 mean_recall=0.240 mean_precision=0.100 mean_selected=4.000 mean_selected/K=1.000 mean_selector=0.005039s
+distilgpt2 | final_hidden | rail=recent_only(recent=4,anchors=0) | runs=5 mean_recall=0.780 mean_precision=0.167 mean_selected=7.200 mean_selected/K=1.800 mean_selector=0.005676s
+distilgpt2 | final_hidden | rail=reduced(recent=1,anchors=0) | runs=5 mean_recall=0.640 mean_precision=0.160 mean_selected=5.000 mean_selected/K=1.250 mean_selector=0.006184s
+distilgpt2 | hidden_layer_index | rail=anchor_only(recent=0,anchors=2) | runs=5 mean_recall=0.640 mean_precision=0.133 mean_selected=6.000 mean_selected/K=1.500 mean_selector=0.006074s
+distilgpt2 | hidden_layer_index | rail=default(recent=4,anchors=2) | runs=5 mean_recall=0.920 mean_precision=0.189 mean_selected=8.200 mean_selected/K=2.050 mean_selector=0.006403s
+distilgpt2 | hidden_layer_index | rail=no_rails(recent=0,anchors=0) | runs=5 mean_recall=0.240 mean_precision=0.100 mean_selected=4.000 mean_selected/K=1.000 mean_selector=0.005792s
+distilgpt2 | hidden_layer_index | rail=recent_only(recent=4,anchors=0) | runs=5 mean_recall=0.720 mean_precision=0.192 mean_selected=7.200 mean_selected/K=1.800 mean_selector=0.006102s
+distilgpt2 | hidden_layer_index | rail=reduced(recent=1,anchors=0) | runs=5 mean_recall=0.540 mean_precision=0.160 mean_selected=5.000 mean_selected/K=1.250 mean_selector=0.006362s
+distilgpt2 | middle_hidden | rail=anchor_only(recent=0,anchors=2) | runs=5 mean_recall=0.600 mean_precision=0.100 mean_selected=6.000 mean_selected/K=1.500 mean_selector=0.006999s
+distilgpt2 | middle_hidden | rail=default(recent=4,anchors=2) | runs=5 mean_recall=0.920 mean_precision=0.189 mean_selected=8.200 mean_selected/K=2.050 mean_selector=0.005550s
+distilgpt2 | middle_hidden | rail=no_rails(recent=0,anchors=0) | runs=5 mean_recall=0.400 mean_precision=0.100 mean_selected=4.000 mean_selected/K=1.000 mean_selector=0.006452s
+distilgpt2 | middle_hidden | rail=recent_only(recent=4,anchors=0) | runs=5 mean_recall=0.880 mean_precision=0.192 mean_selected=7.200 mean_selected/K=1.800 mean_selector=0.005890s
+distilgpt2 | middle_hidden | rail=reduced(recent=1,anchors=0) | runs=5 mean_recall=0.540 mean_precision=0.160 mean_selected=5.000 mean_selected/K=1.250 mean_selector=0.006696s
+gpt2 | avg_last4_hidden | rail=anchor_only(recent=0,anchors=2) | runs=5 mean_recall=0.740 mean_precision=0.167 mean_selected=6.000 mean_selected/K=1.500 mean_selector=0.006449s
+gpt2 | avg_last4_hidden | rail=default(recent=4,anchors=2) | runs=5 mean_recall=0.880 mean_precision=0.169 mean_selected=8.200 mean_selected/K=2.050 mean_selector=0.006819s
+gpt2 | avg_last4_hidden | rail=no_rails(recent=0,anchors=0) | runs=5 mean_recall=0.340 mean_precision=0.150 mean_selected=4.000 mean_selected/K=1.000 mean_selector=0.005615s
+gpt2 | avg_last4_hidden | rail=recent_only(recent=4,anchors=0) | runs=5 mean_recall=0.680 mean_precision=0.167 mean_selected=7.200 mean_selected/K=1.800 mean_selector=0.005147s
+gpt2 | avg_last4_hidden | rail=reduced(recent=1,anchors=0) | runs=5 mean_recall=0.540 mean_precision=0.160 mean_selected=5.000 mean_selected/K=1.250 mean_selector=0.005050s
+gpt2 | avg_mid4_hidden | rail=anchor_only(recent=0,anchors=2) | runs=5 mean_recall=0.700 mean_precision=0.133 mean_selected=6.000 mean_selected/K=1.500 mean_selector=0.006824s
+gpt2 | avg_mid4_hidden | rail=default(recent=4,anchors=2) | runs=5 mean_recall=0.920 mean_precision=0.189 mean_selected=8.200 mean_selected/K=2.050 mean_selector=0.005646s
+gpt2 | avg_mid4_hidden | rail=no_rails(recent=0,anchors=0) | runs=5 mean_recall=0.500 mean_precision=0.150 mean_selected=4.000 mean_selected/K=1.000 mean_selector=0.005090s
+gpt2 | avg_mid4_hidden | rail=recent_only(recent=4,anchors=0) | runs=5 mean_recall=0.720 mean_precision=0.192 mean_selected=7.200 mean_selected/K=1.800 mean_selector=0.005534s
+gpt2 | avg_mid4_hidden | rail=reduced(recent=1,anchors=0) | runs=5 mean_recall=0.540 mean_precision=0.160 mean_selected=5.000 mean_selected/K=1.250 mean_selector=0.005248s
+gpt2 | final_hidden | rail=anchor_only(recent=0,anchors=2) | runs=5 mean_recall=0.600 mean_precision=0.100 mean_selected=6.000 mean_selected/K=1.500 mean_selector=0.005245s
+gpt2 | final_hidden | rail=default(recent=4,anchors=2) | runs=5 mean_recall=0.880 mean_precision=0.169 mean_selected=8.200 mean_selected/K=2.050 mean_selector=0.004925s
+gpt2 | final_hidden | rail=no_rails(recent=0,anchors=0) | runs=5 mean_recall=0.400 mean_precision=0.100 mean_selected=4.000 mean_selected/K=1.000 mean_selector=0.006553s
+gpt2 | final_hidden | rail=recent_only(recent=4,anchors=0) | runs=5 mean_recall=0.740 mean_precision=0.142 mean_selected=7.200 mean_selected/K=1.800 mean_selector=0.005188s
+gpt2 | final_hidden | rail=reduced(recent=1,anchors=0) | runs=5 mean_recall=0.400 mean_precision=0.080 mean_selected=5.000 mean_selected/K=1.250 mean_selector=0.005435s
+gpt2 | hidden_layer_index | rail=anchor_only(recent=0,anchors=2) | runs=5 mean_recall=0.640 mean_precision=0.133 mean_selected=6.000 mean_selected/K=1.500 mean_selector=0.005394s
+gpt2 | hidden_layer_index | rail=default(recent=4,anchors=2) | runs=5 mean_recall=0.920 mean_precision=0.189 mean_selected=8.200 mean_selected/K=2.050 mean_selector=0.005531s
+gpt2 | hidden_layer_index | rail=no_rails(recent=0,anchors=0) | runs=5 mean_recall=0.240 mean_precision=0.100 mean_selected=4.000 mean_selected/K=1.000 mean_selector=0.006155s
+gpt2 | hidden_layer_index | rail=recent_only(recent=4,anchors=0) | runs=5 mean_recall=0.720 mean_precision=0.192 mean_selected=7.200 mean_selected/K=1.800 mean_selector=0.005560s
+gpt2 | hidden_layer_index | rail=reduced(recent=1,anchors=0) | runs=5 mean_recall=0.540 mean_precision=0.160 mean_selected=5.000 mean_selected/K=1.250 mean_selector=0.005304s
+gpt2 | middle_hidden | rail=anchor_only(recent=0,anchors=2) | runs=5 mean_recall=0.600 mean_precision=0.100 mean_selected=6.000 mean_selected/K=1.500 mean_selector=0.006019s
+gpt2 | middle_hidden | rail=default(recent=4,anchors=2) | runs=5 mean_recall=0.920 mean_precision=0.189 mean_selected=8.200 mean_selected/K=2.050 mean_selector=0.005284s
+gpt2 | middle_hidden | rail=no_rails(recent=0,anchors=0) | runs=5 mean_recall=0.400 mean_precision=0.100 mean_selected=4.000 mean_selected/K=1.000 mean_selector=0.004975s
+gpt2 | middle_hidden | rail=recent_only(recent=4,anchors=0) | runs=5 mean_recall=0.920 mean_precision=0.217 mean_selected=7.200 mean_selected/K=1.800 mean_selector=0.005550s
+gpt2 | middle_hidden | rail=reduced(recent=1,anchors=0) | runs=5 mean_recall=0.500 mean_precision=0.120 mean_selected=5.000 mean_selected/K=1.250 mean_selector=0.005781s
+
+LAYER DIFFERENCES VS final_hidden
+distilgpt2 | long_reference | rail=default | hidden_layer_index | jaccard=0.667 recall_delta=0.500 precision_delta=0.100 selector_delta=0.000261s
+distilgpt2 | long_reference | rail=default | middle_hidden | jaccard=0.538 recall_delta=0.500 precision_delta=0.100 selector_delta=-0.001142s
+distilgpt2 | long_reference | rail=default | avg_last4_hidden | jaccard=0.667 recall_delta=0.500 precision_delta=0.100 selector_delta=0.000234s
+distilgpt2 | long_reference | rail=default | avg_mid4_hidden | jaccard=0.667 recall_delta=0.500 precision_delta=0.100 selector_delta=-0.001892s
+distilgpt2 | needle | rail=default | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000453s
+distilgpt2 | needle | rail=default | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000068s
+distilgpt2 | needle | rail=default | avg_last4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001524s
+distilgpt2 | needle | rail=default | avg_mid4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000042s
+distilgpt2 | repeated_reference | rail=default | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001093s
+distilgpt2 | repeated_reference | rail=default | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000182s
+distilgpt2 | repeated_reference | rail=default | avg_last4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000968s
+distilgpt2 | repeated_reference | rail=default | avg_mid4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000573s
+distilgpt2 | code_context | rail=default | hidden_layer_index | jaccard=0.667 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000386s
+distilgpt2 | code_context | rail=default | middle_hidden | jaccard=0.667 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000985s
+distilgpt2 | code_context | rail=default | avg_last4_hidden | jaccard=0.818 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000393s
+distilgpt2 | code_context | rail=default | avg_mid4_hidden | jaccard=0.538 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001357s
+distilgpt2 | adversarial_semantic | rail=default | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000493s
+distilgpt2 | adversarial_semantic | rail=default | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.001015s
+distilgpt2 | adversarial_semantic | rail=default | avg_last4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001393s
+distilgpt2 | adversarial_semantic | rail=default | avg_mid4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000570s
+distilgpt2 | long_reference | rail=no_rails | hidden_layer_index | jaccard=0.600 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000713s
+distilgpt2 | long_reference | rail=no_rails | middle_hidden | jaccard=0.600 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000151s
+distilgpt2 | long_reference | rail=no_rails | avg_last4_hidden | jaccard=0.333 recall_delta=0.500 precision_delta=0.250 selector_delta=0.001166s
+distilgpt2 | long_reference | rail=no_rails | avg_mid4_hidden | jaccard=0.333 recall_delta=0.500 precision_delta=0.250 selector_delta=0.002341s
+distilgpt2 | needle | rail=no_rails | hidden_layer_index | jaccard=0.600 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001329s
+distilgpt2 | needle | rail=no_rails | middle_hidden | jaccard=0.600 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001499s
+distilgpt2 | needle | rail=no_rails | avg_last4_hidden | jaccard=0.600 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001782s
+distilgpt2 | needle | rail=no_rails | avg_mid4_hidden | jaccard=0.600 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001114s
+distilgpt2 | repeated_reference | rail=no_rails | hidden_layer_index | jaccard=0.600 recall_delta=0.000 precision_delta=0.000 selector_delta=0.002023s
+distilgpt2 | repeated_reference | rail=no_rails | middle_hidden | jaccard=0.600 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000398s
+distilgpt2 | repeated_reference | rail=no_rails | avg_last4_hidden | jaccard=0.600 recall_delta=0.000 precision_delta=0.000 selector_delta=0.002478s
+distilgpt2 | repeated_reference | rail=no_rails | avg_mid4_hidden | jaccard=0.600 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001112s
+distilgpt2 | code_context | rail=no_rails | hidden_layer_index | jaccard=0.143 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000193s
+distilgpt2 | code_context | rail=no_rails | middle_hidden | jaccard=0.143 recall_delta=-0.200 precision_delta=-0.250 selector_delta=0.004103s
+distilgpt2 | code_context | rail=no_rails | avg_last4_hidden | jaccard=0.600 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000450s
+distilgpt2 | code_context | rail=no_rails | avg_mid4_hidden | jaccard=0.143 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000111s
+distilgpt2 | adversarial_semantic | rail=no_rails | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000492s
+distilgpt2 | adversarial_semantic | rail=no_rails | middle_hidden | jaccard=0.600 recall_delta=1.000 precision_delta=0.250 selector_delta=0.001215s
+distilgpt2 | adversarial_semantic | rail=no_rails | avg_last4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.001087s
+distilgpt2 | adversarial_semantic | rail=no_rails | avg_mid4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001413s
+distilgpt2 | long_reference | rail=recent_only | hidden_layer_index | jaccard=0.600 recall_delta=0.500 precision_delta=0.125 selector_delta=-0.000085s
+distilgpt2 | long_reference | rail=recent_only | middle_hidden | jaccard=0.455 recall_delta=0.500 precision_delta=0.125 selector_delta=-0.001456s
+distilgpt2 | long_reference | rail=recent_only | avg_last4_hidden | jaccard=0.455 recall_delta=0.500 precision_delta=0.125 selector_delta=-0.000409s
+distilgpt2 | long_reference | rail=recent_only | avg_mid4_hidden | jaccard=0.600 recall_delta=0.500 precision_delta=0.125 selector_delta=-0.002122s
+distilgpt2 | needle | rail=recent_only | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001408s
+distilgpt2 | needle | rail=recent_only | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001878s
+distilgpt2 | needle | rail=recent_only | avg_last4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000053s
+distilgpt2 | needle | rail=recent_only | avg_mid4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001460s
+distilgpt2 | repeated_reference | rail=recent_only | hidden_layer_index | jaccard=0.778 recall_delta=-1.000 precision_delta=-0.125 selector_delta=0.000568s
+distilgpt2 | repeated_reference | rail=recent_only | middle_hidden | jaccard=0.778 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001137s
+distilgpt2 | repeated_reference | rail=recent_only | avg_last4_hidden | jaccard=0.778 recall_delta=-1.000 precision_delta=-0.125 selector_delta=-0.000524s
+distilgpt2 | repeated_reference | rail=recent_only | avg_mid4_hidden | jaccard=0.778 recall_delta=-1.000 precision_delta=-0.125 selector_delta=-0.000011s
+distilgpt2 | code_context | rail=recent_only | hidden_layer_index | jaccard=0.455 recall_delta=0.200 precision_delta=0.125 selector_delta=0.000902s
+distilgpt2 | code_context | rail=recent_only | middle_hidden | jaccard=0.600 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000540s
+distilgpt2 | code_context | rail=recent_only | avg_last4_hidden | jaccard=0.778 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001404s
+distilgpt2 | code_context | rail=recent_only | avg_mid4_hidden | jaccard=0.455 recall_delta=0.200 precision_delta=0.125 selector_delta=-0.000715s
+distilgpt2 | adversarial_semantic | rail=recent_only | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000666s
+distilgpt2 | adversarial_semantic | rail=recent_only | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.001032s
+distilgpt2 | adversarial_semantic | rail=recent_only | avg_last4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000946s
+distilgpt2 | adversarial_semantic | rail=recent_only | avg_mid4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000863s
+distilgpt2 | long_reference | rail=anchor_only | hidden_layer_index | jaccard=0.714 recall_delta=0.000 precision_delta=0.000 selector_delta=0.002171s
+distilgpt2 | long_reference | rail=anchor_only | middle_hidden | jaccard=0.714 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001698s
+distilgpt2 | long_reference | rail=anchor_only | avg_last4_hidden | jaccard=0.500 recall_delta=0.500 precision_delta=0.167 selector_delta=0.000017s
+distilgpt2 | long_reference | rail=anchor_only | avg_mid4_hidden | jaccard=0.500 recall_delta=0.500 precision_delta=0.167 selector_delta=-0.000896s
+distilgpt2 | needle | rail=anchor_only | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000042s
+distilgpt2 | needle | rail=anchor_only | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001353s
+distilgpt2 | needle | rail=anchor_only | avg_last4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000717s
+distilgpt2 | needle | rail=anchor_only | avg_mid4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000278s
+distilgpt2 | repeated_reference | rail=anchor_only | hidden_layer_index | jaccard=0.714 recall_delta=0.000 precision_delta=0.000 selector_delta=0.002812s
+distilgpt2 | repeated_reference | rail=anchor_only | middle_hidden | jaccard=0.714 recall_delta=0.000 precision_delta=0.000 selector_delta=0.002742s
+distilgpt2 | repeated_reference | rail=anchor_only | avg_last4_hidden | jaccard=0.714 recall_delta=0.000 precision_delta=0.000 selector_delta=0.003239s
+distilgpt2 | repeated_reference | rail=anchor_only | avg_mid4_hidden | jaccard=0.714 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000805s
+distilgpt2 | code_context | rail=anchor_only | hidden_layer_index | jaccard=0.500 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000043s
+distilgpt2 | code_context | rail=anchor_only | middle_hidden | jaccard=0.500 recall_delta=-0.200 precision_delta=-0.167 selector_delta=0.001464s
+distilgpt2 | code_context | rail=anchor_only | avg_last4_hidden | jaccard=0.714 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000857s
+distilgpt2 | code_context | rail=anchor_only | avg_mid4_hidden | jaccard=0.500 recall_delta=0.000 precision_delta=0.000 selector_delta=0.002510s
+distilgpt2 | adversarial_semantic | rail=anchor_only | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000552s
+distilgpt2 | adversarial_semantic | rail=anchor_only | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001887s
+distilgpt2 | adversarial_semantic | rail=anchor_only | avg_last4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000894s
+distilgpt2 | adversarial_semantic | rail=anchor_only | avg_mid4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001428s
+distilgpt2 | long_reference | rail=reduced | hidden_layer_index | jaccard=0.667 recall_delta=0.500 precision_delta=0.200 selector_delta=0.001049s
+distilgpt2 | long_reference | rail=reduced | middle_hidden | jaccard=0.667 recall_delta=0.500 precision_delta=0.200 selector_delta=0.001120s
+distilgpt2 | long_reference | rail=reduced | avg_last4_hidden | jaccard=0.429 recall_delta=0.500 precision_delta=0.200 selector_delta=0.002787s
+distilgpt2 | long_reference | rail=reduced | avg_mid4_hidden | jaccard=0.667 recall_delta=0.500 precision_delta=0.200 selector_delta=-0.000789s
+distilgpt2 | needle | rail=reduced | hidden_layer_index | jaccard=0.667 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001202s
+distilgpt2 | needle | rail=reduced | middle_hidden | jaccard=0.667 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000243s
+distilgpt2 | needle | rail=reduced | avg_last4_hidden | jaccard=0.667 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000502s
+distilgpt2 | needle | rail=reduced | avg_mid4_hidden | jaccard=0.667 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000793s
+distilgpt2 | repeated_reference | rail=reduced | hidden_layer_index | jaccard=0.429 recall_delta=-1.000 precision_delta=-0.200 selector_delta=-0.001732s
+distilgpt2 | repeated_reference | rail=reduced | middle_hidden | jaccard=0.429 recall_delta=-1.000 precision_delta=-0.200 selector_delta=0.001878s
+distilgpt2 | repeated_reference | rail=reduced | avg_last4_hidden | jaccard=0.429 recall_delta=-1.000 precision_delta=-0.200 selector_delta=-0.002832s
+distilgpt2 | repeated_reference | rail=reduced | avg_mid4_hidden | jaccard=0.429 recall_delta=-1.000 precision_delta=-0.200 selector_delta=-0.002421s
+distilgpt2 | code_context | rail=reduced | hidden_layer_index | jaccard=0.250 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.001730s
+distilgpt2 | code_context | rail=reduced | middle_hidden | jaccard=0.250 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.002860s
+distilgpt2 | code_context | rail=reduced | avg_last4_hidden | jaccard=0.667 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.003335s
+distilgpt2 | code_context | rail=reduced | avg_mid4_hidden | jaccard=0.250 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.002383s
+distilgpt2 | adversarial_semantic | rail=reduced | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.002106s
+distilgpt2 | adversarial_semantic | rail=reduced | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.002666s
+distilgpt2 | adversarial_semantic | rail=reduced | avg_last4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.003416s
+distilgpt2 | adversarial_semantic | rail=reduced | avg_mid4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.002576s
+gpt2 | long_reference | rail=default | hidden_layer_index | jaccard=0.818 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000209s
+gpt2 | long_reference | rail=default | middle_hidden | jaccard=0.818 recall_delta=0.000 precision_delta=0.000 selector_delta=0.002414s
+gpt2 | long_reference | rail=default | avg_last4_hidden | jaccard=0.667 recall_delta=0.000 precision_delta=0.000 selector_delta=0.006388s
+gpt2 | long_reference | rail=default | avg_mid4_hidden | jaccard=0.818 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001400s
+gpt2 | needle | rail=default | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000874s
+gpt2 | needle | rail=default | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000788s
+gpt2 | needle | rail=default | avg_last4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.001197s
+gpt2 | needle | rail=default | avg_mid4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.001005s
+gpt2 | repeated_reference | rail=default | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000113s
+gpt2 | repeated_reference | rail=default | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000570s
+gpt2 | repeated_reference | rail=default | avg_last4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000598s
+gpt2 | repeated_reference | rail=default | avg_mid4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000873s
+gpt2 | code_context | rail=default | hidden_layer_index | jaccard=0.538 recall_delta=0.200 precision_delta=0.100 selector_delta=0.001572s
+gpt2 | code_context | rail=default | middle_hidden | jaccard=0.667 recall_delta=0.200 precision_delta=0.100 selector_delta=0.000260s
+gpt2 | code_context | rail=default | avg_last4_hidden | jaccard=0.818 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001035s
+gpt2 | code_context | rail=default | avg_mid4_hidden | jaccard=0.667 recall_delta=0.200 precision_delta=0.100 selector_delta=0.001553s
+gpt2 | adversarial_semantic | rail=default | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000263s
+gpt2 | adversarial_semantic | rail=default | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000659s
+gpt2 | adversarial_semantic | rail=default | avg_last4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.002646s
+gpt2 | adversarial_semantic | rail=default | avg_mid4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000783s
+gpt2 | long_reference | rail=no_rails | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000139s
+gpt2 | long_reference | rail=no_rails | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.001820s
+gpt2 | long_reference | rail=no_rails | avg_last4_hidden | jaccard=0.600 recall_delta=0.500 precision_delta=0.250 selector_delta=-0.001343s
+gpt2 | long_reference | rail=no_rails | avg_mid4_hidden | jaccard=0.600 recall_delta=0.500 precision_delta=0.250 selector_delta=-0.000741s
+gpt2 | needle | rail=no_rails | hidden_layer_index | jaccard=0.600 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.003122s
+gpt2 | needle | rail=no_rails | middle_hidden | jaccard=0.600 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.005091s
+gpt2 | needle | rail=no_rails | avg_last4_hidden | jaccard=0.333 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.003771s
+gpt2 | needle | rail=no_rails | avg_mid4_hidden | jaccard=0.600 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.003972s
+gpt2 | repeated_reference | rail=no_rails | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000695s
+gpt2 | repeated_reference | rail=no_rails | middle_hidden | jaccard=0.600 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000660s
+gpt2 | repeated_reference | rail=no_rails | avg_last4_hidden | jaccard=0.600 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000230s
+gpt2 | repeated_reference | rail=no_rails | avg_mid4_hidden | jaccard=0.600 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000758s
+gpt2 | code_context | rail=no_rails | hidden_layer_index | jaccard=0.333 recall_delta=0.200 precision_delta=0.250 selector_delta=0.000896s
+gpt2 | code_context | rail=no_rails | middle_hidden | jaccard=0.333 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001379s
+gpt2 | code_context | rail=no_rails | avg_last4_hidden | jaccard=0.333 recall_delta=0.200 precision_delta=0.250 selector_delta=0.000816s
+gpt2 | code_context | rail=no_rails | avg_mid4_hidden | jaccard=0.333 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000192s
+gpt2 | adversarial_semantic | rail=no_rails | hidden_layer_index | jaccard=0.600 recall_delta=-1.000 precision_delta=-0.250 selector_delta=-0.000322s
+gpt2 | adversarial_semantic | rail=no_rails | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.001696s
+gpt2 | adversarial_semantic | rail=no_rails | avg_last4_hidden | jaccard=0.600 recall_delta=-1.000 precision_delta=-0.250 selector_delta=-0.000622s
+gpt2 | adversarial_semantic | rail=no_rails | avg_mid4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.001653s
+gpt2 | long_reference | rail=recent_only | hidden_layer_index | jaccard=0.600 recall_delta=0.500 precision_delta=0.125 selector_delta=0.000216s
+gpt2 | long_reference | rail=recent_only | middle_hidden | jaccard=0.600 recall_delta=0.500 precision_delta=0.125 selector_delta=-0.001250s
+gpt2 | long_reference | rail=recent_only | avg_last4_hidden | jaccard=0.600 recall_delta=0.500 precision_delta=0.125 selector_delta=0.000223s
+gpt2 | long_reference | rail=recent_only | avg_mid4_hidden | jaccard=0.600 recall_delta=0.500 precision_delta=0.125 selector_delta=0.000553s
+gpt2 | needle | rail=recent_only | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.001690s
+gpt2 | needle | rail=recent_only | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000816s
+gpt2 | needle | rail=recent_only | avg_last4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000537s
+gpt2 | needle | rail=recent_only | avg_mid4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000679s
+gpt2 | repeated_reference | rail=recent_only | hidden_layer_index | jaccard=0.778 recall_delta=-1.000 precision_delta=-0.125 selector_delta=0.000545s
+gpt2 | repeated_reference | rail=recent_only | middle_hidden | jaccard=0.778 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000247s
+gpt2 | repeated_reference | rail=recent_only | avg_last4_hidden | jaccard=0.778 recall_delta=-1.000 precision_delta=-0.125 selector_delta=-0.000782s
+gpt2 | repeated_reference | rail=recent_only | avg_mid4_hidden | jaccard=0.778 recall_delta=-1.000 precision_delta=-0.125 selector_delta=0.000201s
+gpt2 | code_context | rail=recent_only | hidden_layer_index | jaccard=0.455 recall_delta=0.400 precision_delta=0.250 selector_delta=0.001320s
+gpt2 | code_context | rail=recent_only | middle_hidden | jaccard=0.455 recall_delta=0.400 precision_delta=0.250 selector_delta=0.001229s
+gpt2 | code_context | rail=recent_only | avg_last4_hidden | jaccard=0.600 recall_delta=0.200 precision_delta=0.125 selector_delta=0.001023s
+gpt2 | code_context | rail=recent_only | avg_mid4_hidden | jaccard=0.455 recall_delta=0.400 precision_delta=0.250 selector_delta=0.001156s
+gpt2 | adversarial_semantic | rail=recent_only | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001470s
+gpt2 | adversarial_semantic | rail=recent_only | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000770s
+gpt2 | adversarial_semantic | rail=recent_only | avg_last4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000130s
+gpt2 | adversarial_semantic | rail=recent_only | avg_mid4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000498s
+gpt2 | long_reference | rail=anchor_only | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000601s
+gpt2 | long_reference | rail=anchor_only | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001348s
+gpt2 | long_reference | rail=anchor_only | avg_last4_hidden | jaccard=0.714 recall_delta=0.500 precision_delta=0.167 selector_delta=0.002416s
+gpt2 | long_reference | rail=anchor_only | avg_mid4_hidden | jaccard=0.714 recall_delta=0.500 precision_delta=0.167 selector_delta=0.006040s
+gpt2 | needle | rail=anchor_only | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000434s
+gpt2 | needle | rail=anchor_only | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000282s
+gpt2 | needle | rail=anchor_only | avg_last4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000982s
+gpt2 | needle | rail=anchor_only | avg_mid4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000499s
+gpt2 | repeated_reference | rail=anchor_only | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.001389s
+gpt2 | repeated_reference | rail=anchor_only | middle_hidden | jaccard=0.714 recall_delta=0.000 precision_delta=0.000 selector_delta=0.002452s
+gpt2 | repeated_reference | rail=anchor_only | avg_last4_hidden | jaccard=0.714 recall_delta=0.000 precision_delta=0.000 selector_delta=0.002368s
+gpt2 | repeated_reference | rail=anchor_only | avg_mid4_hidden | jaccard=0.714 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000586s
+gpt2 | code_context | rail=anchor_only | hidden_layer_index | jaccard=0.500 recall_delta=0.200 precision_delta=0.167 selector_delta=0.001742s
+gpt2 | code_context | rail=anchor_only | middle_hidden | jaccard=0.500 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000291s
+gpt2 | code_context | rail=anchor_only | avg_last4_hidden | jaccard=0.500 recall_delta=0.200 precision_delta=0.167 selector_delta=0.002781s
+gpt2 | code_context | rail=anchor_only | avg_mid4_hidden | jaccard=0.500 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000471s
+gpt2 | adversarial_semantic | rail=anchor_only | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000643s
+gpt2 | adversarial_semantic | rail=anchor_only | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000502s
+gpt2 | adversarial_semantic | rail=anchor_only | avg_last4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000562s
+gpt2 | adversarial_semantic | rail=anchor_only | avg_mid4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000297s
+gpt2 | long_reference | rail=reduced | hidden_layer_index | jaccard=0.667 recall_delta=0.500 precision_delta=0.200 selector_delta=-0.000673s
+gpt2 | long_reference | rail=reduced | middle_hidden | jaccard=0.667 recall_delta=0.500 precision_delta=0.200 selector_delta=0.001546s
+gpt2 | long_reference | rail=reduced | avg_last4_hidden | jaccard=0.429 recall_delta=0.500 precision_delta=0.200 selector_delta=-0.001104s
+gpt2 | long_reference | rail=reduced | avg_mid4_hidden | jaccard=0.667 recall_delta=0.500 precision_delta=0.200 selector_delta=-0.000067s
+gpt2 | needle | rail=reduced | hidden_layer_index | jaccard=0.667 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.001013s
+gpt2 | needle | rail=reduced | middle_hidden | jaccard=0.667 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000356s
+gpt2 | needle | rail=reduced | avg_last4_hidden | jaccard=0.667 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000740s
+gpt2 | needle | rail=reduced | avg_mid4_hidden | jaccard=0.667 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000880s
+gpt2 | repeated_reference | rail=reduced | hidden_layer_index | jaccard=0.667 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.001275s
+gpt2 | repeated_reference | rail=reduced | middle_hidden | jaccard=0.667 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000249s
+gpt2 | repeated_reference | rail=reduced | avg_last4_hidden | jaccard=0.667 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.001953s
+gpt2 | repeated_reference | rail=reduced | avg_mid4_hidden | jaccard=0.667 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000861s
+gpt2 | code_context | rail=reduced | hidden_layer_index | jaccard=0.250 recall_delta=0.200 precision_delta=0.200 selector_delta=0.001811s
+gpt2 | code_context | rail=reduced | middle_hidden | jaccard=0.250 recall_delta=0.000 precision_delta=0.000 selector_delta=0.001487s
+gpt2 | code_context | rail=reduced | avg_last4_hidden | jaccard=0.429 recall_delta=0.200 precision_delta=0.200 selector_delta=0.002621s
+gpt2 | code_context | rail=reduced | avg_mid4_hidden | jaccard=0.250 recall_delta=0.200 precision_delta=0.200 selector_delta=0.000351s
+gpt2 | adversarial_semantic | rail=reduced | hidden_layer_index | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000498s
+gpt2 | adversarial_semantic | rail=reduced | middle_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.001194s
+gpt2 | adversarial_semantic | rail=reduced | avg_last4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=-0.000748s
+gpt2 | adversarial_semantic | rail=reduced | avg_mid4_hidden | jaccard=1.000 recall_delta=0.000 precision_delta=0.000 selector_delta=0.000522s

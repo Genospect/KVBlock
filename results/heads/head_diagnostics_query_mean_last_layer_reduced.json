@@ -1,0 +1,1297 @@
+{
+  "rows": [
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "long_reference",
+      "prompt_file": "prompts/long_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "layer_index": null,
+      "representation_name": "query_mean_layer_5_key_mean_layer_5",
+      "rail_setting": "reduced",
+      "keep_recent_blocks": 1,
+      "keep_anchor_blocks": 0,
+      "head_scoring_mode": "mean_heads",
+      "head_top_k": 2,
+      "head_weights": [],
+      "tokens": 194,
+      "blocks": 13,
+      "selected_ids": [
+        12,
+        11,
+        1,
+        8,
+        7
+      ],
+      "selected_reasons": {
+        "1": "semantic",
+        "7": "semantic",
+        "8": "semantic",
+        "11": "semantic",
+        "12": "recent"
+      },
+      "selected_scores": {
+        "1": 0.48551563620567323,
+        "7": 0.47921148538589475,
+        "8": 0.4845362484455109,
+        "11": 0.5968362390995026,
+        "12": 0.6267925024032592
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.006305617978796363,
+      "total_latency_sec": 1.9695039459620602,
+      "prefill_latency_sec": 1.866360893996898,
+      "metadata_latency_sec": 0.08518598397495225,
+      "inspection_latency_sec": 0.011546313005965203,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0007570326328277255,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          7,
+          8
+        ],
+        "selected_expected_block_ids": [
+          8,
+          7
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          12,
+          11,
+          1
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.4,
+        "target_hit": true
+      },
+      "head_diagnostic_summary": {
+        "prompt_name": "long_reference",
+        "block_count": 13,
+        "selected_count": 5,
+        "correct_selected_count": 2,
+        "head_count": 12,
+        "top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 13,
+            "fraction": 1.0
+          }
+        ],
+        "selected_top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 5,
+            "fraction": 1.0
+          }
+        ],
+        "correct_selected_top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 2,
+            "fraction": 1.0
+          }
+        ],
+        "mean_head_scores": [
+          0.47748203919484067,
+          0.4404880885894482,
+          0.3185305893421173,
+          0.3002095680970412,
+          0.3801777271124033,
+          0.4803621402153602,
+          0.288700112929711,
+          0.37778529066305894,
+          0.659907749065986,
+          0.3243459646518414,
+          0.35490450263023376,
+          0.4091806686841525
+        ],
+        "selected_mean_head_scores": [
+          0.5509773969650269,
+          0.49380775094032286,
+          0.3587977111339569,
+          0.34000073075294496,
+          0.40791770815849304,
+          0.5374921023845672,
+          0.30796642899513244,
+          0.43273151516914365,
+          0.68654363155365,
+          0.3876241981983185,
+          0.3989912629127502,
+          0.4571035742759705
+        ]
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "needle",
+      "prompt_file": "prompts/needle.txt",
+      "representation_source": "query_mean_last_layer",
+      "layer_index": null,
+      "representation_name": "query_mean_layer_5_key_mean_layer_5",
+      "rail_setting": "reduced",
+      "keep_recent_blocks": 1,
+      "keep_anchor_blocks": 0,
+      "head_scoring_mode": "mean_heads",
+      "head_top_k": 2,
+      "head_weights": [],
+      "tokens": 92,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        0,
+        1,
+        2,
+        4
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "1": "semantic",
+        "2": "semantic",
+        "4": "semantic",
+        "5": "recent"
+      },
+      "selected_scores": {
+        "0": 0.5060575485229493,
+        "1": 0.5002277493476868,
+        "2": 0.4713623583316803,
+        "4": 0.4670650899410248,
+        "5": 0.5945366144180297
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.006314052967354655,
+      "total_latency_sec": 0.4035343779833056,
+      "prefill_latency_sec": 0.32376219099387527,
+      "metadata_latency_sec": 0.06573056295746937,
+      "inspection_latency_sec": 0.007626568025443703,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0012327730655670166,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          2
+        ],
+        "selected_expected_block_ids": [
+          2
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          5,
+          0,
+          1,
+          4
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.2,
+        "target_hit": true
+      },
+      "head_diagnostic_summary": {
+        "prompt_name": "needle",
+        "block_count": 6,
+        "selected_count": 5,
+        "correct_selected_count": 1,
+        "head_count": 12,
+        "top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 6,
+            "fraction": 1.0
+          }
+        ],
+        "selected_top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 5,
+            "fraction": 1.0
+          }
+        ],
+        "correct_selected_top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 1,
+            "fraction": 1.0
+          }
+        ],
+        "mean_head_scores": [
+          0.4633107930421829,
+          0.4837217877308528,
+          0.2967854291200638,
+          0.3058641403913498,
+          0.2839849144220352,
+          0.4572638620932897,
+          0.30232566098372143,
+          0.36459188163280487,
+          0.6413276294867197,
+          0.29905884464581806,
+          0.3716461608807246,
+          0.3696822275718053
+        ],
+        "selected_mean_head_scores": [
+          0.45646581053733826,
+          0.47859020829200744,
+          0.29319964051246644,
+          0.3095750272274017,
+          0.2835135400295258,
+          0.45293952226638795,
+          0.3059641242027283,
+          0.36599224209785464,
+          0.6369401335716247,
+          0.3061459600925446,
+          0.3716168820858002,
+          0.3784861147403717
+        ]
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "repeated_reference",
+      "prompt_file": "prompts/repeated_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "layer_index": null,
+      "representation_name": "query_mean_layer_5_key_mean_layer_5",
+      "rail_setting": "reduced",
+      "keep_recent_blocks": 1,
+      "keep_anchor_blocks": 0,
+      "head_scoring_mode": "mean_heads",
+      "head_top_k": 2,
+      "head_weights": [],
+      "tokens": 129,
+      "blocks": 9,
+      "selected_ids": [
+        8,
+        0,
+        7,
+        2,
+        1
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "1": "semantic",
+        "2": "semantic",
+        "7": "semantic",
+        "8": "recent"
+      },
+      "selected_scores": {
+        "0": 0.5377398490905761,
+        "1": 0.40829405188560486,
+        "2": 0.41844741106033323,
+        "7": 0.509117591381073,
+        "8": 0.5847132921218872
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.006245098018553108,
+      "total_latency_sec": 0.4607977509731427,
+      "prefill_latency_sec": 0.3698217950295657,
+      "metadata_latency_sec": 0.07488422899041325,
+      "inspection_latency_sec": 0.009768769959919155,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.00782577395439149,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          0
+        ],
+        "selected_expected_block_ids": [
+          0
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          8,
+          7,
+          2,
+          1
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.2,
+        "target_hit": true
+      },
+      "head_diagnostic_summary": {
+        "prompt_name": "repeated_reference",
+        "block_count": 9,
+        "selected_count": 5,
+        "correct_selected_count": 1,
+        "head_count": 12,
+        "top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 9,
+            "fraction": 1.0
+          }
+        ],
+        "selected_top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 5,
+            "fraction": 1.0
+          }
+        ],
+        "correct_selected_top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 1,
+            "fraction": 1.0
+          }
+        ],
+        "mean_head_scores": [
+          0.4877716302871704,
+          0.5002960364023844,
+          0.2938048773341709,
+          0.33083708749877083,
+          0.407652927769555,
+          0.4820546673403846,
+          0.33971823586357963,
+          0.4394073353873359,
+          0.6940706968307495,
+          0.4188698927561442,
+          0.406496783097585,
+          0.44518399569723344
+        ],
+        "selected_mean_head_scores": [
+          0.5231544256210328,
+          0.5243978142738343,
+          0.31846081018447875,
+          0.34544544816017153,
+          0.42518743872642517,
+          0.5090911984443665,
+          0.3589806199073792,
+          0.45622565150260924,
+          0.7200509548187256,
+          0.43732684254646303,
+          0.45679099559783937,
+          0.4757143795490265
+        ]
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "code_context",
+      "prompt_file": "prompts/code_context.txt",
+      "representation_source": "query_mean_last_layer",
+      "layer_index": null,
+      "representation_name": "query_mean_layer_5_key_mean_layer_5",
+      "rail_setting": "reduced",
+      "keep_recent_blocks": 1,
+      "keep_anchor_blocks": 0,
+      "head_scoring_mode": "mean_heads",
+      "head_top_k": 2,
+      "head_weights": [],
+      "tokens": 216,
+      "blocks": 14,
+      "selected_ids": [
+        13,
+        12,
+        11,
+        10,
+        5
+      ],
+      "selected_reasons": {
+        "5": "semantic",
+        "10": "semantic",
+        "11": "semantic",
+        "12": "semantic",
+        "13": "recent"
+      },
+      "selected_scores": {
+        "5": 0.5096399128437042,
+        "10": 0.5128416299819947,
+        "11": 0.5286201477050781,
+        "12": 0.5593941688537598,
+        "13": 0.6466556787490845
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.005087547993753105,
+      "total_latency_sec": 0.6237549409852363,
+      "prefill_latency_sec": 0.45549766696058214,
+      "metadata_latency_sec": 0.15050877101020887,
+      "inspection_latency_sec": 0.012588796962518245,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.002084302902221724,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          4,
+          5,
+          6,
+          7,
+          11
+        ],
+        "selected_expected_block_ids": [
+          11,
+          5
+        ],
+        "missed_expected_block_ids": [
+          4,
+          6,
+          7
+        ],
+        "extra_selected_block_ids": [
+          13,
+          12,
+          10
+        ],
+        "target_recall": 0.4,
+        "selected_precision": 0.4,
+        "target_hit": true
+      },
+      "head_diagnostic_summary": {
+        "prompt_name": "code_context",
+        "block_count": 14,
+        "selected_count": 5,
+        "correct_selected_count": 2,
+        "head_count": 12,
+        "top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 13,
+            "fraction": 0.9285714285714286
+          },
+          {
+            "head_index": 1,
+            "count": 1,
+            "fraction": 0.07142857142857142
+          }
+        ],
+        "selected_top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 4,
+            "fraction": 0.8
+          },
+          {
+            "head_index": 1,
+            "count": 1,
+            "fraction": 0.2
+          }
+        ],
+        "correct_selected_top_head_counts": [
+          {
+            "head_index": 1,
+            "count": 1,
+            "fraction": 0.5
+          },
+          {
+            "head_index": 8,
+            "count": 1,
+            "fraction": 0.5
+          }
+        ],
+        "mean_head_scores": [
+          0.4392620921134949,
+          0.5170261987618038,
+          0.27368468046188354,
+          0.2690759152173996,
+          0.2488977951662881,
+          0.4484124502965382,
+          0.2529048238481794,
+          0.3085878129516329,
+          0.591594717332295,
+          0.22812865461621964,
+          0.32129678981644766,
+          0.28028308280876707
+        ],
+        "selected_mean_head_scores": [
+          0.4701604187488556,
+          0.5130931973457337,
+          0.2818204700946808,
+          0.28858634233474734,
+          0.24535537958145143,
+          0.4625379264354706,
+          0.24861045479774474,
+          0.3476045846939087,
+          0.6007080793380737,
+          0.23916585445404054,
+          0.39159995317459106,
+          0.31731196641922
+        ]
+      }
+    },
+    {
+      "model_name": "distilgpt2",
+      "prompt_name": "adversarial_semantic",
+      "prompt_file": "prompts/adverserial_semantic.txt",
+      "representation_source": "query_mean_last_layer",
+      "layer_index": null,
+      "representation_name": "query_mean_layer_5_key_mean_layer_5",
+      "rail_setting": "reduced",
+      "keep_recent_blocks": 1,
+      "keep_anchor_blocks": 0,
+      "head_scoring_mode": "mean_heads",
+      "head_top_k": 2,
+      "head_weights": [],
+      "tokens": 85,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        4,
+        0,
+        2,
+        3
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "2": "semantic",
+        "3": "semantic",
+        "4": "semantic",
+        "5": "recent"
+      },
+      "selected_scores": {
+        "0": 0.5150404453277588,
+        "2": 0.5040804982185364,
+        "3": 0.4911805152893066,
+        "4": 0.585956609249115,
+        "5": 0.6493428826332093
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.004376662953291088,
+      "total_latency_sec": 0.3378389140125364,
+      "prefill_latency_sec": 0.2787734179873951,
+      "metadata_latency_sec": 0.04819124500500038,
+      "inspection_latency_sec": 0.0064370460459031165,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.010210877656936623,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          1
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          1
+        ],
+        "extra_selected_block_ids": [
+          5,
+          4,
+          0,
+          2,
+          3
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      },
+      "head_diagnostic_summary": {
+        "prompt_name": "adversarial_semantic",
+        "block_count": 6,
+        "selected_count": 5,
+        "correct_selected_count": 0,
+        "head_count": 12,
+        "top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 6,
+            "fraction": 1.0
+          }
+        ],
+        "selected_top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 5,
+            "fraction": 1.0
+          }
+        ],
+        "correct_selected_top_head_counts": [],
+        "mean_head_scores": [
+          0.45662684738636017,
+          0.47772306700547534,
+          0.3033369680245717,
+          0.3045002321402232,
+          0.38251866896947223,
+          0.4811736543973287,
+          0.23568076392014822,
+          0.3129011293252309,
+          0.6586637099583944,
+          0.30527884761492413,
+          0.3810391078392665,
+          0.4804227004448573
+        ],
+        "selected_mean_head_scores": [
+          0.47393506169319155,
+          0.48678283095359803,
+          0.31286810636520385,
+          0.32200021743774415,
+          0.3876251816749573,
+          0.5005494594573975,
+          0.2415338635444641,
+          0.326826286315918,
+          0.6748616814613342,
+          0.31922406554222105,
+          0.3997711420059204,
+          0.4877705812454224
+        ]
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "long_reference",
+      "prompt_file": "prompts/long_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "layer_index": null,
+      "representation_name": "query_mean_layer_11_key_mean_layer_11",
+      "rail_setting": "reduced",
+      "keep_recent_blocks": 1,
+      "keep_anchor_blocks": 0,
+      "head_scoring_mode": "mean_heads",
+      "head_top_k": 2,
+      "head_weights": [],
+      "tokens": 194,
+      "blocks": 13,
+      "selected_ids": [
+        12,
+        11,
+        7,
+        8,
+        9
+      ],
+      "selected_reasons": {
+        "7": "semantic",
+        "8": "semantic",
+        "9": "semantic",
+        "11": "semantic",
+        "12": "recent"
+      },
+      "selected_scores": {
+        "7": 0.5118714392185211,
+        "8": 0.5047664821147919,
+        "9": 0.4998018264770508,
+        "11": 0.5918661177158355,
+        "12": 0.6681636810302735
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.003690124023705721,
+      "total_latency_sec": 0.6872328409808688,
+      "prefill_latency_sec": 0.5905397050082684,
+      "metadata_latency_sec": 0.08332839503418654,
+      "inspection_latency_sec": 0.00958015804644674,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0039554357528686634,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          7,
+          8
+        ],
+        "selected_expected_block_ids": [
+          7,
+          8
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          12,
+          11,
+          9
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.4,
+        "target_hit": true
+      },
+      "head_diagnostic_summary": {
+        "prompt_name": "long_reference",
+        "block_count": 13,
+        "selected_count": 5,
+        "correct_selected_count": 2,
+        "head_count": 12,
+        "top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 13,
+            "fraction": 1.0
+          }
+        ],
+        "selected_top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 5,
+            "fraction": 1.0
+          }
+        ],
+        "correct_selected_top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 2,
+            "fraction": 1.0
+          }
+        ],
+        "mean_head_scores": [
+          0.4606240483430716,
+          0.46968001356491673,
+          0.4190292152074667,
+          0.34957078099250793,
+          0.39748650330763596,
+          0.47287678260069627,
+          0.3731635854794429,
+          0.48363062739372253,
+          0.6533275017371545,
+          0.341700193973688,
+          0.3655882248511681,
+          0.3952284363599924
+        ],
+        "selected_mean_head_scores": [
+          0.5221713960170746,
+          0.5091137528419495,
+          0.480467164516449,
+          0.4054278075695038,
+          0.4287675619125366,
+          0.5353138506412506,
+          0.41236903667449953,
+          0.5198600172996521,
+          0.69164137840271,
+          0.40462982654571533,
+          0.4218434035778046,
+          0.4246688365936279
+        ]
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "needle",
+      "prompt_file": "prompts/needle.txt",
+      "representation_source": "query_mean_last_layer",
+      "layer_index": null,
+      "representation_name": "query_mean_layer_11_key_mean_layer_11",
+      "rail_setting": "reduced",
+      "keep_recent_blocks": 1,
+      "keep_anchor_blocks": 0,
+      "head_scoring_mode": "mean_heads",
+      "head_top_k": 2,
+      "head_weights": [],
+      "tokens": 92,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        0,
+        1,
+        4,
+        3
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "1": "semantic",
+        "3": "semantic",
+        "4": "semantic",
+        "5": "recent"
+      },
+      "selected_scores": {
+        "0": 0.4457398414611816,
+        "1": 0.43836742639541626,
+        "3": 0.39444404244422915,
+        "4": 0.43273348212242124,
+        "5": 0.557459157705307
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.004824830044526607,
+      "total_latency_sec": 0.3336481639998965,
+      "prefill_latency_sec": 0.2827122650342062,
+      "metadata_latency_sec": 0.04044346802402288,
+      "inspection_latency_sec": 0.005597992974799126,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.006564438343048096,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          2
+        ],
+        "selected_expected_block_ids": [],
+        "missed_expected_block_ids": [
+          2
+        ],
+        "extra_selected_block_ids": [
+          5,
+          0,
+          1,
+          4,
+          3
+        ],
+        "target_recall": 0.0,
+        "selected_precision": 0.0,
+        "target_hit": false
+      },
+      "head_diagnostic_summary": {
+        "prompt_name": "needle",
+        "block_count": 6,
+        "selected_count": 5,
+        "correct_selected_count": 0,
+        "head_count": 12,
+        "top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 6,
+            "fraction": 1.0
+          }
+        ],
+        "selected_top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 5,
+            "fraction": 1.0
+          }
+        ],
+        "correct_selected_top_head_counts": [],
+        "mean_head_scores": [
+          0.5009860893090566,
+          0.463887224594752,
+          0.3995610922574997,
+          0.3138989061117172,
+          0.3425680696964264,
+          0.4637013574441274,
+          0.4154277394215266,
+          0.47559428215026855,
+          0.6667642394701639,
+          0.357973446448644,
+          0.4132501284281413,
+          0.33434641857941944
+        ],
+        "selected_mean_head_scores": [
+          0.5211007237434387,
+          0.46567962765693666,
+          0.40574029088020325,
+          0.3199492394924164,
+          0.3255981087684631,
+          0.4733706533908844,
+          0.42513009905815125,
+          0.4988987684249878,
+          0.6825998663902283,
+          0.35969130992889403,
+          0.41488372087478637,
+          0.32738491892814636
+        ]
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "repeated_reference",
+      "prompt_file": "prompts/repeated_reference.txt",
+      "representation_source": "query_mean_last_layer",
+      "layer_index": null,
+      "representation_name": "query_mean_layer_11_key_mean_layer_11",
+      "rail_setting": "reduced",
+      "keep_recent_blocks": 1,
+      "keep_anchor_blocks": 0,
+      "head_scoring_mode": "mean_heads",
+      "head_top_k": 2,
+      "head_weights": [],
+      "tokens": 129,
+      "blocks": 9,
+      "selected_ids": [
+        8,
+        7,
+        0,
+        2,
+        1
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "1": "semantic",
+        "2": "semantic",
+        "7": "semantic",
+        "8": "recent"
+      },
+      "selected_scores": {
+        "0": 0.5566223919391632,
+        "1": 0.4711674630641937,
+        "2": 0.4827678561210632,
+        "7": 0.5667381167411805,
+        "8": 0.656779670715332
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.0037046149955131114,
+      "total_latency_sec": 0.3888551350100897,
+      "prefill_latency_sec": 0.3273705670144409,
+      "metadata_latency_sec": 0.05246166902361438,
+      "inspection_latency_sec": 0.005248028028290719,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.0007595360279082919,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          0
+        ],
+        "selected_expected_block_ids": [
+          0
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          8,
+          7,
+          2,
+          1
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.2,
+        "target_hit": true
+      },
+      "head_diagnostic_summary": {
+        "prompt_name": "repeated_reference",
+        "block_count": 9,
+        "selected_count": 5,
+        "correct_selected_count": 1,
+        "head_count": 12,
+        "top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 9,
+            "fraction": 1.0
+          }
+        ],
+        "selected_top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 5,
+            "fraction": 1.0
+          }
+        ],
+        "correct_selected_top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 1,
+            "fraction": 1.0
+          }
+        ],
+        "mean_head_scores": [
+          0.4871953460905287,
+          0.49716412358813816,
+          0.38647983140415615,
+          0.36073524753252667,
+          0.4547869066397349,
+          0.509755144516627,
+          0.42527927954991657,
+          0.4814427329434289,
+          0.696583542558882,
+          0.5024161802397834,
+          0.4689984619617462,
+          0.4512762129306793
+        ],
+        "selected_mean_head_scores": [
+          0.5353766798973083,
+          0.5219697535037995,
+          0.41572341322898865,
+          0.37923228144645693,
+          0.4988242447376251,
+          0.5462710320949554,
+          0.45451879501342773,
+          0.4900296688079834,
+          0.72564857006073,
+          0.5074707508087158,
+          0.510533195734024,
+          0.48726957440376284
+        ]
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "code_context",
+      "prompt_file": "prompts/code_context.txt",
+      "representation_source": "query_mean_last_layer",
+      "layer_index": null,
+      "representation_name": "query_mean_layer_11_key_mean_layer_11",
+      "rail_setting": "reduced",
+      "keep_recent_blocks": 1,
+      "keep_anchor_blocks": 0,
+      "head_scoring_mode": "mean_heads",
+      "head_top_k": 2,
+      "head_weights": [],
+      "tokens": 216,
+      "blocks": 14,
+      "selected_ids": [
+        13,
+        12,
+        10,
+        0,
+        5
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "5": "semantic",
+        "10": "semantic",
+        "12": "semantic",
+        "13": "recent"
+      },
+      "selected_scores": {
+        "0": 0.4595410406589508,
+        "5": 0.4577991306781769,
+        "10": 0.4700747549533844,
+        "12": 0.4878815591335297,
+        "13": 0.6470302224159241
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.004588523006532341,
+      "total_latency_sec": 0.6631118729710579,
+      "prefill_latency_sec": 0.5517863110289909,
+      "metadata_latency_sec": 0.09584678598912433,
+      "inspection_latency_sec": 0.01082266098819673,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.008824408054351807,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          4,
+          5,
+          6,
+          7,
+          11
+        ],
+        "selected_expected_block_ids": [
+          5
+        ],
+        "missed_expected_block_ids": [
+          4,
+          6,
+          7,
+          11
+        ],
+        "extra_selected_block_ids": [
+          13,
+          12,
+          10,
+          0
+        ],
+        "target_recall": 0.2,
+        "selected_precision": 0.2,
+        "target_hit": true
+      },
+      "head_diagnostic_summary": {
+        "prompt_name": "code_context",
+        "block_count": 14,
+        "selected_count": 5,
+        "correct_selected_count": 1,
+        "head_count": 12,
+        "top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 14,
+            "fraction": 1.0
+          }
+        ],
+        "selected_top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 5,
+            "fraction": 1.0
+          }
+        ],
+        "correct_selected_top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 1,
+            "fraction": 1.0
+          }
+        ],
+        "mean_head_scores": [
+          0.49261132308415007,
+          0.47455682499068125,
+          0.3476632173572268,
+          0.338185829775674,
+          0.34768791283879963,
+          0.4172552887882505,
+          0.24786912543433054,
+          0.39624428536210743,
+          0.5543235838413239,
+          0.2810732764857156,
+          0.3353806883096695,
+          0.3145834803581238
+        ],
+        "selected_mean_head_scores": [
+          0.5360257506370545,
+          0.5062229752540588,
+          0.37673025727272036,
+          0.382487553358078,
+          0.35187435150146484,
+          0.4797899842262268,
+          0.28552700877189635,
+          0.4499447762966156,
+          0.5980693697929382,
+          0.32917293906211853,
+          0.3736652135848999,
+          0.3776526987552643
+        ]
+      }
+    },
+    {
+      "model_name": "gpt2",
+      "prompt_name": "adversarial_semantic",
+      "prompt_file": "prompts/adverserial_semantic.txt",
+      "representation_source": "query_mean_last_layer",
+      "layer_index": null,
+      "representation_name": "query_mean_layer_11_key_mean_layer_11",
+      "rail_setting": "reduced",
+      "keep_recent_blocks": 1,
+      "keep_anchor_blocks": 0,
+      "head_scoring_mode": "mean_heads",
+      "head_top_k": 2,
+      "head_weights": [],
+      "tokens": 85,
+      "blocks": 6,
+      "selected_ids": [
+        5,
+        4,
+        0,
+        2,
+        1
+      ],
+      "selected_reasons": {
+        "0": "semantic",
+        "1": "semantic",
+        "2": "semantic",
+        "4": "semantic",
+        "5": "recent"
+      },
+      "selected_scores": {
+        "0": 0.5429822146892548,
+        "1": 0.5095964550971985,
+        "2": 0.5330220818519592,
+        "4": 0.5941552758216858,
+        "5": 0.6835243105888367
+      },
+      "selected_count": 5,
+      "selected_to_semantic_k_ratio": 1.25,
+      "selector_latency_sec": 0.005280231009237468,
+      "total_latency_sec": 0.31260894995648414,
+      "prefill_latency_sec": 0.2597931320196949,
+      "metadata_latency_sec": 0.04206132801482454,
+      "inspection_latency_sec": 0.0054013520129956305,
+      "fallback_mode": "sparse",
+      "raw_margin": 0.001113080978393577,
+      "retrieval_quality": {
+        "expected_block_ids": [
+          1
+        ],
+        "selected_expected_block_ids": [
+          1
+        ],
+        "missed_expected_block_ids": [],
+        "extra_selected_block_ids": [
+          5,
+          4,
+          0,
+          2
+        ],
+        "target_recall": 1.0,
+        "selected_precision": 0.2,
+        "target_hit": true
+      },
+      "head_diagnostic_summary": {
+        "prompt_name": "adversarial_semantic",
+        "block_count": 6,
+        "selected_count": 5,
+        "correct_selected_count": 1,
+        "head_count": 12,
+        "top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 6,
+            "fraction": 1.0
+          }
+        ],
+        "selected_top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 5,
+            "fraction": 1.0
+          }
+        ],
+        "correct_selected_top_head_counts": [
+          {
+            "head_index": 8,
+            "count": 1,
+            "fraction": 1.0
+          }
+        ],
+        "mean_head_scores": [
+          0.45920934279759723,
+          0.43111229439576465,
+          0.3469477891921997,
+          0.3595924625794093,
+          0.39385079344113666,
+          0.5174502730369568,
+          0.361955647667249,
+          0.4227186093727748,
+          0.6777956883112589,
+          0.35925166805585224,
+          0.4085905800263087,
+          0.45757493873437244
+        ],
+        "selected_mean_head_scores": [
+          0.4713184952735901,
+          0.438646537065506,
+          0.3494916260242462,
+          0.3605606734752655,
+          0.39253772497177125,
+          0.5249375522136688,
+          0.3762009561061859,
+          0.4362805187702179,
+          0.685867714881897,
+          0.37196372747421264,
+          0.4134173452854156,
+          0.46136406660079954
+        ]
+      }
+    }
+  ],
+  "layer_differences": [],
+  "aggregate_summaries": [
+    {
+      "model_name": "distilgpt2",
+      "representation_source": "query_mean_last_layer",
+      "rail_setting": "reduced",
+      "keep_recent_blocks": 1,
+      "keep_anchor_blocks": 0,
+      "head_scoring_mode": "mean_heads",
+      "head_top_k": 2,
+      "head_weights": [],
+      "run_count": 5,
+      "mean_recall": 0.6799999999999999,
+      "mean_precision": 0.24000000000000005,
+      "mean_selected_count": 5.0,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.005665795982349664
+    },
+    {
+      "model_name": "gpt2",
+      "representation_source": "query_mean_last_layer",
+      "rail_setting": "reduced",
+      "keep_recent_blocks": 1,
+      "keep_anchor_blocks": 0,
+      "head_scoring_mode": "mean_heads",
+      "head_top_k": 2,
+      "head_weights": [],
+      "run_count": 5,
+      "mean_recall": 0.64,
+      "mean_precision": 0.2,
+      "mean_selected_count": 5.0,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.00441766461590305
+    }
+  ],
+  "ranking_summaries": [
+    {
+      "rank": 1,
+      "model_name": "distilgpt2",
+      "representation_source": "query_mean_last_layer",
+      "rail_setting": "reduced",
+      "keep_recent_blocks": 1,
+      "keep_anchor_blocks": 0,
+      "head_scoring_mode": "mean_heads",
+      "run_count": 5,
+      "mean_recall": 0.6799999999999999,
+      "mean_precision": 0.24000000000000005,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.005665795982349664
+    },
+    {
+      "rank": 1,
+      "model_name": "gpt2",
+      "representation_source": "query_mean_last_layer",
+      "rail_setting": "reduced",
+      "keep_recent_blocks": 1,
+      "keep_anchor_blocks": 0,
+      "head_scoring_mode": "mean_heads",
+      "run_count": 5,
+      "mean_recall": 0.64,
+      "mean_precision": 0.2,
+      "mean_selected_to_semantic_k_ratio": 1.25,
+      "mean_selector_latency_sec": 0.00441766461590305
+    }
+  ],
+  "model_load_seconds": {
+    "distilgpt2": 5.345658487989567,
+    "gpt2": 0.9910710550029762
+  }
+}

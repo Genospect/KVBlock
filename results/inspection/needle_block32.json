@@ -1,0 +1,330 @@
+{
+  "run_summary": {
+    "runtime_name": "local_hf:gpt2",
+    "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_top_token_mean",
+    "token_count": 92,
+    "block_count": 3,
+    "block_size": 32,
+    "summary_dim": 32,
+    "prompt_chars": 371
+  },
+  "selected_block_ids": [
+    2,
+    0,
+    1
+  ],
+  "query_key_inspection": {
+    "prompt_id": "needle",
+    "prompt_name": "needle",
+    "representation_source": "query_mean_last_layer",
+    "representation_name": "query_mean_layer_11_key_mean_layer_11_qkagg_top_token_mean",
+    "qk_aggregation_strategy": "top_token_mean",
+    "rail_setting": "cli",
+    "selected_block_ids": [
+      2,
+      0,
+      1
+    ],
+    "missed_relevant_block_ids": [],
+    "relevance_fragments": [
+      "ZXQ-4917-BETA"
+    ],
+    "query_summary_metadata": {
+      "summary_dim": 32,
+      "summary_scale": 0.003862237836432269,
+      "summary_norm": 1.0767544507980347,
+      "sign_sketch": 5401748230692734344,
+      "quantized_values_preview": [
+        -49,
+        3,
+        -22,
+        -1,
+        127,
+        67,
+        -41,
+        -4
+      ],
+      "has_per_head": true,
+      "head_count": 12,
+      "mean_per_head_summary_scale": 0.015244846034237718,
+      "mean_per_head_summary_norm": 4.141308089097341
+    },
+    "comparison_groups": {
+      "selected_relevant_block_ids": [
+        1
+      ],
+      "selected_irrelevant_block_ids": [
+        0,
+        2
+      ],
+      "missed_relevant_block_ids": [],
+      "high_scoring_near_miss_block_ids": []
+    },
+    "block_records": [
+      {
+        "block_id": 0,
+        "token_start": 0,
+        "token_end": 32,
+        "token_count": 32,
+        "preview_text": "System logs: request accepted cache warmup started index rebuilt heartbeat normal latency nominal replica synced arch...",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.39453357458114624,
+        "stage_b_score": 0.546875,
+        "final_score": 0.5039085745811462,
+        "rank_position": 2,
+        "stage_a_rank": 2,
+        "stage_b_rank": 2,
+        "final_rank": 2,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.0029112342305070774,
+          "summary_norm": 0.829200029373169,
+          "sign_sketch": 6941843539390482271,
+          "quantized_values_preview": [
+            -37,
+            5,
+            81,
+            22,
+            32,
+            6,
+            -5,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012143994879534865,
+          "mean_per_head_summary_norm": 3.4535843332608542
+        }
+      },
+      {
+        "block_id": 1,
+        "token_start": 32,
+        "token_end": 64,
+        "token_count": 32,
+        "preview_text": "ostics complete Reference token: ZXQ-4917-BETA Additional logs: session opened session closed background merge complete",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.34007978439331055,
+        "stage_b_score": 0.453125,
+        "final_score": 0.43070478439331056,
+        "rank_position": 3,
+        "stage_a_rank": 3,
+        "stage_b_rank": 3,
+        "final_rank": 3,
+        "labeled_relevant": true,
+        "matched_relevance_fragments": [
+          "ZXQ-4917-BETA"
+        ],
+        "explanation_hints": [
+          "semantic high-score",
+          "question-adjacent"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004355705629183551,
+          "summary_norm": 0.9787819385528564,
+          "sign_sketch": 4169316116789057245,
+          "quantized_values_preview": [
+            -16,
+            -23,
+            40,
+            40,
+            30,
+            -32,
+            38,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.014029646561214616,
+          "mean_per_head_summary_norm": 3.812683423360189
+        }
+      },
+      {
+        "block_id": 2,
+        "token_start": 64,
+        "token_end": 92,
+        "token_count": 28,
+        "preview_text": "retry queue empty cpu stable memory stable io stable all services nominal Question: What was the reference token?",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.4599071145057678,
+        "stage_b_score": 0.625,
+        "final_score": 0.5849071145057678,
+        "rank_position": 1,
+        "stage_a_rank": 1,
+        "stage_b_rank": 1,
+        "final_rank": 1,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match",
+          "question-adjacent"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004382549777744323,
+          "summary_norm": 1.3378561735153198,
+          "sign_sketch": 8711348866018038808,
+          "quantized_values_preview": [
+            -20,
+            -17,
+            -19,
+            76,
+            41,
+            39,
+            8,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.013289107581761878,
+          "mean_per_head_summary_norm": 3.9271209239959717
+        }
+      }
+    ],
+    "selected_relevant_blocks": [
+      {
+        "block_id": 1,
+        "token_start": 32,
+        "token_end": 64,
+        "token_count": 32,
+        "preview_text": "ostics complete Reference token: ZXQ-4917-BETA Additional logs: session opened session closed background merge complete",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.34007978439331055,
+        "stage_b_score": 0.453125,
+        "final_score": 0.43070478439331056,
+        "rank_position": 3,
+        "stage_a_rank": 3,
+        "stage_b_rank": 3,
+        "final_rank": 3,
+        "labeled_relevant": true,
+        "matched_relevance_fragments": [
+          "ZXQ-4917-BETA"
+        ],
+        "explanation_hints": [
+          "semantic high-score",
+          "question-adjacent"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004355705629183551,
+          "summary_norm": 0.9787819385528564,
+          "sign_sketch": 4169316116789057245,
+          "quantized_values_preview": [
+            -16,
+            -23,
+            40,
+            40,
+            30,
+            -32,
+            38,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.014029646561214616,
+          "mean_per_head_summary_norm": 3.812683423360189
+        }
+      }
+    ],
+    "selected_irrelevant_blocks": [
+      {
+        "block_id": 0,
+        "token_start": 0,
+        "token_end": 32,
+        "token_count": 32,
+        "preview_text": "System logs: request accepted cache warmup started index rebuilt heartbeat normal latency nominal replica synced arch...",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.39453357458114624,
+        "stage_b_score": 0.546875,
+        "final_score": 0.5039085745811462,
+        "rank_position": 2,
+        "stage_a_rank": 2,
+        "stage_b_rank": 2,
+        "final_rank": 2,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.0029112342305070774,
+          "summary_norm": 0.829200029373169,
+          "sign_sketch": 6941843539390482271,
+          "quantized_values_preview": [
+            -37,
+            5,
+            81,
+            22,
+            32,
+            6,
+            -5,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.012143994879534865,
+          "mean_per_head_summary_norm": 3.4535843332608542
+        }
+      },
+      {
+        "block_id": 2,
+        "token_start": 64,
+        "token_end": 92,
+        "token_count": 28,
+        "preview_text": "retry queue empty cpu stable memory stable io stable all services nominal Question: What was the reference token?",
+        "selected": true,
+        "selected_reason": "semantic",
+        "stage_a_score": 0.4599071145057678,
+        "stage_b_score": 0.625,
+        "final_score": 0.5849071145057678,
+        "rank_position": 1,
+        "stage_a_rank": 1,
+        "stage_b_rank": 1,
+        "final_rank": 1,
+        "labeled_relevant": false,
+        "matched_relevance_fragments": [],
+        "explanation_hints": [
+          "semantic high-score",
+          "selected without label match",
+          "question-adjacent"
+        ],
+        "block_summary_metadata": {
+          "summary_dim": 32,
+          "summary_scale": 0.004382549777744323,
+          "summary_norm": 1.3378561735153198,
+          "sign_sketch": 8711348866018038808,
+          "quantized_values_preview": [
+            -20,
+            -17,
+            -19,
+            76,
+            41,
+            39,
+            8,
+            -127
+          ],
+          "has_per_head": true,
+          "head_count": 12,
+          "mean_per_head_summary_scale": 0.013289107581761878,
+          "mean_per_head_summary_norm": 3.9271209239959717
+        }
+      }
+    ],
+    "missed_relevant_blocks": [],
+    "high_scoring_near_miss_blocks": []
+  }
+}

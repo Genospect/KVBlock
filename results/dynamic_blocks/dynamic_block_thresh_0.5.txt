@@ -1,0 +1,26 @@
+DYNAMIC BLOCK BENCHMARK
+model_load_seconds={'gpt2': 5.576918906997889}
+
+RANKED AGGREGATES
+fixed_40 | runs=4 suppression=overlap_threshold@0.50 mean_recall=0.688 mean_precision=0.188 mean_selected=3.750 mean_selected/K=0.938 mean_candidates=4.500 mean_after_suppression=4.500 mean_selector=0.003975s d_recall_vs_best_fixed=0.000 d_precision_vs_best_fixed=0.000 d_selected/K_vs_best_fixed=0.000 d_selector_vs_best_fixed=0.000s
+multiscale_16_32 | runs=4 suppression=overlap_threshold@0.50 mean_recall=0.625 mean_precision=0.188 mean_selected=4.000 mean_selected/K=1.000 mean_candidates=16.000 mean_after_suppression=8.250 mean_selector=0.005075s d_recall_vs_best_fixed=-0.062 d_precision_vs_best_fixed=0.000 d_selected/K_vs_best_fixed=0.062 d_selector_vs_best_fixed=0.001s
+
+PER-PROMPT BREAKDOWN
+code_context | fixed_40 | suppression=overlap_threshold@0.50 | qk=block_max | runs=1 mean_recall=0.750 mean_precision=0.250 mean_selected/K=1.000 mean_candidates=6.000 mean_after_suppression=6.000 mean_selector=0.003891s
+code_context | multiscale_16_32 | suppression=overlap_threshold@0.50 | qk=block_max | runs=1 mean_recall=0.000 mean_precision=0.000 mean_selected/K=1.000 mean_candidates=21.000 mean_after_suppression=9.000 mean_selector=0.003849s
+long_reference | fixed_40 | suppression=overlap_threshold@0.50 | qk=block_max | runs=1 mean_recall=1.000 mean_precision=0.250 mean_selected/K=1.000 mean_candidates=5.000 mean_after_suppression=5.000 mean_selector=0.004092s
+long_reference | multiscale_16_32 | suppression=overlap_threshold@0.50 | qk=block_max | runs=1 mean_recall=0.500 mean_precision=0.250 mean_selected/K=1.000 mean_candidates=20.000 mean_after_suppression=11.000 mean_selector=0.005965s
+needle | fixed_40 | suppression=overlap_threshold@0.50 | qk=top_token_mean | runs=1 mean_recall=0.000 mean_precision=0.000 mean_selected/K=0.750 mean_candidates=3.000 mean_after_suppression=3.000 mean_selector=0.003664s
+needle | multiscale_16_32 | suppression=overlap_threshold@0.50 | qk=top_token_mean | runs=1 mean_recall=1.000 mean_precision=0.250 mean_selected/K=1.000 mean_candidates=9.000 mean_after_suppression=5.000 mean_selector=0.007746s
+repeated_reference | fixed_40 | suppression=overlap_threshold@0.50 | qk=block_max | runs=1 mean_recall=1.000 mean_precision=0.250 mean_selected/K=1.000 mean_candidates=4.000 mean_after_suppression=4.000 mean_selector=0.004255s
+repeated_reference | multiscale_16_32 | suppression=overlap_threshold@0.50 | qk=block_max | runs=1 mean_recall=1.000 mean_precision=0.250 mean_selected/K=1.000 mean_candidates=14.000 mean_after_suppression=8.000 mean_selector=0.002741s
+
+RUNS
+gpt2 | needle | multiscale_16_32 | suppression=overlap_threshold@0.50 | qk=top_token_mean | candidates=9 ranked=9 after=5 | selected=['s16_stride16_t80_92', 's32_stride32_t0_32', 's16_stride16_t32_48', 's16_stride16_t48_64'] | recall=1.000 precision=0.250 selected/K=1.000 selector=0.007746s
+gpt2 | long_reference | multiscale_16_32 | suppression=overlap_threshold@0.50 | qk=block_max | candidates=20 ranked=16 after=11 | selected=['s16_stride16_t192_194', 's16_stride16_t176_192', 's16_stride16_t128_144', 's16_stride16_t80_96'] | recall=0.500 precision=0.250 selected/K=1.000 selector=0.005965s
+gpt2 | code_context | multiscale_16_32 | suppression=overlap_threshold@0.50 | qk=block_max | candidates=21 ranked=16 after=9 | selected=['s16_stride16_t208_216', 's16_stride16_t192_208', 's16_stride16_t144_160', 's16_stride16_t128_144'] | recall=0.000 precision=0.000 selected/K=1.000 selector=0.003849s
+gpt2 | repeated_reference | multiscale_16_32 | suppression=overlap_threshold@0.50 | qk=block_max | candidates=14 ranked=14 after=8 | selected=['s16_stride16_t128_129', 's16_stride16_t112_128', 's16_stride16_t96_112', 's16_stride16_t0_16'] | recall=1.000 precision=0.250 selected/K=1.000 selector=0.002741s
+gpt2 | needle | fixed_40 | suppression=overlap_threshold@0.50 | qk=top_token_mean | candidates=3 ranked=3 after=3 | selected=['s40_stride40_t80_92', 's40_stride40_t0_40', 's40_stride40_t40_80'] | recall=0.000 precision=0.000 selected/K=0.750 selector=0.003664s
+gpt2 | long_reference | fixed_40 | suppression=overlap_threshold@0.50 | qk=block_max | candidates=5 ranked=5 after=5 | selected=['s40_stride40_t160_194', 's40_stride40_t120_160', 's40_stride40_t80_120', 's40_stride40_t0_40'] | recall=1.000 precision=0.250 selected/K=1.000 selector=0.004092s
+gpt2 | code_context | fixed_40 | suppression=overlap_threshold@0.50 | qk=block_max | candidates=6 ranked=6 after=6 | selected=['s40_stride40_t200_216', 's40_stride40_t120_160', 's40_stride40_t0_40', 's40_stride40_t80_120'] | recall=0.750 precision=0.250 selected/K=1.000 selector=0.003891s
+gpt2 | repeated_reference | fixed_40 | suppression=overlap_threshold@0.50 | qk=block_max | candidates=4 ranked=4 after=4 | selected=['s40_stride40_t120_129', 's40_stride40_t80_120', 's40_stride40_t40_80', 's40_stride40_t0_40'] | recall=1.000 precision=0.250 selected/K=1.000 selector=0.004255s

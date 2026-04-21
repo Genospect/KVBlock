@@ -1,0 +1,58 @@
+REAL-BLOCK REPRESENTATION SWEEP
+model_load_seconds={'distilgpt2': 5.8023376450291835, 'gpt2': 0.8986754239886068}
+
+RUNS
+distilgpt2 | long_reference | query_mean_last_layer (query_mean_layer_5_key_mean_layer_5) | rail=reduced(recent=1,anchors=0) | head_mode=weighted_head_mean | selected=[12, 11, 10, 7, 8] | selected/K=1.250 | recall=1.000 precision=0.400 hit=True | selector=0.004723s total=2.427253s
+  reasons=7:semantic:0.374, 8:semantic:0.373, 10:semantic:0.398, 11:semantic:0.499, 12:recent:0.558
+distilgpt2 | needle | query_mean_last_layer (query_mean_layer_5_key_mean_layer_5) | rail=reduced(recent=1,anchors=0) | head_mode=weighted_head_mean | selected=[5, 0, 3, 2, 4] | selected/K=1.250 | recall=1.000 precision=0.200 hit=True | selector=0.004050s total=0.149235s
+  reasons=0:semantic:0.379, 2:semantic:0.355, 3:semantic:0.357, 4:semantic:0.340, 5:recent:0.503
+distilgpt2 | repeated_reference | query_mean_last_layer (query_mean_layer_5_key_mean_layer_5) | rail=reduced(recent=1,anchors=0) | head_mode=weighted_head_mean | selected=[8, 7, 0, 1, 2] | selected/K=1.250 | recall=1.000 precision=0.200 hit=True | selector=0.006341s total=0.306003s
+  reasons=0:semantic:0.384, 1:semantic:0.343, 2:semantic:0.341, 7:semantic:0.450, 8:recent:0.556
+distilgpt2 | code_context | query_mean_last_layer (query_mean_layer_5_key_mean_layer_5) | rail=reduced(recent=1,anchors=0) | head_mode=weighted_head_mean | selected=[13, 12, 0, 5, 9] | selected/K=1.250 | recall=0.200 precision=0.200 hit=True | selector=0.009555s total=0.502768s
+  reasons=0:semantic:0.347, 5:semantic:0.339, 9:semantic:0.338, 12:semantic:0.375, 13:recent:0.530
+distilgpt2 | adversarial_semantic | query_mean_last_layer (query_mean_layer_5_key_mean_layer_5) | rail=reduced(recent=1,anchors=0) | head_mode=weighted_head_mean | selected=[5, 4, 0, 2, 3] | selected/K=1.250 | recall=0.000 precision=0.000 hit=False | selector=0.004322s total=0.167680s
+  reasons=0:semantic:0.374, 2:semantic:0.363, 3:semantic:0.358, 4:semantic:0.452, 5:recent:0.500
+distilgpt2 | long_reference | query_mean_last_layer (query_mean_layer_5_key_mean_layer_5) | rail=no_rails(recent=0,anchors=0) | head_mode=weighted_head_mean | selected=[12, 11, 10, 7] | selected/K=1.000 | recall=0.500 precision=0.250 hit=True | selector=0.010088s total=0.408698s
+  reasons=7:semantic:0.374, 10:semantic:0.398, 11:semantic:0.499, 12:semantic:0.558
+distilgpt2 | needle | query_mean_last_layer (query_mean_layer_5_key_mean_layer_5) | rail=no_rails(recent=0,anchors=0) | head_mode=weighted_head_mean | selected=[5, 0, 3, 2] | selected/K=1.000 | recall=1.000 precision=0.250 hit=True | selector=0.005137s total=0.192946s
+  reasons=0:semantic:0.379, 2:semantic:0.355, 3:semantic:0.357, 5:semantic:0.503
+distilgpt2 | repeated_reference | query_mean_last_layer (query_mean_layer_5_key_mean_layer_5) | rail=no_rails(recent=0,anchors=0) | head_mode=weighted_head_mean | selected=[8, 7, 0, 1] | selected/K=1.000 | recall=1.000 precision=0.250 hit=True | selector=0.005397s total=0.261248s
+  reasons=0:semantic:0.384, 1:semantic:0.343, 7:semantic:0.450, 8:semantic:0.556
+distilgpt2 | code_context | query_mean_last_layer (query_mean_layer_5_key_mean_layer_5) | rail=no_rails(recent=0,anchors=0) | head_mode=weighted_head_mean | selected=[13, 12, 0, 5] | selected/K=1.000 | recall=0.200 precision=0.250 hit=True | selector=0.005281s total=0.433877s
+  reasons=0:semantic:0.347, 5:semantic:0.339, 12:semantic:0.375, 13:semantic:0.530
+distilgpt2 | adversarial_semantic | query_mean_last_layer (query_mean_layer_5_key_mean_layer_5) | rail=no_rails(recent=0,anchors=0) | head_mode=weighted_head_mean | selected=[5, 4, 0, 2] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.006838s total=0.223453s
+  reasons=0:semantic:0.374, 2:semantic:0.363, 4:semantic:0.452, 5:semantic:0.500
+gpt2 | long_reference | query_mean_last_layer (query_mean_layer_11_key_mean_layer_11) | rail=reduced(recent=1,anchors=0) | head_mode=weighted_head_mean | selected=[12, 11, 10, 7, 9] | selected/K=1.250 | recall=0.500 precision=0.200 hit=True | selector=0.004577s total=0.720210s
+  reasons=7:semantic:0.402, 9:semantic:0.400, 10:semantic:0.412, 11:semantic:0.497, 12:recent:0.575
+gpt2 | needle | query_mean_last_layer (query_mean_layer_11_key_mean_layer_11) | rail=reduced(recent=1,anchors=0) | head_mode=weighted_head_mean | selected=[5, 0, 4, 3, 1] | selected/K=1.250 | recall=0.000 precision=0.000 hit=False | selector=0.005190s total=0.347261s
+  reasons=0:semantic:0.378, 1:semantic:0.348, 3:semantic:0.351, 4:semantic:0.369, 5:recent:0.521
+gpt2 | repeated_reference | query_mean_last_layer (query_mean_layer_11_key_mean_layer_11) | rail=reduced(recent=1,anchors=0) | head_mode=weighted_head_mean | selected=[8, 7, 0, 2, 6] | selected/K=1.250 | recall=1.000 precision=0.200 hit=True | selector=0.005061s total=0.456880s
+  reasons=0:semantic:0.425, 2:semantic:0.404, 6:semantic:0.400, 7:semantic:0.487, 8:recent:0.594
+gpt2 | code_context | query_mean_last_layer (query_mean_layer_11_key_mean_layer_11) | rail=reduced(recent=1,anchors=0) | head_mode=weighted_head_mean | selected=[13, 12, 9, 10, 0] | selected/K=1.250 | recall=0.000 precision=0.000 hit=False | selector=0.005407s total=1.398971s
+  reasons=0:semantic:0.344, 9:semantic:0.359, 10:semantic:0.353, 12:semantic:0.391, 13:recent:0.551
+gpt2 | adversarial_semantic | query_mean_last_layer (query_mean_layer_11_key_mean_layer_11) | rail=reduced(recent=1,anchors=0) | head_mode=weighted_head_mean | selected=[5, 4, 0, 2, 3] | selected/K=1.250 | recall=0.000 precision=0.000 hit=False | selector=0.004972s total=0.328141s
+  reasons=0:semantic:0.410, 2:semantic:0.391, 3:semantic:0.381, 4:semantic:0.462, 5:recent:0.527
+gpt2 | long_reference | query_mean_last_layer (query_mean_layer_11_key_mean_layer_11) | rail=no_rails(recent=0,anchors=0) | head_mode=weighted_head_mean | selected=[12, 11, 10, 7] | selected/K=1.000 | recall=0.500 precision=0.250 hit=True | selector=0.004308s total=1.171828s
+  reasons=7:semantic:0.402, 10:semantic:0.412, 11:semantic:0.497, 12:semantic:0.575
+gpt2 | needle | query_mean_last_layer (query_mean_layer_11_key_mean_layer_11) | rail=no_rails(recent=0,anchors=0) | head_mode=weighted_head_mean | selected=[5, 0, 4, 3] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.004207s total=0.248766s
+  reasons=0:semantic:0.378, 3:semantic:0.351, 4:semantic:0.369, 5:semantic:0.521
+gpt2 | repeated_reference | query_mean_last_layer (query_mean_layer_11_key_mean_layer_11) | rail=no_rails(recent=0,anchors=0) | head_mode=weighted_head_mean | selected=[8, 7, 0, 2] | selected/K=1.000 | recall=1.000 precision=0.250 hit=True | selector=0.005692s total=0.457803s
+  reasons=0:semantic:0.425, 2:semantic:0.404, 7:semantic:0.487, 8:semantic:0.594
+gpt2 | code_context | query_mean_last_layer (query_mean_layer_11_key_mean_layer_11) | rail=no_rails(recent=0,anchors=0) | head_mode=weighted_head_mean | selected=[13, 12, 9, 10] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.007437s total=0.523504s
+  reasons=9:semantic:0.359, 10:semantic:0.353, 12:semantic:0.391, 13:semantic:0.551
+gpt2 | adversarial_semantic | query_mean_last_layer (query_mean_layer_11_key_mean_layer_11) | rail=no_rails(recent=0,anchors=0) | head_mode=weighted_head_mean | selected=[5, 4, 0, 2] | selected/K=1.000 | recall=0.000 precision=0.000 hit=False | selector=0.007167s total=0.341973s
+  reasons=0:semantic:0.410, 2:semantic:0.391, 4:semantic:0.462, 5:semantic:0.527
+
+AGGREGATES BY MODEL / REPRESENTATION / RAILS
+distilgpt2 | query_mean_last_layer | rail=no_rails(recent=0,anchors=0) | head_mode=weighted_head_mean | runs=5 mean_recall=0.540 mean_precision=0.200 mean_selected=4.000 mean_selected/K=1.000 mean_selector=0.006548s
+distilgpt2 | query_mean_last_layer | rail=reduced(recent=1,anchors=0) | head_mode=weighted_head_mean | runs=5 mean_recall=0.640 mean_precision=0.200 mean_selected=5.000 mean_selected/K=1.250 mean_selector=0.005798s
+gpt2 | query_mean_last_layer | rail=no_rails(recent=0,anchors=0) | head_mode=weighted_head_mean | runs=5 mean_recall=0.300 mean_precision=0.100 mean_selected=4.000 mean_selected/K=1.000 mean_selector=0.005762s
+gpt2 | query_mean_last_layer | rail=reduced(recent=1,anchors=0) | head_mode=weighted_head_mean | runs=5 mean_recall=0.300 mean_precision=0.080 mean_selected=5.000 mean_selected/K=1.250 mean_selector=0.005041s
+
+SUMMARY RANKING BY MODEL / RAILS
+distilgpt2 | rail=no_rails(recent=0,anchors=0) | rank=1 | query_mean_last_layer | head_mode=weighted_head_mean | mean_recall=0.540 mean_precision=0.200 mean_selected/K=1.000 mean_selector=0.006548s
+distilgpt2 | rail=reduced(recent=1,anchors=0) | rank=1 | query_mean_last_layer | head_mode=weighted_head_mean | mean_recall=0.640 mean_precision=0.200 mean_selected/K=1.250 mean_selector=0.005798s
+gpt2 | rail=no_rails(recent=0,anchors=0) | rank=1 | query_mean_last_layer | head_mode=weighted_head_mean | mean_recall=0.300 mean_precision=0.100 mean_selected/K=1.000 mean_selector=0.005762s
+gpt2 | rail=reduced(recent=1,anchors=0) | rank=1 | query_mean_last_layer | head_mode=weighted_head_mean | mean_recall=0.300 mean_precision=0.080 mean_selected/K=1.250 mean_selector=0.005041s
+
+LAYER DIFFERENCES VS final_hidden

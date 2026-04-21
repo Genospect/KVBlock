@@ -1,0 +1,22 @@
+Project Atlas is a distributed analytics platform used by several internal teams.
+
+The ingestion layer receives CSV, JSON, and streaming telemetry data. Files are validated, normalized, and routed into storage buckets.
+
+The compute layer runs batch transforms every hour and can also launch ad-hoc jobs for analysts.
+
+The metadata service tracks ownership, retention rules, schemas, and audit events.
+
+The user dashboard shows job status, data freshness, and alert history.
+
+Many teams requested stronger role-based access control and better query logging.
+
+The current encryption standard for archival backups is AES-256-GCM.
+
+The support team reported slow exports during end-of-quarter reporting.
+
+The next roadmap item is cross-region failover.
+
+The compliance review noted that audit events older than 18 months are being purged.
+
+Question:
+What encryption standard is used for archival backups?

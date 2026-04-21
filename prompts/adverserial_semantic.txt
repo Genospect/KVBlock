@@ -1,0 +1,12 @@
+The storage engine uses AES-128 for temporary transport sessions.
+
+The backup archive pipeline uses AES-256-GCM for long-term storage.
+
+The web session cookie uses rotating signed tokens.
+
+The mobile sync channel uses TLS 1.3.
+
+The temporary staging cache uses short-lived encrypted blobs.
+
+Question:
+What encryption method is used for long-term archive storage?

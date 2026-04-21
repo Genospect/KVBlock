@@ -1,0 +1,14 @@
+The patient’s baseline ferritin level was 22 ng/mL.
+
+The user began supplementation with iron bisglycinate and vitamin C.
+
+Weekly logs showed improved energy, fewer headaches, and better exercise tolerance.
+
+Additional notes covered sleep quality, hydration, and meal timing.
+
+Several pages of progress notes followed discussing unrelated biomarkers such as magnesium, B12, sodium, potassium, CRP, ALT, AST, and vitamin D.
+
+Later consultation notes discussed exercise adherence and stress reduction.
+
+Question:
+What was the patient’s baseline ferritin level?

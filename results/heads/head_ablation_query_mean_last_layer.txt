@@ -1,0 +1,89 @@
+OFFLINE HEAD-ABLATION BENCHMARK
+model_load_seconds={'distilgpt2': 7.2080335700302385, 'gpt2': 3.0530995749868453}
+
+POOLED BASELINE
+runs=10 mean_recall=0.400 mean_precision=0.100 mean_selected/K=1.000
+
+BEST SINGLE HEADS OVERALL
+h9 | runs=10 mean_recall=0.560 mean_precision=0.225 mean_selected/K=1.000 d_recall=0.160 d_precision=0.125
+h4 | runs=10 mean_recall=0.420 mean_precision=0.150 mean_selected/K=1.000 d_recall=0.020 d_precision=0.050
+h1 | runs=10 mean_recall=0.400 mean_precision=0.100 mean_selected/K=1.000 d_recall=0.000 d_precision=0.000
+h11 | runs=10 mean_recall=0.400 mean_precision=0.100 mean_selected/K=1.000 d_recall=0.000 d_precision=0.000
+h10 | runs=10 mean_recall=0.320 mean_precision=0.100 mean_selected/K=1.000 d_recall=-0.080 d_precision=0.000
+h6 | runs=10 mean_recall=0.300 mean_precision=0.075 mean_selected/K=1.000 d_recall=-0.100 d_precision=-0.025
+h2 | runs=10 mean_recall=0.260 mean_precision=0.125 mean_selected/K=1.000 d_recall=-0.140 d_precision=0.025
+h0 | runs=10 mean_recall=0.250 mean_precision=0.075 mean_selected/K=1.000 d_recall=-0.150 d_precision=-0.025
+
+HEADS WHOSE REMOVAL HURTS POOLED MOST
+remove h1 | runs=10 mean_recall=0.300 mean_precision=0.075 d_recall=-0.100 d_precision=-0.025
+remove h4 | runs=10 mean_recall=0.300 mean_precision=0.075 d_recall=-0.100 d_precision=-0.025
+remove h5 | runs=10 mean_recall=0.300 mean_precision=0.075 d_recall=-0.100 d_precision=-0.025
+remove h9 | runs=10 mean_recall=0.300 mean_precision=0.075 d_recall=-0.100 d_precision=-0.025
+remove h10 | runs=10 mean_recall=0.300 mean_precision=0.075 d_recall=-0.100 d_precision=-0.025
+remove h11 | runs=10 mean_recall=0.300 mean_precision=0.075 d_recall=-0.100 d_precision=-0.025
+remove h0 | runs=10 mean_recall=0.400 mean_precision=0.100 d_recall=0.000 d_precision=0.000
+remove h2 | runs=10 mean_recall=0.400 mean_precision=0.100 d_recall=0.000 d_precision=0.000
+
+HEADS WHOSE REMOVAL IMPROVES POOLED MOST
+remove h0 | runs=10 mean_recall=0.400 mean_precision=0.100 d_recall=0.000 d_precision=0.000
+remove h2 | runs=10 mean_recall=0.400 mean_precision=0.100 d_recall=0.000 d_precision=0.000
+remove h3 | runs=10 mean_recall=0.400 mean_precision=0.100 d_recall=0.000 d_precision=0.000
+remove h6 | runs=10 mean_recall=0.400 mean_precision=0.100 d_recall=0.000 d_precision=0.000
+remove h7 | runs=10 mean_recall=0.400 mean_precision=0.100 d_recall=0.000 d_precision=0.000
+remove h8 | runs=10 mean_recall=0.400 mean_precision=0.100 d_recall=0.000 d_precision=0.000
+remove h1 | runs=10 mean_recall=0.300 mean_precision=0.075 d_recall=-0.100 d_precision=-0.025
+remove h4 | runs=10 mean_recall=0.300 mean_precision=0.075 d_recall=-0.100 d_precision=-0.025
+
+PROMPT-SPECIALIST HEADS
+adversarial_semantic | h0 | runs=2 mean_recall=0.000 mean_precision=0.000 d_recall=0.000 d_precision=0.000
+adversarial_semantic | h1 | runs=2 mean_recall=0.000 mean_precision=0.000 d_recall=0.000 d_precision=0.000
+adversarial_semantic | h2 | runs=2 mean_recall=0.000 mean_precision=0.000 d_recall=0.000 d_precision=0.000
+adversarial_semantic | h3 | runs=2 mean_recall=0.000 mean_precision=0.000 d_recall=0.000 d_precision=0.000
+adversarial_semantic | h4 | runs=2 mean_recall=0.000 mean_precision=0.000 d_recall=0.000 d_precision=0.000
+adversarial_semantic | h5 | runs=2 mean_recall=0.000 mean_precision=0.000 d_recall=0.000 d_precision=0.000
+adversarial_semantic | h6 | runs=2 mean_recall=0.000 mean_precision=0.000 d_recall=0.000 d_precision=0.000
+adversarial_semantic | h7 | runs=2 mean_recall=0.000 mean_precision=0.000 d_recall=0.000 d_precision=0.000
+code_context | h2 | runs=2 mean_recall=0.300 mean_precision=0.375 d_recall=0.300 d_precision=0.375
+code_context | h9 | runs=2 mean_recall=0.300 mean_precision=0.375 d_recall=0.300 d_precision=0.375
+code_context | h5 | runs=2 mean_recall=0.200 mean_precision=0.250 d_recall=0.200 d_precision=0.250
+code_context | h7 | runs=2 mean_recall=0.200 mean_precision=0.250 d_recall=0.200 d_precision=0.250
+code_context | h8 | runs=2 mean_recall=0.200 mean_precision=0.250 d_recall=0.200 d_precision=0.250
+code_context | h4 | runs=2 mean_recall=0.100 mean_precision=0.125 d_recall=0.100 d_precision=0.125
+code_context | h10 | runs=2 mean_recall=0.100 mean_precision=0.125 d_recall=0.100 d_precision=0.125
+code_context | h0 | runs=2 mean_recall=0.000 mean_precision=0.000 d_recall=0.000 d_precision=0.000
+long_reference | h4 | runs=2 mean_recall=0.500 mean_precision=0.250 d_recall=0.500 d_precision=0.250
+long_reference | h9 | runs=2 mean_recall=0.500 mean_precision=0.250 d_recall=0.500 d_precision=0.250
+long_reference | h0 | runs=2 mean_recall=0.250 mean_precision=0.125 d_recall=0.250 d_precision=0.125
+long_reference | h1 | runs=2 mean_recall=0.000 mean_precision=0.000 d_recall=0.000 d_precision=0.000
+long_reference | h2 | runs=2 mean_recall=0.000 mean_precision=0.000 d_recall=0.000 d_precision=0.000
+long_reference | h3 | runs=2 mean_recall=0.000 mean_precision=0.000 d_recall=0.000 d_precision=0.000
+long_reference | h5 | runs=2 mean_recall=0.000 mean_precision=0.000 d_recall=0.000 d_precision=0.000
+long_reference | h6 | runs=2 mean_recall=0.000 mean_precision=0.000 d_recall=0.000 d_precision=0.000
+needle | h1 | runs=2 mean_recall=1.000 mean_precision=0.250 d_recall=0.000 d_precision=0.000
+needle | h4 | runs=2 mean_recall=1.000 mean_precision=0.250 d_recall=0.000 d_precision=0.000
+needle | h5 | runs=2 mean_recall=1.000 mean_precision=0.250 d_recall=0.000 d_precision=0.000
+needle | h9 | runs=2 mean_recall=1.000 mean_precision=0.250 d_recall=0.000 d_precision=0.000
+needle | h11 | runs=2 mean_recall=1.000 mean_precision=0.250 d_recall=0.000 d_precision=0.000
+needle | h3 | runs=2 mean_recall=0.500 mean_precision=0.125 d_recall=-0.500 d_precision=-0.125
+needle | h6 | runs=2 mean_recall=0.500 mean_precision=0.125 d_recall=-0.500 d_precision=-0.125
+needle | h10 | runs=2 mean_recall=0.500 mean_precision=0.125 d_recall=-0.500 d_precision=-0.125
+repeated_reference | h0 | runs=2 mean_recall=1.000 mean_precision=0.250 d_recall=0.000 d_precision=0.000
+repeated_reference | h1 | runs=2 mean_recall=1.000 mean_precision=0.250 d_recall=0.000 d_precision=0.000
+repeated_reference | h2 | runs=2 mean_recall=1.000 mean_precision=0.250 d_recall=0.000 d_precision=0.000
+repeated_reference | h6 | runs=2 mean_recall=1.000 mean_precision=0.250 d_recall=0.000 d_precision=0.000
+repeated_reference | h9 | runs=2 mean_recall=1.000 mean_precision=0.250 d_recall=0.000 d_precision=0.000
+repeated_reference | h10 | runs=2 mean_recall=1.000 mean_precision=0.250 d_recall=0.000 d_precision=0.000
+repeated_reference | h11 | runs=2 mean_recall=1.000 mean_precision=0.250 d_recall=0.000 d_precision=0.000
+repeated_reference | h4 | runs=2 mean_recall=0.500 mean_precision=0.125 d_recall=-0.500 d_precision=-0.125
+
+PROMPT RESULTS
+distilgpt2 | long_reference | pooled recall=0.000 precision=0.000 | best_single=h4 recall=0.500 precision=0.250 | remove_hurts=h0 d_recall=0.000 d_precision=0.000 | remove_improves=h0 d_recall=0.000 d_precision=0.000
+distilgpt2 | needle | pooled recall=1.000 precision=0.250 | best_single=h1 recall=1.000 precision=0.250 | remove_hurts=h0 d_recall=0.000 d_precision=0.000 | remove_improves=h0 d_recall=0.000 d_precision=0.000
+distilgpt2 | repeated_reference | pooled recall=1.000 precision=0.250 | best_single=h0 recall=1.000 precision=0.250 | remove_hurts=h0 d_recall=0.000 d_precision=0.000 | remove_improves=h0 d_recall=0.000 d_precision=0.000
+distilgpt2 | code_context | pooled recall=0.000 precision=0.000 | best_single=h2 recall=0.400 precision=0.500 | remove_hurts=h0 d_recall=0.000 d_precision=0.000 | remove_improves=h0 d_recall=0.000 d_precision=0.000
+distilgpt2 | adversarial_semantic | pooled recall=0.000 precision=0.000 | best_single=h0 recall=0.000 precision=0.000 | remove_hurts=h0 d_recall=0.000 d_precision=0.000 | remove_improves=h0 d_recall=0.000 d_precision=0.000
+gpt2 | long_reference | pooled recall=0.000 precision=0.000 | best_single=h0 recall=0.500 precision=0.250 | remove_hurts=h0 d_recall=0.000 d_precision=0.000 | remove_improves=h0 d_recall=0.000 d_precision=0.000
+gpt2 | needle | pooled recall=1.000 precision=0.250 | best_single=h1 recall=1.000 precision=0.250 | remove_hurts=h1 d_recall=-1.000 d_precision=-0.250 | remove_improves=h0 d_recall=0.000 d_precision=0.000
+gpt2 | repeated_reference | pooled recall=1.000 precision=0.250 | best_single=h0 recall=1.000 precision=0.250 | remove_hurts=h0 d_recall=0.000 d_precision=0.000 | remove_improves=h0 d_recall=0.000 d_precision=0.000
+gpt2 | code_context | pooled recall=0.000 precision=0.000 | best_single=h2 recall=0.200 precision=0.250 | remove_hurts=h0 d_recall=0.000 d_precision=0.000 | remove_improves=h0 d_recall=0.000 d_precision=0.000
+gpt2 | adversarial_semantic | pooled recall=0.000 precision=0.000 | best_single=h0 recall=0.000 precision=0.000 | remove_hurts=h0 d_recall=0.000 d_precision=0.000 | remove_improves=h0 d_recall=0.000 d_precision=0.000
