@@ -366,23 +366,52 @@ def _select_raw_query_heads(
 
 
 def _key_layer_count(past_key_values: Any) -> int:
-    if hasattr(past_key_values, "key_cache"):
-        return len(past_key_values.key_cache)
+    key_cache = getattr(past_key_values, "key_cache", None)
+    if key_cache is not None:
+        return len(key_cache)
+    layers = getattr(past_key_values, "layers", None)
+    if layers is not None:
+        return len(layers)
     if hasattr(past_key_values, "to_legacy_cache"):
-        return len(past_key_values.to_legacy_cache())
+        legacy_cache = past_key_values.to_legacy_cache()
+        return len(legacy_cache)
     return len(past_key_values)
 
 
 def _key_tensor_at(past_key_values: Any, layer_index: int) -> torch.Tensor:
-    if hasattr(past_key_values, "key_cache"):
-        key = past_key_values.key_cache[layer_index]
-    elif hasattr(past_key_values, "to_legacy_cache"):
-        key = past_key_values.to_legacy_cache()[layer_index][0]
+    key_cache = getattr(past_key_values, "key_cache", None)
+    if key_cache is not None:
+        key = key_cache[layer_index]
     else:
-        key = past_key_values[layer_index][0]
+        layers = getattr(past_key_values, "layers", None)
+        if layers is not None:
+            key = _key_tensor_from_cache_layer(layers[layer_index])
+        elif hasattr(past_key_values, "to_legacy_cache"):
+            key = past_key_values.to_legacy_cache()[layer_index][0]
+        else:
+            key = past_key_values[layer_index][0]
     if not isinstance(key, torch.Tensor):
         raise TypeError("attention key cache entry must be a torch.Tensor")
     return key
+
+
+def _key_tensor_from_cache_layer(layer: Any) -> torch.Tensor:
+    """Extract keys from newer HF cache layer objects without importing HF types."""
+
+    if isinstance(layer, torch.Tensor):
+        return layer
+    if isinstance(layer, (tuple, list)) and layer:
+        key = layer[0]
+        if isinstance(key, torch.Tensor):
+            return key
+    for attr_name in ("keys", "key_cache", "key_states", "key"):
+        key = getattr(layer, attr_name, None)
+        if isinstance(key, torch.Tensor):
+            return key
+    raise TypeError(
+        "unsupported DynamicCache layer shape; expected a tensor, a legacy "
+        "(key, value) pair, or an object exposing keys/key_cache/key_states/key"
+    )
 
 
 def _head_mean_key_tensor(key_tensor: torch.Tensor) -> torch.Tensor:

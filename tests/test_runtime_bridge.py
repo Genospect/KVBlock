@@ -266,6 +266,31 @@ def test_model_representation_selector_dispatches_to_key_cache() -> None:
     assert torch.equal(selected, torch.ones(2, 3))
 
 
+def test_key_selector_supports_new_dynamic_cache_layers() -> None:
+    class FakeDynamicLayer:
+        def __init__(self, keys: torch.Tensor) -> None:
+            self.keys = keys
+
+    class FakeDynamicCache:
+        def __init__(self) -> None:
+            self.layers = (
+                FakeDynamicLayer(torch.ones(1, 2, 2, 3)),
+            )
+
+        def __len__(self) -> int:
+            return len(self.layers)
+
+    selected, name = select_model_representation_with_name(
+        hidden_states=None,
+        past_key_values=FakeDynamicCache(),
+        config=HiddenStateCaptureConfig(representation_source="key_mean_last_layer"),
+    )
+
+    assert name == "key_mean_layer_0"
+    assert selected.shape == (2, 3)
+    assert torch.equal(selected, torch.ones(2, 3))
+
+
 def test_model_prefill_selector_uses_query_vector_for_query_sources() -> None:
     key_layers = (
         (torch.ones(1, 2, 2, 3), torch.zeros(1, 2, 2, 3)),
