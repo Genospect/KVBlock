@@ -501,6 +501,7 @@ def _row_from_result(
         block.block_id: block.block_text or block.preview_text
         for block in result.block_inspections
     }
+    block_by_id = {block.block_id: block for block in result.block_inspections}
     selected_ids = _selected_ids_after_suppression(
         result,
         suppression=suppression,
@@ -509,9 +510,9 @@ def _row_from_result(
     quality = _fragment_quality_for_result(
         selected_ids=selected_ids,
         block_text_by_id=block_text_by_id,
+        block_by_id=block_by_id,
         target_fragments=prompt_case.target_fragments,
     )
-    block_by_id = {block.block_id: block for block in result.block_inspections}
     selected = tuple(block_by_id[block_id] for block_id in selected_ids if block_id in block_by_id)
     return DynamicBlockRunRow(
         model_name=model_name,
@@ -779,26 +780,54 @@ def _fragment_quality_for_result(
     *,
     selected_ids: Sequence[int],
     block_text_by_id: dict[int, str],
+    block_by_id: dict[int, Any] | None = None,
     target_fragments: Sequence[str],
 ) -> RetrievalQuality:
-    """Score by target-fragment coverage to avoid multi-scale duplicate penalties."""
+    """Score by target-fragment coverage to avoid multi-scale duplicate penalties.
+
+    Target text can straddle a block boundary. Credit adjacent selected spans
+    that jointly contain a fragment so fixed-size sweeps do not report false
+    misses when evidence is available across selected neighboring blocks.
+    """
 
     selected = tuple(int(block_id) for block_id in selected_ids)
     selected_set = set(selected)
+    expected_set: set[int] = set()
+    selected_expected_set: set[int] = set()
+    hit_fragments: list[str] = []
+    for fragment in target_fragments:
+        expected_for_fragment = _fragment_block_ids(
+            fragment,
+            block_ids=tuple(sorted(block_text_by_id)),
+            block_text_by_id=block_text_by_id,
+            block_by_id=block_by_id,
+        )
+        selected_for_fragment = _fragment_block_ids(
+            fragment,
+            block_ids=selected,
+            block_text_by_id=block_text_by_id,
+            block_by_id=block_by_id,
+        )
+        expected_set.update(expected_for_fragment)
+        selected_expected_set.update(selected_for_fragment)
+        if selected_for_fragment:
+            hit_fragments.append(fragment)
+
     expected = tuple(
         block_id
-        for block_id, text in sorted(block_text_by_id.items())
-        if any(fragment in text for fragment in target_fragments)
+        for block_id in sorted(
+            expected_set,
+            key=lambda item: _block_sort_key(item, block_by_id=block_by_id),
+        )
     )
     selected_expected = tuple(block_id for block_id in selected if block_id in set(expected))
+    if selected_expected_set:
+        selected_expected = tuple(
+            block_id for block_id in selected if block_id in selected_expected_set
+        )
     missed = tuple(block_id for block_id in expected if block_id not in selected_set)
     extra = tuple(block_id for block_id in selected if block_id not in set(expected))
-    hit_fragments = tuple(
-        fragment
-        for fragment in target_fragments
-        if any(fragment in block_text_by_id.get(block_id, "") for block_id in selected)
-    )
-    recall = None if not target_fragments else len(hit_fragments) / len(target_fragments)
+    recall = None if not target_fragments else len(tuple(hit_fragments)) / len(target_fragments)
     precision = None if not selected else len(selected_expected) / len(selected)
     return RetrievalQuality(
         expected_block_ids=expected,
@@ -807,8 +836,111 @@ def _fragment_quality_for_result(
         extra_selected_block_ids=extra,
         target_recall=recall,
         selected_precision=precision,
-        target_hit=bool(hit_fragments),
+        target_hit=bool(tuple(hit_fragments)),
     )
+
+
+def _fragment_block_ids(
+    fragment: str,
+    *,
+    block_ids: Sequence[int],
+    block_text_by_id: dict[int, str],
+    block_by_id: dict[int, Any] | None,
+) -> tuple[int, ...]:
+    """Return block ids that individually or jointly cover ``fragment``."""
+
+    direct = tuple(
+        block_id
+        for block_id in block_ids
+        if fragment in block_text_by_id.get(block_id, "")
+    )
+    if direct or block_by_id is None:
+        return direct
+
+    hit_ids: set[int] = set()
+    for chain in _adjacent_block_chains(block_ids, block_by_id=block_by_id):
+        hit_ids.update(
+            _fragment_block_ids_in_chain(
+                fragment,
+                chain=chain,
+                block_text_by_id=block_text_by_id,
+            )
+        )
+    return tuple(
+        block_id
+        for block_id in sorted(
+            hit_ids,
+            key=lambda item: _block_sort_key(item, block_by_id=block_by_id),
+        )
+    )
+
+
+def _adjacent_block_chains(
+    block_ids: Sequence[int],
+    *,
+    block_by_id: dict[int, Any],
+) -> tuple[tuple[Any, ...], ...]:
+    records = [
+        block_by_id[block_id]
+        for block_id in block_ids
+        if block_id in block_by_id
+    ]
+    records.sort(key=lambda block: (block.token_start, block.token_end, block.block_id))
+    chains: list[tuple[Any, ...]] = []
+    for record in records:
+        chain = [record]
+        current_end = record.token_end
+        while True:
+            next_candidates = [
+                candidate
+                for candidate in records
+                if candidate.token_start == current_end
+            ]
+            if not next_candidates:
+                break
+            next_record = min(
+                next_candidates,
+                key=lambda block: (block.token_end, block.block_id),
+            )
+            chain.append(next_record)
+            current_end = next_record.token_end
+        if len(chain) > 1:
+            chains.append(tuple(chain))
+    return tuple(chains)
+
+
+def _fragment_block_ids_in_chain(
+    fragment: str,
+    *,
+    chain: Sequence[Any],
+    block_text_by_id: dict[int, str],
+) -> tuple[int, ...]:
+    parts: list[tuple[int, int, int]] = []
+    texts: list[str] = []
+    cursor = 0
+    for block in chain:
+        text = block_text_by_id.get(block.block_id, "")
+        start = cursor
+        cursor += len(text)
+        parts.append((block.block_id, start, cursor))
+        texts.append(text)
+    combined = "".join(texts)
+    hit_start = combined.find(fragment)
+    if hit_start < 0:
+        return ()
+    hit_end = hit_start + len(fragment)
+    return tuple(
+        block_id
+        for block_id, start, end in parts
+        if max(start, hit_start) < min(end, hit_end)
+    )
+
+
+def _block_sort_key(block_id: int, *, block_by_id: dict[int, Any] | None) -> tuple[int, int, int]:
+    if block_by_id is None or block_id not in block_by_id:
+        return (0, 0, block_id)
+    block = block_by_id[block_id]
+    return (int(block.token_start), int(block.token_end), int(block.block_id))
 
 
 def _build_aggregate_summaries(

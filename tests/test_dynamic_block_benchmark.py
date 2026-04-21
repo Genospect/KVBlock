@@ -214,6 +214,30 @@ def test_run_dynamic_block_benchmark_uses_modes_and_prompt_strategy(monkeypatch,
     assert result.prompt_breakdowns
 
 
+def test_fragment_quality_credits_adjacent_selected_boundary_spans() -> None:
+    block_by_id = {
+        0: SimpleNamespace(block_id=0, token_start=0, token_end=40),
+        1: SimpleNamespace(block_id=1, token_start=40, token_end=80),
+        2: SimpleNamespace(block_id=2, token_start=80, token_end=83),
+    }
+    quality = dynamic_bench._fragment_quality_for_result(
+        selected_ids=(0, 1, 2),
+        block_text_by_id={
+            0: "prefix ",
+            1: "needle ZXQ-4917-",
+            2: "BETA suffix",
+        },
+        block_by_id=block_by_id,
+        target_fragments=("ZXQ-4917-BETA",),
+    )
+
+    assert quality.target_recall == 1.0
+    assert quality.target_hit is True
+    assert quality.selected_expected_block_ids == (1, 2)
+    assert quality.missed_expected_block_ids == ()
+    assert quality.extra_selected_block_ids == (0,)
+
+
 def test_run_dynamic_block_benchmark_coarse_to_fine_mode(monkeypatch, tmp_path) -> None:
     prompt_path = tmp_path / "prompt.txt"
     prompt_path.write_text("alpha TOKEN beta gamma", encoding="utf-8")
