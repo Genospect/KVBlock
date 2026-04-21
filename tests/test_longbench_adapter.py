@@ -60,6 +60,7 @@ def test_longbench_record_conversion_preserves_fields() -> None:
     assert "CONTEXT:" in record.prompt_text
     assert "INPUT:" in record.prompt_text
     assert "ANSWERS:" not in record.prompt_text
+    assert record.prompt_text.rstrip().endswith("Which planet?")
 
 
 def test_load_longbench_records_filters_length_and_limit() -> None:

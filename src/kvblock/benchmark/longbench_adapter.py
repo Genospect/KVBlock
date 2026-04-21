@@ -341,6 +341,9 @@ def format_longbench_prompt(record: LongBenchRecord) -> str:
     """Format one LongBench sample as a stable KVBlock prompt."""
 
     length = "unknown" if record.length is None else str(record.length)
+    # The selector's query summary is derived from the prompt tail. Keep the
+    # actual LongBench input/question last; a generic adapter instruction here
+    # would dominate query_mean_last_layer and obscure the retrieval target.
     return "\n".join(
         (
             f"DATASET: {record.dataset_name}",
@@ -352,8 +355,6 @@ def format_longbench_prompt(record: LongBenchRecord) -> str:
             "",
             "INPUT:",
             record.input_text.strip(),
-            "",
-            "KVBlock selector target: identify the context blocks needed to answer the input.",
             "",
         )
     )
