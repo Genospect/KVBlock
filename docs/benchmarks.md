@@ -147,6 +147,17 @@ Why it matters:
 - keeps early validation CPU/Mac-safe
 - makes representation and trace assumptions inspectable before K/V runtime integration
 
+### E. LongBench selector adapter
+What it tests:
+- selector behavior on standardized LongBench samples loaded through Hugging Face datasets
+- longer-context QA, multi-doc QA, summarization, synthetic, and code-style prompts
+- current retrieval proxy based on whether selected text spans contain LongBench answer strings
+
+Why it matters:
+- provides a larger, reproducible prompt source before sparse runtime execution exists
+- keeps the current fixed-block selector path intact while moving beyond hand-written prompts
+- does not adopt the full LongBench evaluator yet; this is a selector-retrieval benchmark adapter
+
 ## Current local benchmark path
 
 The current best local dense-only selector baseline is tracked in `docs/current-best-path.md`.
