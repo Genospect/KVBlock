@@ -152,6 +152,11 @@ class LongBenchBenchmarkRunRow:
     expected_block_count: int
     selected_expected_block_count: int
     missed_expected_block_count: int
+    expected_block_ids: tuple[int, ...]
+    selected_block_ids: tuple[int, ...]
+    missed_expected_block_ids: tuple[int, ...]
+    selected_spans: tuple[str, ...]
+    expected_block_distance: int | None
     prompt_name: str
     prompt_file: str
     model_name: str
@@ -519,6 +524,9 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
             f"candidates={row.candidate_block_count} selected/K={row.selected_to_semantic_k_ratio:.3f} "
             f"answer_presence={row.answer_present_count}/{row.answer_count} "
             f"expected_blocks={row.expected_block_count} "
+            f"expected_distance={_fmt_optional(row.expected_block_distance)} "
+            f"selected_ids={list(row.selected_block_ids)} "
+            f"expected_ids={list(row.expected_block_ids)} "
             f"selector={row.selector_latency_sec:.6f}s "
             f"recall={_fmt_optional(row.target_recall)} "
             f"precision={_fmt_optional(row.selected_precision)}"
@@ -624,6 +632,14 @@ def _longbench_rows(
                 missed_expected_block_count=len(
                     row.retrieval_quality.missed_expected_block_ids
                 ),
+                expected_block_ids=row.retrieval_quality.expected_block_ids,
+                selected_block_ids=row.selected_ids,
+                missed_expected_block_ids=row.retrieval_quality.missed_expected_block_ids,
+                selected_spans=row.selected_spans,
+                expected_block_distance=_expected_block_distance(
+                    selected_ids=row.selected_ids,
+                    expected_ids=row.retrieval_quality.expected_block_ids,
+                ),
                 prompt_name=row.prompt_name,
                 prompt_file=row.prompt_file,
                 model_name=row.model_name,
@@ -675,6 +691,22 @@ def _dataset_summaries(
             mean_precision=_mean_optional(row.selected_precision for row in group),
         )
         for dataset_name, group in sorted(grouped.items())
+    )
+
+
+def _expected_block_distance(
+    *,
+    selected_ids: Sequence[int],
+    expected_ids: Sequence[int],
+) -> int | None:
+    """Return the nearest block-id distance from any selected to expected block."""
+
+    if not selected_ids or not expected_ids:
+        return None
+    return min(
+        abs(int(selected) - int(expected))
+        for selected in selected_ids
+        for expected in expected_ids
     )
 
 

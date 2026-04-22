@@ -173,6 +173,9 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
     assert result.rows[0].answer_present_count == 1
     assert result.rows[0].expected_block_count == 1
     assert result.rows[0].selected_expected_block_count == 1
+    assert result.rows[0].expected_block_ids == (1,)
+    assert result.rows[0].selected_block_ids == (1, 2)
+    assert result.rows[0].expected_block_distance == 0
     assert result.rows[0].target_recall == 1.0
     assert result.dataset_summaries[0].mean_precision == 0.5
     assert result.dataset_summaries[0].scoreable_run_count == 1
