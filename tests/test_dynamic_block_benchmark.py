@@ -713,6 +713,127 @@ def test_run_dynamic_block_benchmark_coarse_to_fine_mode(monkeypatch, tmp_path) 
     assert row.suppression_decisions[0]["candidate_role"] == "child"
 
 
+def test_query_only_coarse_to_fine_restricts_coarse_candidates_to_context(
+    monkeypatch, tmp_path
+) -> None:
+    prompt_path = tmp_path / "prompt.txt"
+    context = "CONTEXT:\nalpha TOKEN beta gamma delta epsilon"
+    prompt_path.write_text(
+        f"{context}\n\nINPUT:\nWhich question tail mentions TOKEN?",
+        encoding="utf-8",
+    )
+    context_token_count = len(context.split())
+    seen: list[tuple[str, tuple[tuple[int, int], ...], str | None]] = []
+
+    class FakeRuntime:
+        def __init__(self, load_config, *, capture_config=None):
+            self.load_config = load_config
+            self.capture_config = capture_config
+
+        def load_model(self):
+            return None
+
+        def tokenize(self, prompt):
+            return SimpleNamespace(token_count=len(prompt.split()))
+
+    class FakeResult:
+        selected_to_semantic_k_ratio = 0.5
+        fallback_mode = "sparse"
+        confidence = SimpleNamespace(raw_margin=0.1)
+
+        def __init__(self, *, block_mode, token_count, blocks, selected_ids):
+            self.selected_block_ids = selected_ids
+            self.run_summary = SimpleNamespace(
+                representation_name="query_only_last_layer",
+                token_count=token_count,
+                block_count=len(blocks),
+                block_mode=block_mode,
+            )
+            self.latency = SimpleNamespace(
+                selector_sec=0.001,
+                total_sec=0.002,
+                prefill_sec=0.0005,
+                metadata_sec=0.0003,
+                inspection_sec=0.0002,
+            )
+            self.block_inspections = tuple(blocks)
+
+        @property
+        def selected_block_inspections(self):
+            return tuple(block for block in self.block_inspections if block.selected)
+
+    def block(candidate, *, selected=False):
+        return SimpleNamespace(
+            block_id=candidate.block_id,
+            selected=selected,
+            selected_reason="semantic" if selected else "unselected",
+            final_score=1.0 - candidate.block_id * 0.1,
+            block_text="alpha TOKEN beta" if selected else "other",
+            preview_text="alpha TOKEN beta" if selected else "other",
+            candidate_id=candidate.candidate_id,
+            token_start=candidate.token_start,
+            token_end=candidate.token_end,
+            token_count=candidate.token_len,
+            block_size=candidate.block_size,
+            stride=candidate.stride,
+            block_mode=candidate.block_mode,
+            parent_candidate_id=candidate.parent_candidate_id,
+            candidate_role=candidate.candidate_role,
+        )
+
+    def fake_run_real_block_selector(runtime, prompt, config):
+        spans = tuple(
+            (candidate.token_start, candidate.token_end)
+            for candidate in config.block_candidates
+        )
+        seen.append((config.block_mode, spans, config.query_prompt))
+        assert config.block_candidates
+        assert all(
+            candidate.block_mode == config.block_mode
+            for candidate in config.block_candidates
+        )
+        assert all(
+            candidate.token_end <= context_token_count
+            for candidate in config.block_candidates
+        )
+        return FakeResult(
+            block_mode=config.block_mode,
+            token_count=len(prompt.split()),
+            selected_ids=(0,),
+            blocks=tuple(
+                block(candidate, selected=candidate.block_id == 0)
+                for candidate in config.block_candidates
+            ),
+        )
+
+    monkeypatch.setattr(dynamic_bench, "LocalHfRuntime", FakeRuntime)
+    monkeypatch.setattr(dynamic_bench, "run_real_block_selector", fake_run_real_block_selector)
+
+    result = run_dynamic_block_benchmark(
+        model_names=("fake-model",),
+        prompt_cases=(
+            PromptRetrievalCase(
+                name="needle",
+                path=prompt_path,
+                target_fragments=("TOKEN",),
+            ),
+        ),
+        block_modes=("coarse_to_fine_40_16",),
+        representation_source="query_only_last_layer",
+        qk_aggregation_strategy="block_max",
+        coarse_top_k=1,
+    )
+
+    assert seen[0] == (
+        "fixed_40",
+        ((0, context_token_count),),
+        "Which question tail mentions TOKEN?",
+    )
+    assert seen[1][0] == "coarse_to_fine_40_16"
+    assert seen[1][1] == ((0, context_token_count),)
+    assert result.rows[0].coarse_selected_spans == (f"0:{context_token_count}",)
+
+
 def test_run_dynamic_block_benchmark_coarse_to_fine_keep_parent_mode(
     monkeypatch, tmp_path
 ) -> None:

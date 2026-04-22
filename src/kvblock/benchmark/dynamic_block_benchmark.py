@@ -485,6 +485,7 @@ def run_dynamic_block_benchmark(
                             prompt=prompt,
                             config=config,
                             block_mode=block_mode,
+                            coarse_block_candidates=query_only_candidates,
                             strategy=strategy,
                             representation_source=representation_source,
                             prompt_case=prompt_case,
@@ -931,6 +932,7 @@ def _run_coarse_to_fine_selector(
     prompt: str,
     config: RealBlockSelectorConfig,
     block_mode: BlockModeName,
+    coarse_block_candidates: Sequence[BlockCandidate],
     strategy: QKAggregationStrategy,
     representation_source: RepresentationSource,
     prompt_case: PromptRetrievalCase,
@@ -945,7 +947,7 @@ def _run_coarse_to_fine_selector(
             config,
             block_size=coarse_size,
             block_mode=f"fixed_{coarse_size}",  # type: ignore[arg-type]
-            block_candidates=(),
+            block_candidates=tuple(coarse_block_candidates),
             qk_aggregation_strategy=strategy,
             representation_source=representation_source,
             prompt_id=prompt_case.name,
@@ -2051,15 +2053,19 @@ def _query_only_context_candidates(
 ) -> tuple[BlockCandidate, ...]:
     """Generate context-only candidates for query-only LongBench-style prompts."""
 
-    if query_prompt is None or "\nINPUT:\n" not in prompt or is_coarse_to_fine_mode(block_mode):
+    if query_prompt is None or "\nINPUT:\n" not in prompt:
         return config.block_candidates
     context_prompt = prompt.rsplit("\nINPUT:\n", maxsplit=1)[0].strip()
     if not context_prompt:
         return config.block_candidates
     context_tokens = runtime.tokenize(context_prompt).token_count
+    candidate_mode = block_mode
+    if is_coarse_to_fine_mode(block_mode):
+        coarse_size, _fine_size = coarse_to_fine_spec(block_mode)
+        candidate_mode = cast(BlockModeName, f"fixed_{coarse_size}")
     return generate_block_candidates(
         token_count=context_tokens,
-        mode=block_mode,
+        mode=candidate_mode,
         default_block_size=config.block_size,
         overlap_stride=config.overlap_stride,
     )
