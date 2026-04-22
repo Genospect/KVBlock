@@ -77,6 +77,21 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--keep-recent-blocks", type=int, default=0)
     parser.add_argument("--keep-anchor-blocks", type=int, default=0)
     parser.add_argument("--top-token-count", type=int, default=4)
+    parser.add_argument(
+        "--rerank-mode",
+        default="none",
+        choices=("none", "semantic_plus_tokenmax"),
+        help=(
+            "Optional benchmark-only rerank over ranked candidates. "
+            "semantic_plus_tokenmax blends selector score with lexical token matches."
+        ),
+    )
+    parser.add_argument(
+        "--rerank-weight",
+        type=float,
+        default=0.3,
+        help="Weight assigned to tokenmax score when --rerank-mode is enabled.",
+    )
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--torch-dtype", default="float32")
     parser.add_argument("--device-map", default=None)
@@ -126,6 +141,8 @@ def main(argv: list[str] | None = None) -> int:
         representation_source=args.representation_source,
         qk_aggregation_strategy=qk_aggregation_strategy_from_name(args.qk_aggregation),
         needle_qk_aggregation_strategy=needle_strategy,
+        rerank_mode=args.rerank_mode,
+        rerank_weight=args.rerank_weight,
         load_config_kwargs={
             "device": args.device,
             "torch_dtype": args.torch_dtype,

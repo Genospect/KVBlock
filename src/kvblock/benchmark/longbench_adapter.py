@@ -18,6 +18,7 @@ import zipfile
 
 from kvblock.benchmark.dynamic_block_benchmark import (
     DynamicBlockBenchmarkResult,
+    RerankMode,
     run_dynamic_block_benchmark,
 )
 from kvblock.benchmark.real_block_representation_sweep import PromptRetrievalCase
@@ -167,6 +168,8 @@ class LongBenchBenchmarkRunRow:
     representation_source: str
     representation_name: str
     qk_aggregation_strategy: str
+    rerank_mode: str
+    rerank_weight: float
     block_mode: str
     suppression_mode: str
     suppression_threshold: float
@@ -431,6 +434,8 @@ def run_longbench_selector_benchmark(
     representation_source: RepresentationSource = "query_mean_last_layer",
     qk_aggregation_strategy: QKAggregationStrategy = "block_max",
     needle_qk_aggregation_strategy: QKAggregationStrategy | None = None,
+    rerank_mode: RerankMode = "none",
+    rerank_weight: float = 0.3,
     load_config_kwargs: dict[str, Any] | None = None,
     selector_config: RealBlockSelectorConfig | None = None,
     dataset_loader: DatasetLoader | None = None,
@@ -463,6 +468,8 @@ def run_longbench_selector_benchmark(
         representation_source=representation_source,
         qk_aggregation_strategy=qk_aggregation_strategy,
         needle_qk_aggregation_strategy=needle_qk_aggregation_strategy,
+        rerank_mode=rerank_mode,
+        rerank_weight=rerank_weight,
         load_config_kwargs=load_config_kwargs,
         selector_config=selector_config,
         include_block_inspections=True,
@@ -525,6 +532,7 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
         lines.append(
             f"{row.dataset_name}:{row.sample_id} | model={row.model_name} "
             f"mode={row.block_mode} qk={row.qk_aggregation_strategy} "
+            f"rerank={row.rerank_mode}@{row.rerank_weight:.2f} "
             f"length={row.longbench_length} tokens={row.tokens} "
             f"candidates={row.candidate_block_count} selected/K={row.selected_to_semantic_k_ratio:.3f} "
             f"answer_presence={row.answer_present_count}/{row.answer_count} "
@@ -670,6 +678,8 @@ def _longbench_rows(
                 representation_source=row.representation_source,
                 representation_name=row.representation_name,
                 qk_aggregation_strategy=row.qk_aggregation_strategy,
+                rerank_mode=row.rerank_mode,
+                rerank_weight=row.rerank_weight,
                 block_mode=row.block_mode,
                 suppression_mode=row.suppression_mode,
                 suppression_threshold=row.suppression_threshold,

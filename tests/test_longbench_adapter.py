@@ -123,6 +123,8 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
             representation_source="query_mean_last_layer",
             representation_name="query_mean_last_layer",
             qk_aggregation_strategy="block_max",
+            rerank_mode="none",
+            rerank_weight=0.3,
             block_mode="fixed_40",
             suppression_mode="none",
             suppression_threshold=0.75,
@@ -201,6 +203,8 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
     assert result.samples[0].dataset_name == "narrativeqa"
     assert result.rows[0].dataset_name == "narrativeqa"
     assert result.rows[0].candidate_block_count == 128
+    assert result.rows[0].rerank_mode == "none"
+    assert result.rows[0].rerank_weight == 0.3
     assert result.rows[0].answer_present_count == 1
     assert result.rows[0].expected_block_count == 1
     assert result.rows[0].selected_expected_block_count == 1
@@ -277,6 +281,10 @@ def test_longbench_cli_parser_accepts_baseline_flags() -> None:
             "query_only_last_layer",
             "--limit",
             "2",
+            "--rerank-mode",
+            "semantic_plus_tokenmax",
+            "--rerank-weight",
+            "0.4",
             "--device-map",
             "auto",
         ]
@@ -287,4 +295,6 @@ def test_longbench_cli_parser_accepts_baseline_flags() -> None:
     assert args.length_bucket == "4k-8k"
     assert args.representation_source == "query_only_last_layer"
     assert args.limit == 2
+    assert args.rerank_mode == "semantic_plus_tokenmax"
+    assert args.rerank_weight == 0.4
     assert args.device_map == "auto"

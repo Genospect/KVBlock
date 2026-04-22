@@ -11,8 +11,9 @@ from collections import defaultdict
 from dataclasses import asdict, dataclass, replace
 import json
 from pathlib import Path
+import re
 from time import perf_counter
-from typing import Any, Iterable, Sequence
+from typing import Any, Iterable, Literal, Sequence, cast
 
 from kvblock.benchmark.candidate_suppression import (
     RankedCandidateSpan,
@@ -67,6 +68,96 @@ DEFAULT_DYNAMIC_PROMPT_NAMES: tuple[str, ...] = (
     "repeated_reference",
 )
 
+RerankMode = Literal["none", "semantic_plus_tokenmax"]
+
+VALID_RERANK_MODES: tuple[RerankMode, ...] = (
+    "none",
+    "semantic_plus_tokenmax",
+)
+
+_TOKEN_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9'_-]*")
+_STOPWORDS = frozenset(
+    {
+        "about",
+        "after",
+        "again",
+        "also",
+        "an",
+        "and",
+        "among",
+        "are",
+        "answer",
+        "because",
+        "before",
+        "being",
+        "between",
+        "both",
+        "but",
+        "did",
+        "for",
+        "context",
+        "could",
+        "dataset",
+        "does",
+        "from",
+        "how",
+        "have",
+        "here",
+        "into",
+        "is",
+        "in",
+        "of",
+        "on",
+        "or",
+        "to",
+        "input",
+        "was",
+        "were",
+        "who",
+        "the",
+        "length",
+        "has",
+        "had",
+        "his",
+        "her",
+        "its",
+        "our",
+        "out",
+        "not",
+        "many",
+        "more",
+        "most",
+        "only",
+        "other",
+        "over",
+        "passage",
+        "question",
+        "sample_id",
+        "same",
+        "some",
+        "such",
+        "than",
+        "that",
+        "their",
+        "then",
+        "there",
+        "these",
+        "they",
+        "this",
+        "through",
+        "under",
+        "what",
+        "when",
+        "where",
+        "which",
+        "while",
+        "whose",
+        "with",
+        "would",
+        "year",
+    }
+)
+
 
 @dataclass(frozen=True, slots=True)
 class DynamicBlockRunRow:
@@ -78,6 +169,8 @@ class DynamicBlockRunRow:
     representation_source: str
     representation_name: str
     qk_aggregation_strategy: str
+    rerank_mode: str
+    rerank_weight: float
     block_mode: str
     suppression_mode: str
     suppression_threshold: float
@@ -227,6 +320,16 @@ def query_prompt_override_for_representation(
     return _query_prompt_override(prompt, representation_source=representation_source)
 
 
+def rerank_mode_from_name(name: str) -> RerankMode:
+    """Validate and return one benchmark rerank mode."""
+
+    normalized = name.strip()
+    if normalized not in VALID_RERANK_MODES:
+        valid = ", ".join(VALID_RERANK_MODES)
+        raise ValueError(f"unknown rerank mode {name!r}; valid: {valid}")
+    return cast(RerankMode, normalized)
+
+
 def run_dynamic_block_benchmark(
     *,
     model_names: Sequence[str],
@@ -241,6 +344,8 @@ def run_dynamic_block_benchmark(
     load_config_kwargs: dict[str, Any] | None = None,
     selector_config: RealBlockSelectorConfig | None = None,
     include_block_inspections: bool = False,
+    rerank_mode: RerankMode = "none",
+    rerank_weight: float = 0.3,
 ) -> DynamicBlockBenchmarkResult:
     """Run real-block selector over fixed and multi-scale block candidates."""
 
@@ -253,6 +358,9 @@ def run_dynamic_block_benchmark(
     resolved_suppression_modes = suppression_modes_from_names(suppression_modes)
     if suppression_threshold < 0.0 or suppression_threshold > 1.0:
         raise ValueError("suppression_threshold must be in [0, 1]")
+    resolved_rerank_mode = rerank_mode_from_name(rerank_mode)
+    if rerank_weight < 0.0 or rerank_weight > 1.0:
+        raise ValueError("rerank_weight must be in [0, 1]")
     if coarse_top_k <= 0:
         raise ValueError("coarse_top_k must be > 0")
     needle_strategy = (
@@ -365,7 +473,17 @@ def run_dynamic_block_benchmark(
                     retained_parent_count = 0
                     coarse_selected_candidate_ids = ()
                     coarse_selected_spans = ()
-                ranked_candidates = _ranked_candidates_from_result(result)
+                ranked_candidates = _rerank_candidates(
+                    _ranked_candidates_from_result(result),
+                    result=result,
+                    query_prompt=query_prompt or prompt,
+                    mode=resolved_rerank_mode,
+                    weight=rerank_weight,
+                )
+                ranked_score_by_id = {
+                    candidate.block_id: candidate.score
+                    for candidate in ranked_candidates
+                }
                 for suppression_mode in resolved_suppression_modes:
                     suppression = suppress_ranked_candidates(
                         ranked_candidates,
@@ -379,9 +497,12 @@ def run_dynamic_block_benchmark(
                             representation_source=representation_source,
                             block_mode=block_mode,
                             strategy=strategy,
+                            rerank_mode=resolved_rerank_mode,
+                            rerank_weight=rerank_weight,
                             config=config,
                             result=result,
                             suppression=suppression,
+                            ranked_score_by_id=ranked_score_by_id,
                             candidate_block_count_override=(
                                 coarse_candidate_count
                                 + fine_candidate_count_after_drilldown
@@ -491,6 +612,7 @@ def format_dynamic_block_report(result: DynamicBlockBenchmarkResult) -> str:
             f"{row.model_name} | {row.prompt_name} | {row.block_mode} | "
             f"suppression={row.suppression_mode}@{row.suppression_threshold:.2f} | "
             f"qk={row.qk_aggregation_strategy} | "
+            f"rerank={row.rerank_mode}@{row.rerank_weight:.2f} | "
             f"candidates={row.candidate_block_count} "
             f"ranked={row.candidate_count_before_suppression} "
             f"after={row.candidate_count_after_suppression} | "
@@ -514,9 +636,12 @@ def _row_from_result(
     representation_source: str,
     block_mode: str,
     strategy: QKAggregationStrategy,
+    rerank_mode: RerankMode,
+    rerank_weight: float,
     config: RealBlockSelectorConfig,
     result: Any,
     suppression: SuppressionResult,
+    ranked_score_by_id: dict[int, float] | None = None,
     candidate_block_count_override: int | None = None,
     selector_latency_sec_override: float | None = None,
     total_latency_sec_override: float | None = None,
@@ -554,6 +679,8 @@ def _row_from_result(
         representation_source=representation_source,
         representation_name=result.run_summary.representation_name,
         qk_aggregation_strategy=strategy,
+        rerank_mode=rerank_mode,
+        rerank_weight=rerank_weight,
         block_mode=block_mode,
         suppression_mode=suppression.mode,
         suppression_threshold=suppression.threshold,
@@ -580,7 +707,11 @@ def _row_from_result(
         selected_candidate_roles=tuple(
             getattr(block, "candidate_role", "block") for block in selected
         ),
-        suppression_decisions=_suppression_records(result, suppression),
+        suppression_decisions=_suppression_records(
+            result,
+            suppression,
+            ranked_score_by_id=ranked_score_by_id,
+        ),
         selected_count=len(selected_ids),
         selected_to_semantic_k_ratio=len(selected_ids) / config.semantic_k,
         selector_latency_sec=(
@@ -617,10 +748,17 @@ def _row_from_result(
         coarse_selected_candidate_ids=coarse_selected_candidate_ids,
         coarse_selected_spans=coarse_selected_spans,
         block_inspection_records=(
-            _block_inspection_records(result)
-            if include_block_inspections
-            else ()
-        ),
+            _block_inspection_records(result, selected_ids=set(selected_ids))
+            if ranked_score_by_id is None
+            else _block_inspection_records(
+                result,
+                score_by_id=ranked_score_by_id,
+                selected_ids=set(selected_ids),
+                selected_reason="rerank" if rerank_mode != "none" else None,
+            )
+        )
+        if include_block_inspections
+        else (),
     )
 
 
@@ -771,6 +909,143 @@ def _ranked_candidates_from_result(result: Any) -> tuple[RankedCandidateSpan, ..
     return tuple(ranked)
 
 
+def _rerank_candidates(
+    ranked_candidates: Sequence[RankedCandidateSpan],
+    *,
+    result: Any,
+    query_prompt: str,
+    mode: RerankMode,
+    weight: float,
+) -> tuple[RankedCandidateSpan, ...]:
+    """Apply benchmark-only reranking over existing ranked candidates."""
+
+    candidates = tuple(ranked_candidates)
+    if mode == "none" or not candidates:
+        return candidates
+    if mode != "semantic_plus_tokenmax":
+        raise ValueError(f"unsupported rerank mode: {mode!r}")
+    query_tokens = _content_tokens(query_prompt)
+    if not query_tokens:
+        return candidates
+    block_by_id = {block.block_id: block for block in result.block_inspections}
+    semantic_scores = [candidate.score for candidate in candidates]
+    semantic_min = min(semantic_scores)
+    semantic_max = max(semantic_scores)
+    semantic_range = semantic_max - semantic_min
+
+    reranked: list[RankedCandidateSpan] = []
+    for candidate in candidates:
+        semantic = (
+            0.5
+            if semantic_range == 0
+            else (candidate.score - semantic_min) / semantic_range
+        )
+        block = block_by_id.get(candidate.block_id)
+        block_text = (
+            ""
+            if block is None
+            else (
+                getattr(block, "block_text", None)
+                or getattr(block, "preview_text", "")
+            )
+        )
+        token_score = _tokenmax_score(query_tokens, block_text)
+        combined = (1.0 - weight) * semantic + weight * token_score
+        reranked.append(
+            RankedCandidateSpan(
+                block_id=candidate.block_id,
+                candidate_id=candidate.candidate_id,
+                token_start=candidate.token_start,
+                token_end=candidate.token_end,
+                score=combined,
+                rank=candidate.rank,
+                block_size=candidate.block_size,
+                block_mode=candidate.block_mode,
+            )
+        )
+    reranked.sort(key=lambda item: (item.score, -item.block_id), reverse=True)
+    return tuple(
+        RankedCandidateSpan(
+            block_id=candidate.block_id,
+            candidate_id=candidate.candidate_id,
+            token_start=candidate.token_start,
+            token_end=candidate.token_end,
+            score=candidate.score,
+            rank=rank,
+            block_size=candidate.block_size,
+            block_mode=candidate.block_mode,
+        )
+        for rank, candidate in enumerate(reranked, start=1)
+    )
+
+
+def _content_tokens(text: str) -> tuple[str, ...]:
+    """Return normalized content-bearing tokens for lexical reranking."""
+
+    seen: set[str] = set()
+    tokens: list[str] = []
+    for match in _TOKEN_RE.finditer(text):
+        token = match.group(0).casefold().strip("_-'")
+        if not token:
+            continue
+        if token in _STOPWORDS:
+            continue
+        if len(token) < 3 and not token.isdigit():
+            continue
+        if token in seen:
+            continue
+        seen.add(token)
+        tokens.append(token)
+    return tuple(tokens)
+
+
+def _tokenmax_score(query_tokens: Sequence[str], block_text: str) -> float:
+    """Score a block by strongest lexical/entity matches to query tokens."""
+
+    block_tokens = _content_tokens(block_text)
+    if not query_tokens or not block_tokens:
+        return 0.0
+    per_query_scores = [
+        max(
+            _lexical_token_similarity(query_token, block_token)
+            for block_token in block_tokens
+        )
+        for query_token in query_tokens
+    ]
+    if not per_query_scores:
+        return 0.0
+    # Let a few exact entities/dates spike relevance without requiring every
+    # question term to appear in the evidence span.
+    top_count = min(4, len(per_query_scores))
+    top_scores = sorted(per_query_scores, reverse=True)[:top_count]
+    return sum(top_scores) / top_count
+
+
+def _lexical_token_similarity(query_token: str, block_token: str) -> float:
+    """Return a deterministic lexical similarity signal in [0, 1]."""
+
+    if query_token == block_token:
+        return 1.0
+    query_stem = _simple_token_stem(query_token)
+    block_stem = _simple_token_stem(block_token)
+    if query_stem and query_stem == block_stem:
+        return 0.9
+    if len(query_token) >= 4 and len(block_token) >= 4:
+        if query_token in block_token or block_token in query_token:
+            return 0.8
+    return 0.0
+
+
+def _simple_token_stem(token: str) -> str:
+    """Normalize common plural/possessive suffixes for exact-name matching."""
+
+    if token.endswith("'s") and len(token) > 4:
+        return token[:-2]
+    if token.endswith("s") and len(token) > 4:
+        return token[:-1]
+    return token
+
+
 def _selected_ids_after_suppression(
     result: Any,
     *,
@@ -787,6 +1062,8 @@ def _selected_ids_after_suppression(
 def _suppression_records(
     result: Any,
     suppression: SuppressionResult,
+    *,
+    ranked_score_by_id: dict[int, float] | None = None,
 ) -> tuple[dict[str, Any], ...]:
     block_by_id = {block.block_id: block for block in result.block_inspections}
     records: list[dict[str, Any]] = []
@@ -809,7 +1086,12 @@ def _suppression_records(
                     "parent_token_end": getattr(block, "parent_token_end", None),
                     "stage_a_score": getattr(block, "stage_a_score", None),
                     "stage_b_score": getattr(block, "stage_b_score", None),
-                    "final_score": getattr(block, "final_score", None),
+                    "final_score": (
+                        ranked_score_by_id[block.block_id]
+                        if ranked_score_by_id is not None
+                        and block.block_id in ranked_score_by_id
+                        else getattr(block, "final_score", None)
+                    ),
                     "preview_text": block.preview_text,
                 }
             )
@@ -817,11 +1099,25 @@ def _suppression_records(
     return tuple(records)
 
 
-def _block_inspection_records(result: Any) -> tuple[dict[str, Any], ...]:
+def _block_inspection_records(
+    result: Any,
+    *,
+    score_by_id: dict[int, float] | None = None,
+    selected_ids: set[int] | None = None,
+    selected_reason: str | None = None,
+) -> tuple[dict[str, Any], ...]:
     """Return compact block inspection records for downstream diagnostics."""
 
     records: list[dict[str, Any]] = []
     for block in result.block_inspections:
+        selected = (
+            bool(block.selected)
+            if selected_ids is None
+            else block.block_id in selected_ids
+        )
+        reason = block.selected_reason
+        if selected_reason is not None and selected and not bool(block.selected):
+            reason = selected_reason
         records.append(
             {
                 "block_id": block.block_id,
@@ -829,11 +1125,15 @@ def _block_inspection_records(result: Any) -> tuple[dict[str, Any], ...]:
                 "token_start": block.token_start,
                 "token_end": block.token_end,
                 "token_count": block.token_count,
-                "selected": block.selected,
-                "selected_reason": block.selected_reason,
+                "selected": selected,
+                "selected_reason": reason,
                 "stage_a_score": block.stage_a_score,
                 "stage_b_score": block.stage_b_score,
-                "final_score": block.final_score,
+                "final_score": (
+                    score_by_id[block.block_id]
+                    if score_by_id is not None and block.block_id in score_by_id
+                    else block.final_score
+                ),
                 "preview_text": block.preview_text,
                 "block_size": getattr(block, "block_size", None),
                 "stride": getattr(block, "stride", None),

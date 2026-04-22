@@ -88,6 +88,21 @@ def build_parser() -> argparse.ArgumentParser:
         default=0.75,
         help="Overlap/IoU threshold used by non-none suppression modes.",
     )
+    parser.add_argument(
+        "--rerank-mode",
+        default="none",
+        choices=("none", "semantic_plus_tokenmax"),
+        help=(
+            "Optional benchmark-only rerank over ranked candidates. "
+            "semantic_plus_tokenmax blends selector score with lexical token matches."
+        ),
+    )
+    parser.add_argument(
+        "--rerank-weight",
+        type=float,
+        default=0.3,
+        help="Weight assigned to tokenmax score when --rerank-mode is enabled.",
+    )
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--torch-dtype", default="float32")
     parser.add_argument(
@@ -151,6 +166,8 @@ def main(argv: list[str] | None = None) -> int:
         suppression_modes=suppression_modes,
         suppression_threshold=args.suppression_threshold,
         coarse_top_k=args.coarse_top_k,
+        rerank_mode=args.rerank_mode,
+        rerank_weight=args.rerank_weight,
         load_config_kwargs={
             "device": args.device,
             "torch_dtype": args.torch_dtype,

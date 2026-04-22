@@ -53,6 +53,8 @@ def _row(block_mode: str) -> DynamicBlockRunRow:
         representation_source="query_mean_last_layer",
         representation_name="query_mean_layer_0_key_mean_layer_0",
         qk_aggregation_strategy="top_token_mean",
+        rerank_mode="none",
+        rerank_weight=0.3,
         block_mode=block_mode,
         suppression_mode="none",
         suppression_threshold=0.75,
@@ -250,6 +252,52 @@ def test_dynamic_block_cli_parser_supports_query_only_source() -> None:
     )
 
     assert args.representation_source == "query_only_last_layer"
+
+
+def test_rerank_candidates_can_promote_lexical_entity_match() -> None:
+    ranked = (
+        dynamic_bench.RankedCandidateSpan(
+            block_id=0,
+            candidate_id="a",
+            token_start=0,
+            token_end=40,
+            score=1.0,
+            rank=1,
+        ),
+        dynamic_bench.RankedCandidateSpan(
+            block_id=1,
+            candidate_id="b",
+            token_start=40,
+            token_end=80,
+            score=0.2,
+            rank=2,
+        ),
+    )
+    result = SimpleNamespace(
+        block_inspections=(
+            SimpleNamespace(
+                block_id=0,
+                block_text="general music background and unrelated credits",
+                preview_text="general music background",
+            ),
+            SimpleNamespace(
+                block_id=1,
+                block_text="The Rebirth released an album with featured vocals",
+                preview_text="The Rebirth released an album",
+            ),
+        )
+    )
+
+    reranked = dynamic_bench._rerank_candidates(
+        ranked,
+        result=result,
+        query_prompt="Who was in The Rebirth?",
+        mode="semantic_plus_tokenmax",
+        weight=1.0,
+    )
+
+    assert [candidate.block_id for candidate in reranked] == [1, 0]
+    assert reranked[0].rank == 1
 
 
 def test_fragment_quality_credits_adjacent_selected_boundary_spans() -> None:
@@ -591,6 +639,10 @@ def test_dynamic_block_benchmark_prompt_filter_and_script_parser() -> None:
             "0.8",
             "--coarse-top-k",
             "3",
+            "--rerank-mode",
+            "semantic_plus_tokenmax",
+            "--rerank-weight",
+            "0.4",
             "--device-map",
             "auto",
             "--local-files-only",
@@ -604,5 +656,7 @@ def test_dynamic_block_benchmark_prompt_filter_and_script_parser() -> None:
     assert args.suppression_modes == "none,overlap_threshold"
     assert args.suppression_threshold == 0.8
     assert args.coarse_top_k == 3
+    assert args.rerank_mode == "semantic_plus_tokenmax"
+    assert args.rerank_weight == 0.4
     assert args.device_map == "auto"
     assert args.local_files_only is True
