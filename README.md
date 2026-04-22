@@ -37,12 +37,16 @@ V1 exists to test whether we can drive `alpha` down in real workloads **without 
 
 The current best local dense-only selector baseline is documented in [`docs/current-best-path.md`](docs/current-best-path.md), with broader experiment triage in [`docs/experiment-status.md`](docs/experiment-status.md).
 
-Current local CPU/Mac findings point to:
+The active LongBench control is now named `fixed40_modern_control` and points to:
 
-- `representation_source = query_mean_last_layer`
+- `representation_source = query_only_last_layer`
 - `qk_aggregation = block_max`
 - `block_mode = fixed_40`
-- pooled `mean_heads` scoring
+- `rerank_mode = dense_qk_token_refine`
+- `refine_score_mode = softmax_mass`
+- `stage_c_policy = semantic_refined_mix`
+- `halo_radius = 1`
+- `max_selected_blocks = 16`
 
 This is not yet sparse runtime execution. It is the baseline to validate next on GPU and larger cached models before adding FlashInfer/vLLM sparse execution.
 
