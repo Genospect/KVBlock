@@ -457,6 +457,26 @@ def test_scaffold_exclusion_removes_metadata_only_blocks_from_rerank() -> None:
     assert reranked[0].rank == 1
 
 
+def test_neighbor_expansion_does_not_reintroduce_excluded_scaffold() -> None:
+    block_by_id = {
+        block_id: SimpleNamespace(
+            block_id=block_id,
+            token_start=block_id * 40,
+            token_end=(block_id + 1) * 40,
+        )
+        for block_id in range(3)
+    }
+
+    expanded = dynamic_bench._expand_selected_ids_by_neighbors(
+        (1,),
+        block_by_id=block_by_id,
+        radius=1,
+        excluded_block_ids=(0,),
+    )
+
+    assert expanded == (1, 2)
+
+
 def test_fragment_quality_credits_adjacent_selected_boundary_spans() -> None:
     block_by_id = {
         0: SimpleNamespace(block_id=0, token_start=0, token_end=40),

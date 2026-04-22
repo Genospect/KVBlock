@@ -566,6 +566,7 @@ def run_dynamic_block_benchmark(
                             refine_top_n_tokens=refine_top_n_tokens,
                             refine_score_mode=resolved_refine_score_mode,
                             scaffold_excluded_count=len(scaffold_excluded_ids),
+                            scaffold_excluded_ids=scaffold_excluded_ids,
                             config=config,
                             result=result,
                             suppression=suppression,
@@ -747,16 +748,22 @@ def _row_from_result(
     coarse_selected_candidate_ids: tuple[str, ...] = (),
     coarse_selected_spans: tuple[str, ...] = (),
     include_block_inspections: bool = False,
+    scaffold_excluded_ids: Sequence[int] = (),
 ) -> DynamicBlockRunRow:
     block_text_by_id = {
         block.block_id: block.block_text or block.preview_text
         for block in result.block_inspections
     }
     block_by_id = {block.block_id: block for block in result.block_inspections}
-    semantic_selected_ids = _selected_ids_after_suppression(
-        result,
-        suppression=suppression,
-        semantic_k=config.semantic_k,
+    excluded_ids = {int(block_id) for block_id in scaffold_excluded_ids}
+    semantic_selected_ids = tuple(
+        block_id
+        for block_id in _selected_ids_after_suppression(
+            result,
+            suppression=suppression,
+            semantic_k=config.semantic_k,
+        )
+        if block_id not in excluded_ids
     )
     expansion_radius = halo_radius if halo_radius > 0 else neighbor_expansion
     expansion_cap = max_selected_blocks if halo_radius > 0 else None
@@ -766,6 +773,7 @@ def _row_from_result(
         block_by_id=block_by_id,
         radius=expansion_radius,
         max_selected_blocks=expansion_cap,
+        excluded_block_ids=excluded_ids,
     )
     quality = _fragment_quality_for_result(
         selected_ids=selected_ids,
@@ -1380,10 +1388,16 @@ def _expand_selected_ids_by_neighbors(
     block_by_id: dict[int, Any],
     radius: int,
     max_selected_blocks: int | None = None,
+    excluded_block_ids: Iterable[int] = (),
 ) -> tuple[int, ...]:
     """Expand selected ids with adjacent token-span neighbors for diagnostics."""
 
-    base = tuple(int(block_id) for block_id in selected_ids)
+    excluded = {int(block_id) for block_id in excluded_block_ids}
+    base = tuple(
+        int(block_id)
+        for block_id in selected_ids
+        if int(block_id) not in excluded
+    )
     if radius <= 0 or not base:
         return base
     cap = (
@@ -1409,6 +1423,8 @@ def _expand_selected_ids_by_neighbors(
     def append(block_id: int, *, enforce_cap: bool) -> bool:
         if enforce_cap and cap is not None and len(expanded) >= cap:
             return False
+        if block_id in excluded:
+            return True
         if block_id in block_by_id and block_id not in seen:
             seen.add(block_id)
             expanded.append(block_id)
