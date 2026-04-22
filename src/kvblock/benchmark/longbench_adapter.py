@@ -157,6 +157,10 @@ class LongBenchBenchmarkRunRow:
     missed_expected_block_ids: tuple[int, ...]
     selected_spans: tuple[str, ...]
     expected_block_distance: int | None
+    selected_blocks: tuple[dict[str, Any], ...]
+    expected_blocks: tuple[dict[str, Any], ...]
+    missed_expected_blocks: tuple[dict[str, Any], ...]
+    top_ranked_blocks: tuple[dict[str, Any], ...]
     prompt_name: str
     prompt_file: str
     model_name: str
@@ -461,6 +465,7 @@ def run_longbench_selector_benchmark(
         needle_qk_aggregation_strategy=needle_qk_aggregation_strategy,
         load_config_kwargs=load_config_kwargs,
         selector_config=selector_config,
+        include_block_inspections=True,
     )
     rows = _longbench_rows(dynamic_result, sample_metadata)
     return LongBenchBenchmarkResult(
@@ -531,6 +536,10 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
             f"recall={_fmt_optional(row.target_recall)} "
             f"precision={_fmt_optional(row.selected_precision)}"
         )
+        if row.scoreable_by_answer_presence:
+            lines.append(f"  selected_blocks: {_format_block_records(row.selected_blocks)}")
+            lines.append(f"  expected_blocks: {_format_block_records(row.expected_blocks)}")
+            lines.append(f"  top_ranked_blocks: {_format_block_records(row.top_ranked_blocks)}")
     return "\n".join(lines)
 
 
@@ -614,6 +623,7 @@ def _longbench_rows(
     rows: list[LongBenchBenchmarkRunRow] = []
     for row in dynamic_result.rows:
         sample = by_prompt[row.prompt_name]
+        inspection_by_id = _inspection_by_id(row.block_inspection_records)
         rows.append(
             LongBenchBenchmarkRunRow(
                 dataset_name=sample.dataset_name,
@@ -639,6 +649,20 @@ def _longbench_rows(
                 expected_block_distance=_expected_block_distance(
                     selected_ids=row.selected_ids,
                     expected_ids=row.retrieval_quality.expected_block_ids,
+                ),
+                selected_blocks=_records_for_ids(inspection_by_id, row.selected_ids),
+                expected_blocks=_records_for_ids(
+                    inspection_by_id,
+                    row.retrieval_quality.expected_block_ids,
+                ),
+                missed_expected_blocks=_records_for_ids(
+                    inspection_by_id,
+                    row.retrieval_quality.missed_expected_block_ids,
+                ),
+                top_ranked_blocks=_top_ranked_blocks(
+                    row.suppression_decisions,
+                    inspection_by_id=inspection_by_id,
+                    limit=10,
                 ),
                 prompt_name=row.prompt_name,
                 prompt_file=row.prompt_file,
@@ -708,6 +732,91 @@ def _expected_block_distance(
         for selected in selected_ids
         for expected in expected_ids
     )
+
+
+def _inspection_by_id(
+    records: Sequence[Mapping[str, Any]],
+) -> dict[int, Mapping[str, Any]]:
+    """Return compact inspection records keyed by block id."""
+
+    return {
+        int(record["block_id"]): record
+        for record in records
+        if "block_id" in record
+    }
+
+
+def _records_for_ids(
+    inspection_by_id: Mapping[int, Mapping[str, Any]],
+    block_ids: Sequence[int],
+) -> tuple[dict[str, Any], ...]:
+    """Return inspection records for the requested block ids in order."""
+
+    return tuple(
+        _compact_inspection_record(inspection_by_id[block_id])
+        for block_id in block_ids
+        if block_id in inspection_by_id
+    )
+
+
+def _top_ranked_blocks(
+    suppression_decisions: Sequence[Mapping[str, Any]],
+    *,
+    inspection_by_id: Mapping[int, Mapping[str, Any]],
+    limit: int = 10,
+) -> tuple[dict[str, Any], ...]:
+    """Return the top ranked candidate records from suppression decisions."""
+
+    top: list[dict[str, Any]] = []
+    for rank, decision in enumerate(suppression_decisions[:limit], start=1):
+        block_id = int(decision["block_id"])
+        record = dict(inspection_by_id.get(block_id, decision))
+        compact = _compact_inspection_record(record)
+        compact["rank"] = rank
+        if "final_score" not in compact and "final_score" in decision:
+            compact["final_score"] = decision["final_score"]
+        top.append(compact)
+    return tuple(top)
+
+
+def _compact_inspection_record(record: Mapping[str, Any]) -> dict[str, Any]:
+    """Return a stable, JSON-friendly block preview record."""
+
+    return {
+        "block_id": int(record.get("block_id", -1)),
+        "candidate_id": str(record.get("candidate_id", record.get("block_id", ""))),
+        "token_start": record.get("token_start"),
+        "token_end": record.get("token_end"),
+        "block_size": record.get("block_size"),
+        "stage_a_score": record.get("stage_a_score"),
+        "stage_b_score": record.get("stage_b_score"),
+        "final_score": record.get("final_score"),
+        "selected": bool(record.get("selected", False)),
+        "selected_reason": str(record.get("selected_reason", "")),
+        "preview_text": str(record.get("preview_text", "")),
+    }
+
+
+def _format_block_records(records: Sequence[Mapping[str, Any]]) -> str:
+    """Format compact block records for text reports."""
+
+    if not records:
+        return "[]"
+    formatted: list[str] = []
+    for record in records:
+        preview = " ".join(str(record.get("preview_text", "")).split())
+        if len(preview) > 96:
+            preview = preview[:93] + "..."
+        score = record.get("final_score")
+        score_text = "n/a" if score is None else f"{float(score):.4f}"
+        rank = record.get("rank")
+        rank_text = "" if rank is None else f"rank={rank} "
+        formatted.append(
+            f"{rank_text}id={record.get('block_id')} "
+            f"span={record.get('token_start')}:{record.get('token_end')} "
+            f"score={score_text} preview={preview!r}"
+        )
+    return "[" + "; ".join(formatted) + "]"
 
 
 def _first_text(row: Mapping[str, Any], keys: Sequence[str]) -> str:

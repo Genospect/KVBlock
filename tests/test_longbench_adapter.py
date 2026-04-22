@@ -137,7 +137,10 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
             selected_spans=("0:40", "40:80"),
             selected_block_sizes=(40, 40),
             selected_candidate_roles=("block", "block"),
-            suppression_decisions=(),
+            suppression_decisions=(
+                {"block_id": 1, "candidate_id": "s40_t0_40", "survived": True},
+                {"block_id": 2, "candidate_id": "s40_t40_80", "survived": True},
+            ),
             selected_count=2,
             selected_to_semantic_k_ratio=0.5,
             selector_latency_sec=0.002,
@@ -148,6 +151,34 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
             fallback_mode="sparse",
             raw_margin=0.1,
             retrieval_quality=quality,
+            block_inspection_records=(
+                {
+                    "block_id": 1,
+                    "candidate_id": "s40_t0_40",
+                    "token_start": 0,
+                    "token_end": 40,
+                    "block_size": 40,
+                    "stage_a_score": 1.0,
+                    "stage_b_score": 1.0,
+                    "final_score": 1.0,
+                    "selected": True,
+                    "selected_reason": "semantic",
+                    "preview_text": "alpha evidence block",
+                },
+                {
+                    "block_id": 2,
+                    "candidate_id": "s40_t40_80",
+                    "token_start": 40,
+                    "token_end": 80,
+                    "block_size": 40,
+                    "stage_a_score": 0.5,
+                    "stage_b_score": 0.5,
+                    "final_score": 0.5,
+                    "selected": True,
+                    "selected_reason": "semantic",
+                    "preview_text": "extra block",
+                },
+            ),
         )
         return DynamicBlockBenchmarkResult(
             rows=(row,),
@@ -176,6 +207,9 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
     assert result.rows[0].expected_block_ids == (1,)
     assert result.rows[0].selected_block_ids == (1, 2)
     assert result.rows[0].expected_block_distance == 0
+    assert result.rows[0].selected_blocks[0]["preview_text"] == "alpha evidence block"
+    assert result.rows[0].expected_blocks[0]["block_id"] == 1
+    assert result.rows[0].top_ranked_blocks[0]["rank"] == 1
     assert result.rows[0].target_recall == 1.0
     assert result.dataset_summaries[0].mean_precision == 0.5
     assert result.dataset_summaries[0].scoreable_run_count == 1

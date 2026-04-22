@@ -103,6 +103,7 @@ class DynamicBlockRunRow:
     retained_parent_count: int = 0
     coarse_selected_candidate_ids: tuple[str, ...] = ()
     coarse_selected_spans: tuple[str, ...] = ()
+    block_inspection_records: tuple[dict[str, Any], ...] = ()
 
     def to_dict(self) -> dict[str, Any]:
         """Return a JSON-friendly row record."""
@@ -224,6 +225,7 @@ def run_dynamic_block_benchmark(
     coarse_top_k: int = 2,
     load_config_kwargs: dict[str, Any] | None = None,
     selector_config: RealBlockSelectorConfig | None = None,
+    include_block_inspections: bool = False,
 ) -> DynamicBlockBenchmarkResult:
     """Run real-block selector over fixed and multi-scale block candidates."""
 
@@ -390,6 +392,7 @@ def run_dynamic_block_benchmark(
                             retained_parent_count=retained_parent_count,
                             coarse_selected_candidate_ids=coarse_selected_candidate_ids,
                             coarse_selected_spans=coarse_selected_spans,
+                            include_block_inspections=include_block_inspections,
                         )
                     )
 
@@ -496,6 +499,7 @@ def _row_from_result(
     retained_parent_count: int = 0,
     coarse_selected_candidate_ids: tuple[str, ...] = (),
     coarse_selected_spans: tuple[str, ...] = (),
+    include_block_inspections: bool = False,
 ) -> DynamicBlockRunRow:
     block_text_by_id = {
         block.block_id: block.block_text or block.preview_text
@@ -583,6 +587,11 @@ def _row_from_result(
         retained_parent_count=retained_parent_count,
         coarse_selected_candidate_ids=coarse_selected_candidate_ids,
         coarse_selected_spans=coarse_selected_spans,
+        block_inspection_records=(
+            _block_inspection_records(result)
+            if include_block_inspections
+            else ()
+        ),
     )
 
 
@@ -773,6 +782,33 @@ def _suppression_records(
                 }
             )
         records.append(payload)
+    return tuple(records)
+
+
+def _block_inspection_records(result: Any) -> tuple[dict[str, Any], ...]:
+    """Return compact block inspection records for downstream diagnostics."""
+
+    records: list[dict[str, Any]] = []
+    for block in result.block_inspections:
+        records.append(
+            {
+                "block_id": block.block_id,
+                "candidate_id": block.candidate_id or str(block.block_id),
+                "token_start": block.token_start,
+                "token_end": block.token_end,
+                "token_count": block.token_count,
+                "selected": block.selected,
+                "selected_reason": block.selected_reason,
+                "stage_a_score": block.stage_a_score,
+                "stage_b_score": block.stage_b_score,
+                "final_score": block.final_score,
+                "preview_text": block.preview_text,
+                "block_size": getattr(block, "block_size", None),
+                "stride": getattr(block, "stride", None),
+                "block_mode": getattr(block, "block_mode", None),
+                "candidate_role": getattr(block, "candidate_role", "block"),
+            }
+        )
     return tuple(records)
 
 
