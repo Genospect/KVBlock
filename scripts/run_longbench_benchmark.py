@@ -107,6 +107,16 @@ def build_parser() -> argparse.ArgumentParser:
         help="Dense-QK refinement scorer used by dense_qk_token_refine.",
     )
     parser.add_argument(
+        "--stage-c-policy",
+        default="refined_only",
+        choices=("refined_only", "semantic_refined_mix"),
+        help=(
+            "Benchmark-only final anchor policy. refined_only preserves the "
+            "current reranked top-K path; semantic_refined_mix splits anchors "
+            "between original semantic rank and refined rank."
+        ),
+    )
+    parser.add_argument(
         "--exclude-scaffold-blocks",
         action="store_true",
         help="LongBench-only benchmark hygiene: exclude metadata-only prompt blocks from rerank candidates.",
@@ -206,6 +216,7 @@ def main(argv: list[str] | None = None) -> int:
         rerank_weight=args.rerank_weight,
         refine_top_n_tokens=args.refine_top_n_tokens,
         refine_score_mode=args.refine_score_mode,
+        stage_c_policy=args.stage_c_policy,
         exclude_scaffold_blocks=args.exclude_scaffold_blocks,
         neighbor_expansion=args.neighbor_expansion,
         halo_radius=args.halo_radius,

@@ -73,6 +73,7 @@ DEFAULT_DYNAMIC_PROMPT_NAMES: tuple[str, ...] = (
 
 RerankMode = Literal["none", "semantic_plus_tokenmax", "dense_qk_token_refine"]
 RefineScoreMode = Literal["raw_topn_mean", "cosine_topn_mean", "softmax_mass"]
+StageCPolicyMode = Literal["refined_only", "semantic_refined_mix"]
 
 VALID_RERANK_MODES: tuple[RerankMode, ...] = (
     "none",
@@ -83,6 +84,10 @@ VALID_REFINE_SCORE_MODES: tuple[RefineScoreMode, ...] = (
     "raw_topn_mean",
     "cosine_topn_mean",
     "softmax_mass",
+)
+VALID_STAGE_C_POLICIES: tuple[StageCPolicyMode, ...] = (
+    "refined_only",
+    "semantic_refined_mix",
 )
 
 _TOKEN_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9'_-]*")
@@ -218,6 +223,7 @@ class DynamicBlockRunRow:
     block_inspection_records: tuple[dict[str, Any], ...] = ()
     refine_top_n_tokens: int = 4
     refine_score_mode: str = "raw_topn_mean"
+    stage_c_policy: str = "refined_only"
     scaffold_excluded_count: int = 0
 
     def to_dict(self) -> dict[str, Any]:
@@ -357,6 +363,16 @@ def refine_score_mode_from_name(name: str) -> RefineScoreMode:
     return cast(RefineScoreMode, normalized)
 
 
+def stage_c_policy_from_name(name: str) -> StageCPolicyMode:
+    """Validate and return one benchmark Stage-C selection policy."""
+
+    normalized = name.strip()
+    if normalized not in VALID_STAGE_C_POLICIES:
+        valid = ", ".join(VALID_STAGE_C_POLICIES)
+        raise ValueError(f"unknown Stage-C policy {name!r}; valid: {valid}")
+    return cast(StageCPolicyMode, normalized)
+
+
 def run_dynamic_block_benchmark(
     *,
     model_names: Sequence[str],
@@ -375,6 +391,7 @@ def run_dynamic_block_benchmark(
     rerank_weight: float = 0.3,
     refine_top_n_tokens: int = 4,
     refine_score_mode: RefineScoreMode = "raw_topn_mean",
+    stage_c_policy: StageCPolicyMode = "refined_only",
     exclude_scaffold_blocks: bool = False,
     neighbor_expansion: int = 0,
     halo_radius: int = 0,
@@ -397,6 +414,7 @@ def run_dynamic_block_benchmark(
     if refine_top_n_tokens <= 0:
         raise ValueError("refine_top_n_tokens must be > 0")
     resolved_refine_score_mode = refine_score_mode_from_name(refine_score_mode)
+    resolved_stage_c_policy = stage_c_policy_from_name(stage_c_policy)
     if neighbor_expansion < 0:
         raise ValueError("neighbor_expansion must be >= 0")
     if halo_radius < 0:
@@ -525,10 +543,16 @@ def run_dynamic_block_benchmark(
                     if exclude_scaffold_blocks
                     else ()
                 )
+                scaffold_excluded_id_set = set(scaffold_excluded_ids)
                 original_rank_by_id = {
                     candidate.block_id: candidate.rank
                     for candidate in base_ranked_candidates
                 }
+                original_stage_c_ranked_block_ids = tuple(
+                    int(candidate.block_id)
+                    for candidate in base_ranked_candidates
+                    if int(candidate.block_id) not in scaffold_excluded_id_set
+                )
                 ranked_candidates = _rerank_candidates(
                     base_ranked_candidates,
                     result=result,
@@ -565,8 +589,10 @@ def run_dynamic_block_benchmark(
                             rerank_weight=rerank_weight,
                             refine_top_n_tokens=refine_top_n_tokens,
                             refine_score_mode=resolved_refine_score_mode,
+                            stage_c_policy=resolved_stage_c_policy,
                             scaffold_excluded_count=len(scaffold_excluded_ids),
                             scaffold_excluded_ids=scaffold_excluded_ids,
+                            original_ranked_block_ids=original_stage_c_ranked_block_ids,
                             config=config,
                             result=result,
                             suppression=suppression,
@@ -696,6 +722,7 @@ def format_dynamic_block_report(result: DynamicBlockBenchmarkResult) -> str:
             f"rerank={row.rerank_mode}@{row.rerank_weight:.2f} "
             f"refine_top_n={row.refine_top_n_tokens} "
             f"refine_mode={row.refine_score_mode} "
+            f"stage_c={row.stage_c_policy} "
             f"scaffold_excluded={row.scaffold_excluded_count} | "
             f"neighbor_expansion={row.neighbor_expansion} | "
             f"halo={row.halo_radius} cap={_fmt_int_optional(row.max_selected_blocks)} | "
@@ -726,6 +753,7 @@ def _row_from_result(
     rerank_weight: float,
     refine_top_n_tokens: int,
     refine_score_mode: RefineScoreMode,
+    stage_c_policy: StageCPolicyMode,
     scaffold_excluded_count: int,
     config: RealBlockSelectorConfig,
     result: Any,
@@ -749,6 +777,7 @@ def _row_from_result(
     coarse_selected_spans: tuple[str, ...] = (),
     include_block_inspections: bool = False,
     scaffold_excluded_ids: Sequence[int] = (),
+    original_ranked_block_ids: Sequence[int] = (),
 ) -> DynamicBlockRunRow:
     block_text_by_id = {
         block.block_id: block.block_text or block.preview_text
@@ -756,14 +785,17 @@ def _row_from_result(
     }
     block_by_id = {block.block_id: block for block in result.block_inspections}
     excluded_ids = {int(block_id) for block_id in scaffold_excluded_ids}
-    semantic_selected_ids = tuple(
-        block_id
-        for block_id in _selected_ids_after_suppression(
-            result,
-            suppression=suppression,
-            semantic_k=config.semantic_k,
-        )
-        if block_id not in excluded_ids
+    refined_selected_ids = _selected_ids_after_suppression(
+        result,
+        suppression=suppression,
+        semantic_k=config.semantic_k,
+    )
+    semantic_selected_ids = _stage_c_semantic_ids(
+        refined_selected_ids=refined_selected_ids,
+        original_ranked_block_ids=original_ranked_block_ids,
+        semantic_k=config.semantic_k,
+        policy=stage_c_policy,
+        excluded_block_ids=excluded_ids,
     )
     expansion_radius = halo_radius if halo_radius > 0 else neighbor_expansion
     expansion_cap = max_selected_blocks if halo_radius > 0 else None
@@ -866,6 +898,7 @@ def _row_from_result(
         coarse_selected_spans=coarse_selected_spans,
         refine_top_n_tokens=refine_top_n_tokens,
         refine_score_mode=refine_score_mode,
+        stage_c_policy=stage_c_policy,
         scaffold_excluded_count=scaffold_excluded_count,
         block_inspection_records=(
             _block_inspection_records(
@@ -1380,6 +1413,74 @@ def _selected_ids_after_suppression(
     if not suppression.survivor_block_ids:
         return tuple(int(block_id) for block_id in result.selected_block_ids)
     return tuple(int(block_id) for block_id in suppression.survivor_block_ids[:semantic_k])
+
+
+def _stage_c_semantic_ids(
+    *,
+    refined_selected_ids: Sequence[int],
+    original_ranked_block_ids: Sequence[int],
+    semantic_k: int,
+    policy: StageCPolicyMode,
+    excluded_block_ids: Iterable[int] = (),
+) -> tuple[int, ...]:
+    """Return benchmark Stage-C anchors from refined and/or original rankings."""
+
+    if semantic_k <= 0:
+        raise ValueError("semantic_k must be > 0")
+    resolved_policy = stage_c_policy_from_name(policy)
+    excluded = {int(block_id) for block_id in excluded_block_ids}
+    refined = _unique_ids(
+        block_id
+        for block_id in refined_selected_ids
+        if int(block_id) not in excluded
+    )
+    if resolved_policy == "refined_only":
+        return refined[:semantic_k]
+
+    original = _unique_ids(
+        block_id
+        for block_id in original_ranked_block_ids
+        if int(block_id) not in excluded
+    )
+    if not original:
+        return refined[:semantic_k]
+
+    selected: list[int] = []
+    seen: set[int] = set()
+
+    def add_from(ids: Sequence[int], *, limit: int | None = None) -> None:
+        added = 0
+        for block_id in ids:
+            normalized = int(block_id)
+            if normalized in seen or normalized in excluded:
+                continue
+            selected.append(normalized)
+            seen.add(normalized)
+            added += 1
+            if len(selected) >= semantic_k:
+                return
+            if limit is not None and added >= limit:
+                return
+
+    original_quota = max(1, semantic_k // 2)
+    refined_quota = max(0, semantic_k - original_quota)
+    add_from(original, limit=original_quota)
+    add_from(refined, limit=refined_quota)
+    add_from(original)
+    add_from(refined)
+    return tuple(selected[:semantic_k])
+
+
+def _unique_ids(ids: Iterable[int]) -> tuple[int, ...]:
+    seen: set[int] = set()
+    unique: list[int] = []
+    for block_id in ids:
+        normalized = int(block_id)
+        if normalized in seen:
+            continue
+        seen.add(normalized)
+        unique.append(normalized)
+    return tuple(unique)
 
 
 def _expand_selected_ids_by_neighbors(

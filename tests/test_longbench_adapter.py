@@ -177,6 +177,7 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
             retrieval_quality=quality,
             refine_top_n_tokens=kwargs.get("refine_top_n_tokens", 4),
             refine_score_mode=kwargs.get("refine_score_mode", "raw_topn_mean"),
+            stage_c_policy=kwargs.get("stage_c_policy", "refined_only"),
             scaffold_excluded_count=1 if kwargs.get("exclude_scaffold_blocks") else 0,
             block_inspection_records=(
                 {
@@ -233,6 +234,7 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
         dataset_loader=_fake_longbench_rows,
         refine_top_n_tokens=3,
         refine_score_mode="cosine_topn_mean",
+        stage_c_policy="semantic_refined_mix",
         exclude_scaffold_blocks=True,
     )
 
@@ -243,6 +245,7 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
     assert result.rows[0].rerank_weight == 0.3
     assert result.rows[0].refine_top_n_tokens == 3
     assert result.rows[0].refine_score_mode == "cosine_topn_mean"
+    assert result.rows[0].stage_c_policy == "semantic_refined_mix"
     assert result.rows[0].scaffold_excluded_count == 1
     assert result.rows[0].answer_present_count == 1
     assert result.rows[0].expected_block_count == 1
@@ -276,6 +279,7 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
     assert result.dataset_summaries[0].scoreable_run_count == 1
     assert result.evidence_window_radius == 0
     assert result.refine_score_mode == "cosine_topn_mean"
+    assert result.stage_c_policy == "semantic_refined_mix"
     assert result.exclude_scaffold_blocks is True
     assert result.oracle_mode == "none"
     assert result.rows[0].oracle_top_block_ids == ()
@@ -420,6 +424,8 @@ def test_longbench_cli_parser_accepts_baseline_flags() -> None:
             "3",
             "--refine-score-mode",
             "cosine_topn_mean",
+            "--stage-c-policy",
+            "semantic_refined_mix",
             "--exclude-scaffold-blocks",
             "--neighbor-expansion",
             "2",
@@ -447,6 +453,7 @@ def test_longbench_cli_parser_accepts_baseline_flags() -> None:
     assert args.rerank_weight == 0.4
     assert args.refine_top_n_tokens == 3
     assert args.refine_score_mode == "cosine_topn_mean"
+    assert args.stage_c_policy == "semantic_refined_mix"
     assert args.exclude_scaffold_blocks is True
     assert args.neighbor_expansion == 2
     assert args.halo_radius == 0

@@ -24,6 +24,7 @@ from kvblock.benchmark.dynamic_block_benchmark import (
     DynamicBlockRunRow,
     RefineScoreMode,
     RerankMode,
+    StageCPolicyMode,
     query_prompt_override_for_representation,
     run_dynamic_block_benchmark,
 )
@@ -205,6 +206,7 @@ class LongBenchBenchmarkRunRow:
     rerank_weight: float
     refine_top_n_tokens: int
     refine_score_mode: str
+    stage_c_policy: str
     scaffold_excluded_count: int
     neighbor_expansion: int
     halo_radius: int
@@ -294,6 +296,7 @@ class LongBenchBenchmarkResult:
     length_bucket: LengthBucket
     evidence_window_radius: int
     refine_score_mode: str
+    stage_c_policy: str
     exclude_scaffold_blocks: bool
     oracle_mode: str
     oracle_top_k_values: tuple[int, ...]
@@ -307,6 +310,7 @@ class LongBenchBenchmarkResult:
             "length_bucket": self.length_bucket.to_dict(),
             "evidence_window_radius": self.evidence_window_radius,
             "refine_score_mode": self.refine_score_mode,
+            "stage_c_policy": self.stage_c_policy,
             "exclude_scaffold_blocks": self.exclude_scaffold_blocks,
             "oracle_mode": self.oracle_mode,
             "oracle_top_k_values": list(self.oracle_top_k_values),
@@ -549,6 +553,7 @@ def run_longbench_selector_benchmark(
     rerank_weight: float = 0.3,
     refine_top_n_tokens: int = 4,
     refine_score_mode: RefineScoreMode = "raw_topn_mean",
+    stage_c_policy: StageCPolicyMode = "refined_only",
     exclude_scaffold_blocks: bool = False,
     neighbor_expansion: int = 0,
     halo_radius: int = 0,
@@ -600,6 +605,7 @@ def run_longbench_selector_benchmark(
         rerank_weight=rerank_weight,
         refine_top_n_tokens=refine_top_n_tokens,
         refine_score_mode=refine_score_mode,
+        stage_c_policy=stage_c_policy,
         exclude_scaffold_blocks=exclude_scaffold_blocks,
         neighbor_expansion=neighbor_expansion,
         halo_radius=halo_radius,
@@ -638,6 +644,7 @@ def run_longbench_selector_benchmark(
         length_bucket=bucket,
         evidence_window_radius=evidence_window_radius,
         refine_score_mode=refine_score_mode,
+        stage_c_policy=stage_c_policy,
         exclude_scaffold_blocks=exclude_scaffold_blocks,
         oracle_mode=resolved_oracle_mode,
         oracle_top_k_values=resolved_oracle_top_k,
@@ -667,7 +674,7 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
         "LONGBENCH SELECTOR BENCHMARK",
         f"dataset_repo={result.dataset_repo} split={result.split} length_bucket={result.length_bucket.name}",
         f"evidence_window_radius={result.evidence_window_radius}",
-        f"refine_score_mode={result.refine_score_mode} exclude_scaffold_blocks={result.exclude_scaffold_blocks}",
+        f"refine_score_mode={result.refine_score_mode} stage_c_policy={result.stage_c_policy} exclude_scaffold_blocks={result.exclude_scaffold_blocks}",
         f"oracle_mode={result.oracle_mode} oracle_top_k={list(result.oracle_top_k_values)}",
         f"samples={len(result.samples)} rows={len(result.rows)}",
         "",
@@ -707,6 +714,7 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
             f"rerank={row.rerank_mode}@{row.rerank_weight:.2f} "
             f"refine_top_n={row.refine_top_n_tokens} "
             f"refine_mode={row.refine_score_mode} "
+            f"stage_c={row.stage_c_policy} "
             f"scaffold_excluded={row.scaffold_excluded_count} "
             f"neighbor_expansion={row.neighbor_expansion} "
             f"halo={row.halo_radius} cap={_fmt_int_optional(row.max_selected_blocks)} "
@@ -1014,6 +1022,7 @@ def _longbench_rows(
                 rerank_weight=row.rerank_weight,
                 refine_top_n_tokens=row.refine_top_n_tokens,
                 refine_score_mode=row.refine_score_mode,
+                stage_c_policy=row.stage_c_policy,
                 scaffold_excluded_count=row.scaffold_excluded_count,
                 neighbor_expansion=row.neighbor_expansion,
                 halo_radius=row.halo_radius,

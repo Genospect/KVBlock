@@ -477,6 +477,28 @@ def test_neighbor_expansion_does_not_reintroduce_excluded_scaffold() -> None:
     assert expanded == (1, 2)
 
 
+def test_stage_c_semantic_refined_mix_keeps_both_ranking_rails() -> None:
+    selected = dynamic_bench._stage_c_semantic_ids(
+        refined_selected_ids=(10, 11, 12, 13),
+        original_ranked_block_ids=(1, 2, 10, 3),
+        semantic_k=4,
+        policy="semantic_refined_mix",
+    )
+
+    assert selected == (1, 2, 10, 11)
+
+
+def test_stage_c_refined_only_preserves_existing_selection_policy() -> None:
+    selected = dynamic_bench._stage_c_semantic_ids(
+        refined_selected_ids=(10, 11, 12, 13),
+        original_ranked_block_ids=(1, 2, 10, 3),
+        semantic_k=4,
+        policy="refined_only",
+    )
+
+    assert selected == (10, 11, 12, 13)
+
+
 def test_fragment_quality_credits_adjacent_selected_boundary_spans() -> None:
     block_by_id = {
         0: SimpleNamespace(block_id=0, token_start=0, token_end=40),
@@ -863,6 +885,8 @@ def test_dynamic_block_benchmark_prompt_filter_and_script_parser() -> None:
             "3",
             "--refine-score-mode",
             "cosine_topn_mean",
+            "--stage-c-policy",
+            "semantic_refined_mix",
             "--neighbor-expansion",
             "1",
             "--halo-radius",
@@ -886,6 +910,7 @@ def test_dynamic_block_benchmark_prompt_filter_and_script_parser() -> None:
     assert args.rerank_weight == 0.4
     assert args.refine_top_n_tokens == 3
     assert args.refine_score_mode == "cosine_topn_mean"
+    assert args.stage_c_policy == "semantic_refined_mix"
     assert args.neighbor_expansion == 1
     assert args.halo_radius == 0
     assert args.max_selected_blocks == 8
