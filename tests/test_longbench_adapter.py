@@ -135,6 +135,8 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
             candidate_count_before_suppression=128,
             candidate_count_after_suppression=128,
             neighbor_expansion=0,
+            halo_radius=0,
+            max_selected_blocks=None,
             semantic_selected_ids=(1, 2),
             selected_ids=(1, 2),
             selected_candidate_ids=("s40_t0_40", "s40_t40_80"),
@@ -216,6 +218,11 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
     assert result.rows[0].recall_at_4 == 1.0
     assert result.rows[0].neighbor_recall_at_1 == 1.0
     assert result.rows[0].best_neighbor_distance == 0
+    assert result.rows[0].evidence_window_radius == 0
+    assert result.rows[0].evidence_window_recall == 1.0
+    assert result.rows[0].evidence_window_precision == 0.5
+    assert result.rows[0].evidence_window_recall_at_1 == 1.0
+    assert result.rows[0].evidence_window_precision_at_1 == 1.0
     assert result.rows[0].semantic_selected_block_ids == (1, 2)
     assert result.rows[0].selected_block_ids == (1, 2)
     assert result.rows[0].expected_block_distance == 0
@@ -224,7 +231,10 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
     assert result.rows[0].top_ranked_blocks[0]["rank"] == 1
     assert result.rows[0].target_recall == 1.0
     assert result.dataset_summaries[0].mean_precision == 0.5
+    assert result.dataset_summaries[0].mean_evidence_window_recall == 1.0
+    assert result.dataset_summaries[0].mean_evidence_window_precision == 0.5
     assert result.dataset_summaries[0].scoreable_run_count == 1
+    assert result.evidence_window_radius == 0
     assert result.to_dict()["rows"][0]["selected_to_semantic_k_ratio"] == 0.5
 
 
@@ -295,6 +305,12 @@ def test_longbench_cli_parser_accepts_baseline_flags() -> None:
             "0.4",
             "--neighbor-expansion",
             "2",
+            "--halo-radius",
+            "0",
+            "--max-selected-blocks",
+            "8",
+            "--evidence-window-radius",
+            "2",
             "--device-map",
             "auto",
         ]
@@ -308,4 +324,7 @@ def test_longbench_cli_parser_accepts_baseline_flags() -> None:
     assert args.rerank_mode == "semantic_plus_tokenmax"
     assert args.rerank_weight == 0.4
     assert args.neighbor_expansion == 2
+    assert args.halo_radius == 0
+    assert args.max_selected_blocks == 8
+    assert args.evidence_window_radius == 2
     assert args.device_map == "auto"

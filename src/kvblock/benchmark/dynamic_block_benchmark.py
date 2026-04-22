@@ -181,6 +181,8 @@ class DynamicBlockRunRow:
     candidate_count_before_suppression: int
     candidate_count_after_suppression: int
     neighbor_expansion: int
+    halo_radius: int
+    max_selected_blocks: int | None
     semantic_selected_ids: tuple[int, ...]
     selected_ids: tuple[int, ...]
     selected_candidate_ids: tuple[str, ...]
@@ -349,6 +351,8 @@ def run_dynamic_block_benchmark(
     rerank_mode: RerankMode = "none",
     rerank_weight: float = 0.3,
     neighbor_expansion: int = 0,
+    halo_radius: int = 0,
+    max_selected_blocks: int | None = None,
 ) -> DynamicBlockBenchmarkResult:
     """Run real-block selector over fixed and multi-scale block candidates."""
 
@@ -366,6 +370,12 @@ def run_dynamic_block_benchmark(
         raise ValueError("rerank_weight must be in [0, 1]")
     if neighbor_expansion < 0:
         raise ValueError("neighbor_expansion must be >= 0")
+    if halo_radius < 0:
+        raise ValueError("halo_radius must be >= 0")
+    if neighbor_expansion > 0 and halo_radius > 0:
+        raise ValueError("use either neighbor_expansion or halo_radius, not both")
+    if max_selected_blocks is not None and max_selected_blocks <= 0:
+        raise ValueError("max_selected_blocks must be > 0 when provided")
     if coarse_top_k <= 0:
         raise ValueError("coarse_top_k must be > 0")
     needle_strategy = (
@@ -385,6 +395,8 @@ def run_dynamic_block_benchmark(
         include_block_text=True,
         representation_source=representation_source,
     )
+    if max_selected_blocks is not None and max_selected_blocks < config.semantic_k:
+        raise ValueError("max_selected_blocks must be >= semantic_k")
     load_kwargs = dict(load_config_kwargs or {})
 
     rows: list[DynamicBlockRunRow] = []
@@ -509,6 +521,8 @@ def run_dynamic_block_benchmark(
                             suppression=suppression,
                             ranked_score_by_id=ranked_score_by_id,
                             neighbor_expansion=neighbor_expansion,
+                            halo_radius=halo_radius,
+                            max_selected_blocks=max_selected_blocks,
                             candidate_block_count_override=(
                                 coarse_candidate_count
                                 + fine_candidate_count_after_drilldown
@@ -620,6 +634,7 @@ def format_dynamic_block_report(result: DynamicBlockBenchmarkResult) -> str:
             f"qk={row.qk_aggregation_strategy} | "
             f"rerank={row.rerank_mode}@{row.rerank_weight:.2f} | "
             f"neighbor_expansion={row.neighbor_expansion} | "
+            f"halo={row.halo_radius} cap={_fmt_int_optional(row.max_selected_blocks)} | "
             f"candidates={row.candidate_block_count} "
             f"ranked={row.candidate_count_before_suppression} "
             f"after={row.candidate_count_after_suppression} | "
@@ -650,6 +665,8 @@ def _row_from_result(
     suppression: SuppressionResult,
     ranked_score_by_id: dict[int, float] | None = None,
     neighbor_expansion: int = 0,
+    halo_radius: int = 0,
+    max_selected_blocks: int | None = None,
     candidate_block_count_override: int | None = None,
     selector_latency_sec_override: float | None = None,
     total_latency_sec_override: float | None = None,
@@ -673,10 +690,14 @@ def _row_from_result(
         suppression=suppression,
         semantic_k=config.semantic_k,
     )
+    expansion_radius = halo_radius if halo_radius > 0 else neighbor_expansion
+    expansion_cap = max_selected_blocks if halo_radius > 0 else None
+    expansion_reason = "halo" if halo_radius > 0 else "neighbor_expansion"
     selected_ids = _expand_selected_ids_by_neighbors(
         semantic_selected_ids,
         block_by_id=block_by_id,
-        radius=neighbor_expansion,
+        radius=expansion_radius,
+        max_selected_blocks=expansion_cap,
     )
     quality = _fragment_quality_for_result(
         selected_ids=selected_ids,
@@ -708,6 +729,8 @@ def _row_from_result(
         candidate_count_before_suppression=suppression.input_count,
         candidate_count_after_suppression=suppression.output_count,
         neighbor_expansion=neighbor_expansion,
+        halo_radius=halo_radius,
+        max_selected_blocks=max_selected_blocks,
         semantic_selected_ids=semantic_selected_ids,
         selected_ids=selected_ids,
         selected_candidate_ids=tuple(
@@ -767,6 +790,7 @@ def _row_from_result(
                 result,
                 selected_ids=set(selected_ids),
                 semantic_selected_ids=set(semantic_selected_ids),
+                expansion_selected_reason=expansion_reason,
             )
             if ranked_score_by_id is None
             else _block_inspection_records(
@@ -775,6 +799,7 @@ def _row_from_result(
                 selected_ids=set(selected_ids),
                 semantic_selected_ids=set(semantic_selected_ids),
                 selected_reason="rerank" if rerank_mode != "none" else None,
+                expansion_selected_reason=expansion_reason,
             )
         )
         if include_block_inspections
@@ -1084,12 +1109,18 @@ def _expand_selected_ids_by_neighbors(
     *,
     block_by_id: dict[int, Any],
     radius: int,
+    max_selected_blocks: int | None = None,
 ) -> tuple[int, ...]:
     """Expand selected ids with adjacent token-span neighbors for diagnostics."""
 
     base = tuple(int(block_id) for block_id in selected_ids)
     if radius <= 0 or not base:
         return base
+    cap = (
+        None
+        if max_selected_blocks is None
+        else max(int(max_selected_blocks), len(base))
+    )
     ordered_blocks = sorted(
         block_by_id.values(),
         key=lambda block: (
@@ -1105,23 +1136,34 @@ def _expand_selected_ids_by_neighbors(
     expanded: list[int] = []
     seen: set[int] = set()
 
-    def append(block_id: int) -> None:
+    def append(block_id: int, *, enforce_cap: bool) -> bool:
+        if enforce_cap and cap is not None and len(expanded) >= cap:
+            return False
         if block_id in block_by_id and block_id not in seen:
             seen.add(block_id)
             expanded.append(block_id)
+        return True
 
     for block_id in base:
-        append(block_id)
-        center = index_by_id.get(block_id)
-        if center is None:
-            continue
-        for distance in range(1, radius + 1):
+        append(block_id, enforce_cap=False)
+
+    for distance in range(1, radius + 1):
+        for block_id in base:
+            center = index_by_id.get(block_id)
+            if center is None:
+                continue
             left = center - distance
             right = center + distance
-            if left >= 0:
-                append(int(ordered_blocks[left].block_id))
-            if right < len(ordered_blocks):
-                append(int(ordered_blocks[right].block_id))
+            if left >= 0 and not append(
+                int(ordered_blocks[left].block_id),
+                enforce_cap=True,
+            ):
+                return tuple(expanded)
+            if right < len(ordered_blocks) and not append(
+                int(ordered_blocks[right].block_id),
+                enforce_cap=True,
+            ):
+                return tuple(expanded)
     return tuple(expanded)
 
 
@@ -1172,6 +1214,7 @@ def _block_inspection_records(
     selected_ids: set[int] | None = None,
     semantic_selected_ids: set[int] | None = None,
     selected_reason: str | None = None,
+    expansion_selected_reason: str = "neighbor_expansion",
 ) -> tuple[dict[str, Any], ...]:
     """Return compact block inspection records for downstream diagnostics."""
 
@@ -1188,7 +1231,7 @@ def _block_inspection_records(
             and selected
             and block.block_id not in semantic_selected_ids
         ):
-            reason = "neighbor_expansion"
+            reason = expansion_selected_reason
         elif selected_reason is not None and selected and not bool(block.selected):
             reason = selected_reason
         records.append(
@@ -1639,3 +1682,7 @@ def _optional_delta(value: float | None, baseline: float | None) -> float | None
 
 def _fmt_optional(value: float | None) -> str:
     return "n/a" if value is None else f"{value:.3f}"
+
+
+def _fmt_int_optional(value: int | None) -> str:
+    return "n/a" if value is None else str(value)

@@ -99,6 +99,29 @@ def build_parser() -> argparse.ArgumentParser:
         choices=(0, 1, 2),
         help="Benchmark-only final selection expansion by adjacent token blocks.",
     )
+    parser.add_argument(
+        "--halo-radius",
+        type=int,
+        default=0,
+        choices=(0, 1, 2),
+        help=(
+            "Budgeted locality halo around semantic anchors. Mutually exclusive "
+            "with --neighbor-expansion."
+        ),
+    )
+    parser.add_argument(
+        "--max-selected-blocks",
+        type=int,
+        default=None,
+        help="Maximum final selected blocks when --halo-radius is enabled.",
+    )
+    parser.add_argument(
+        "--evidence-window-radius",
+        type=int,
+        default=0,
+        choices=(0, 1, 2),
+        help="Metric-only radius for evidence-window recall/precision reporting.",
+    )
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--torch-dtype", default="float32")
     parser.add_argument("--device-map", default=None)
@@ -151,6 +174,9 @@ def main(argv: list[str] | None = None) -> int:
         rerank_mode=args.rerank_mode,
         rerank_weight=args.rerank_weight,
         neighbor_expansion=args.neighbor_expansion,
+        halo_radius=args.halo_radius,
+        max_selected_blocks=args.max_selected_blocks,
+        evidence_window_radius=args.evidence_window_radius,
         load_config_kwargs={
             "device": args.device,
             "torch_dtype": args.torch_dtype,

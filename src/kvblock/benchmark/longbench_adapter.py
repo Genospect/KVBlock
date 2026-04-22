@@ -166,6 +166,15 @@ class LongBenchBenchmarkRunRow:
     neighbor_recall_at_1: float | None
     neighbor_recall_at_2: float | None
     best_neighbor_distance: int | None
+    evidence_window_radius: int
+    evidence_window_recall: float | None
+    evidence_window_precision: float | None
+    evidence_window_recall_at_0: float | None
+    evidence_window_recall_at_1: float | None
+    evidence_window_recall_at_2: float | None
+    evidence_window_precision_at_0: float | None
+    evidence_window_precision_at_1: float | None
+    evidence_window_precision_at_2: float | None
     semantic_selected_block_ids: tuple[int, ...]
     selected_block_ids: tuple[int, ...]
     missed_expected_block_ids: tuple[int, ...]
@@ -184,6 +193,8 @@ class LongBenchBenchmarkRunRow:
     rerank_mode: str
     rerank_weight: float
     neighbor_expansion: int
+    halo_radius: int
+    max_selected_blocks: int | None
     block_mode: str
     suppression_mode: str
     suppression_threshold: float
@@ -222,6 +233,8 @@ class LongBenchDatasetSummary:
     mean_selector_latency_sec: float
     mean_recall: float | None
     mean_precision: float | None
+    mean_evidence_window_recall: float | None
+    mean_evidence_window_precision: float | None
 
     def to_dict(self) -> dict[str, Any]:
         """Return a JSON-friendly summary."""
@@ -240,6 +253,7 @@ class LongBenchBenchmarkResult:
     dataset_repo: str
     split: str
     length_bucket: LengthBucket
+    evidence_window_radius: int
 
     def to_dict(self) -> dict[str, Any]:
         """Return a JSON-friendly benchmark payload."""
@@ -248,6 +262,7 @@ class LongBenchBenchmarkResult:
             "dataset_repo": self.dataset_repo,
             "split": self.split,
             "length_bucket": self.length_bucket.to_dict(),
+            "evidence_window_radius": self.evidence_window_radius,
             "samples": [sample.to_dict() for sample in self.samples],
             "rows": [row.to_dict() for row in self.rows],
             "dataset_summaries": [
@@ -451,12 +466,17 @@ def run_longbench_selector_benchmark(
     rerank_mode: RerankMode = "none",
     rerank_weight: float = 0.3,
     neighbor_expansion: int = 0,
+    halo_radius: int = 0,
+    max_selected_blocks: int | None = None,
+    evidence_window_radius: int = 0,
     load_config_kwargs: dict[str, Any] | None = None,
     selector_config: RealBlockSelectorConfig | None = None,
     dataset_loader: DatasetLoader | None = None,
 ) -> LongBenchBenchmarkResult:
     """Run LongBench samples through the existing dynamic-block benchmark."""
 
+    if evidence_window_radius < 0:
+        raise ValueError("evidence_window_radius must be >= 0")
     bucket = (
         parse_length_bucket(length_bucket)
         if isinstance(length_bucket, str)
@@ -486,11 +506,17 @@ def run_longbench_selector_benchmark(
         rerank_mode=rerank_mode,
         rerank_weight=rerank_weight,
         neighbor_expansion=neighbor_expansion,
+        halo_radius=halo_radius,
+        max_selected_blocks=max_selected_blocks,
         load_config_kwargs=load_config_kwargs,
         selector_config=selector_config,
         include_block_inspections=True,
     )
-    rows = _longbench_rows(dynamic_result, sample_metadata)
+    rows = _longbench_rows(
+        dynamic_result,
+        sample_metadata,
+        evidence_window_radius=evidence_window_radius,
+    )
     return LongBenchBenchmarkResult(
         samples=sample_metadata,
         rows=rows,
@@ -499,6 +525,7 @@ def run_longbench_selector_benchmark(
         dataset_repo=dataset_repo,
         split=split,
         length_bucket=bucket,
+        evidence_window_radius=evidence_window_radius,
     )
 
 
@@ -524,6 +551,7 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
     lines = [
         "LONGBENCH SELECTOR BENCHMARK",
         f"dataset_repo={result.dataset_repo} split={result.split} length_bucket={result.length_bucket.name}",
+        f"evidence_window_radius={result.evidence_window_radius}",
         f"samples={len(result.samples)} rows={len(result.rows)}",
         "",
         "DATASET SUMMARIES",
@@ -540,7 +568,9 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
             f"mean_selected/K={summary.mean_selected_to_semantic_k_ratio:.3f} "
             f"mean_selector={summary.mean_selector_latency_sec:.6f}s "
             f"mean_recall={_fmt_optional(summary.mean_recall)} "
-            f"mean_precision={_fmt_optional(summary.mean_precision)}"
+            f"mean_precision={_fmt_optional(summary.mean_precision)} "
+            f"mean_window_recall={_fmt_optional(summary.mean_evidence_window_recall)} "
+            f"mean_window_precision={_fmt_optional(summary.mean_evidence_window_precision)}"
         )
     lines.append("")
     lines.append("RUNS")
@@ -550,6 +580,7 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
             f"mode={row.block_mode} qk={row.qk_aggregation_strategy} "
             f"rerank={row.rerank_mode}@{row.rerank_weight:.2f} "
             f"neighbor_expansion={row.neighbor_expansion} "
+            f"halo={row.halo_radius} cap={_fmt_int_optional(row.max_selected_blocks)} "
             f"length={row.longbench_length} tokens={row.tokens} "
             f"candidates={row.candidate_block_count} selected/K={row.selected_to_semantic_k_ratio:.3f} "
             f"answer_presence={row.answer_present_count}/{row.answer_count} "
@@ -567,6 +598,17 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
             f"neighbor_recall@1={_fmt_optional(row.neighbor_recall_at_1)} "
             f"neighbor_recall@2={_fmt_optional(row.neighbor_recall_at_2)} "
             f"best_neighbor_distance={_fmt_optional(row.best_neighbor_distance)} "
+            f"evidence_window@{row.evidence_window_radius}="
+            f"{_fmt_optional(row.evidence_window_recall)}/"
+            f"{_fmt_optional(row.evidence_window_precision)} "
+            f"evidence_recall@0/1/2="
+            f"{_fmt_optional(row.evidence_window_recall_at_0)}/"
+            f"{_fmt_optional(row.evidence_window_recall_at_1)}/"
+            f"{_fmt_optional(row.evidence_window_recall_at_2)} "
+            f"evidence_precision@0/1/2="
+            f"{_fmt_optional(row.evidence_window_precision_at_0)}/"
+            f"{_fmt_optional(row.evidence_window_precision_at_1)}/"
+            f"{_fmt_optional(row.evidence_window_precision_at_2)} "
             f"selected_ids={list(row.selected_block_ids)} "
             f"semantic_selected_ids={list(row.semantic_selected_block_ids)} "
             f"expected_ids={list(row.expected_block_ids)} "
@@ -656,6 +698,8 @@ def _load_longbench_jsonl_from_hub(
 def _longbench_rows(
     dynamic_result: DynamicBlockBenchmarkResult,
     samples: Sequence[LongBenchPromptMetadata],
+    *,
+    evidence_window_radius: int,
 ) -> tuple[LongBenchBenchmarkRunRow, ...]:
     by_prompt = {sample.prompt_name: sample for sample in samples}
     rows: list[LongBenchBenchmarkRunRow] = []
@@ -741,6 +785,47 @@ def _longbench_rows(
                     selected_ids=row.semantic_selected_ids,
                     expected_ids=row.retrieval_quality.expected_block_ids,
                 ),
+                evidence_window_radius=evidence_window_radius,
+                evidence_window_recall=_window_recall(
+                    row.retrieval_quality.expected_block_ids,
+                    selected_ids=row.selected_ids,
+                    radius=evidence_window_radius,
+                ),
+                evidence_window_precision=_window_precision(
+                    row.retrieval_quality.expected_block_ids,
+                    selected_ids=row.selected_ids,
+                    radius=evidence_window_radius,
+                ),
+                evidence_window_recall_at_0=_window_recall(
+                    row.retrieval_quality.expected_block_ids,
+                    selected_ids=row.selected_ids,
+                    radius=0,
+                ),
+                evidence_window_recall_at_1=_window_recall(
+                    row.retrieval_quality.expected_block_ids,
+                    selected_ids=row.selected_ids,
+                    radius=1,
+                ),
+                evidence_window_recall_at_2=_window_recall(
+                    row.retrieval_quality.expected_block_ids,
+                    selected_ids=row.selected_ids,
+                    radius=2,
+                ),
+                evidence_window_precision_at_0=_window_precision(
+                    row.retrieval_quality.expected_block_ids,
+                    selected_ids=row.selected_ids,
+                    radius=0,
+                ),
+                evidence_window_precision_at_1=_window_precision(
+                    row.retrieval_quality.expected_block_ids,
+                    selected_ids=row.selected_ids,
+                    radius=1,
+                ),
+                evidence_window_precision_at_2=_window_precision(
+                    row.retrieval_quality.expected_block_ids,
+                    selected_ids=row.selected_ids,
+                    radius=2,
+                ),
                 semantic_selected_block_ids=row.semantic_selected_ids,
                 selected_block_ids=row.selected_ids,
                 missed_expected_block_ids=row.retrieval_quality.missed_expected_block_ids,
@@ -772,6 +857,8 @@ def _longbench_rows(
                 rerank_mode=row.rerank_mode,
                 rerank_weight=row.rerank_weight,
                 neighbor_expansion=row.neighbor_expansion,
+                halo_radius=row.halo_radius,
+                max_selected_blocks=row.max_selected_blocks,
                 block_mode=row.block_mode,
                 suppression_mode=row.suppression_mode,
                 suppression_threshold=row.suppression_threshold,
@@ -815,6 +902,12 @@ def _dataset_summaries(
             mean_selector_latency_sec=_mean(row.selector_latency_sec for row in group) or 0.0,
             mean_recall=_mean_optional(row.target_recall for row in group),
             mean_precision=_mean_optional(row.selected_precision for row in group),
+            mean_evidence_window_recall=_mean_optional(
+                row.evidence_window_recall for row in group
+            ),
+            mean_evidence_window_precision=_mean_optional(
+                row.evidence_window_precision for row in group
+            ),
         )
         for dataset_name, group in sorted(grouped.items())
     )
@@ -920,6 +1013,39 @@ def _neighbor_recall(
         if any(abs(expected_id - selected_id) <= radius for selected_id in selected)
     }
     return len(hits) / len(expected)
+
+
+def _window_recall(
+    expected_ids: Sequence[int],
+    *,
+    selected_ids: Sequence[int],
+    radius: int,
+) -> float | None:
+    """Return evidence recall when selected ids may land near expected ids."""
+
+    return _neighbor_recall(expected_ids, selected_ids=selected_ids, radius=radius)
+
+
+def _window_precision(
+    expected_ids: Sequence[int],
+    *,
+    selected_ids: Sequence[int],
+    radius: int,
+) -> float | None:
+    """Return selected-block precision allowing +/- radius evidence windows."""
+
+    expected = tuple(int(block_id) for block_id in expected_ids)
+    selected = tuple(int(block_id) for block_id in selected_ids)
+    if not expected:
+        return None
+    if not selected:
+        return 0.0
+    hits = [
+        selected_id
+        for selected_id in selected
+        if any(abs(selected_id - expected_id) <= radius for expected_id in expected)
+    ]
+    return len(hits) / len(selected)
 
 
 def _expected_block_distance(
@@ -1131,3 +1257,7 @@ def _mean_optional(values: Iterable[float | None]) -> float | None:
 
 def _fmt_optional(value: float | None) -> str:
     return "n/a" if value is None else f"{value:.3f}"
+
+
+def _fmt_int_optional(value: int | None) -> str:
+    return "n/a" if value is None else str(value)

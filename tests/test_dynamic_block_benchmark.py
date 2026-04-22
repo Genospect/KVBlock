@@ -65,6 +65,8 @@ def _row(block_mode: str) -> DynamicBlockRunRow:
         candidate_count_before_suppression=2,
         candidate_count_after_suppression=2,
         neighbor_expansion=0,
+        halo_radius=0,
+        max_selected_blocks=None,
         semantic_selected_ids=(0, 1),
         selected_ids=(0, 1),
         selected_candidate_ids=("s16_stride16_t0_16", "s16_stride16_t16_32"),
@@ -344,6 +346,25 @@ def test_neighbor_expansion_adds_adjacent_token_blocks() -> None:
         block_by_id=block_by_id,
         radius=2,
     ) == (1, 0, 2, 3)
+
+
+def test_budgeted_halo_preserves_anchors_and_caps_neighbors() -> None:
+    block_by_id = {
+        0: SimpleNamespace(block_id=0, token_start=0, token_end=40),
+        1: SimpleNamespace(block_id=1, token_start=40, token_end=80),
+        2: SimpleNamespace(block_id=2, token_start=80, token_end=120),
+        3: SimpleNamespace(block_id=3, token_start=120, token_end=160),
+        4: SimpleNamespace(block_id=4, token_start=160, token_end=200),
+    }
+
+    expanded = dynamic_bench._expand_selected_ids_by_neighbors(
+        (1, 3),
+        block_by_id=block_by_id,
+        radius=1,
+        max_selected_blocks=4,
+    )
+
+    assert expanded == (1, 3, 0, 2)
 
 
 def test_run_dynamic_block_benchmark_coarse_to_fine_mode(monkeypatch, tmp_path) -> None:
@@ -667,6 +688,10 @@ def test_dynamic_block_benchmark_prompt_filter_and_script_parser() -> None:
             "0.4",
             "--neighbor-expansion",
             "1",
+            "--halo-radius",
+            "0",
+            "--max-selected-blocks",
+            "8",
             "--device-map",
             "auto",
             "--local-files-only",
@@ -683,5 +708,7 @@ def test_dynamic_block_benchmark_prompt_filter_and_script_parser() -> None:
     assert args.rerank_mode == "semantic_plus_tokenmax"
     assert args.rerank_weight == 0.4
     assert args.neighbor_expansion == 1
+    assert args.halo_radius == 0
+    assert args.max_selected_blocks == 8
     assert args.device_map == "auto"
     assert args.local_files_only is True
