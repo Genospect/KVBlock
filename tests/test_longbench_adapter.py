@@ -235,19 +235,90 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
     assert result.dataset_summaries[0].mean_evidence_window_precision == 0.5
     assert result.dataset_summaries[0].scoreable_run_count == 1
     assert result.evidence_window_radius == 0
+    assert result.oracle_mode == "none"
+    assert result.rows[0].oracle_top_block_ids == ()
+    assert result.rows[0].oracle_selected_mass_fraction is None
     assert result.to_dict()["rows"][0]["selected_to_semantic_k_ratio"] == 0.5
+
+    def fake_oracles(dynamic_result, *args, **kwargs):
+        row = dynamic_result.rows[0]
+        return {
+            (row.model_name, row.prompt_name, row.block_mode): (
+                longbench.DenseQKOracleDiagnostics(
+                    top_block_ids=(1, 2),
+                    total_mass=1.0,
+                    mass_by_block_id={1: 0.75, 2: 0.25},
+                    rank_by_block_id={1: 1, 2: 2},
+                )
+            )
+        }
+
+    monkeypatch.setattr(longbench, "_build_dense_qk_oracles", fake_oracles)
+    oracle_result = longbench.run_longbench_selector_benchmark(
+        model_names=("fake/model",),
+        dataset_names=("narrativeqa",),
+        limit_per_dataset=1,
+        prompt_cache_dir=tmp_path,
+        dataset_loader=_fake_longbench_rows,
+        oracle_mode="dense_qk",
+        oracle_top_k=(4, 8),
+    )
+
+    assert oracle_result.oracle_mode == "dense_qk"
+    assert oracle_result.rows[0].oracle_top_block_ids == (1, 2)
+    assert oracle_result.rows[0].oracle_selected_mass_fraction == pytest.approx(1.0)
+    assert oracle_result.rows[0].oracle_expected_mass_fraction == pytest.approx(0.75)
+    assert oracle_result.rows[0].oracle_topk_recall_at_4 == pytest.approx(1.0)
+    assert oracle_result.rows[0].selected_vs_oracle_jaccard_at_4 == pytest.approx(1.0)
+    assert (
+        oracle_result.dataset_summaries[0].mean_oracle_selected_mass_fraction
+        == pytest.approx(1.0)
+    )
+
+
+def test_oracle_metrics_from_fake_dense_qk_scores() -> None:
+    oracle = longbench.DenseQKOracleDiagnostics(
+        top_block_ids=(3, 1, 2, 4),
+        total_mass=1.0,
+        mass_by_block_id={1: 0.2, 2: 0.1, 3: 0.6, 4: 0.1},
+        rank_by_block_id={3: 1, 1: 2, 2: 3, 4: 4},
+    )
+
+    metrics = longbench._oracle_metrics(
+        oracle,
+        selected_ids=(1, 2),
+        semantic_selected_ids=(1,),
+        expected_ids=(3, 1),
+        top_k_values=(4, 8, 16, 32),
+    )
+
+    assert metrics["oracle_top_block_ids"] == (3, 1, 2, 4)
+    assert metrics["oracle_selected_mass_fraction"] == pytest.approx(0.3)
+    assert metrics["oracle_semantic_selected_mass_fraction"] == pytest.approx(0.2)
+    assert metrics["oracle_expected_mass_fraction"] == pytest.approx(0.8)
+    assert metrics["oracle_topk_recall_at_4"] == pytest.approx(0.5)
+    assert metrics["selected_vs_oracle_jaccard_at_4"] == pytest.approx(0.5)
+    assert metrics["oracle_expected_block_ranks"] == (1, 2)
 
 
 def test_parse_helpers_validate_inputs() -> None:
     assert longbench.parse_dataset_names("narrativeqa,lcc") == ("narrativeqa", "lcc")
     assert longbench.parse_length_bucket("8k+").contains(9000)
     assert not longbench.parse_length_bucket("8k+").contains(7999)
+    assert longbench.parse_oracle_mode("dense_qk") == "dense_qk"
+    assert longbench.parse_oracle_top_k("16,4,4") == (4, 16)
 
     with pytest.raises(ValueError):
         longbench.parse_dataset_names("unknown")
 
     with pytest.raises(ValueError):
         longbench.parse_length_bucket("bad")
+
+    with pytest.raises(ValueError):
+        longbench.parse_oracle_mode("bad")
+
+    with pytest.raises(ValueError):
+        longbench.parse_oracle_top_k("0")
 
 
 def test_direct_longbench_zip_loader_reads_jsonl(
@@ -311,6 +382,10 @@ def test_longbench_cli_parser_accepts_baseline_flags() -> None:
             "8",
             "--evidence-window-radius",
             "2",
+            "--oracle-mode",
+            "dense_qk",
+            "--oracle-top-k",
+            "4,16",
             "--device-map",
             "auto",
         ]
@@ -327,4 +402,6 @@ def test_longbench_cli_parser_accepts_baseline_flags() -> None:
     assert args.halo_radius == 0
     assert args.max_selected_blocks == 8
     assert args.evidence_window_radius == 2
+    assert args.oracle_mode == "dense_qk"
+    assert args.oracle_top_k == "4,16"
     assert args.device_map == "auto"

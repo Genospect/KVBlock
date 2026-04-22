@@ -122,6 +122,17 @@ def build_parser() -> argparse.ArgumentParser:
         choices=(0, 1, 2),
         help="Metric-only radius for evidence-window recall/precision reporting.",
     )
+    parser.add_argument(
+        "--oracle-mode",
+        default="none",
+        choices=("none", "dense_qk"),
+        help="Optional benchmark-only dense QK oracle diagnostic.",
+    )
+    parser.add_argument(
+        "--oracle-top-k",
+        default="4,8,16,32",
+        help="Comma-separated oracle cutoffs to report, e.g. 4,8,16,32.",
+    )
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--torch-dtype", default="float32")
     parser.add_argument("--device-map", default=None)
@@ -143,6 +154,7 @@ def main(argv: list[str] | None = None) -> int:
         format_longbench_benchmark_report,
         parse_dataset_names,
         parse_length_bucket,
+        parse_oracle_top_k,
         run_longbench_selector_benchmark,
         write_longbench_benchmark_outputs,
     )
@@ -177,6 +189,8 @@ def main(argv: list[str] | None = None) -> int:
         halo_radius=args.halo_radius,
         max_selected_blocks=args.max_selected_blocks,
         evidence_window_radius=args.evidence_window_radius,
+        oracle_mode=args.oracle_mode,
+        oracle_top_k=parse_oracle_top_k(args.oracle_top_k),
         load_config_kwargs={
             "device": args.device,
             "torch_dtype": args.torch_dtype,

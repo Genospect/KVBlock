@@ -11,20 +11,27 @@ from __future__ import annotations
 from collections import defaultdict
 from dataclasses import asdict, dataclass
 import json
+import math
 from pathlib import Path
 import re
-from typing import Any, Callable, Iterable, Mapping, Sequence
+from typing import Any, Callable, Iterable, Literal, Mapping, Sequence, cast
 import zipfile
+
+import torch
 
 from kvblock.benchmark.dynamic_block_benchmark import (
     DynamicBlockBenchmarkResult,
+    DynamicBlockRunRow,
     RerankMode,
+    query_prompt_override_for_representation,
     run_dynamic_block_benchmark,
 )
 from kvblock.benchmark.real_block_representation_sweep import PromptRetrievalCase
 from kvblock.kv.block_modes import BlockModeName
 from kvblock.kv.qk_aggregation import QKAggregationStrategy
-from kvblock.runtime.hooks import RepresentationSource
+from kvblock.runtime.base import RuntimeLoadConfig
+from kvblock.runtime.hooks import HiddenStateCaptureConfig, RepresentationSource
+from kvblock.runtime.local_hf_runtime import LocalHfRuntime
 from kvblock.runtime.real_block_eval import RealBlockSelectorConfig
 
 SUPPORTED_LONGBENCH_DATASETS: tuple[str, ...] = (
@@ -43,6 +50,9 @@ DEFAULT_LONGBENCH_DATASETS: tuple[str, ...] = (
 )
 
 DatasetLoader = Callable[[str, str, str], Iterable[Mapping[str, Any]]]
+OracleMode = Literal["none", "dense_qk"]
+VALID_ORACLE_MODES: tuple[OracleMode, ...] = ("none", "dense_qk")
+DEFAULT_ORACLE_TOP_K: tuple[int, ...] = (4, 8, 16, 32)
 
 
 @dataclass(frozen=True, slots=True)
@@ -210,6 +220,22 @@ class LongBenchBenchmarkRunRow:
     target_recall: float | None
     selected_precision: float | None
     target_hit: bool
+    oracle_mode: str = "none"
+    oracle_top_k_values: tuple[int, ...] = ()
+    oracle_top_block_ids: tuple[int, ...] = ()
+    oracle_total_mass: float | None = None
+    oracle_selected_mass_fraction: float | None = None
+    oracle_semantic_selected_mass_fraction: float | None = None
+    oracle_expected_mass_fraction: float | None = None
+    oracle_topk_recall_at_4: float | None = None
+    oracle_topk_recall_at_8: float | None = None
+    oracle_topk_recall_at_16: float | None = None
+    oracle_topk_recall_at_32: float | None = None
+    oracle_expected_block_ranks: tuple[int, ...] = ()
+    selected_vs_oracle_jaccard_at_4: float | None = None
+    selected_vs_oracle_jaccard_at_8: float | None = None
+    selected_vs_oracle_jaccard_at_16: float | None = None
+    selected_vs_oracle_jaccard_at_32: float | None = None
 
     def to_dict(self) -> dict[str, Any]:
         """Return a JSON-friendly benchmark row."""
@@ -235,6 +261,13 @@ class LongBenchDatasetSummary:
     mean_precision: float | None
     mean_evidence_window_recall: float | None
     mean_evidence_window_precision: float | None
+    mean_oracle_selected_mass_fraction: float | None
+    mean_oracle_semantic_selected_mass_fraction: float | None
+    mean_oracle_expected_mass_fraction: float | None
+    mean_oracle_topk_recall_at_4: float | None
+    mean_oracle_topk_recall_at_8: float | None
+    mean_oracle_topk_recall_at_16: float | None
+    mean_oracle_topk_recall_at_32: float | None
 
     def to_dict(self) -> dict[str, Any]:
         """Return a JSON-friendly summary."""
@@ -254,6 +287,8 @@ class LongBenchBenchmarkResult:
     split: str
     length_bucket: LengthBucket
     evidence_window_radius: int
+    oracle_mode: str
+    oracle_top_k_values: tuple[int, ...]
 
     def to_dict(self) -> dict[str, Any]:
         """Return a JSON-friendly benchmark payload."""
@@ -263,6 +298,8 @@ class LongBenchBenchmarkResult:
             "split": self.split,
             "length_bucket": self.length_bucket.to_dict(),
             "evidence_window_radius": self.evidence_window_radius,
+            "oracle_mode": self.oracle_mode,
+            "oracle_top_k_values": list(self.oracle_top_k_values),
             "samples": [sample.to_dict() for sample in self.samples],
             "rows": [row.to_dict() for row in self.rows],
             "dataset_summaries": [
@@ -270,6 +307,16 @@ class LongBenchBenchmarkResult:
             ],
             "dynamic_result": self.dynamic_result.to_dict(),
         }
+
+
+@dataclass(frozen=True, slots=True)
+class DenseQKOracleDiagnostics:
+    """Dense QK-derived block mass ranking for one model/prompt/block mode."""
+
+    top_block_ids: tuple[int, ...]
+    total_mass: float
+    mass_by_block_id: dict[int, float]
+    rank_by_block_id: dict[int, int]
 
 
 def parse_dataset_names(value: str | Sequence[str]) -> tuple[str, ...]:
@@ -287,6 +334,31 @@ def parse_dataset_names(value: str | Sequence[str]) -> tuple[str, ...]:
         valid = ", ".join(SUPPORTED_LONGBENCH_DATASETS)
         raise ValueError(f"unsupported LongBench dataset(s) {invalid!r}; valid: {valid}")
     return names
+
+
+def parse_oracle_mode(name: str) -> OracleMode:
+    """Validate and return a LongBench oracle diagnostic mode."""
+
+    normalized = name.strip()
+    if normalized not in VALID_ORACLE_MODES:
+        valid = ", ".join(VALID_ORACLE_MODES)
+        raise ValueError(f"unknown oracle mode {name!r}; valid: {valid}")
+    return cast(OracleMode, normalized)
+
+
+def parse_oracle_top_k(value: str | Sequence[int]) -> tuple[int, ...]:
+    """Parse oracle reporting cutoffs such as ``4,8,16,32``."""
+
+    values = (
+        tuple(int(item.strip()) for item in value.split(",") if item.strip())
+        if isinstance(value, str)
+        else tuple(int(item) for item in value)
+    )
+    if not values:
+        raise ValueError("oracle_top_k must contain at least one cutoff")
+    if any(item <= 0 for item in values):
+        raise ValueError("oracle_top_k values must be > 0")
+    return tuple(sorted(dict.fromkeys(values)))
 
 
 def parse_length_bucket(value: str) -> LengthBucket:
@@ -469,6 +541,8 @@ def run_longbench_selector_benchmark(
     halo_radius: int = 0,
     max_selected_blocks: int | None = None,
     evidence_window_radius: int = 0,
+    oracle_mode: OracleMode = "none",
+    oracle_top_k: Sequence[int] = DEFAULT_ORACLE_TOP_K,
     load_config_kwargs: dict[str, Any] | None = None,
     selector_config: RealBlockSelectorConfig | None = None,
     dataset_loader: DatasetLoader | None = None,
@@ -477,6 +551,12 @@ def run_longbench_selector_benchmark(
 
     if evidence_window_radius < 0:
         raise ValueError("evidence_window_radius must be >= 0")
+    resolved_oracle_mode = parse_oracle_mode(oracle_mode)
+    resolved_oracle_top_k = parse_oracle_top_k(oracle_top_k)
+    if resolved_oracle_mode != "none" and not all(
+        str(block_mode).startswith("fixed_") for block_mode in block_modes
+    ):
+        raise ValueError("dense_qk oracle currently supports fixed block modes only")
     bucket = (
         parse_length_bucket(length_bucket)
         if isinstance(length_bucket, str)
@@ -512,10 +592,25 @@ def run_longbench_selector_benchmark(
         selector_config=selector_config,
         include_block_inspections=True,
     )
+    oracle_by_key = (
+        {}
+        if resolved_oracle_mode == "none"
+        else _build_dense_qk_oracles(
+            dynamic_result,
+            sample_metadata,
+            model_names=model_names,
+            representation_source=representation_source,
+            load_config_kwargs=load_config_kwargs,
+            max_top_k=max(resolved_oracle_top_k),
+        )
+    )
     rows = _longbench_rows(
         dynamic_result,
         sample_metadata,
         evidence_window_radius=evidence_window_radius,
+        oracle_mode=resolved_oracle_mode,
+        oracle_top_k=resolved_oracle_top_k,
+        oracle_by_key=oracle_by_key,
     )
     return LongBenchBenchmarkResult(
         samples=sample_metadata,
@@ -526,6 +621,8 @@ def run_longbench_selector_benchmark(
         split=split,
         length_bucket=bucket,
         evidence_window_radius=evidence_window_radius,
+        oracle_mode=resolved_oracle_mode,
+        oracle_top_k_values=resolved_oracle_top_k,
     )
 
 
@@ -552,6 +649,7 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
         "LONGBENCH SELECTOR BENCHMARK",
         f"dataset_repo={result.dataset_repo} split={result.split} length_bucket={result.length_bucket.name}",
         f"evidence_window_radius={result.evidence_window_radius}",
+        f"oracle_mode={result.oracle_mode} oracle_top_k={list(result.oracle_top_k_values)}",
         f"samples={len(result.samples)} rows={len(result.rows)}",
         "",
         "DATASET SUMMARIES",
@@ -570,7 +668,15 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
             f"mean_recall={_fmt_optional(summary.mean_recall)} "
             f"mean_precision={_fmt_optional(summary.mean_precision)} "
             f"mean_window_recall={_fmt_optional(summary.mean_evidence_window_recall)} "
-            f"mean_window_precision={_fmt_optional(summary.mean_evidence_window_precision)}"
+            f"mean_window_precision={_fmt_optional(summary.mean_evidence_window_precision)} "
+            f"mean_oracle_mass={_fmt_optional(summary.mean_oracle_selected_mass_fraction)} "
+            f"mean_oracle_semantic_mass={_fmt_optional(summary.mean_oracle_semantic_selected_mass_fraction)} "
+            f"mean_oracle_expected_mass={_fmt_optional(summary.mean_oracle_expected_mass_fraction)} "
+            f"mean_oracle_recall@4/8/16/32="
+            f"{_fmt_optional(summary.mean_oracle_topk_recall_at_4)}/"
+            f"{_fmt_optional(summary.mean_oracle_topk_recall_at_8)}/"
+            f"{_fmt_optional(summary.mean_oracle_topk_recall_at_16)}/"
+            f"{_fmt_optional(summary.mean_oracle_topk_recall_at_32)}"
         )
     lines.append("")
     lines.append("RUNS")
@@ -609,6 +715,21 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
             f"{_fmt_optional(row.evidence_window_precision_at_0)}/"
             f"{_fmt_optional(row.evidence_window_precision_at_1)}/"
             f"{_fmt_optional(row.evidence_window_precision_at_2)} "
+            f"oracle_mass={_fmt_optional(row.oracle_selected_mass_fraction)} "
+            f"oracle_semantic_mass={_fmt_optional(row.oracle_semantic_selected_mass_fraction)} "
+            f"oracle_expected_mass={_fmt_optional(row.oracle_expected_mass_fraction)} "
+            f"oracle_recall@4/8/16/32="
+            f"{_fmt_optional(row.oracle_topk_recall_at_4)}/"
+            f"{_fmt_optional(row.oracle_topk_recall_at_8)}/"
+            f"{_fmt_optional(row.oracle_topk_recall_at_16)}/"
+            f"{_fmt_optional(row.oracle_topk_recall_at_32)} "
+            f"oracle_expected_ranks={list(row.oracle_expected_block_ranks)} "
+            f"selected_vs_oracle_jaccard@4/8/16/32="
+            f"{_fmt_optional(row.selected_vs_oracle_jaccard_at_4)}/"
+            f"{_fmt_optional(row.selected_vs_oracle_jaccard_at_8)}/"
+            f"{_fmt_optional(row.selected_vs_oracle_jaccard_at_16)}/"
+            f"{_fmt_optional(row.selected_vs_oracle_jaccard_at_32)} "
+            f"oracle_top_ids={list(row.oracle_top_block_ids)} "
             f"selected_ids={list(row.selected_block_ids)} "
             f"semantic_selected_ids={list(row.semantic_selected_block_ids)} "
             f"expected_ids={list(row.expected_block_ids)} "
@@ -700,11 +821,22 @@ def _longbench_rows(
     samples: Sequence[LongBenchPromptMetadata],
     *,
     evidence_window_radius: int,
+    oracle_mode: OracleMode,
+    oracle_top_k: Sequence[int],
+    oracle_by_key: Mapping[tuple[str, str, str], DenseQKOracleDiagnostics],
 ) -> tuple[LongBenchBenchmarkRunRow, ...]:
     by_prompt = {sample.prompt_name: sample for sample in samples}
     rows: list[LongBenchBenchmarkRunRow] = []
     for row in dynamic_result.rows:
         sample = by_prompt[row.prompt_name]
+        oracle = oracle_by_key.get((row.model_name, row.prompt_name, row.block_mode))
+        oracle_metrics = _oracle_metrics(
+            oracle,
+            selected_ids=row.selected_ids,
+            semantic_selected_ids=row.semantic_selected_ids,
+            expected_ids=row.retrieval_quality.expected_block_ids,
+            top_k_values=oracle_top_k,
+        )
         inspection_by_id = _inspection_by_id(row.block_inspection_records)
         rank_by_id = _rank_by_block_id(row.suppression_decisions)
         score_by_id = _score_by_block_id(row.suppression_decisions)
@@ -874,9 +1006,276 @@ def _longbench_rows(
                 target_recall=row.retrieval_quality.target_recall,
                 selected_precision=row.retrieval_quality.selected_precision,
                 target_hit=row.retrieval_quality.target_hit,
+                oracle_mode=oracle_mode,
+                oracle_top_k_values=tuple(oracle_top_k),
+                oracle_top_block_ids=oracle_metrics["oracle_top_block_ids"],
+                oracle_total_mass=oracle_metrics["oracle_total_mass"],
+                oracle_selected_mass_fraction=oracle_metrics[
+                    "oracle_selected_mass_fraction"
+                ],
+                oracle_semantic_selected_mass_fraction=oracle_metrics[
+                    "oracle_semantic_selected_mass_fraction"
+                ],
+                oracle_expected_mass_fraction=oracle_metrics[
+                    "oracle_expected_mass_fraction"
+                ],
+                oracle_topk_recall_at_4=oracle_metrics["oracle_topk_recall_at_4"],
+                oracle_topk_recall_at_8=oracle_metrics["oracle_topk_recall_at_8"],
+                oracle_topk_recall_at_16=oracle_metrics["oracle_topk_recall_at_16"],
+                oracle_topk_recall_at_32=oracle_metrics["oracle_topk_recall_at_32"],
+                oracle_expected_block_ranks=oracle_metrics[
+                    "oracle_expected_block_ranks"
+                ],
+                selected_vs_oracle_jaccard_at_4=oracle_metrics[
+                    "selected_vs_oracle_jaccard_at_4"
+                ],
+                selected_vs_oracle_jaccard_at_8=oracle_metrics[
+                    "selected_vs_oracle_jaccard_at_8"
+                ],
+                selected_vs_oracle_jaccard_at_16=oracle_metrics[
+                    "selected_vs_oracle_jaccard_at_16"
+                ],
+                selected_vs_oracle_jaccard_at_32=oracle_metrics[
+                    "selected_vs_oracle_jaccard_at_32"
+                ],
             )
         )
     return tuple(rows)
+
+
+def _build_dense_qk_oracles(
+    dynamic_result: DynamicBlockBenchmarkResult,
+    samples: Sequence[LongBenchPromptMetadata],
+    *,
+    model_names: Sequence[str],
+    representation_source: RepresentationSource,
+    load_config_kwargs: dict[str, Any] | None,
+    max_top_k: int,
+) -> dict[tuple[str, str, str], DenseQKOracleDiagnostics]:
+    """Build dense QK block-mass rankings without materializing LxL attention."""
+
+    by_prompt = {sample.prompt_name: sample for sample in samples}
+    exemplar_by_key: dict[tuple[str, str, str], DynamicBlockRunRow] = {}
+    for row in dynamic_result.rows:
+        key = (row.model_name, row.prompt_name, row.block_mode)
+        exemplar_by_key.setdefault(key, row)
+
+    load_kwargs = dict(load_config_kwargs or {})
+    diagnostics: dict[tuple[str, str, str], DenseQKOracleDiagnostics] = {}
+    for model_name in model_names:
+        runtime = LocalHfRuntime(
+            RuntimeLoadConfig(model_name=model_name, **load_kwargs),
+            capture_config=HiddenStateCaptureConfig(
+                representation_source=representation_source,
+            ),
+        )
+        runtime.load_model()
+        for key, row in exemplar_by_key.items():
+            if key[0] != model_name:
+                continue
+            sample = by_prompt[row.prompt_name]
+            prompt_text = Path(sample.prompt_file).read_text(encoding="utf-8")
+            diagnostics[key] = _dense_qk_oracle_for_row(
+                runtime,
+                prompt_text=prompt_text,
+                row=row,
+                representation_source=representation_source,
+                max_top_k=max_top_k,
+            )
+    return diagnostics
+
+
+def _dense_qk_oracle_for_row(
+    runtime: LocalHfRuntime,
+    *,
+    prompt_text: str,
+    row: DynamicBlockRunRow,
+    representation_source: RepresentationSource,
+    max_top_k: int,
+) -> DenseQKOracleDiagnostics:
+    prompt_prefill = runtime.prefill(prompt_text)
+    query_prompt = query_prompt_override_for_representation(
+        prompt_text,
+        representation_source=representation_source,
+    )
+    query_prefill = (
+        None if query_prompt is None else runtime.prefill(query_prompt)
+    )
+    token_heads = prompt_prefill.per_head_token_representations
+    query_heads = (
+        prompt_prefill.per_head_query_representation
+        if query_prefill is None
+        else query_prefill.per_head_query_representation
+    )
+    if token_heads is None or query_heads is None:
+        raise ValueError("dense_qk oracle requires a query/key representation source")
+
+    token_mass = _dense_qk_token_mass(token_heads, query_heads)
+    spans = _oracle_block_spans(row.block_inspection_records)
+    mass_by_block_id: dict[int, float] = {}
+    for block_id, start, end in spans:
+        clipped_start = max(0, min(start, token_mass.numel()))
+        clipped_end = max(clipped_start, min(end, token_mass.numel()))
+        mass_by_block_id[block_id] = float(token_mass[clipped_start:clipped_end].sum())
+    total_mass = sum(mass_by_block_id.values())
+    ranked = tuple(
+        block_id
+        for block_id, _mass in sorted(
+            mass_by_block_id.items(),
+            key=lambda item: (item[1], -item[0]),
+            reverse=True,
+        )
+    )
+    rank_by_block_id = {
+        block_id: rank
+        for rank, block_id in enumerate(ranked, start=1)
+    }
+    return DenseQKOracleDiagnostics(
+        top_block_ids=ranked[:max_top_k],
+        total_mass=total_mass,
+        mass_by_block_id=mass_by_block_id,
+        rank_by_block_id=rank_by_block_id,
+    )
+
+
+def _dense_qk_token_mass(
+    per_head_token_representations: torch.Tensor,
+    per_head_query_representation: torch.Tensor,
+) -> torch.Tensor:
+    """Return mean per-head softmax QK mass for each prompt token."""
+
+    token_heads = per_head_token_representations.detach().to(dtype=torch.float32, device="cpu")
+    query_heads = per_head_query_representation.detach().to(dtype=torch.float32, device="cpu")
+    if token_heads.ndim != 3:
+        raise ValueError("per_head_token_representations must have shape [heads, tokens, dim]")
+    if query_heads.ndim != 2:
+        raise ValueError("per_head_query_representation must have shape [heads, dim]")
+    if token_heads.shape[0] != query_heads.shape[0]:
+        raise ValueError("query/key head counts must match")
+    if token_heads.shape[2] != query_heads.shape[1]:
+        raise ValueError("query/key head dimensions must match")
+    scale = math.sqrt(float(token_heads.shape[2]))
+    logits = (token_heads * query_heads[:, None, :]).sum(dim=-1) / scale
+    return torch.softmax(logits, dim=-1).mean(dim=0)
+
+
+def _oracle_block_spans(
+    block_inspection_records: Sequence[Mapping[str, Any]],
+) -> tuple[tuple[int, int, int], ...]:
+    spans: list[tuple[int, int, int]] = []
+    for record in block_inspection_records:
+        if "block_id" not in record:
+            continue
+        start = record.get("token_start")
+        end = record.get("token_end")
+        if start is None or end is None:
+            continue
+        spans.append((int(record["block_id"]), int(start), int(end)))
+    spans.sort(key=lambda item: (item[1], item[2], item[0]))
+    return tuple(spans)
+
+
+def _oracle_metrics(
+    oracle: DenseQKOracleDiagnostics | None,
+    *,
+    selected_ids: Sequence[int],
+    semantic_selected_ids: Sequence[int],
+    expected_ids: Sequence[int],
+    top_k_values: Sequence[int],
+) -> dict[str, Any]:
+    if oracle is None:
+        return {
+            "oracle_top_block_ids": (),
+            "oracle_total_mass": None,
+            "oracle_selected_mass_fraction": None,
+            "oracle_semantic_selected_mass_fraction": None,
+            "oracle_expected_mass_fraction": None,
+            "oracle_topk_recall_at_4": None,
+            "oracle_topk_recall_at_8": None,
+            "oracle_topk_recall_at_16": None,
+            "oracle_topk_recall_at_32": None,
+            "oracle_expected_block_ranks": (),
+            "selected_vs_oracle_jaccard_at_4": None,
+            "selected_vs_oracle_jaccard_at_8": None,
+            "selected_vs_oracle_jaccard_at_16": None,
+            "selected_vs_oracle_jaccard_at_32": None,
+        }
+    selected = tuple(int(block_id) for block_id in selected_ids)
+    semantic_selected = tuple(int(block_id) for block_id in semantic_selected_ids)
+    expected = tuple(int(block_id) for block_id in expected_ids)
+    total_mass = oracle.total_mass
+
+    metrics: dict[str, Any] = {
+        "oracle_top_block_ids": oracle.top_block_ids,
+        "oracle_total_mass": total_mass,
+        "oracle_selected_mass_fraction": _oracle_mass_fraction(
+            selected,
+            oracle=oracle,
+        ),
+        "oracle_semantic_selected_mass_fraction": _oracle_mass_fraction(
+            semantic_selected,
+            oracle=oracle,
+        ),
+        "oracle_expected_mass_fraction": _oracle_mass_fraction(
+            expected,
+            oracle=oracle,
+        ),
+        "oracle_expected_block_ranks": tuple(
+            oracle.rank_by_block_id[block_id]
+            for block_id in expected
+            if block_id in oracle.rank_by_block_id
+        ),
+    }
+    for k in (4, 8, 16, 32):
+        metrics[f"oracle_topk_recall_at_{k}"] = (
+            _oracle_topk_recall(selected, oracle=oracle, k=k)
+            if k in top_k_values
+            else None
+        )
+        metrics[f"selected_vs_oracle_jaccard_at_{k}"] = (
+            _oracle_jaccard(selected, oracle=oracle, k=k)
+            if k in top_k_values
+            else None
+        )
+    return metrics
+
+
+def _oracle_mass_fraction(
+    block_ids: Sequence[int],
+    *,
+    oracle: DenseQKOracleDiagnostics,
+) -> float | None:
+    if oracle.total_mass <= 0:
+        return None
+    mass = sum(oracle.mass_by_block_id.get(int(block_id), 0.0) for block_id in block_ids)
+    return mass / oracle.total_mass
+
+
+def _oracle_topk_recall(
+    selected_ids: Sequence[int],
+    *,
+    oracle: DenseQKOracleDiagnostics,
+    k: int,
+) -> float | None:
+    top = set(oracle.top_block_ids[:k])
+    if not top:
+        return None
+    selected = {int(block_id) for block_id in selected_ids}
+    return len(selected & top) / len(top)
+
+
+def _oracle_jaccard(
+    selected_ids: Sequence[int],
+    *,
+    oracle: DenseQKOracleDiagnostics,
+    k: int,
+) -> float | None:
+    top = set(oracle.top_block_ids[:k])
+    selected = {int(block_id) for block_id in selected_ids}
+    union = selected | top
+    if not union:
+        return None
+    return len(selected & top) / len(union)
 
 
 def _dataset_summaries(
@@ -907,6 +1306,27 @@ def _dataset_summaries(
             ),
             mean_evidence_window_precision=_mean_optional(
                 row.evidence_window_precision for row in group
+            ),
+            mean_oracle_selected_mass_fraction=_mean_optional(
+                row.oracle_selected_mass_fraction for row in group
+            ),
+            mean_oracle_semantic_selected_mass_fraction=_mean_optional(
+                row.oracle_semantic_selected_mass_fraction for row in group
+            ),
+            mean_oracle_expected_mass_fraction=_mean_optional(
+                row.oracle_expected_mass_fraction for row in group
+            ),
+            mean_oracle_topk_recall_at_4=_mean_optional(
+                row.oracle_topk_recall_at_4 for row in group
+            ),
+            mean_oracle_topk_recall_at_8=_mean_optional(
+                row.oracle_topk_recall_at_8 for row in group
+            ),
+            mean_oracle_topk_recall_at_16=_mean_optional(
+                row.oracle_topk_recall_at_16 for row in group
+            ),
+            mean_oracle_topk_recall_at_32=_mean_optional(
+                row.oracle_topk_recall_at_32 for row in group
             ),
         )
         for dataset_name, group in sorted(grouped.items())
