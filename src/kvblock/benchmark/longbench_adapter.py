@@ -202,6 +202,7 @@ class LongBenchBenchmarkRunRow:
     qk_aggregation_strategy: str
     rerank_mode: str
     rerank_weight: float
+    refine_top_n_tokens: int
     neighbor_expansion: int
     halo_radius: int
     max_selected_blocks: int | None
@@ -220,6 +221,7 @@ class LongBenchBenchmarkRunRow:
     target_recall: float | None
     selected_precision: float | None
     target_hit: bool
+    expected_rank_movements: tuple[dict[str, int | None], ...] = ()
     oracle_mode: str = "none"
     oracle_top_k_values: tuple[int, ...] = ()
     oracle_top_block_ids: tuple[int, ...] = ()
@@ -537,6 +539,7 @@ def run_longbench_selector_benchmark(
     needle_qk_aggregation_strategy: QKAggregationStrategy | None = None,
     rerank_mode: RerankMode = "none",
     rerank_weight: float = 0.3,
+    refine_top_n_tokens: int = 4,
     neighbor_expansion: int = 0,
     halo_radius: int = 0,
     max_selected_blocks: int | None = None,
@@ -585,6 +588,7 @@ def run_longbench_selector_benchmark(
         needle_qk_aggregation_strategy=needle_qk_aggregation_strategy,
         rerank_mode=rerank_mode,
         rerank_weight=rerank_weight,
+        refine_top_n_tokens=refine_top_n_tokens,
         neighbor_expansion=neighbor_expansion,
         halo_radius=halo_radius,
         max_selected_blocks=max_selected_blocks,
@@ -685,6 +689,7 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
             f"{row.dataset_name}:{row.sample_id} | model={row.model_name} "
             f"mode={row.block_mode} qk={row.qk_aggregation_strategy} "
             f"rerank={row.rerank_mode}@{row.rerank_weight:.2f} "
+            f"refine_top_n={row.refine_top_n_tokens} "
             f"neighbor_expansion={row.neighbor_expansion} "
             f"halo={row.halo_radius} cap={_fmt_int_optional(row.max_selected_blocks)} "
             f"length={row.longbench_length} tokens={row.tokens} "
@@ -693,6 +698,7 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
             f"expected_blocks={row.expected_block_count} "
             f"expected_distance={_fmt_optional(row.expected_block_distance)} "
             f"expected_ranks={list(row.expected_block_ranks)} "
+            f"expected_rank_moves={_format_rank_movements(row.expected_rank_movements)} "
             f"best_expected_rank={_fmt_optional(row.best_expected_rank)} "
             f"score_gap={_fmt_optional(row.score_gap_to_top1)} "
             f"recall@4/8/16/32/64="
@@ -988,6 +994,7 @@ def _longbench_rows(
                 qk_aggregation_strategy=row.qk_aggregation_strategy,
                 rerank_mode=row.rerank_mode,
                 rerank_weight=row.rerank_weight,
+                refine_top_n_tokens=row.refine_top_n_tokens,
                 neighbor_expansion=row.neighbor_expansion,
                 halo_radius=row.halo_radius,
                 max_selected_blocks=row.max_selected_blocks,
@@ -1006,6 +1013,10 @@ def _longbench_rows(
                 target_recall=row.retrieval_quality.target_recall,
                 selected_precision=row.retrieval_quality.selected_precision,
                 target_hit=row.retrieval_quality.target_hit,
+                expected_rank_movements=_expected_rank_movements(
+                    row.retrieval_quality.expected_block_ids,
+                    suppression_decisions=row.suppression_decisions,
+                ),
                 oracle_mode=oracle_mode,
                 oracle_top_k_values=tuple(oracle_top_k),
                 oracle_top_block_ids=oracle_metrics["oracle_top_block_ids"],
@@ -1372,6 +1383,45 @@ def _expected_ranks(
     )
 
 
+def _expected_rank_movements(
+    expected_ids: Sequence[int],
+    *,
+    suppression_decisions: Sequence[Mapping[str, Any]],
+) -> tuple[dict[str, int | None], ...]:
+    """Return old/new rerank positions for expected answer-bearing blocks."""
+
+    decision_by_id = {
+        int(decision["block_id"]): decision
+        for decision in suppression_decisions
+        if "block_id" in decision
+    }
+    movements: list[dict[str, int | None]] = []
+    for block_id in expected_ids:
+        decision = decision_by_id.get(int(block_id))
+        if decision is None:
+            continue
+        new_rank = _optional_int(decision.get("rerank_new_rank"))
+        original_rank = _optional_int(decision.get("rerank_original_rank"))
+        if new_rank is None:
+            new_rank = _optional_int(decision.get("rank"))
+        if original_rank is None and new_rank is None:
+            continue
+        delta = (
+            None
+            if original_rank is None or new_rank is None
+            else original_rank - new_rank
+        )
+        movements.append(
+            {
+                "block_id": int(block_id),
+                "original_rank": original_rank,
+                "new_rank": new_rank,
+                "delta": delta,
+            }
+        )
+    return tuple(movements)
+
+
 def _best_expected_score(
     expected_ids: Sequence[int],
     *,
@@ -1525,6 +1575,14 @@ def _top_ranked_blocks(
         compact["rank"] = rank
         if "final_score" not in compact and "final_score" in decision:
             compact["final_score"] = decision["final_score"]
+        for key in (
+            "refined_score",
+            "rerank_original_rank",
+            "rerank_new_rank",
+            "rerank_rank_delta",
+        ):
+            if key in decision:
+                compact[key] = decision[key]
         top.append(compact)
     return tuple(top)
 
@@ -1541,6 +1599,10 @@ def _compact_inspection_record(record: Mapping[str, Any]) -> dict[str, Any]:
         "stage_a_score": record.get("stage_a_score"),
         "stage_b_score": record.get("stage_b_score"),
         "final_score": record.get("final_score"),
+        "refined_score": record.get("refined_score"),
+        "rerank_original_rank": record.get("rerank_original_rank"),
+        "rerank_new_rank": record.get("rerank_new_rank"),
+        "rerank_rank_delta": record.get("rerank_rank_delta"),
         "selected": bool(record.get("selected", False)),
         "selected_reason": str(record.get("selected_reason", "")),
         "preview_text": str(record.get("preview_text", "")),
@@ -1559,14 +1621,40 @@ def _format_block_records(records: Sequence[Mapping[str, Any]]) -> str:
             preview = preview[:93] + "..."
         score = record.get("final_score")
         score_text = "n/a" if score is None else f"{float(score):.4f}"
+        refined = record.get("refined_score")
+        refined_text = (
+            ""
+            if refined is None
+            else f" refined={float(refined):.4f}"
+        )
         rank = record.get("rank")
         rank_text = "" if rank is None else f"rank={rank} "
+        old_rank = record.get("rerank_original_rank")
+        new_rank = record.get("rerank_new_rank")
+        move_text = (
+            ""
+            if old_rank is None or new_rank is None
+            else f" old_rank={old_rank} new_rank={new_rank}"
+        )
         formatted.append(
             f"{rank_text}id={record.get('block_id')} "
             f"span={record.get('token_start')}:{record.get('token_end')} "
-            f"score={score_text} preview={preview!r}"
+            f"score={score_text}{refined_text}{move_text} preview={preview!r}"
         )
     return "[" + "; ".join(formatted) + "]"
+
+
+def _format_rank_movements(movements: Sequence[Mapping[str, Any]]) -> str:
+    if not movements:
+        return "[]"
+    parts = []
+    for movement in movements:
+        parts.append(
+            f"id={movement.get('block_id')}:"
+            f"{movement.get('original_rank')}->{movement.get('new_rank')}"
+            f"({movement.get('delta')})"
+        )
+    return "[" + ", ".join(parts) + "]"
 
 
 def _first_text(row: Mapping[str, Any], keys: Sequence[str]) -> str:
@@ -1681,3 +1769,12 @@ def _fmt_optional(value: float | None) -> str:
 
 def _fmt_int_optional(value: int | None) -> str:
     return "n/a" if value is None else str(value)
+
+
+def _optional_int(value: Any) -> int | None:
+    if value is None:
+        return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None

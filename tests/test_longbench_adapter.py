@@ -144,8 +144,26 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
             selected_block_sizes=(40, 40),
             selected_candidate_roles=("block", "block"),
             suppression_decisions=(
-                {"block_id": 1, "candidate_id": "s40_t0_40", "survived": True},
-                {"block_id": 2, "candidate_id": "s40_t40_80", "survived": True},
+                {
+                    "block_id": 1,
+                    "candidate_id": "s40_t0_40",
+                    "survived": True,
+                    "final_score": 1.0,
+                    "refined_score": 1.0,
+                    "rerank_original_rank": 4,
+                    "rerank_new_rank": 1,
+                    "rerank_rank_delta": 3,
+                },
+                {
+                    "block_id": 2,
+                    "candidate_id": "s40_t40_80",
+                    "survived": True,
+                    "final_score": 0.5,
+                    "refined_score": 0.5,
+                    "rerank_original_rank": 1,
+                    "rerank_new_rank": 2,
+                    "rerank_rank_delta": -1,
+                },
             ),
             selected_count=2,
             selected_to_semantic_k_ratio=0.5,
@@ -157,6 +175,7 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
             fallback_mode="sparse",
             raw_margin=0.1,
             retrieval_quality=quality,
+            refine_top_n_tokens=kwargs.get("refine_top_n_tokens", 4),
             block_inspection_records=(
                 {
                     "block_id": 1,
@@ -167,6 +186,10 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
                     "stage_a_score": 1.0,
                     "stage_b_score": 1.0,
                     "final_score": 1.0,
+                    "refined_score": 1.0,
+                    "rerank_original_rank": 4,
+                    "rerank_new_rank": 1,
+                    "rerank_rank_delta": 3,
                     "selected": True,
                     "selected_reason": "semantic",
                     "preview_text": "alpha evidence block",
@@ -180,6 +203,10 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
                     "stage_a_score": 0.5,
                     "stage_b_score": 0.5,
                     "final_score": 0.5,
+                    "refined_score": 0.5,
+                    "rerank_original_rank": 1,
+                    "rerank_new_rank": 2,
+                    "rerank_rank_delta": -1,
                     "selected": True,
                     "selected_reason": "semantic",
                     "preview_text": "extra block",
@@ -202,6 +229,7 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
         limit_per_dataset=1,
         prompt_cache_dir=tmp_path,
         dataset_loader=_fake_longbench_rows,
+        refine_top_n_tokens=3,
     )
 
     assert result.samples[0].dataset_name == "narrativeqa"
@@ -209,11 +237,15 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
     assert result.rows[0].candidate_block_count == 128
     assert result.rows[0].rerank_mode == "none"
     assert result.rows[0].rerank_weight == 0.3
+    assert result.rows[0].refine_top_n_tokens == 3
     assert result.rows[0].answer_present_count == 1
     assert result.rows[0].expected_block_count == 1
     assert result.rows[0].selected_expected_block_count == 1
     assert result.rows[0].expected_block_ids == (1,)
     assert result.rows[0].expected_block_ranks == (1,)
+    assert result.rows[0].expected_rank_movements == (
+        {"block_id": 1, "original_rank": 4, "new_rank": 1, "delta": 3},
+    )
     assert result.rows[0].best_expected_rank == 1
     assert result.rows[0].recall_at_4 == 1.0
     assert result.rows[0].neighbor_recall_at_1 == 1.0
@@ -229,6 +261,7 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
     assert result.rows[0].selected_blocks[0]["preview_text"] == "alpha evidence block"
     assert result.rows[0].expected_blocks[0]["block_id"] == 1
     assert result.rows[0].top_ranked_blocks[0]["rank"] == 1
+    assert result.rows[0].top_ranked_blocks[0]["refined_score"] == 1.0
     assert result.rows[0].target_recall == 1.0
     assert result.dataset_summaries[0].mean_precision == 0.5
     assert result.dataset_summaries[0].mean_evidence_window_recall == 1.0
@@ -371,9 +404,11 @@ def test_longbench_cli_parser_accepts_baseline_flags() -> None:
             "--limit",
             "2",
             "--rerank-mode",
-            "semantic_plus_tokenmax",
+            "dense_qk_token_refine",
             "--rerank-weight",
             "0.4",
+            "--refine-top-n-tokens",
+            "3",
             "--neighbor-expansion",
             "2",
             "--halo-radius",
@@ -396,8 +431,9 @@ def test_longbench_cli_parser_accepts_baseline_flags() -> None:
     assert args.length_bucket == "4k-8k"
     assert args.representation_source == "query_only_last_layer"
     assert args.limit == 2
-    assert args.rerank_mode == "semantic_plus_tokenmax"
+    assert args.rerank_mode == "dense_qk_token_refine"
     assert args.rerank_weight == 0.4
+    assert args.refine_top_n_tokens == 3
     assert args.neighbor_expansion == 2
     assert args.halo_radius == 0
     assert args.max_selected_blocks == 8

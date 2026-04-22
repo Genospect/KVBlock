@@ -80,10 +80,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--rerank-mode",
         default="none",
-        choices=("none", "semantic_plus_tokenmax"),
+        choices=("none", "semantic_plus_tokenmax", "dense_qk_token_refine"),
         help=(
             "Optional benchmark-only rerank over ranked candidates. "
-            "semantic_plus_tokenmax blends selector score with lexical token matches."
+            "semantic_plus_tokenmax blends selector score with lexical token "
+            "matches; dense_qk_token_refine uses exact QK token scores over "
+            "the shortlist."
         ),
     )
     parser.add_argument(
@@ -91,6 +93,12 @@ def build_parser() -> argparse.ArgumentParser:
         type=float,
         default=0.3,
         help="Weight assigned to tokenmax score when --rerank-mode is enabled.",
+    )
+    parser.add_argument(
+        "--refine-top-n-tokens",
+        type=int,
+        default=4,
+        help="Number of strongest block tokens averaged by dense_qk_token_refine.",
     )
     parser.add_argument(
         "--neighbor-expansion",
@@ -185,6 +193,7 @@ def main(argv: list[str] | None = None) -> int:
         needle_qk_aggregation_strategy=needle_strategy,
         rerank_mode=args.rerank_mode,
         rerank_weight=args.rerank_weight,
+        refine_top_n_tokens=args.refine_top_n_tokens,
         neighbor_expansion=args.neighbor_expansion,
         halo_radius=args.halo_radius,
         max_selected_blocks=args.max_selected_blocks,

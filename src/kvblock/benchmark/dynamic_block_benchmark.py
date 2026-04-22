@@ -10,10 +10,13 @@ from __future__ import annotations
 from collections import defaultdict
 from dataclasses import asdict, dataclass, replace
 import json
+import math
 from pathlib import Path
 import re
 from time import perf_counter
 from typing import Any, Iterable, Literal, Sequence, cast
+
+import torch
 
 from kvblock.benchmark.candidate_suppression import (
     RankedCandidateSpan,
@@ -68,11 +71,12 @@ DEFAULT_DYNAMIC_PROMPT_NAMES: tuple[str, ...] = (
     "repeated_reference",
 )
 
-RerankMode = Literal["none", "semantic_plus_tokenmax"]
+RerankMode = Literal["none", "semantic_plus_tokenmax", "dense_qk_token_refine"]
 
 VALID_RERANK_MODES: tuple[RerankMode, ...] = (
     "none",
     "semantic_plus_tokenmax",
+    "dense_qk_token_refine",
 )
 
 _TOKEN_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9'_-]*")
@@ -206,6 +210,7 @@ class DynamicBlockRunRow:
     coarse_selected_candidate_ids: tuple[str, ...] = ()
     coarse_selected_spans: tuple[str, ...] = ()
     block_inspection_records: tuple[dict[str, Any], ...] = ()
+    refine_top_n_tokens: int = 4
 
     def to_dict(self) -> dict[str, Any]:
         """Return a JSON-friendly row record."""
@@ -350,6 +355,7 @@ def run_dynamic_block_benchmark(
     include_block_inspections: bool = False,
     rerank_mode: RerankMode = "none",
     rerank_weight: float = 0.3,
+    refine_top_n_tokens: int = 4,
     neighbor_expansion: int = 0,
     halo_radius: int = 0,
     max_selected_blocks: int | None = None,
@@ -368,6 +374,8 @@ def run_dynamic_block_benchmark(
     resolved_rerank_mode = rerank_mode_from_name(rerank_mode)
     if rerank_weight < 0.0 or rerank_weight > 1.0:
         raise ValueError("rerank_weight must be in [0, 1]")
+    if refine_top_n_tokens <= 0:
+        raise ValueError("refine_top_n_tokens must be > 0")
     if neighbor_expansion < 0:
         raise ValueError("neighbor_expansion must be >= 0")
     if halo_radius < 0:
@@ -490,15 +498,26 @@ def run_dynamic_block_benchmark(
                     retained_parent_count = 0
                     coarse_selected_candidate_ids = ()
                     coarse_selected_spans = ()
+                base_ranked_candidates = _ranked_candidates_from_result(result)
+                original_rank_by_id = {
+                    candidate.block_id: candidate.rank
+                    for candidate in base_ranked_candidates
+                }
                 ranked_candidates = _rerank_candidates(
-                    _ranked_candidates_from_result(result),
+                    base_ranked_candidates,
                     result=result,
                     query_prompt=query_prompt or prompt,
                     mode=resolved_rerank_mode,
                     weight=rerank_weight,
+                    refine_top_n_tokens=refine_top_n_tokens,
+                    refine_candidate_limit=config.shortlist_m,
                 )
                 ranked_score_by_id = {
                     candidate.block_id: candidate.score
+                    for candidate in ranked_candidates
+                }
+                reranked_rank_by_id = {
+                    candidate.block_id: candidate.rank
                     for candidate in ranked_candidates
                 }
                 for suppression_mode in resolved_suppression_modes:
@@ -516,10 +535,21 @@ def run_dynamic_block_benchmark(
                             strategy=strategy,
                             rerank_mode=resolved_rerank_mode,
                             rerank_weight=rerank_weight,
+                            refine_top_n_tokens=refine_top_n_tokens,
                             config=config,
                             result=result,
                             suppression=suppression,
                             ranked_score_by_id=ranked_score_by_id,
+                            rerank_original_rank_by_id=(
+                                original_rank_by_id
+                                if resolved_rerank_mode != "none"
+                                else None
+                            ),
+                            rerank_new_rank_by_id=(
+                                reranked_rank_by_id
+                                if resolved_rerank_mode != "none"
+                                else None
+                            ),
                             neighbor_expansion=neighbor_expansion,
                             halo_radius=halo_radius,
                             max_selected_blocks=max_selected_blocks,
@@ -632,7 +662,8 @@ def format_dynamic_block_report(result: DynamicBlockBenchmarkResult) -> str:
             f"{row.model_name} | {row.prompt_name} | {row.block_mode} | "
             f"suppression={row.suppression_mode}@{row.suppression_threshold:.2f} | "
             f"qk={row.qk_aggregation_strategy} | "
-            f"rerank={row.rerank_mode}@{row.rerank_weight:.2f} | "
+            f"rerank={row.rerank_mode}@{row.rerank_weight:.2f} "
+            f"refine_top_n={row.refine_top_n_tokens} | "
             f"neighbor_expansion={row.neighbor_expansion} | "
             f"halo={row.halo_radius} cap={_fmt_int_optional(row.max_selected_blocks)} | "
             f"candidates={row.candidate_block_count} "
@@ -660,10 +691,13 @@ def _row_from_result(
     strategy: QKAggregationStrategy,
     rerank_mode: RerankMode,
     rerank_weight: float,
+    refine_top_n_tokens: int,
     config: RealBlockSelectorConfig,
     result: Any,
     suppression: SuppressionResult,
     ranked_score_by_id: dict[int, float] | None = None,
+    rerank_original_rank_by_id: dict[int, int] | None = None,
+    rerank_new_rank_by_id: dict[int, int] | None = None,
     neighbor_expansion: int = 0,
     halo_radius: int = 0,
     max_selected_blocks: int | None = None,
@@ -749,6 +783,9 @@ def _row_from_result(
             result,
             suppression,
             ranked_score_by_id=ranked_score_by_id,
+            rerank_original_rank_by_id=rerank_original_rank_by_id,
+            rerank_new_rank_by_id=rerank_new_rank_by_id,
+            include_refined_score=rerank_mode != "none",
         ),
         selected_count=len(selected_ids),
         selected_to_semantic_k_ratio=len(selected_ids) / config.semantic_k,
@@ -785,6 +822,7 @@ def _row_from_result(
         retained_parent_count=retained_parent_count,
         coarse_selected_candidate_ids=coarse_selected_candidate_ids,
         coarse_selected_spans=coarse_selected_spans,
+        refine_top_n_tokens=refine_top_n_tokens,
         block_inspection_records=(
             _block_inspection_records(
                 result,
@@ -796,6 +834,9 @@ def _row_from_result(
             else _block_inspection_records(
                 result,
                 score_by_id=ranked_score_by_id,
+                original_rank_by_id=rerank_original_rank_by_id,
+                new_rank_by_id=rerank_new_rank_by_id,
+                include_refined_score=rerank_mode != "none",
                 selected_ids=set(selected_ids),
                 semantic_selected_ids=set(semantic_selected_ids),
                 selected_reason="rerank" if rerank_mode != "none" else None,
@@ -961,12 +1002,21 @@ def _rerank_candidates(
     query_prompt: str,
     mode: RerankMode,
     weight: float,
+    refine_top_n_tokens: int = 4,
+    refine_candidate_limit: int | None = None,
 ) -> tuple[RankedCandidateSpan, ...]:
     """Apply benchmark-only reranking over existing ranked candidates."""
 
     candidates = tuple(ranked_candidates)
     if mode == "none" or not candidates:
         return candidates
+    if mode == "dense_qk_token_refine":
+        return _dense_qk_refine_candidates(
+            candidates,
+            result=result,
+            top_n_tokens=refine_top_n_tokens,
+            candidate_limit=refine_candidate_limit,
+        )
     if mode != "semantic_plus_tokenmax":
         raise ValueError(f"unsupported rerank mode: {mode!r}")
     query_tokens = _content_tokens(query_prompt)
@@ -1022,6 +1072,94 @@ def _rerank_candidates(
         )
         for rank, candidate in enumerate(reranked, start=1)
     )
+
+
+def _dense_qk_refine_candidates(
+    ranked_candidates: Sequence[RankedCandidateSpan],
+    *,
+    result: Any,
+    top_n_tokens: int,
+    candidate_limit: int | None,
+) -> tuple[RankedCandidateSpan, ...]:
+    """Rerank the Stage-A shortlist with exact per-token QK scores."""
+
+    if top_n_tokens <= 0:
+        raise ValueError("top_n_tokens must be > 0")
+    candidates = tuple(ranked_candidates)
+    if not candidates:
+        return ()
+    limit = (
+        len(candidates)
+        if candidate_limit is None
+        else min(candidate_limit, len(candidates))
+    )
+    if limit <= 0:
+        return candidates
+    refined_head = [
+        replace(
+            candidate,
+            score=_dense_qk_token_refine_score(
+                candidate,
+                result=result,
+                top_n_tokens=top_n_tokens,
+            ),
+        )
+        for candidate in candidates[:limit]
+    ]
+    refined_head.sort(key=lambda item: (item.score, -item.block_id), reverse=True)
+    reranked = tuple(
+        replace(candidate, rank=rank)
+        for rank, candidate in enumerate(refined_head, start=1)
+    )
+    tail = tuple(
+        replace(candidate, rank=rank)
+        for rank, candidate in enumerate(
+            candidates[limit:],
+            start=len(reranked) + 1,
+        )
+    )
+    return reranked + tail
+
+
+def _dense_qk_token_refine_score(
+    candidate: RankedCandidateSpan,
+    *,
+    result: Any,
+    top_n_tokens: int,
+) -> float:
+    token_heads = getattr(result, "per_head_token_representations", None)
+    query_heads = getattr(result, "per_head_query_representation", None)
+    if token_heads is None or query_heads is None:
+        raise ValueError("dense_qk_token_refine requires per-head query/key tensors")
+    if not isinstance(token_heads, torch.Tensor) or not isinstance(
+        query_heads,
+        torch.Tensor,
+    ):
+        raise TypeError("per-head query/key representations must be torch tensors")
+    if token_heads.ndim != 3:
+        raise ValueError(
+            "per_head_token_representations must have shape [heads, tokens, dim]"
+        )
+    if query_heads.ndim != 2:
+        raise ValueError("per_head_query_representation must have shape [heads, dim]")
+    if token_heads.shape[0] != query_heads.shape[0]:
+        raise ValueError("query/key head counts must match")
+    if token_heads.shape[2] != query_heads.shape[1]:
+        raise ValueError("query/key head dimensions must match")
+    token_count = int(token_heads.shape[1])
+    start = max(0, min(int(candidate.token_start), token_count))
+    end = max(start, min(int(candidate.token_end), token_count))
+    if end <= start:
+        return float("-inf")
+    block_heads = token_heads[:, start:end, :].detach().to(dtype=torch.float32)
+    query = query_heads.detach().to(dtype=torch.float32, device=block_heads.device)
+    scale = math.sqrt(float(block_heads.shape[-1]))
+    logits = (block_heads * query[:, None, :]).sum(dim=-1) / scale
+    token_scores = logits.mean(dim=0)
+    count = min(top_n_tokens, int(token_scores.numel()))
+    if count <= 0:
+        return float("-inf")
+    return float(torch.topk(token_scores, k=count).values.mean().item())
 
 
 def _content_tokens(text: str) -> tuple[str, ...]:
@@ -1172,13 +1310,38 @@ def _suppression_records(
     suppression: SuppressionResult,
     *,
     ranked_score_by_id: dict[int, float] | None = None,
+    rerank_original_rank_by_id: dict[int, int] | None = None,
+    rerank_new_rank_by_id: dict[int, int] | None = None,
+    include_refined_score: bool = False,
 ) -> tuple[dict[str, Any], ...]:
     block_by_id = {block.block_id: block for block in result.block_inspections}
     records: list[dict[str, Any]] = []
     for decision in suppression.decisions:
         block = block_by_id.get(decision.block_id)
         payload = decision.to_dict()
+        original_rank = (
+            None
+            if rerank_original_rank_by_id is None
+            else rerank_original_rank_by_id.get(decision.block_id)
+        )
+        new_rank = (
+            None
+            if rerank_new_rank_by_id is None
+            else rerank_new_rank_by_id.get(decision.block_id)
+        )
+        if original_rank is not None:
+            payload["rerank_original_rank"] = original_rank
+        if new_rank is not None:
+            payload["rerank_new_rank"] = new_rank
+        if original_rank is not None and new_rank is not None:
+            payload["rerank_rank_delta"] = original_rank - new_rank
         if block is not None:
+            final_score = (
+                ranked_score_by_id[block.block_id]
+                if ranked_score_by_id is not None
+                and block.block_id in ranked_score_by_id
+                else getattr(block, "final_score", None)
+            )
             payload.update(
                 {
                     "token_start": block.token_start,
@@ -1194,15 +1357,12 @@ def _suppression_records(
                     "parent_token_end": getattr(block, "parent_token_end", None),
                     "stage_a_score": getattr(block, "stage_a_score", None),
                     "stage_b_score": getattr(block, "stage_b_score", None),
-                    "final_score": (
-                        ranked_score_by_id[block.block_id]
-                        if ranked_score_by_id is not None
-                        and block.block_id in ranked_score_by_id
-                        else getattr(block, "final_score", None)
-                    ),
+                    "final_score": final_score,
                     "preview_text": block.preview_text,
                 }
             )
+            if include_refined_score:
+                payload["refined_score"] = final_score
         records.append(payload)
     return tuple(records)
 
@@ -1211,6 +1371,9 @@ def _block_inspection_records(
     result: Any,
     *,
     score_by_id: dict[int, float] | None = None,
+    original_rank_by_id: dict[int, int] | None = None,
+    new_rank_by_id: dict[int, int] | None = None,
+    include_refined_score: bool = False,
     selected_ids: set[int] | None = None,
     semantic_selected_ids: set[int] | None = None,
     selected_reason: str | None = None,
@@ -1234,29 +1397,43 @@ def _block_inspection_records(
             reason = expansion_selected_reason
         elif selected_reason is not None and selected and not bool(block.selected):
             reason = selected_reason
-        records.append(
-            {
-                "block_id": block.block_id,
-                "candidate_id": block.candidate_id or str(block.block_id),
-                "token_start": block.token_start,
-                "token_end": block.token_end,
-                "token_count": block.token_count,
-                "selected": selected,
-                "selected_reason": reason,
-                "stage_a_score": block.stage_a_score,
-                "stage_b_score": block.stage_b_score,
-                "final_score": (
-                    score_by_id[block.block_id]
-                    if score_by_id is not None and block.block_id in score_by_id
-                    else block.final_score
-                ),
-                "preview_text": block.preview_text,
-                "block_size": getattr(block, "block_size", None),
-                "stride": getattr(block, "stride", None),
-                "block_mode": getattr(block, "block_mode", None),
-                "candidate_role": getattr(block, "candidate_role", "block"),
-            }
+        final_score = (
+            score_by_id[block.block_id]
+            if score_by_id is not None and block.block_id in score_by_id
+            else block.final_score
         )
+        payload: dict[str, Any] = {
+            "block_id": block.block_id,
+            "candidate_id": block.candidate_id or str(block.block_id),
+            "token_start": block.token_start,
+            "token_end": block.token_end,
+            "token_count": block.token_count,
+            "selected": selected,
+            "selected_reason": reason,
+            "stage_a_score": block.stage_a_score,
+            "stage_b_score": block.stage_b_score,
+            "final_score": final_score,
+            "preview_text": block.preview_text,
+            "block_size": getattr(block, "block_size", None),
+            "stride": getattr(block, "stride", None),
+            "block_mode": getattr(block, "block_mode", None),
+            "candidate_role": getattr(block, "candidate_role", "block"),
+        }
+        original_rank = (
+            None
+            if original_rank_by_id is None
+            else original_rank_by_id.get(block.block_id)
+        )
+        new_rank = None if new_rank_by_id is None else new_rank_by_id.get(block.block_id)
+        if original_rank is not None:
+            payload["rerank_original_rank"] = original_rank
+        if new_rank is not None:
+            payload["rerank_new_rank"] = new_rank
+        if original_rank is not None and new_rank is not None:
+            payload["rerank_rank_delta"] = original_rank - new_rank
+        if include_refined_score:
+            payload["refined_score"] = final_score
+        records.append(payload)
     return tuple(records)
 
 

@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 from types import SimpleNamespace
 
+import torch
+
 import kvblock.benchmark.dynamic_block_benchmark as dynamic_bench
 from kvblock.benchmark.dynamic_block_benchmark import (
     DynamicBlockBenchmarkResult,
@@ -302,6 +304,56 @@ def test_rerank_candidates_can_promote_lexical_entity_match() -> None:
 
     assert [candidate.block_id for candidate in reranked] == [1, 0]
     assert reranked[0].rank == 1
+
+
+def test_dense_qk_token_refine_promotes_exact_qk_match() -> None:
+    ranked = (
+        dynamic_bench.RankedCandidateSpan(
+            block_id=0,
+            candidate_id="a",
+            token_start=0,
+            token_end=2,
+            score=1.0,
+            rank=1,
+        ),
+        dynamic_bench.RankedCandidateSpan(
+            block_id=1,
+            candidate_id="b",
+            token_start=2,
+            token_end=4,
+            score=0.2,
+            rank=2,
+        ),
+    )
+    result = SimpleNamespace(
+        per_head_token_representations=torch.tensor(
+            [
+                [
+                    [0.1, 0.0],
+                    [0.0, 0.1],
+                    [3.0, 0.0],
+                    [2.0, 0.0],
+                ]
+            ],
+            dtype=torch.float32,
+        ),
+        per_head_query_representation=torch.tensor([[1.0, 0.0]], dtype=torch.float32),
+    )
+
+    reranked = dynamic_bench._rerank_candidates(
+        ranked,
+        result=result,
+        query_prompt="unused for dense qk",
+        mode="dense_qk_token_refine",
+        weight=0.3,
+        refine_top_n_tokens=1,
+        refine_candidate_limit=2,
+    )
+
+    assert [candidate.block_id for candidate in reranked] == [1, 0]
+    assert reranked[0].rank == 1
+    assert reranked[1].rank == 2
+    assert reranked[0].score > reranked[1].score
 
 
 def test_fragment_quality_credits_adjacent_selected_boundary_spans() -> None:
@@ -683,9 +735,11 @@ def test_dynamic_block_benchmark_prompt_filter_and_script_parser() -> None:
             "--coarse-top-k",
             "3",
             "--rerank-mode",
-            "semantic_plus_tokenmax",
+            "dense_qk_token_refine",
             "--rerank-weight",
             "0.4",
+            "--refine-top-n-tokens",
+            "3",
             "--neighbor-expansion",
             "1",
             "--halo-radius",
@@ -705,8 +759,9 @@ def test_dynamic_block_benchmark_prompt_filter_and_script_parser() -> None:
     assert args.suppression_modes == "none,overlap_threshold"
     assert args.suppression_threshold == 0.8
     assert args.coarse_top_k == 3
-    assert args.rerank_mode == "semantic_plus_tokenmax"
+    assert args.rerank_mode == "dense_qk_token_refine"
     assert args.rerank_weight == 0.4
+    assert args.refine_top_n_tokens == 3
     assert args.neighbor_expansion == 1
     assert args.halo_radius == 0
     assert args.max_selected_blocks == 8

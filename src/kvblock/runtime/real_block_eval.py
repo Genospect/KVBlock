@@ -6,6 +6,8 @@ from dataclasses import asdict, dataclass, field
 from time import perf_counter
 from typing import Any
 
+import torch
+
 from kvblock.kv.block_manager import (
     BlockIngestConfig,
     BlockIngestResult,
@@ -210,6 +212,8 @@ class RealBlockSelectorResult:
     head_diagnostics: tuple[PerHeadBlockDiagnostic, ...] = field(default_factory=tuple)
     head_diagnostic_summary: HeadDiagnosticAggregate | None = None
     query_key_inspection: QueryKeyInspectionBundle | None = None
+    per_head_token_representations: torch.Tensor | None = None
+    per_head_query_representation: torch.Tensor | None = None
 
     @property
     def selected_block_inspections(self) -> tuple[BlockInspectionRecord, ...]:
@@ -265,6 +269,16 @@ class RealBlockSelectorResult:
                 if self.query_key_inspection is None
                 else self.query_key_inspection.to_dict()
             ),
+            "per_head_token_representation_shape": (
+                None
+                if self.per_head_token_representations is None
+                else list(self.per_head_token_representations.shape)
+            ),
+            "per_head_query_representation_shape": (
+                None
+                if self.per_head_query_representation is None
+                else list(self.per_head_query_representation.shape)
+            ),
         }
 
 
@@ -287,6 +301,11 @@ def run_real_block_selector(
         None
         if resolved.query_prompt is None
         else runtime.prefill(resolved.query_prompt)
+    )
+    per_head_query_representation = (
+        prefill.per_head_query_representation
+        if query_prefill is None
+        else query_prefill.per_head_query_representation
     )
     prefill_sec = perf_counter() - started_at
 
@@ -399,6 +418,8 @@ def run_real_block_selector(
         head_diagnostics=head_diagnostics,
         head_diagnostic_summary=head_diagnostic_summary,
         query_key_inspection=query_key_inspection,
+        per_head_token_representations=prefill.per_head_token_representations,
+        per_head_query_representation=per_head_query_representation,
     )
 
 
