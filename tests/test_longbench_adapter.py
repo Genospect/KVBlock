@@ -176,6 +176,8 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
             raw_margin=0.1,
             retrieval_quality=quality,
             refine_top_n_tokens=kwargs.get("refine_top_n_tokens", 4),
+            refine_score_mode=kwargs.get("refine_score_mode", "raw_topn_mean"),
+            scaffold_excluded_count=1 if kwargs.get("exclude_scaffold_blocks") else 0,
             block_inspection_records=(
                 {
                     "block_id": 1,
@@ -230,6 +232,8 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
         prompt_cache_dir=tmp_path,
         dataset_loader=_fake_longbench_rows,
         refine_top_n_tokens=3,
+        refine_score_mode="cosine_topn_mean",
+        exclude_scaffold_blocks=True,
     )
 
     assert result.samples[0].dataset_name == "narrativeqa"
@@ -238,6 +242,8 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
     assert result.rows[0].rerank_mode == "none"
     assert result.rows[0].rerank_weight == 0.3
     assert result.rows[0].refine_top_n_tokens == 3
+    assert result.rows[0].refine_score_mode == "cosine_topn_mean"
+    assert result.rows[0].scaffold_excluded_count == 1
     assert result.rows[0].answer_present_count == 1
     assert result.rows[0].expected_block_count == 1
     assert result.rows[0].selected_expected_block_count == 1
@@ -264,10 +270,13 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
     assert result.rows[0].top_ranked_blocks[0]["refined_score"] == 1.0
     assert result.rows[0].target_recall == 1.0
     assert result.dataset_summaries[0].mean_precision == 0.5
+    assert result.dataset_summaries[0].mean_scaffold_excluded_count == 1.0
     assert result.dataset_summaries[0].mean_evidence_window_recall == 1.0
     assert result.dataset_summaries[0].mean_evidence_window_precision == 0.5
     assert result.dataset_summaries[0].scoreable_run_count == 1
     assert result.evidence_window_radius == 0
+    assert result.refine_score_mode == "cosine_topn_mean"
+    assert result.exclude_scaffold_blocks is True
     assert result.oracle_mode == "none"
     assert result.rows[0].oracle_top_block_ids == ()
     assert result.rows[0].oracle_selected_mass_fraction is None
@@ -409,6 +418,9 @@ def test_longbench_cli_parser_accepts_baseline_flags() -> None:
             "0.4",
             "--refine-top-n-tokens",
             "3",
+            "--refine-score-mode",
+            "cosine_topn_mean",
+            "--exclude-scaffold-blocks",
             "--neighbor-expansion",
             "2",
             "--halo-radius",
@@ -434,6 +446,8 @@ def test_longbench_cli_parser_accepts_baseline_flags() -> None:
     assert args.rerank_mode == "dense_qk_token_refine"
     assert args.rerank_weight == 0.4
     assert args.refine_top_n_tokens == 3
+    assert args.refine_score_mode == "cosine_topn_mean"
+    assert args.exclude_scaffold_blocks is True
     assert args.neighbor_expansion == 2
     assert args.halo_radius == 0
     assert args.max_selected_blocks == 8

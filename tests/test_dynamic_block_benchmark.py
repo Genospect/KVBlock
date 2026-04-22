@@ -356,6 +356,107 @@ def test_dense_qk_token_refine_promotes_exact_qk_match() -> None:
     assert reranked[0].score > reranked[1].score
 
 
+def test_dense_qk_cosine_refine_reduces_norm_bias() -> None:
+    ranked = (
+        dynamic_bench.RankedCandidateSpan(
+            block_id=0,
+            candidate_id="a",
+            token_start=0,
+            token_end=1,
+            score=1.0,
+            rank=1,
+        ),
+        dynamic_bench.RankedCandidateSpan(
+            block_id=1,
+            candidate_id="b",
+            token_start=1,
+            token_end=2,
+            score=0.2,
+            rank=2,
+        ),
+    )
+    result = SimpleNamespace(
+        per_head_token_representations=torch.tensor(
+            [[[10.0, 10.0], [1.0, 0.0]]],
+            dtype=torch.float32,
+        ),
+        per_head_query_representation=torch.tensor([[1.0, 0.0]], dtype=torch.float32),
+    )
+
+    raw = dynamic_bench._rerank_candidates(
+        ranked,
+        result=result,
+        query_prompt="unused",
+        mode="dense_qk_token_refine",
+        weight=0.3,
+        refine_top_n_tokens=1,
+        refine_score_mode="raw_topn_mean",
+        refine_candidate_limit=2,
+    )
+    cosine = dynamic_bench._rerank_candidates(
+        ranked,
+        result=result,
+        query_prompt="unused",
+        mode="dense_qk_token_refine",
+        weight=0.3,
+        refine_top_n_tokens=1,
+        refine_score_mode="cosine_topn_mean",
+        refine_candidate_limit=2,
+    )
+
+    assert [candidate.block_id for candidate in raw] == [0, 1]
+    assert [candidate.block_id for candidate in cosine] == [1, 0]
+
+
+def test_scaffold_exclusion_removes_metadata_only_blocks_from_rerank() -> None:
+    ranked = (
+        dynamic_bench.RankedCandidateSpan(
+            block_id=0,
+            candidate_id="scaffold",
+            token_start=0,
+            token_end=40,
+            score=1.0,
+            rank=1,
+        ),
+        dynamic_bench.RankedCandidateSpan(
+            block_id=1,
+            candidate_id="context",
+            token_start=40,
+            token_end=80,
+            score=0.5,
+            rank=2,
+        ),
+    )
+    result = SimpleNamespace(
+        block_inspections=(
+            SimpleNamespace(
+                block_id=0,
+                block_text="DATASET: hotpotqa SAMPLE_ID: abc LENGTH: 6021",
+                preview_text="DATASET: hotpotqa SAMPLE_ID: abc",
+            ),
+            SimpleNamespace(
+                block_id=1,
+                block_text="LENGTH: 6021 CONTEXT: Passage 1: useful evidence",
+                preview_text="CONTEXT: Passage 1: useful evidence",
+            ),
+        )
+    )
+
+    excluded = dynamic_bench._scaffold_block_ids_from_result(result)
+    reranked = dynamic_bench._rerank_candidates(
+        ranked,
+        result=result,
+        query_prompt="unused",
+        mode="none",
+        weight=0.3,
+        excluded_block_ids=excluded,
+    )
+
+    assert excluded == (0,)
+    assert [candidate.block_id for candidate in reranked] == [1]
+    assert reranked[0].rank == 1
+
+
 def test_fragment_quality_credits_adjacent_selected_boundary_spans() -> None:
     block_by_id = {
         0: SimpleNamespace(block_id=0, token_start=0, token_end=40),
@@ -740,6 +841,8 @@ def test_dynamic_block_benchmark_prompt_filter_and_script_parser() -> None:
             "0.4",
             "--refine-top-n-tokens",
             "3",
+            "--refine-score-mode",
+            "cosine_topn_mean",
             "--neighbor-expansion",
             "1",
             "--halo-radius",
@@ -762,6 +865,7 @@ def test_dynamic_block_benchmark_prompt_filter_and_script_parser() -> None:
     assert args.rerank_mode == "dense_qk_token_refine"
     assert args.rerank_weight == 0.4
     assert args.refine_top_n_tokens == 3
+    assert args.refine_score_mode == "cosine_topn_mean"
     assert args.neighbor_expansion == 1
     assert args.halo_radius == 0
     assert args.max_selected_blocks == 8

@@ -72,11 +72,17 @@ DEFAULT_DYNAMIC_PROMPT_NAMES: tuple[str, ...] = (
 )
 
 RerankMode = Literal["none", "semantic_plus_tokenmax", "dense_qk_token_refine"]
+RefineScoreMode = Literal["raw_topn_mean", "cosine_topn_mean", "softmax_mass"]
 
 VALID_RERANK_MODES: tuple[RerankMode, ...] = (
     "none",
     "semantic_plus_tokenmax",
     "dense_qk_token_refine",
+)
+VALID_REFINE_SCORE_MODES: tuple[RefineScoreMode, ...] = (
+    "raw_topn_mean",
+    "cosine_topn_mean",
+    "softmax_mass",
 )
 
 _TOKEN_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9'_-]*")
@@ -211,6 +217,8 @@ class DynamicBlockRunRow:
     coarse_selected_spans: tuple[str, ...] = ()
     block_inspection_records: tuple[dict[str, Any], ...] = ()
     refine_top_n_tokens: int = 4
+    refine_score_mode: str = "raw_topn_mean"
+    scaffold_excluded_count: int = 0
 
     def to_dict(self) -> dict[str, Any]:
         """Return a JSON-friendly row record."""
@@ -339,6 +347,16 @@ def rerank_mode_from_name(name: str) -> RerankMode:
     return cast(RerankMode, normalized)
 
 
+def refine_score_mode_from_name(name: str) -> RefineScoreMode:
+    """Validate and return one dense-QK refinement score mode."""
+
+    normalized = name.strip()
+    if normalized not in VALID_REFINE_SCORE_MODES:
+        valid = ", ".join(VALID_REFINE_SCORE_MODES)
+        raise ValueError(f"unknown refine score mode {name!r}; valid: {valid}")
+    return cast(RefineScoreMode, normalized)
+
+
 def run_dynamic_block_benchmark(
     *,
     model_names: Sequence[str],
@@ -356,6 +374,8 @@ def run_dynamic_block_benchmark(
     rerank_mode: RerankMode = "none",
     rerank_weight: float = 0.3,
     refine_top_n_tokens: int = 4,
+    refine_score_mode: RefineScoreMode = "raw_topn_mean",
+    exclude_scaffold_blocks: bool = False,
     neighbor_expansion: int = 0,
     halo_radius: int = 0,
     max_selected_blocks: int | None = None,
@@ -376,6 +396,7 @@ def run_dynamic_block_benchmark(
         raise ValueError("rerank_weight must be in [0, 1]")
     if refine_top_n_tokens <= 0:
         raise ValueError("refine_top_n_tokens must be > 0")
+    resolved_refine_score_mode = refine_score_mode_from_name(refine_score_mode)
     if neighbor_expansion < 0:
         raise ValueError("neighbor_expansion must be >= 0")
     if halo_radius < 0:
@@ -499,6 +520,11 @@ def run_dynamic_block_benchmark(
                     coarse_selected_candidate_ids = ()
                     coarse_selected_spans = ()
                 base_ranked_candidates = _ranked_candidates_from_result(result)
+                scaffold_excluded_ids = (
+                    _scaffold_block_ids_from_result(result)
+                    if exclude_scaffold_blocks
+                    else ()
+                )
                 original_rank_by_id = {
                     candidate.block_id: candidate.rank
                     for candidate in base_ranked_candidates
@@ -510,7 +536,9 @@ def run_dynamic_block_benchmark(
                     mode=resolved_rerank_mode,
                     weight=rerank_weight,
                     refine_top_n_tokens=refine_top_n_tokens,
+                    refine_score_mode=resolved_refine_score_mode,
                     refine_candidate_limit=config.shortlist_m,
+                    excluded_block_ids=scaffold_excluded_ids,
                 )
                 ranked_score_by_id = {
                     candidate.block_id: candidate.score
@@ -536,6 +564,8 @@ def run_dynamic_block_benchmark(
                             rerank_mode=resolved_rerank_mode,
                             rerank_weight=rerank_weight,
                             refine_top_n_tokens=refine_top_n_tokens,
+                            refine_score_mode=resolved_refine_score_mode,
+                            scaffold_excluded_count=len(scaffold_excluded_ids),
                             config=config,
                             result=result,
                             suppression=suppression,
@@ -663,7 +693,9 @@ def format_dynamic_block_report(result: DynamicBlockBenchmarkResult) -> str:
             f"suppression={row.suppression_mode}@{row.suppression_threshold:.2f} | "
             f"qk={row.qk_aggregation_strategy} | "
             f"rerank={row.rerank_mode}@{row.rerank_weight:.2f} "
-            f"refine_top_n={row.refine_top_n_tokens} | "
+            f"refine_top_n={row.refine_top_n_tokens} "
+            f"refine_mode={row.refine_score_mode} "
+            f"scaffold_excluded={row.scaffold_excluded_count} | "
             f"neighbor_expansion={row.neighbor_expansion} | "
             f"halo={row.halo_radius} cap={_fmt_int_optional(row.max_selected_blocks)} | "
             f"candidates={row.candidate_block_count} "
@@ -692,6 +724,8 @@ def _row_from_result(
     rerank_mode: RerankMode,
     rerank_weight: float,
     refine_top_n_tokens: int,
+    refine_score_mode: RefineScoreMode,
+    scaffold_excluded_count: int,
     config: RealBlockSelectorConfig,
     result: Any,
     suppression: SuppressionResult,
@@ -823,6 +857,8 @@ def _row_from_result(
         coarse_selected_candidate_ids=coarse_selected_candidate_ids,
         coarse_selected_spans=coarse_selected_spans,
         refine_top_n_tokens=refine_top_n_tokens,
+        refine_score_mode=refine_score_mode,
+        scaffold_excluded_count=scaffold_excluded_count,
         block_inspection_records=(
             _block_inspection_records(
                 result,
@@ -1003,18 +1039,26 @@ def _rerank_candidates(
     mode: RerankMode,
     weight: float,
     refine_top_n_tokens: int = 4,
+    refine_score_mode: RefineScoreMode = "raw_topn_mean",
     refine_candidate_limit: int | None = None,
+    excluded_block_ids: Sequence[int] = (),
 ) -> tuple[RankedCandidateSpan, ...]:
     """Apply benchmark-only reranking over existing ranked candidates."""
 
-    candidates = tuple(ranked_candidates)
+    excluded = {int(block_id) for block_id in excluded_block_ids}
+    candidates = tuple(
+        candidate
+        for candidate in ranked_candidates
+        if int(candidate.block_id) not in excluded
+    )
     if mode == "none" or not candidates:
-        return candidates
+        return _with_sequential_ranks(candidates)
     if mode == "dense_qk_token_refine":
         return _dense_qk_refine_candidates(
             candidates,
             result=result,
             top_n_tokens=refine_top_n_tokens,
+            score_mode=refine_score_mode,
             candidate_limit=refine_candidate_limit,
         )
     if mode != "semantic_plus_tokenmax":
@@ -1074,17 +1118,28 @@ def _rerank_candidates(
     )
 
 
+def _with_sequential_ranks(
+    ranked_candidates: Sequence[RankedCandidateSpan],
+) -> tuple[RankedCandidateSpan, ...]:
+    return tuple(
+        replace(candidate, rank=rank)
+        for rank, candidate in enumerate(ranked_candidates, start=1)
+    )
+
+
 def _dense_qk_refine_candidates(
     ranked_candidates: Sequence[RankedCandidateSpan],
     *,
     result: Any,
     top_n_tokens: int,
+    score_mode: RefineScoreMode,
     candidate_limit: int | None,
 ) -> tuple[RankedCandidateSpan, ...]:
     """Rerank the Stage-A shortlist with exact per-token QK scores."""
 
     if top_n_tokens <= 0:
         raise ValueError("top_n_tokens must be > 0")
+    resolved_score_mode = refine_score_mode_from_name(score_mode)
     candidates = tuple(ranked_candidates)
     if not candidates:
         return ()
@@ -1095,6 +1150,10 @@ def _dense_qk_refine_candidates(
     )
     if limit <= 0:
         return candidates
+    token_mass = None
+    if resolved_score_mode == "softmax_mass":
+        token_heads, query = _dense_qk_tensors_from_result(result)
+        token_mass = _dense_qk_token_mass(token_heads, query)
     refined_head = [
         replace(
             candidate,
@@ -1102,6 +1161,8 @@ def _dense_qk_refine_candidates(
                 candidate,
                 result=result,
                 top_n_tokens=top_n_tokens,
+                score_mode=resolved_score_mode,
+                token_mass=token_mass,
             ),
         )
         for candidate in candidates[:limit]
@@ -1126,7 +1187,42 @@ def _dense_qk_token_refine_score(
     *,
     result: Any,
     top_n_tokens: int,
+    score_mode: RefineScoreMode,
+    token_mass: torch.Tensor | None = None,
 ) -> float:
+    if token_mass is None:
+        token_heads, query = _dense_qk_tensors_from_result(result)
+        token_count = int(token_heads.shape[1])
+    else:
+        token_heads = None
+        query = None
+        token_count = int(token_mass.numel())
+    start = max(0, min(int(candidate.token_start), token_count))
+    end = max(start, min(int(candidate.token_end), token_count))
+    if end <= start:
+        return float("-inf")
+    if score_mode == "softmax_mass":
+        if token_mass is None:
+            token_mass = _dense_qk_token_mass(token_heads, query)
+        return float(token_mass[start:end].sum().item())
+    if token_heads is None or query is None:
+        raise ValueError("dense_qk token tensors are required for top-n scoring")
+    block_heads = token_heads[:, start:end, :]
+    if score_mode == "cosine_topn_mean":
+        block_heads = torch.nn.functional.normalize(block_heads, p=2, dim=-1)
+        query = torch.nn.functional.normalize(query, p=2, dim=-1)
+    scale = math.sqrt(float(block_heads.shape[-1]))
+    logits = (block_heads * query[:, None, :]).sum(dim=-1)
+    if score_mode == "raw_topn_mean":
+        logits = logits / scale
+    token_scores = logits.mean(dim=0)
+    count = min(top_n_tokens, int(token_scores.numel()))
+    if count <= 0:
+        return float("-inf")
+    return float(torch.topk(token_scores, k=count).values.mean().item())
+
+
+def _dense_qk_tensors_from_result(result: Any) -> tuple[torch.Tensor, torch.Tensor]:
     token_heads = getattr(result, "per_head_token_representations", None)
     query_heads = getattr(result, "per_head_query_representation", None)
     if token_heads is None or query_heads is None:
@@ -1146,20 +1242,25 @@ def _dense_qk_token_refine_score(
         raise ValueError("query/key head counts must match")
     if token_heads.shape[2] != query_heads.shape[1]:
         raise ValueError("query/key head dimensions must match")
-    token_count = int(token_heads.shape[1])
-    start = max(0, min(int(candidate.token_start), token_count))
-    end = max(start, min(int(candidate.token_end), token_count))
-    if end <= start:
-        return float("-inf")
-    block_heads = token_heads[:, start:end, :].detach().to(dtype=torch.float32)
-    query = query_heads.detach().to(dtype=torch.float32, device=block_heads.device)
-    scale = math.sqrt(float(block_heads.shape[-1]))
-    logits = (block_heads * query[:, None, :]).sum(dim=-1) / scale
-    token_scores = logits.mean(dim=0)
-    count = min(top_n_tokens, int(token_scores.numel()))
-    if count <= 0:
-        return float("-inf")
-    return float(torch.topk(token_scores, k=count).values.mean().item())
+    token_heads = token_heads.detach().to(dtype=torch.float32)
+    query_heads = query_heads.detach().to(dtype=torch.float32, device=token_heads.device)
+    return token_heads, query_heads
+
+
+def _dense_qk_token_mass(
+    per_head_token_representations: torch.Tensor,
+    per_head_query_representation: torch.Tensor,
+) -> torch.Tensor:
+    """Return mean per-head softmax QK mass for each prompt token."""
+
+    token_heads = per_head_token_representations.detach().to(dtype=torch.float32)
+    query_heads = per_head_query_representation.detach().to(
+        dtype=torch.float32,
+        device=token_heads.device,
+    )
+    scale = math.sqrt(float(token_heads.shape[-1]))
+    logits = (token_heads * query_heads[:, None, :]).sum(dim=-1) / scale
+    return torch.softmax(logits, dim=-1).mean(dim=0)
 
 
 def _content_tokens(text: str) -> tuple[str, ...]:
@@ -1227,6 +1328,37 @@ def _simple_token_stem(token: str) -> str:
     if token.endswith("s") and len(token) > 4:
         return token[:-1]
     return token
+
+
+def _scaffold_block_ids_from_result(result: Any) -> tuple[int, ...]:
+    """Return LongBench-style metadata-only blocks to exclude from rerank."""
+
+    return tuple(
+        int(block.block_id)
+        for block in getattr(result, "block_inspections", ())
+        if _is_scaffold_block(block)
+    )
+
+
+def _is_scaffold_block(block: Any) -> bool:
+    """Detect prompt wrapper blocks without discarding passage-bearing blocks."""
+
+    text = (
+        getattr(block, "block_text", None)
+        or getattr(block, "preview_text", "")
+        or ""
+    )
+    normalized = " ".join(str(text).split()).casefold()
+    if not normalized:
+        return False
+    has_passage_content = "passage " in normalized or "context: passage" in normalized
+    if normalized.startswith("dataset:") and not has_passage_content:
+        return True
+    if normalized.startswith("sample_id:") and not has_passage_content:
+        return True
+    if normalized.startswith("input:"):
+        return True
+    return normalized in {"context:", "input:", "dataset:", "sample_id:", "length:"}
 
 
 def _selected_ids_after_suppression(

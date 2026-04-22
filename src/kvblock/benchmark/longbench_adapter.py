@@ -22,6 +22,7 @@ import torch
 from kvblock.benchmark.dynamic_block_benchmark import (
     DynamicBlockBenchmarkResult,
     DynamicBlockRunRow,
+    RefineScoreMode,
     RerankMode,
     query_prompt_override_for_representation,
     run_dynamic_block_benchmark,
@@ -203,6 +204,8 @@ class LongBenchBenchmarkRunRow:
     rerank_mode: str
     rerank_weight: float
     refine_top_n_tokens: int
+    refine_score_mode: str
+    scaffold_excluded_count: int
     neighbor_expansion: int
     halo_radius: int
     max_selected_blocks: int | None
@@ -259,6 +262,7 @@ class LongBenchDatasetSummary:
     mean_expected_block_count: float
     mean_selected_to_semantic_k_ratio: float
     mean_selector_latency_sec: float
+    mean_scaffold_excluded_count: float
     mean_recall: float | None
     mean_precision: float | None
     mean_evidence_window_recall: float | None
@@ -289,6 +293,8 @@ class LongBenchBenchmarkResult:
     split: str
     length_bucket: LengthBucket
     evidence_window_radius: int
+    refine_score_mode: str
+    exclude_scaffold_blocks: bool
     oracle_mode: str
     oracle_top_k_values: tuple[int, ...]
 
@@ -300,6 +306,8 @@ class LongBenchBenchmarkResult:
             "split": self.split,
             "length_bucket": self.length_bucket.to_dict(),
             "evidence_window_radius": self.evidence_window_radius,
+            "refine_score_mode": self.refine_score_mode,
+            "exclude_scaffold_blocks": self.exclude_scaffold_blocks,
             "oracle_mode": self.oracle_mode,
             "oracle_top_k_values": list(self.oracle_top_k_values),
             "samples": [sample.to_dict() for sample in self.samples],
@@ -540,6 +548,8 @@ def run_longbench_selector_benchmark(
     rerank_mode: RerankMode = "none",
     rerank_weight: float = 0.3,
     refine_top_n_tokens: int = 4,
+    refine_score_mode: RefineScoreMode = "raw_topn_mean",
+    exclude_scaffold_blocks: bool = False,
     neighbor_expansion: int = 0,
     halo_radius: int = 0,
     max_selected_blocks: int | None = None,
@@ -589,6 +599,8 @@ def run_longbench_selector_benchmark(
         rerank_mode=rerank_mode,
         rerank_weight=rerank_weight,
         refine_top_n_tokens=refine_top_n_tokens,
+        refine_score_mode=refine_score_mode,
+        exclude_scaffold_blocks=exclude_scaffold_blocks,
         neighbor_expansion=neighbor_expansion,
         halo_radius=halo_radius,
         max_selected_blocks=max_selected_blocks,
@@ -625,6 +637,8 @@ def run_longbench_selector_benchmark(
         split=split,
         length_bucket=bucket,
         evidence_window_radius=evidence_window_radius,
+        refine_score_mode=refine_score_mode,
+        exclude_scaffold_blocks=exclude_scaffold_blocks,
         oracle_mode=resolved_oracle_mode,
         oracle_top_k_values=resolved_oracle_top_k,
     )
@@ -653,6 +667,7 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
         "LONGBENCH SELECTOR BENCHMARK",
         f"dataset_repo={result.dataset_repo} split={result.split} length_bucket={result.length_bucket.name}",
         f"evidence_window_radius={result.evidence_window_radius}",
+        f"refine_score_mode={result.refine_score_mode} exclude_scaffold_blocks={result.exclude_scaffold_blocks}",
         f"oracle_mode={result.oracle_mode} oracle_top_k={list(result.oracle_top_k_values)}",
         f"samples={len(result.samples)} rows={len(result.rows)}",
         "",
@@ -669,6 +684,7 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
             f"mean_expected_blocks={summary.mean_expected_block_count:.1f} "
             f"mean_selected/K={summary.mean_selected_to_semantic_k_ratio:.3f} "
             f"mean_selector={summary.mean_selector_latency_sec:.6f}s "
+            f"mean_scaffold_excluded={summary.mean_scaffold_excluded_count:.1f} "
             f"mean_recall={_fmt_optional(summary.mean_recall)} "
             f"mean_precision={_fmt_optional(summary.mean_precision)} "
             f"mean_window_recall={_fmt_optional(summary.mean_evidence_window_recall)} "
@@ -690,6 +706,8 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
             f"mode={row.block_mode} qk={row.qk_aggregation_strategy} "
             f"rerank={row.rerank_mode}@{row.rerank_weight:.2f} "
             f"refine_top_n={row.refine_top_n_tokens} "
+            f"refine_mode={row.refine_score_mode} "
+            f"scaffold_excluded={row.scaffold_excluded_count} "
             f"neighbor_expansion={row.neighbor_expansion} "
             f"halo={row.halo_radius} cap={_fmt_int_optional(row.max_selected_blocks)} "
             f"length={row.longbench_length} tokens={row.tokens} "
@@ -995,6 +1013,8 @@ def _longbench_rows(
                 rerank_mode=row.rerank_mode,
                 rerank_weight=row.rerank_weight,
                 refine_top_n_tokens=row.refine_top_n_tokens,
+                refine_score_mode=row.refine_score_mode,
+                scaffold_excluded_count=row.scaffold_excluded_count,
                 neighbor_expansion=row.neighbor_expansion,
                 halo_radius=row.halo_radius,
                 max_selected_blocks=row.max_selected_blocks,
@@ -1310,6 +1330,10 @@ def _dataset_summaries(
             )
             or 0.0,
             mean_selector_latency_sec=_mean(row.selector_latency_sec for row in group) or 0.0,
+            mean_scaffold_excluded_count=_mean(
+                row.scaffold_excluded_count for row in group
+            )
+            or 0.0,
             mean_recall=_mean_optional(row.target_recall for row in group),
             mean_precision=_mean_optional(row.selected_precision for row in group),
             mean_evidence_window_recall=_mean_optional(

@@ -112,6 +112,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="Number of strongest block tokens averaged by dense_qk_token_refine.",
     )
     parser.add_argument(
+        "--refine-score-mode",
+        default="raw_topn_mean",
+        choices=("raw_topn_mean", "cosine_topn_mean", "softmax_mass"),
+        help="Dense-QK refinement scorer used by dense_qk_token_refine.",
+    )
+    parser.add_argument(
         "--neighbor-expansion",
         type=int,
         default=0,
@@ -200,6 +206,7 @@ def main(argv: list[str] | None = None) -> int:
         rerank_mode=args.rerank_mode,
         rerank_weight=args.rerank_weight,
         refine_top_n_tokens=args.refine_top_n_tokens,
+        refine_score_mode=args.refine_score_mode,
         neighbor_expansion=args.neighbor_expansion,
         halo_radius=args.halo_radius,
         max_selected_blocks=args.max_selected_blocks,
