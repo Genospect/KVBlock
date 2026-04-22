@@ -94,6 +94,10 @@ class LongBenchComparisonRow:
     mean_scaffold_excluded_count: float | None = None
     mean_oracle_selected_mass_fraction: float | None = None
     mean_oracle_expected_mass_fraction: float | None = None
+    mean_scoreable_recall: float | None = None
+    mean_scoreable_precision: float | None = None
+    mean_scoreable_evidence_window_recall: float | None = None
+    mean_scoreable_evidence_window_precision: float | None = None
 
     def to_dict(self) -> dict[str, Any]:
         """Return a JSON/CSV-friendly row record."""
@@ -314,15 +318,17 @@ def _comparison_row_from_group(
         mean_answer_presence_rate=_mean(
             _optional_float(row.get("answer_presence_rate")) for row in rows
         ),
-        mean_recall=_mean(_optional_float(row.get("target_recall")) for row in scoreable_rows),
+        # Match LongBench DATASET SUMMARIES: unscoreable answer-absent rows still
+        # carry numeric zero metrics and are included in the reported means.
+        mean_recall=_mean(_optional_float(row.get("target_recall")) for row in rows),
         mean_precision=_mean(
-            _optional_float(row.get("selected_precision")) for row in scoreable_rows
+            _optional_float(row.get("selected_precision")) for row in rows
         ),
         mean_evidence_window_recall=_mean(
-            _optional_float(row.get("evidence_window_recall")) for row in scoreable_rows
+            _optional_float(row.get("evidence_window_recall")) for row in rows
         ),
         mean_evidence_window_precision=_mean(
-            _optional_float(row.get("evidence_window_precision")) for row in scoreable_rows
+            _optional_float(row.get("evidence_window_precision")) for row in rows
         ),
         mean_selected_to_semantic_k_ratio=_mean(
             _optional_float(row.get("selected_to_semantic_k_ratio")) for row in rows
@@ -346,6 +352,18 @@ def _comparison_row_from_group(
         ),
         mean_oracle_expected_mass_fraction=_mean(
             _optional_float(row.get("oracle_expected_mass_fraction")) for row in rows
+        ),
+        mean_scoreable_recall=_mean(
+            _optional_float(row.get("target_recall")) for row in scoreable_rows
+        ),
+        mean_scoreable_precision=_mean(
+            _optional_float(row.get("selected_precision")) for row in scoreable_rows
+        ),
+        mean_scoreable_evidence_window_recall=_mean(
+            _optional_float(row.get("evidence_window_recall")) for row in scoreable_rows
+        ),
+        mean_scoreable_evidence_window_precision=_mean(
+            _optional_float(row.get("evidence_window_precision")) for row in scoreable_rows
         ),
     )
 

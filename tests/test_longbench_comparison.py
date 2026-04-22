@@ -39,6 +39,7 @@ def _row(
     selector_latency_sec: float,
     representation_source: str = "query_only_last_layer",
     block_mode: str = "fixed_40",
+    scoreable: bool = True,
 ) -> dict:
     return {
         "dataset_name": dataset_name,
@@ -53,8 +54,8 @@ def _row(
         "halo_radius": 1,
         "max_selected_blocks": 16,
         "evidence_window_radius": 2,
-        "scoreable_by_answer_presence": True,
-        "answer_presence_rate": 1.0,
+        "scoreable_by_answer_presence": scoreable,
+        "answer_presence_rate": 1.0 if scoreable else 0.0,
         "expected_block_count": 4,
         "target_recall": recall,
         "selected_precision": precision,
@@ -104,6 +105,15 @@ def test_compare_longbench_runs_applies_named_control_deltas(tmp_path: Path) -> 
                 selected_spans=["0:40", "40:80"],
                 selector_latency_sec=0.006,
             ),
+            _row(
+                dataset_name="hotpotqa",
+                recall=0.0,
+                precision=0.0,
+                window_recall=0.0,
+                selected_spans=["0:40"],
+                selector_latency_sec=0.004,
+                scoreable=False,
+            ),
         ],
     )
     _write_payload(
@@ -127,6 +137,16 @@ def test_compare_longbench_runs_applies_named_control_deltas(tmp_path: Path) -> 
                 selector_latency_sec=0.007,
                 representation_source="query_mean_last_layer",
             ),
+            _row(
+                dataset_name="hotpotqa",
+                recall=0.0,
+                precision=0.0,
+                window_recall=0.0,
+                selected_spans=["0:40"],
+                selector_latency_sec=0.005,
+                representation_source="query_mean_last_layer",
+                scoreable=False,
+            ),
         ],
     )
 
@@ -145,15 +165,23 @@ def test_compare_longbench_runs_applies_named_control_deltas(tmp_path: Path) -> 
     experiment_all = by_label_scope[("rep_query_mean", "all")]
     experiment_hotpot = by_label_scope[("rep_query_mean", "hotpotqa")]
 
-    assert control_all.mean_recall == pytest.approx(0.8)
+    assert control_all.mean_recall == pytest.approx((0.6 + 1.0 + 0.0) / 3.0)
+    assert control_all.mean_scoreable_recall == pytest.approx(0.8)
     assert control_all.recall_delta_vs_control == pytest.approx(0.0)
     assert control_all.semantic_k == "8"
-    assert control_all.mean_selected_token_fraction == pytest.approx(0.8)
-    assert experiment_all.mean_recall == pytest.approx(0.9)
-    assert experiment_all.recall_delta_vs_control == pytest.approx(0.1)
-    assert experiment_all.selected_token_fraction_delta_vs_control == pytest.approx(-0.4)
+    assert control_all.mean_selected_token_fraction == pytest.approx(
+        (0.8 + 0.8 + 0.4) / 3.0
+    )
+    assert experiment_all.mean_recall == pytest.approx((0.8 + 1.0 + 0.0) / 3.0)
+    assert experiment_all.mean_scoreable_recall == pytest.approx(0.9)
+    assert experiment_all.recall_delta_vs_control == pytest.approx(
+        ((0.8 + 1.0 + 0.0) / 3.0) - ((0.6 + 1.0 + 0.0) / 3.0)
+    )
+    assert experiment_all.selected_token_fraction_delta_vs_control == pytest.approx(
+        0.4 - ((0.8 + 0.8 + 0.4) / 3.0)
+    )
     assert experiment_all.selector_latency_delta_vs_control == pytest.approx(0.001)
-    assert experiment_hotpot.window_recall_delta_vs_control == pytest.approx(0.1)
+    assert experiment_hotpot.window_recall_delta_vs_control == pytest.approx(0.05)
     assert experiment_all.representation_source == "query_mean_last_layer"
 
 
