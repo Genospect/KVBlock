@@ -180,6 +180,8 @@ class DynamicBlockRunRow:
     candidate_block_count: int
     candidate_count_before_suppression: int
     candidate_count_after_suppression: int
+    neighbor_expansion: int
+    semantic_selected_ids: tuple[int, ...]
     selected_ids: tuple[int, ...]
     selected_candidate_ids: tuple[str, ...]
     selected_spans: tuple[str, ...]
@@ -346,6 +348,7 @@ def run_dynamic_block_benchmark(
     include_block_inspections: bool = False,
     rerank_mode: RerankMode = "none",
     rerank_weight: float = 0.3,
+    neighbor_expansion: int = 0,
 ) -> DynamicBlockBenchmarkResult:
     """Run real-block selector over fixed and multi-scale block candidates."""
 
@@ -361,6 +364,8 @@ def run_dynamic_block_benchmark(
     resolved_rerank_mode = rerank_mode_from_name(rerank_mode)
     if rerank_weight < 0.0 or rerank_weight > 1.0:
         raise ValueError("rerank_weight must be in [0, 1]")
+    if neighbor_expansion < 0:
+        raise ValueError("neighbor_expansion must be >= 0")
     if coarse_top_k <= 0:
         raise ValueError("coarse_top_k must be > 0")
     needle_strategy = (
@@ -503,6 +508,7 @@ def run_dynamic_block_benchmark(
                             result=result,
                             suppression=suppression,
                             ranked_score_by_id=ranked_score_by_id,
+                            neighbor_expansion=neighbor_expansion,
                             candidate_block_count_override=(
                                 coarse_candidate_count
                                 + fine_candidate_count_after_drilldown
@@ -613,6 +619,7 @@ def format_dynamic_block_report(result: DynamicBlockBenchmarkResult) -> str:
             f"suppression={row.suppression_mode}@{row.suppression_threshold:.2f} | "
             f"qk={row.qk_aggregation_strategy} | "
             f"rerank={row.rerank_mode}@{row.rerank_weight:.2f} | "
+            f"neighbor_expansion={row.neighbor_expansion} | "
             f"candidates={row.candidate_block_count} "
             f"ranked={row.candidate_count_before_suppression} "
             f"after={row.candidate_count_after_suppression} | "
@@ -642,6 +649,7 @@ def _row_from_result(
     result: Any,
     suppression: SuppressionResult,
     ranked_score_by_id: dict[int, float] | None = None,
+    neighbor_expansion: int = 0,
     candidate_block_count_override: int | None = None,
     selector_latency_sec_override: float | None = None,
     total_latency_sec_override: float | None = None,
@@ -660,10 +668,15 @@ def _row_from_result(
         for block in result.block_inspections
     }
     block_by_id = {block.block_id: block for block in result.block_inspections}
-    selected_ids = _selected_ids_after_suppression(
+    semantic_selected_ids = _selected_ids_after_suppression(
         result,
         suppression=suppression,
         semantic_k=config.semantic_k,
+    )
+    selected_ids = _expand_selected_ids_by_neighbors(
+        semantic_selected_ids,
+        block_by_id=block_by_id,
+        radius=neighbor_expansion,
     )
     quality = _fragment_quality_for_result(
         selected_ids=selected_ids,
@@ -694,6 +707,8 @@ def _row_from_result(
         ),
         candidate_count_before_suppression=suppression.input_count,
         candidate_count_after_suppression=suppression.output_count,
+        neighbor_expansion=neighbor_expansion,
+        semantic_selected_ids=semantic_selected_ids,
         selected_ids=selected_ids,
         selected_candidate_ids=tuple(
             block.candidate_id or str(block.block_id) for block in selected
@@ -748,12 +763,17 @@ def _row_from_result(
         coarse_selected_candidate_ids=coarse_selected_candidate_ids,
         coarse_selected_spans=coarse_selected_spans,
         block_inspection_records=(
-            _block_inspection_records(result, selected_ids=set(selected_ids))
+            _block_inspection_records(
+                result,
+                selected_ids=set(selected_ids),
+                semantic_selected_ids=set(semantic_selected_ids),
+            )
             if ranked_score_by_id is None
             else _block_inspection_records(
                 result,
                 score_by_id=ranked_score_by_id,
                 selected_ids=set(selected_ids),
+                semantic_selected_ids=set(semantic_selected_ids),
                 selected_reason="rerank" if rerank_mode != "none" else None,
             )
         )
@@ -1059,6 +1079,52 @@ def _selected_ids_after_suppression(
     return tuple(int(block_id) for block_id in suppression.survivor_block_ids[:semantic_k])
 
 
+def _expand_selected_ids_by_neighbors(
+    selected_ids: Sequence[int],
+    *,
+    block_by_id: dict[int, Any],
+    radius: int,
+) -> tuple[int, ...]:
+    """Expand selected ids with adjacent token-span neighbors for diagnostics."""
+
+    base = tuple(int(block_id) for block_id in selected_ids)
+    if radius <= 0 or not base:
+        return base
+    ordered_blocks = sorted(
+        block_by_id.values(),
+        key=lambda block: (
+            int(getattr(block, "token_start", 0)),
+            int(getattr(block, "token_end", 0)),
+            int(getattr(block, "block_id", 0)),
+        ),
+    )
+    index_by_id = {
+        int(block.block_id): index
+        for index, block in enumerate(ordered_blocks)
+    }
+    expanded: list[int] = []
+    seen: set[int] = set()
+
+    def append(block_id: int) -> None:
+        if block_id in block_by_id and block_id not in seen:
+            seen.add(block_id)
+            expanded.append(block_id)
+
+    for block_id in base:
+        append(block_id)
+        center = index_by_id.get(block_id)
+        if center is None:
+            continue
+        for distance in range(1, radius + 1):
+            left = center - distance
+            right = center + distance
+            if left >= 0:
+                append(int(ordered_blocks[left].block_id))
+            if right < len(ordered_blocks):
+                append(int(ordered_blocks[right].block_id))
+    return tuple(expanded)
+
+
 def _suppression_records(
     result: Any,
     suppression: SuppressionResult,
@@ -1104,6 +1170,7 @@ def _block_inspection_records(
     *,
     score_by_id: dict[int, float] | None = None,
     selected_ids: set[int] | None = None,
+    semantic_selected_ids: set[int] | None = None,
     selected_reason: str | None = None,
 ) -> tuple[dict[str, Any], ...]:
     """Return compact block inspection records for downstream diagnostics."""
@@ -1116,7 +1183,13 @@ def _block_inspection_records(
             else block.block_id in selected_ids
         )
         reason = block.selected_reason
-        if selected_reason is not None and selected and not bool(block.selected):
+        if (
+            semantic_selected_ids is not None
+            and selected
+            and block.block_id not in semantic_selected_ids
+        ):
+            reason = "neighbor_expansion"
+        elif selected_reason is not None and selected and not bool(block.selected):
             reason = selected_reason
         records.append(
             {

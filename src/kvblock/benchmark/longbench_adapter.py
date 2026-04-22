@@ -154,6 +154,19 @@ class LongBenchBenchmarkRunRow:
     selected_expected_block_count: int
     missed_expected_block_count: int
     expected_block_ids: tuple[int, ...]
+    expected_block_ranks: tuple[int, ...]
+    best_expected_rank: int | None
+    best_expected_score: float | None
+    score_gap_to_top1: float | None
+    recall_at_4: float | None
+    recall_at_8: float | None
+    recall_at_16: float | None
+    recall_at_32: float | None
+    recall_at_64: float | None
+    neighbor_recall_at_1: float | None
+    neighbor_recall_at_2: float | None
+    best_neighbor_distance: int | None
+    semantic_selected_block_ids: tuple[int, ...]
     selected_block_ids: tuple[int, ...]
     missed_expected_block_ids: tuple[int, ...]
     selected_spans: tuple[str, ...]
@@ -170,6 +183,7 @@ class LongBenchBenchmarkRunRow:
     qk_aggregation_strategy: str
     rerank_mode: str
     rerank_weight: float
+    neighbor_expansion: int
     block_mode: str
     suppression_mode: str
     suppression_threshold: float
@@ -436,6 +450,7 @@ def run_longbench_selector_benchmark(
     needle_qk_aggregation_strategy: QKAggregationStrategy | None = None,
     rerank_mode: RerankMode = "none",
     rerank_weight: float = 0.3,
+    neighbor_expansion: int = 0,
     load_config_kwargs: dict[str, Any] | None = None,
     selector_config: RealBlockSelectorConfig | None = None,
     dataset_loader: DatasetLoader | None = None,
@@ -470,6 +485,7 @@ def run_longbench_selector_benchmark(
         needle_qk_aggregation_strategy=needle_qk_aggregation_strategy,
         rerank_mode=rerank_mode,
         rerank_weight=rerank_weight,
+        neighbor_expansion=neighbor_expansion,
         load_config_kwargs=load_config_kwargs,
         selector_config=selector_config,
         include_block_inspections=True,
@@ -533,12 +549,26 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
             f"{row.dataset_name}:{row.sample_id} | model={row.model_name} "
             f"mode={row.block_mode} qk={row.qk_aggregation_strategy} "
             f"rerank={row.rerank_mode}@{row.rerank_weight:.2f} "
+            f"neighbor_expansion={row.neighbor_expansion} "
             f"length={row.longbench_length} tokens={row.tokens} "
             f"candidates={row.candidate_block_count} selected/K={row.selected_to_semantic_k_ratio:.3f} "
             f"answer_presence={row.answer_present_count}/{row.answer_count} "
             f"expected_blocks={row.expected_block_count} "
             f"expected_distance={_fmt_optional(row.expected_block_distance)} "
+            f"expected_ranks={list(row.expected_block_ranks)} "
+            f"best_expected_rank={_fmt_optional(row.best_expected_rank)} "
+            f"score_gap={_fmt_optional(row.score_gap_to_top1)} "
+            f"recall@4/8/16/32/64="
+            f"{_fmt_optional(row.recall_at_4)}/"
+            f"{_fmt_optional(row.recall_at_8)}/"
+            f"{_fmt_optional(row.recall_at_16)}/"
+            f"{_fmt_optional(row.recall_at_32)}/"
+            f"{_fmt_optional(row.recall_at_64)} "
+            f"neighbor_recall@1={_fmt_optional(row.neighbor_recall_at_1)} "
+            f"neighbor_recall@2={_fmt_optional(row.neighbor_recall_at_2)} "
+            f"best_neighbor_distance={_fmt_optional(row.best_neighbor_distance)} "
             f"selected_ids={list(row.selected_block_ids)} "
+            f"semantic_selected_ids={list(row.semantic_selected_block_ids)} "
             f"expected_ids={list(row.expected_block_ids)} "
             f"selector={row.selector_latency_sec:.6f}s "
             f"recall={_fmt_optional(row.target_recall)} "
@@ -632,6 +662,23 @@ def _longbench_rows(
     for row in dynamic_result.rows:
         sample = by_prompt[row.prompt_name]
         inspection_by_id = _inspection_by_id(row.block_inspection_records)
+        rank_by_id = _rank_by_block_id(row.suppression_decisions)
+        score_by_id = _score_by_block_id(row.suppression_decisions)
+        expected_ranks = _expected_ranks(
+            row.retrieval_quality.expected_block_ids,
+            rank_by_id=rank_by_id,
+        )
+        best_expected_rank = min(expected_ranks) if expected_ranks else None
+        best_expected_score = _best_expected_score(
+            row.retrieval_quality.expected_block_ids,
+            score_by_id=score_by_id,
+        )
+        top1_score = _top1_score(row.suppression_decisions)
+        score_gap_to_top1 = (
+            None
+            if top1_score is None or best_expected_score is None
+            else top1_score - best_expected_score
+        )
         rows.append(
             LongBenchBenchmarkRunRow(
                 dataset_name=sample.dataset_name,
@@ -651,6 +698,50 @@ def _longbench_rows(
                     row.retrieval_quality.missed_expected_block_ids
                 ),
                 expected_block_ids=row.retrieval_quality.expected_block_ids,
+                expected_block_ranks=expected_ranks,
+                best_expected_rank=best_expected_rank,
+                best_expected_score=best_expected_score,
+                score_gap_to_top1=score_gap_to_top1,
+                recall_at_4=_block_recall_at_k(
+                    row.retrieval_quality.expected_block_ids,
+                    ranked_ids=tuple(rank_by_id),
+                    k=4,
+                ),
+                recall_at_8=_block_recall_at_k(
+                    row.retrieval_quality.expected_block_ids,
+                    ranked_ids=tuple(rank_by_id),
+                    k=8,
+                ),
+                recall_at_16=_block_recall_at_k(
+                    row.retrieval_quality.expected_block_ids,
+                    ranked_ids=tuple(rank_by_id),
+                    k=16,
+                ),
+                recall_at_32=_block_recall_at_k(
+                    row.retrieval_quality.expected_block_ids,
+                    ranked_ids=tuple(rank_by_id),
+                    k=32,
+                ),
+                recall_at_64=_block_recall_at_k(
+                    row.retrieval_quality.expected_block_ids,
+                    ranked_ids=tuple(rank_by_id),
+                    k=64,
+                ),
+                neighbor_recall_at_1=_neighbor_recall(
+                    row.retrieval_quality.expected_block_ids,
+                    selected_ids=row.semantic_selected_ids,
+                    radius=1,
+                ),
+                neighbor_recall_at_2=_neighbor_recall(
+                    row.retrieval_quality.expected_block_ids,
+                    selected_ids=row.semantic_selected_ids,
+                    radius=2,
+                ),
+                best_neighbor_distance=_expected_block_distance(
+                    selected_ids=row.semantic_selected_ids,
+                    expected_ids=row.retrieval_quality.expected_block_ids,
+                ),
+                semantic_selected_block_ids=row.semantic_selected_ids,
                 selected_block_ids=row.selected_ids,
                 missed_expected_block_ids=row.retrieval_quality.missed_expected_block_ids,
                 selected_spans=row.selected_spans,
@@ -680,6 +771,7 @@ def _longbench_rows(
                 qk_aggregation_strategy=row.qk_aggregation_strategy,
                 rerank_mode=row.rerank_mode,
                 rerank_weight=row.rerank_weight,
+                neighbor_expansion=row.neighbor_expansion,
                 block_mode=row.block_mode,
                 suppression_mode=row.suppression_mode,
                 suppression_threshold=row.suppression_threshold,
@@ -726,6 +818,108 @@ def _dataset_summaries(
         )
         for dataset_name, group in sorted(grouped.items())
     )
+
+
+def _rank_by_block_id(
+    suppression_decisions: Sequence[Mapping[str, Any]],
+) -> dict[int, int]:
+    """Return ranked candidate positions keyed by block id."""
+
+    return {
+        int(decision["block_id"]): rank
+        for rank, decision in enumerate(suppression_decisions, start=1)
+        if "block_id" in decision
+    }
+
+
+def _score_by_block_id(
+    suppression_decisions: Sequence[Mapping[str, Any]],
+) -> dict[int, float]:
+    """Return ranked candidate scores keyed by block id when available."""
+
+    scores: dict[int, float] = {}
+    for decision in suppression_decisions:
+        if "block_id" not in decision or decision.get("final_score") is None:
+            continue
+        scores[int(decision["block_id"])] = float(decision["final_score"])
+    return scores
+
+
+def _expected_ranks(
+    expected_ids: Sequence[int],
+    *,
+    rank_by_id: Mapping[int, int],
+) -> tuple[int, ...]:
+    """Return available ranks for expected answer-bearing blocks."""
+
+    return tuple(
+        rank_by_id[int(block_id)]
+        for block_id in expected_ids
+        if int(block_id) in rank_by_id
+    )
+
+
+def _best_expected_score(
+    expected_ids: Sequence[int],
+    *,
+    score_by_id: Mapping[int, float],
+) -> float | None:
+    """Return the best score among expected answer-bearing blocks."""
+
+    scores = [
+        score_by_id[int(block_id)]
+        for block_id in expected_ids
+        if int(block_id) in score_by_id
+    ]
+    if not scores:
+        return None
+    return max(scores)
+
+
+def _top1_score(suppression_decisions: Sequence[Mapping[str, Any]]) -> float | None:
+    """Return the top-ranked final score when available."""
+
+    if not suppression_decisions:
+        return None
+    score = suppression_decisions[0].get("final_score")
+    return None if score is None else float(score)
+
+
+def _block_recall_at_k(
+    expected_ids: Sequence[int],
+    *,
+    ranked_ids: Sequence[int],
+    k: int,
+) -> float | None:
+    """Return expected-block recall against the top-k ranked candidates."""
+
+    expected = {int(block_id) for block_id in expected_ids}
+    if not expected:
+        return None
+    top = {int(block_id) for block_id in ranked_ids[:k]}
+    return len(expected & top) / len(expected)
+
+
+def _neighbor_recall(
+    expected_ids: Sequence[int],
+    *,
+    selected_ids: Sequence[int],
+    radius: int,
+) -> float | None:
+    """Return expected-block recall allowing selected-id +/- radius matches."""
+
+    expected = {int(block_id) for block_id in expected_ids}
+    selected = tuple(int(block_id) for block_id in selected_ids)
+    if not expected:
+        return None
+    if not selected:
+        return 0.0
+    hits = {
+        expected_id
+        for expected_id in expected
+        if any(abs(expected_id - selected_id) <= radius for selected_id in selected)
+    }
+    return len(hits) / len(expected)
 
 
 def _expected_block_distance(

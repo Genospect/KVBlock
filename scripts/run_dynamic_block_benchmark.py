@@ -103,6 +103,13 @@ def build_parser() -> argparse.ArgumentParser:
         default=0.3,
         help="Weight assigned to tokenmax score when --rerank-mode is enabled.",
     )
+    parser.add_argument(
+        "--neighbor-expansion",
+        type=int,
+        default=0,
+        choices=(0, 1, 2),
+        help="Benchmark-only final selection expansion by adjacent token blocks.",
+    )
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--torch-dtype", default="float32")
     parser.add_argument(
@@ -168,6 +175,7 @@ def main(argv: list[str] | None = None) -> int:
         coarse_top_k=args.coarse_top_k,
         rerank_mode=args.rerank_mode,
         rerank_weight=args.rerank_weight,
+        neighbor_expansion=args.neighbor_expansion,
         load_config_kwargs={
             "device": args.device,
             "torch_dtype": args.torch_dtype,

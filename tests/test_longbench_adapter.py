@@ -134,6 +134,8 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
             candidate_block_count=128,
             candidate_count_before_suppression=128,
             candidate_count_after_suppression=128,
+            neighbor_expansion=0,
+            semantic_selected_ids=(1, 2),
             selected_ids=(1, 2),
             selected_candidate_ids=("s40_t0_40", "s40_t40_80"),
             selected_spans=("0:40", "40:80"),
@@ -209,6 +211,12 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
     assert result.rows[0].expected_block_count == 1
     assert result.rows[0].selected_expected_block_count == 1
     assert result.rows[0].expected_block_ids == (1,)
+    assert result.rows[0].expected_block_ranks == (1,)
+    assert result.rows[0].best_expected_rank == 1
+    assert result.rows[0].recall_at_4 == 1.0
+    assert result.rows[0].neighbor_recall_at_1 == 1.0
+    assert result.rows[0].best_neighbor_distance == 0
+    assert result.rows[0].semantic_selected_block_ids == (1, 2)
     assert result.rows[0].selected_block_ids == (1, 2)
     assert result.rows[0].expected_block_distance == 0
     assert result.rows[0].selected_blocks[0]["preview_text"] == "alpha evidence block"
@@ -285,6 +293,8 @@ def test_longbench_cli_parser_accepts_baseline_flags() -> None:
             "semantic_plus_tokenmax",
             "--rerank-weight",
             "0.4",
+            "--neighbor-expansion",
+            "2",
             "--device-map",
             "auto",
         ]
@@ -297,4 +307,5 @@ def test_longbench_cli_parser_accepts_baseline_flags() -> None:
     assert args.limit == 2
     assert args.rerank_mode == "semantic_plus_tokenmax"
     assert args.rerank_weight == 0.4
+    assert args.neighbor_expansion == 2
     assert args.device_map == "auto"

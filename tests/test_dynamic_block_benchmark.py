@@ -64,6 +64,8 @@ def _row(block_mode: str) -> DynamicBlockRunRow:
         candidate_block_count=2,
         candidate_count_before_suppression=2,
         candidate_count_after_suppression=2,
+        neighbor_expansion=0,
+        semantic_selected_ids=(0, 1),
         selected_ids=(0, 1),
         selected_candidate_ids=("s16_stride16_t0_16", "s16_stride16_t16_32"),
         selected_spans=("0:16", "16:32"),
@@ -322,6 +324,26 @@ def test_fragment_quality_credits_adjacent_selected_boundary_spans() -> None:
     assert quality.selected_expected_block_ids == (1, 2)
     assert quality.missed_expected_block_ids == ()
     assert quality.extra_selected_block_ids == (0,)
+
+
+def test_neighbor_expansion_adds_adjacent_token_blocks() -> None:
+    block_by_id = {
+        0: SimpleNamespace(block_id=0, token_start=0, token_end=40),
+        1: SimpleNamespace(block_id=1, token_start=40, token_end=80),
+        2: SimpleNamespace(block_id=2, token_start=80, token_end=120),
+        3: SimpleNamespace(block_id=3, token_start=120, token_end=160),
+    }
+
+    assert dynamic_bench._expand_selected_ids_by_neighbors(
+        (1,),
+        block_by_id=block_by_id,
+        radius=1,
+    ) == (1, 0, 2)
+    assert dynamic_bench._expand_selected_ids_by_neighbors(
+        (1,),
+        block_by_id=block_by_id,
+        radius=2,
+    ) == (1, 0, 2, 3)
 
 
 def test_run_dynamic_block_benchmark_coarse_to_fine_mode(monkeypatch, tmp_path) -> None:
@@ -643,6 +665,8 @@ def test_dynamic_block_benchmark_prompt_filter_and_script_parser() -> None:
             "semantic_plus_tokenmax",
             "--rerank-weight",
             "0.4",
+            "--neighbor-expansion",
+            "1",
             "--device-map",
             "auto",
             "--local-files-only",
@@ -658,5 +682,6 @@ def test_dynamic_block_benchmark_prompt_filter_and_script_parser() -> None:
     assert args.coarse_top_k == 3
     assert args.rerank_mode == "semantic_plus_tokenmax"
     assert args.rerank_weight == 0.4
+    assert args.neighbor_expansion == 1
     assert args.device_map == "auto"
     assert args.local_files_only is True
