@@ -59,6 +59,9 @@ def build_parser() -> argparse.ArgumentParser:
             "query_mean_last_layer",
             "query_mean_mid_layer",
             "query_avg_last4",
+            "query_only_last_layer",
+            "query_only_avg_last4",
+            "query_only_attention_masked",
         ),
     )
     parser.add_argument("--qk-aggregation", default="block_max")

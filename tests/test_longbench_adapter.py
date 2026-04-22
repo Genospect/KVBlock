@@ -273,6 +273,8 @@ def test_longbench_cli_parser_accepts_baseline_flags() -> None:
             "narrativeqa,musique",
             "--length-bucket",
             "4k-8k",
+            "--representation-source",
+            "query_only_last_layer",
             "--limit",
             "2",
             "--device-map",
@@ -283,5 +285,6 @@ def test_longbench_cli_parser_accepts_baseline_flags() -> None:
     assert args.models == "Qwen/Qwen2.5-3B-Instruct"
     assert args.longbench_datasets == "narrativeqa,musique"
     assert args.length_bucket == "4k-8k"
+    assert args.representation_source == "query_only_last_layer"
     assert args.limit == 2
     assert args.device_map == "auto"

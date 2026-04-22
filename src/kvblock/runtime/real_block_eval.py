@@ -65,6 +65,7 @@ class RealBlockSelectorConfig:
     relevant_text_fragments: tuple[str, ...] = ()
     top_unselected_blocks: int = 5
     representation_source: str | None = None
+    query_prompt: str | None = None
     rail_setting: str | None = None
     prompt_id: str | None = None
     prompt_name: str | None = None
@@ -117,6 +118,8 @@ class RealBlockSelectorConfig:
             raise ValueError("relevant_text_fragments must be non-empty when set")
         if self.representation_source is not None and not self.representation_source.strip():
             raise ValueError("representation_source must be non-empty when set")
+        if self.query_prompt is not None and not self.query_prompt.strip():
+            raise ValueError("query_prompt must be non-empty when set")
         if self.rail_setting is not None and not self.rail_setting.strip():
             raise ValueError("rail_setting must be non-empty when set")
         if self.prompt_id is not None and not self.prompt_id.strip():
@@ -280,10 +283,15 @@ def run_real_block_selector(
 
     started_at = perf_counter()
     prefill = runtime.prefill(prompt)
+    query_prefill = (
+        None
+        if resolved.query_prompt is None
+        else runtime.prefill(resolved.query_prompt)
+    )
     prefill_sec = perf_counter() - started_at
 
     started_at = perf_counter()
-    ingest = _ingest_prefill(prefill, resolved)
+    ingest = _ingest_prefill(prefill, resolved, query_prefill=query_prefill)
     metadata_sec = perf_counter() - started_at
 
     pipeline_config = _pipeline_config(resolved, ingest)
@@ -397,7 +405,19 @@ def run_real_block_selector(
 def _ingest_prefill(
     prefill: ModelPrefillOutput,
     config: RealBlockSelectorConfig,
+    *,
+    query_prefill: ModelPrefillOutput | None = None,
 ) -> BlockIngestResult:
+    query_representation = (
+        prefill.query_representation
+        if query_prefill is None
+        else query_prefill.query_representation
+    )
+    per_head_query_representation = (
+        prefill.per_head_query_representation
+        if query_prefill is None
+        else query_prefill.per_head_query_representation
+    )
     return build_block_metadata_from_representations(
         prefill.token_representations,
         prefill.token_ids,
@@ -405,7 +425,10 @@ def _ingest_prefill(
             block_size=config.block_size,
             summary_dim=config.summary_dim,
             representation_name=_representation_name_with_aggregation(
-                prefill.representation_name,
+                _representation_name_with_query_override(
+                    prefill.representation_name,
+                    query_prefill,
+                ),
                 config.qk_aggregation_strategy,
             ),
             qk_aggregation_strategy=config.qk_aggregation_strategy,
@@ -414,10 +437,19 @@ def _ingest_prefill(
             overlap_stride=config.overlap_stride,
             block_candidates=config.block_candidates,
         ),
-        query_representation=prefill.query_representation,
+        query_representation=query_representation,
         per_head_token_representations=prefill.per_head_token_representations,
-        per_head_query_representation=prefill.per_head_query_representation,
+        per_head_query_representation=per_head_query_representation,
     )
+
+
+def _representation_name_with_query_override(
+    prefill_representation_name: str,
+    query_prefill: ModelPrefillOutput | None,
+) -> str:
+    if query_prefill is None:
+        return prefill_representation_name
+    return f"{prefill_representation_name}_query_override_{query_prefill.representation_name}"
 
 
 def _representation_name_with_aggregation(

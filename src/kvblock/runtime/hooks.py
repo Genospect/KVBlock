@@ -19,6 +19,9 @@ RepresentationSource = Literal[
     "query_mean_last_layer",
     "query_mean_mid_layer",
     "query_avg_last4",
+    "query_only_last_layer",
+    "query_only_avg_last4",
+    "query_only_attention_masked",
 ]
 
 
@@ -43,6 +46,9 @@ class HiddenStateCaptureConfig:
             "query_mean_last_layer",
             "query_mean_mid_layer",
             "query_avg_last4",
+            "query_only_last_layer",
+            "query_only_avg_last4",
+            "query_only_attention_masked",
         }
         if self.representation_source not in valid_sources:
             raise ValueError(f"unsupported representation_source: {self.representation_source!r}")
@@ -252,11 +258,35 @@ def is_query_source(source: RepresentationSource) -> bool:
         "query_mean_last_layer",
         "query_mean_mid_layer",
         "query_avg_last4",
+        "query_only_last_layer",
+        "query_only_avg_last4",
+        "query_only_attention_masked",
+    }
+
+
+def is_query_only_source(source: str) -> bool:
+    """Return whether a source should use a separate query-only prefill."""
+
+    return source in {
+        "query_only_last_layer",
+        "query_only_avg_last4",
+        "query_only_attention_masked",
     }
 
 
 def _is_key_source(source: RepresentationSource) -> bool:
     return is_key_source(source)
+
+
+def _base_query_source(source: RepresentationSource) -> RepresentationSource:
+    source_map: dict[str, RepresentationSource] = {
+        "query_only_last_layer": "query_mean_last_layer",
+        "query_only_avg_last4": "query_avg_last4",
+        # V1 benchmark mode: use a separate question-only forward with normal
+        # HF attention masking, mapped to the current last-layer Q/K path.
+        "query_only_attention_masked": "query_mean_last_layer",
+    }
+    return source_map.get(source, source)
 
 
 def _select_raw_hidden_state(
@@ -327,7 +357,7 @@ def _select_raw_query_state(
     *,
     layer_count: int,
 ) -> torch.Tensor:
-    source = config.representation_source
+    source = _base_query_source(config.representation_source)
     if source == "query_mean_last_layer":
         return _head_mean_attention_tensor(query_states[layer_count - 1])
     if source == "query_mean_mid_layer":
@@ -349,7 +379,7 @@ def _select_raw_query_heads(
     *,
     layer_count: int,
 ) -> torch.Tensor:
-    source = config.representation_source
+    source = _base_query_source(config.representation_source)
     if source == "query_mean_last_layer":
         return _attention_heads_tensor(query_states[layer_count - 1])
     if source == "query_mean_mid_layer":
@@ -534,6 +564,9 @@ def _query_source_as_key_source(
         "query_mean_last_layer": "key_mean_last_layer",
         "query_mean_mid_layer": "key_mean_mid_layer",
         "query_avg_last4": "key_avg_last4",
+        "query_only_last_layer": "key_mean_last_layer",
+        "query_only_avg_last4": "key_avg_last4",
+        "query_only_attention_masked": "key_mean_last_layer",
     }
     try:
         key_source = source_map[config.representation_source]
@@ -552,6 +585,15 @@ def _query_representation_name(
     if config.representation_name is not None:
         return config.representation_name
     source = config.representation_source
+    if source == "query_only_last_layer":
+        layer = layer_count - 1
+        return f"query_only_layer_{layer}_key_mean_layer_{layer}"
+    if source == "query_only_avg_last4":
+        start = max(0, layer_count - 4)
+        return f"query_only_avg_layers_{start}_{layer_count - 1}_key_avg_layers_{start}_{layer_count - 1}"
+    if source == "query_only_attention_masked":
+        layer = layer_count - 1
+        return f"query_only_attention_masked_layer_{layer}_key_mean_layer_{layer}"
     if source == "query_mean_last_layer":
         layer = layer_count - 1
         return f"query_mean_layer_{layer}_key_mean_layer_{layer}"

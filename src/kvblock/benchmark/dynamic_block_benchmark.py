@@ -32,6 +32,7 @@ from kvblock.kv.block_modes import (
     block_modes_from_names,
     coarse_to_fine_spec,
     generate_child_block_candidates,
+    generate_block_candidates,
     is_coarse_to_fine_mode,
     is_parent_retention_coarse_to_fine_mode,
     retain_parent_and_child_candidates,
@@ -41,7 +42,11 @@ from kvblock.kv.qk_aggregation import (
     qk_aggregation_strategy_from_name,
 )
 from kvblock.runtime.base import RuntimeLoadConfig
-from kvblock.runtime.hooks import HiddenStateCaptureConfig, RepresentationSource
+from kvblock.runtime.hooks import (
+    HiddenStateCaptureConfig,
+    RepresentationSource,
+    is_query_only_source,
+)
 from kvblock.runtime.local_hf_runtime import LocalHfRuntime
 from kvblock.runtime.real_block_eval import RealBlockSelectorConfig, run_real_block_selector
 
@@ -212,6 +217,16 @@ def default_dynamic_prompt_cases(
     return tuple(by_name[name] for name in requested)
 
 
+def query_prompt_override_for_representation(
+    prompt: str,
+    *,
+    representation_source: str,
+) -> str | None:
+    """Return a question-only prompt for query-only benchmark modes."""
+
+    return _query_prompt_override(prompt, representation_source=representation_source)
+
+
 def run_dynamic_block_benchmark(
     *,
     model_names: Sequence[str],
@@ -280,6 +295,17 @@ def run_dynamic_block_benchmark(
                     needle_strategy=needle_strategy,
                 )
                 prompt = prompt_case.path.read_text(encoding="utf-8")
+                query_prompt = _query_prompt_override(
+                    prompt,
+                    representation_source=representation_source,
+                )
+                query_only_candidates = _query_only_context_candidates(
+                    runtime,
+                    prompt=prompt,
+                    block_mode=block_mode,
+                    config=config,
+                    query_prompt=query_prompt,
+                )
                 if is_coarse_to_fine_mode(block_mode):
                     fine_result, coarse_result, coarse_selected = (
                         _run_coarse_to_fine_selector(
@@ -290,6 +316,7 @@ def run_dynamic_block_benchmark(
                             strategy=strategy,
                             representation_source=representation_source,
                             prompt_case=prompt_case,
+                            query_prompt=query_prompt,
                             coarse_top_k=coarse_top_k,
                         )
                     )
@@ -323,10 +350,12 @@ def run_dynamic_block_benchmark(
                         replace(
                             config,
                             block_mode=block_mode,
+                            block_candidates=query_only_candidates,
                             qk_aggregation_strategy=strategy,
                             representation_source=representation_source,
                             prompt_id=prompt_case.name,
                             prompt_name=prompt_case.name,
+                            query_prompt=query_prompt,
                             relevant_text_fragments=prompt_case.target_fragments,
                             include_block_text=True,
                         ),
@@ -604,6 +633,7 @@ def _run_coarse_to_fine_selector(
     strategy: QKAggregationStrategy,
     representation_source: RepresentationSource,
     prompt_case: PromptRetrievalCase,
+    query_prompt: str | None,
     coarse_top_k: int,
 ) -> tuple[Any, Any, tuple[BlockCandidate, ...]]:
     coarse_size, fine_size = coarse_to_fine_spec(block_mode)
@@ -619,6 +649,7 @@ def _run_coarse_to_fine_selector(
             representation_source=representation_source,
             prompt_id=prompt_case.name,
             prompt_name=prompt_case.name,
+            query_prompt=query_prompt,
             relevant_text_fragments=prompt_case.target_fragments,
             include_block_text=True,
         ),
@@ -666,6 +697,7 @@ def _run_coarse_to_fine_selector(
             representation_source=representation_source,
             prompt_id=prompt_case.name,
             prompt_name=prompt_case.name,
+            query_prompt=query_prompt,
             relevant_text_fragments=prompt_case.target_fragments,
             include_block_text=True,
         ),
@@ -1147,6 +1179,48 @@ def _strategy_for_prompt(
     if prompt_name == "needle" and needle_strategy is not None:
         return needle_strategy
     return default_strategy
+
+
+def _query_prompt_override(
+    prompt: str,
+    *,
+    representation_source: str,
+) -> str | None:
+    """Extract the LongBench-style input tail for query-only modes."""
+
+    if not is_query_only_source(representation_source):
+        return None
+    marker = "\nINPUT:\n"
+    query = (
+        prompt.rsplit(marker, maxsplit=1)[-1].strip()
+        if marker in prompt
+        else prompt.strip()
+    )
+    return query or prompt
+
+
+def _query_only_context_candidates(
+    runtime: Any,
+    *,
+    prompt: str,
+    block_mode: BlockModeName,
+    config: RealBlockSelectorConfig,
+    query_prompt: str | None,
+) -> tuple[BlockCandidate, ...]:
+    """Generate context-only candidates for query-only LongBench-style prompts."""
+
+    if query_prompt is None or "\nINPUT:\n" not in prompt or is_coarse_to_fine_mode(block_mode):
+        return config.block_candidates
+    context_prompt = prompt.rsplit("\nINPUT:\n", maxsplit=1)[0].strip()
+    if not context_prompt:
+        return config.block_candidates
+    context_tokens = runtime.tokenize(context_prompt).token_count
+    return generate_block_candidates(
+        token_count=context_tokens,
+        mode=block_mode,
+        default_block_size=config.block_size,
+        overlap_stride=config.overlap_stride,
+    )
 
 
 def _format_summary(summary: DynamicBlockAggregateSummary) -> str:

@@ -132,8 +132,8 @@ def test_dynamic_block_benchmark_output_schema_and_report(tmp_path) -> None:
 
 def test_run_dynamic_block_benchmark_uses_modes_and_prompt_strategy(monkeypatch, tmp_path) -> None:
     prompt_path = tmp_path / "prompt.txt"
-    prompt_path.write_text("answer TOKEN", encoding="utf-8")
-    seen: list[tuple[str, str]] = []
+    prompt_path.write_text("CONTEXT:\nanswer TOKEN\n\nINPUT:\nWhere is TOKEN?", encoding="utf-8")
+    seen: list[tuple[str, str, str | None, int]] = []
 
     class FakeRuntime:
         def __init__(self, load_config, *, capture_config=None):
@@ -142,6 +142,9 @@ def test_run_dynamic_block_benchmark_uses_modes_and_prompt_strategy(monkeypatch,
 
         def load_model(self):
             return None
+
+        def tokenize(self, prompt):
+            return SimpleNamespace(token_count=4)
 
     class FakeResult:
         selected_block_ids = (0,)
@@ -182,7 +185,14 @@ def test_run_dynamic_block_benchmark_uses_modes_and_prompt_strategy(monkeypatch,
             return tuple(block for block in self.block_inspections if block.selected)
 
     def fake_run_real_block_selector(runtime, prompt, config):
-        seen.append((config.block_mode, config.qk_aggregation_strategy))
+        seen.append(
+            (
+                config.block_mode,
+                config.qk_aggregation_strategy,
+                config.query_prompt,
+                len(config.block_candidates),
+            )
+        )
         assert config.keep_recent_blocks == 0
         assert config.keep_anchor_blocks == 0
         return FakeResult()
@@ -200,18 +210,46 @@ def test_run_dynamic_block_benchmark_uses_modes_and_prompt_strategy(monkeypatch,
             ),
         ),
         block_modes=("fixed_16", "multiscale_16_32"),
+        representation_source="query_only_last_layer",
         qk_aggregation_strategy="block_max",
         needle_qk_aggregation_strategy="top_token_mean",
     )
 
     assert seen == [
-        ("fixed_16", "top_token_mean"),
-        ("multiscale_16_32", "top_token_mean"),
+        ("fixed_16", "top_token_mean", "Where is TOKEN?", 1),
+        ("multiscale_16_32", "top_token_mean", "Where is TOKEN?", 2),
     ]
     assert [row.block_mode for row in result.rows] == ["fixed_16", "multiscale_16_32"]
     assert result.rows[0].selected_candidate_ids == ("s16_stride16_t0_4",)
     assert result.aggregate_summaries
     assert result.prompt_breakdowns
+
+
+def test_query_only_prompt_override_extracts_input_tail() -> None:
+    prompt = "DATASET: x\n\nCONTEXT:\nalpha\n\nINPUT:\nWhat is alpha?"
+
+    assert dynamic_bench.query_prompt_override_for_representation(
+        prompt,
+        representation_source="query_only_last_layer",
+    ) == "What is alpha?"
+    assert dynamic_bench.query_prompt_override_for_representation(
+        prompt,
+        representation_source="query_mean_last_layer",
+    ) is None
+
+
+def test_dynamic_block_cli_parser_supports_query_only_source() -> None:
+    module = _load_script()
+    args = module.build_parser().parse_args(
+        [
+            "--models",
+            "gpt2",
+            "--representation-source",
+            "query_only_last_layer",
+        ]
+    )
+
+    assert args.representation_source == "query_only_last_layer"
 
 
 def test_fragment_quality_credits_adjacent_selected_boundary_spans() -> None:

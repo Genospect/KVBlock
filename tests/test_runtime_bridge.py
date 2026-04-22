@@ -10,6 +10,7 @@ from kvblock.kv.block_manager import (
 from kvblock.runtime.base import ModelPrefillOutput, RuntimeBackend, TokenizedPrompt
 from kvblock.runtime.hooks import (
     HiddenStateCaptureConfig,
+    is_query_only_source,
     latest_token_state,
     select_hidden_state,
     select_key_state_with_name,
@@ -27,6 +28,7 @@ class MockRuntime:
         self.loaded = False
         self.token_count = token_count
         self.hidden_dim = hidden_dim
+        self.prefill_prompts: list[str] = []
 
     @property
     def name(self) -> str:
@@ -45,6 +47,7 @@ class MockRuntime:
     def prefill(self, prompt: str) -> ModelPrefillOutput:
         if not self.loaded:
             raise RuntimeError("mock runtime was not loaded")
+        self.prefill_prompts.append(prompt)
         tokenized = self.tokenize(prompt)
         values = torch.arange(
             self.token_count * self.hidden_dim,
@@ -247,6 +250,25 @@ def test_query_key_hook_supports_query_representation_sources() -> None:
     assert torch.equal(avg_query, torch.full((4,), 3.5))
     assert avg_per_head_keys.shape == (2, 3, 4)
     assert avg_per_head_query.shape == (2, 4)
+
+    (
+        query_only_keys,
+        query_only_query,
+        query_only_name,
+        query_only_per_head_keys,
+        query_only_per_head_query,
+    ) = select_query_key_states_with_name(
+        key_layers,
+        query_layers,
+        HiddenStateCaptureConfig(representation_source="query_only_avg_last4"),
+    )
+
+    assert is_query_only_source("query_only_avg_last4")
+    assert query_only_name == "query_only_avg_layers_2_5_key_avg_layers_2_5"
+    assert query_only_keys.shape == (3, 4)
+    assert torch.equal(query_only_query, torch.full((4,), 3.5))
+    assert query_only_per_head_keys.shape == (2, 3, 4)
+    assert query_only_per_head_query.shape == (2, 4)
 
 
 def test_model_representation_selector_dispatches_to_key_cache() -> None:
@@ -680,6 +702,32 @@ def test_real_block_selector_bridge_runs_on_mock_runtime() -> None:
     assert result.latency.total_sec >= result.latency.selector_sec
     assert result.head_diagnostics == ()
     assert result.head_diagnostic_summary is None
+
+
+def test_real_block_selector_uses_query_prompt_override() -> None:
+    runtime = MockRuntime(token_count=12, hidden_dim=8)
+
+    result = run_real_block_selector(
+        runtime,
+        "CONTEXT:\nalpha\n\nINPUT:\nWhere is alpha?",
+        RealBlockSelectorConfig(
+            block_size=3,
+            summary_dim=4,
+            shortlist_m=4,
+            semantic_k=2,
+            confidence_margin=0.0,
+            keep_recent_blocks=0,
+            keep_anchor_blocks=0,
+            query_prompt="Where is alpha?",
+            representation_source="query_only_last_layer",
+        ),
+    )
+
+    assert runtime.prefill_prompts == [
+        "CONTEXT:\nalpha\n\nINPUT:\nWhere is alpha?",
+        "Where is alpha?",
+    ]
+    assert "query_override" in result.run_summary.representation_name
 
 
 def test_real_block_selector_bridge_builds_inspection_records() -> None:
