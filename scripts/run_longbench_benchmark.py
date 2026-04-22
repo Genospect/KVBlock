@@ -74,6 +74,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--shortlist-m", type=int, default=16)
     parser.add_argument("--semantic-k", type=int, default=4)
     parser.add_argument("--confidence-margin", type=float, default=0.0)
+    parser.add_argument(
+        "--coarse-top-k",
+        type=int,
+        default=2,
+        help="Number of coarse regions to refine for coarse-to-fine block modes.",
+    )
     parser.add_argument("--keep-recent-blocks", type=int, default=0)
     parser.add_argument("--keep-anchor-blocks", type=int, default=0)
     parser.add_argument("--top-token-count", type=int, default=4)
@@ -212,6 +218,7 @@ def main(argv: list[str] | None = None) -> int:
         representation_source=args.representation_source,
         qk_aggregation_strategy=qk_aggregation_strategy_from_name(args.qk_aggregation),
         needle_qk_aggregation_strategy=needle_strategy,
+        coarse_top_k=args.coarse_top_k,
         rerank_mode=args.rerank_mode,
         rerank_weight=args.rerank_weight,
         refine_top_n_tokens=args.refine_top_n_tokens,

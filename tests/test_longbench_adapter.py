@@ -105,7 +105,10 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
 ) -> None:
+    seen_coarse_top_k: list[int] = []
+
     def fake_dynamic_benchmark(**kwargs):
+        seen_coarse_top_k.append(kwargs["coarse_top_k"])
         case = kwargs["prompt_cases"][0]
         quality = RetrievalQuality(
             expected_block_ids=(1,),
@@ -236,6 +239,7 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
         refine_score_mode="cosine_topn_mean",
         stage_c_policy="semantic_refined_mix",
         exclude_scaffold_blocks=True,
+        coarse_top_k=5,
     )
 
     assert result.samples[0].dataset_name == "narrativeqa"
@@ -281,6 +285,7 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
     assert result.refine_score_mode == "cosine_topn_mean"
     assert result.stage_c_policy == "semantic_refined_mix"
     assert result.exclude_scaffold_blocks is True
+    assert seen_coarse_top_k == [5]
     assert result.oracle_mode == "none"
     assert result.rows[0].oracle_top_block_ids == ()
     assert result.rows[0].oracle_selected_mass_fraction is None
@@ -320,6 +325,7 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
         oracle_result.dataset_summaries[0].mean_oracle_selected_mass_fraction
         == pytest.approx(1.0)
     )
+    assert seen_coarse_top_k == [5, 2]
 
 
 def test_oracle_metrics_from_fake_dense_qk_scores() -> None:
@@ -416,6 +422,8 @@ def test_longbench_cli_parser_accepts_baseline_flags() -> None:
             "query_only_last_layer",
             "--limit",
             "2",
+            "--coarse-top-k",
+            "6",
             "--rerank-mode",
             "dense_qk_token_refine",
             "--rerank-weight",
@@ -449,6 +457,7 @@ def test_longbench_cli_parser_accepts_baseline_flags() -> None:
     assert args.length_bucket == "4k-8k"
     assert args.representation_source == "query_only_last_layer"
     assert args.limit == 2
+    assert args.coarse_top_k == 6
     assert args.rerank_mode == "dense_qk_token_refine"
     assert args.rerank_weight == 0.4
     assert args.refine_top_n_tokens == 3
