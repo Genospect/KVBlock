@@ -1407,7 +1407,7 @@ def test_mixed_global_refine_falls_back_to_fixed40_on_weak_margin(
                 block_id=1,
                 selected=False,
                 selected_reason="unselected",
-                final_score=0.1,
+                final_score=0.98,
                 block_text="other",
                 preview_text="other",
                 candidate_id="s40_stride40_t40_80",
@@ -1437,6 +1437,8 @@ def test_mixed_global_refine_falls_back_to_fixed40_on_weak_margin(
         ),
         block_modes=("mixed_global_refine_40_16",),
         qk_aggregation_strategy="block_max",
+        mixed_refine_parent_k=1,
+        mixed_global_anchor_k=1,
         mixed_fallback_margin=0.05,
     )
 

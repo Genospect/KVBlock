@@ -1167,7 +1167,11 @@ def _run_mixed_global_refine_selector(
     if not global_selected:
         global_selected = list(global_block_by_id.values())[:parent_budget]
 
-    if _is_weak_global_margin(global_result, fallback_margin=fallback_margin):
+    if _is_weak_reranked_margin(
+        global_ranked,
+        included_count=parent_budget,
+        fallback_margin=fallback_margin,
+    ):
         return global_result, global_result, tuple(global_selected), True
 
     refine_parents = tuple(global_selected[:refine_parent_k])
@@ -1205,12 +1209,34 @@ def _run_mixed_global_refine_selector(
     return mixed_result, global_result, tuple(global_selected), False
 
 
-def _is_weak_global_margin(result: Any, *, fallback_margin: float) -> bool:
+def _is_weak_reranked_margin(
+    ranked_candidates: Sequence[RankedCandidateSpan],
+    *,
+    included_count: int,
+    fallback_margin: float,
+) -> bool:
     if fallback_margin <= 0.0:
         return False
-    confidence = getattr(result, "confidence", None)
-    raw_margin = float(getattr(confidence, "raw_margin", 0.0) or 0.0)
-    return raw_margin < fallback_margin
+    return (
+        _ranked_score_margin(ranked_candidates, included_count=included_count)
+        < fallback_margin
+    )
+
+
+def _ranked_score_margin(
+    ranked_candidates: Sequence[RankedCandidateSpan],
+    *,
+    included_count: int,
+) -> float:
+    if included_count < 0:
+        raise ValueError("included_count must be >= 0")
+    if included_count == 0:
+        return 0.0
+    if included_count >= len(ranked_candidates):
+        return math.inf
+    last_included = ranked_candidates[included_count - 1].score
+    first_excluded = ranked_candidates[included_count].score
+    return last_included - first_excluded
 
 
 def _block_candidate_by_id(result: Any) -> dict[int, BlockCandidate]:
