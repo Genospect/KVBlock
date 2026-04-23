@@ -17,6 +17,7 @@ BlockModeName = Literal[
     "coarse_to_fine_40_16",
     "coarse_to_fine_32_16",
     "coarse_to_fine_40_16_keep_parent",
+    "mixed_global_refine_40_16",
 ]
 
 VALID_BLOCK_MODES: tuple[BlockModeName, ...] = (
@@ -31,6 +32,7 @@ VALID_BLOCK_MODES: tuple[BlockModeName, ...] = (
     "coarse_to_fine_40_16",
     "coarse_to_fine_32_16",
     "coarse_to_fine_40_16_keep_parent",
+    "mixed_global_refine_40_16",
 )
 
 
@@ -207,6 +209,12 @@ def is_parent_retention_coarse_to_fine_mode(mode: str) -> bool:
     return mode == "coarse_to_fine_40_16_keep_parent"
 
 
+def is_mixed_global_refine_mode(mode: str) -> bool:
+    """Return whether a block mode keeps a global rail plus local refinement."""
+
+    return mode == "mixed_global_refine_40_16"
+
+
 def coarse_to_fine_spec(mode: str) -> tuple[int, int]:
     """Return ``(coarse_block_size, fine_block_size)`` for a CTF mode."""
 
@@ -218,6 +226,15 @@ def coarse_to_fine_spec(mode: str) -> tuple[int, int]:
     if resolved == "coarse_to_fine_32_16":
         return (32, 16)
     raise ValueError(f"not a coarse-to-fine mode: {mode!r}")
+
+
+def mixed_global_refine_spec(mode: str) -> tuple[int, int]:
+    """Return ``(global_block_size, fine_block_size)`` for mixed-router modes."""
+
+    resolved = block_mode_from_name(mode)
+    if resolved == "mixed_global_refine_40_16":
+        return (40, 16)
+    raise ValueError(f"not a mixed global-refine mode: {mode!r}")
 
 
 def generate_child_block_candidates(
@@ -390,6 +407,11 @@ def _mode_specs(
         # child candidates explicitly after ranking coarse regions.
         coarse_block_size, _fine_block_size = coarse_to_fine_spec(mode)
         return ((coarse_block_size, coarse_block_size),)
+    if is_mixed_global_refine_mode(mode):
+        # Standalone ingest uses the global rail. The benchmark harness adds
+        # local child candidates after scoring the global fixed-size pass.
+        global_block_size, _fine_block_size = mixed_global_refine_spec(mode)
+        return ((global_block_size, global_block_size),)
     raise ValueError(f"unsupported block mode: {mode!r}")
 
 

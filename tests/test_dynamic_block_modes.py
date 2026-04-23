@@ -5,6 +5,7 @@ from kvblock.kv.block_modes import (
     coarse_to_fine_spec,
     generate_block_candidates,
     generate_child_block_candidates,
+    mixed_global_refine_spec,
     retain_parent_and_child_candidates,
 )
 
@@ -59,6 +60,21 @@ def test_coarse_to_fine_mode_generates_stable_coarse_regions() -> None:
     )
 
     assert coarse_to_fine_spec("coarse_to_fine_40_16") == (40, 16)
+    assert [candidate.candidate_id for candidate in candidates] == [
+        "s40_stride40_t0_40",
+        "s40_stride40_t40_80",
+        "s40_stride40_t80_82",
+    ]
+
+
+def test_mixed_global_refine_mode_generates_stable_global_regions() -> None:
+    candidates = generate_block_candidates(
+        token_count=82,
+        mode="mixed_global_refine_40_16",
+        default_block_size=16,
+    )
+
+    assert mixed_global_refine_spec("mixed_global_refine_40_16") == (40, 16)
     assert [candidate.candidate_id for candidate in candidates] == [
         "s40_stride40_t0_40",
         "s40_stride40_t40_80",

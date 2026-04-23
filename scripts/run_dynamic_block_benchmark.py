@@ -75,6 +75,24 @@ def build_parser() -> argparse.ArgumentParser:
         help="Number of coarse regions retained by coarse-to-fine block modes.",
     )
     parser.add_argument(
+        "--mixed-refine-parent-k",
+        type=int,
+        default=8,
+        help="Number of global fixed40 parents to refine for mixed global-refine modes.",
+    )
+    parser.add_argument(
+        "--mixed-global-anchor-k",
+        type=int,
+        default=8,
+        help="Number of global fixed40 parents retained as backbone anchors.",
+    )
+    parser.add_argument(
+        "--mixed-fallback-margin",
+        type=float,
+        default=0.05,
+        help="Fallback to fixed40 when the global rail raw margin is below this value.",
+    )
+    parser.add_argument(
         "--suppression-modes",
         default="none",
         help=(
@@ -213,6 +231,9 @@ def main(argv: list[str] | None = None) -> int:
         suppression_modes=suppression_modes,
         suppression_threshold=args.suppression_threshold,
         coarse_top_k=args.coarse_top_k,
+        mixed_refine_parent_k=args.mixed_refine_parent_k,
+        mixed_global_anchor_k=args.mixed_global_anchor_k,
+        mixed_fallback_margin=args.mixed_fallback_margin,
         rerank_mode=args.rerank_mode,
         rerank_weight=args.rerank_weight,
         refine_top_n_tokens=args.refine_top_n_tokens,

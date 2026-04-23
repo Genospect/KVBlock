@@ -38,7 +38,9 @@ from kvblock.kv.block_modes import (
     generate_child_block_candidates,
     generate_block_candidates,
     is_coarse_to_fine_mode,
+    is_mixed_global_refine_mode,
     is_parent_retention_coarse_to_fine_mode,
+    mixed_global_refine_spec,
     retain_parent_and_child_candidates,
 )
 from kvblock.kv.qk_aggregation import (
@@ -218,6 +220,7 @@ class DynamicBlockRunRow:
     coarse_candidate_count: int = 0
     fine_candidate_count_after_drilldown: int = 0
     retained_parent_count: int = 0
+    mixed_fallback_used: bool = False
     coarse_selected_candidate_ids: tuple[str, ...] = ()
     coarse_selected_spans: tuple[str, ...] = ()
     block_inspection_records: tuple[dict[str, Any], ...] = ()
@@ -384,6 +387,9 @@ def run_dynamic_block_benchmark(
     suppression_modes: Sequence[SuppressionMode] = ("none",),
     suppression_threshold: float = 0.75,
     coarse_top_k: int = 2,
+    mixed_refine_parent_k: int = 8,
+    mixed_global_anchor_k: int = 8,
+    mixed_fallback_margin: float = 0.05,
     load_config_kwargs: dict[str, Any] | None = None,
     selector_config: RealBlockSelectorConfig | None = None,
     include_block_inspections: bool = False,
@@ -425,6 +431,12 @@ def run_dynamic_block_benchmark(
         raise ValueError("max_selected_blocks must be > 0 when provided")
     if coarse_top_k <= 0:
         raise ValueError("coarse_top_k must be > 0")
+    if mixed_refine_parent_k <= 0:
+        raise ValueError("mixed_refine_parent_k must be > 0")
+    if mixed_global_anchor_k <= 0:
+        raise ValueError("mixed_global_anchor_k must be > 0")
+    if mixed_fallback_margin < 0.0:
+        raise ValueError("mixed_fallback_margin must be >= 0")
     needle_strategy = (
         None
         if needle_qk_aggregation_strategy is None
@@ -478,6 +490,9 @@ def run_dynamic_block_benchmark(
                     config=config,
                     query_prompt=query_prompt,
                 )
+                first_pass_result: Any | None = None
+                candidate_block_count_override: int | None = None
+                mixed_fallback_used = False
                 if is_coarse_to_fine_mode(block_mode):
                     fine_result, coarse_result, coarse_selected = (
                         _run_coarse_to_fine_selector(
@@ -494,6 +509,7 @@ def run_dynamic_block_benchmark(
                         )
                     )
                     result = fine_result
+                    first_pass_result = coarse_result
                     coarse_candidate_count = coarse_result.run_summary.block_count
                     fine_candidate_count_after_drilldown = sum(
                         1
@@ -515,6 +531,58 @@ def run_dynamic_block_benchmark(
                         )
                         if is_parent_retention_coarse_to_fine_mode(block_mode)
                         else 0
+                    )
+                    candidate_block_count_override = (
+                        coarse_candidate_count
+                        + fine_candidate_count_after_drilldown
+                        + retained_parent_count
+                    )
+                elif is_mixed_global_refine_mode(block_mode):
+                    mixed_result, global_result, global_selected, used_fallback = (
+                        _run_mixed_global_refine_selector(
+                            runtime=runtime,
+                            prompt=prompt,
+                            config=config,
+                            block_mode=block_mode,
+                            global_block_candidates=query_only_candidates,
+                            strategy=strategy,
+                            representation_source=representation_source,
+                            prompt_case=prompt_case,
+                            query_prompt=query_prompt,
+                            refine_parent_k=mixed_refine_parent_k,
+                            global_anchor_k=mixed_global_anchor_k,
+                            fallback_margin=mixed_fallback_margin,
+                        )
+                    )
+                    result = mixed_result
+                    mixed_fallback_used = used_fallback
+                    first_pass_result = None if used_fallback else global_result
+                    coarse_candidate_count = global_result.run_summary.block_count
+                    fine_candidate_count_after_drilldown = sum(
+                        1
+                        for block in result.block_inspections
+                        if getattr(block, "candidate_role", "block") == "child"
+                    )
+                    retained_parent_count = sum(
+                        1
+                        for block in result.block_inspections
+                        if getattr(block, "candidate_role", "block") == "parent"
+                    )
+                    coarse_selected_candidate_ids = tuple(
+                        candidate.candidate_id for candidate in global_selected
+                    )
+                    coarse_selected_spans = tuple(
+                        f"{candidate.token_start}:{candidate.token_end}"
+                        for candidate in global_selected
+                    )
+                    candidate_block_count_override = (
+                        None
+                        if used_fallback
+                        else (
+                            coarse_candidate_count
+                            + fine_candidate_count_after_drilldown
+                            + retained_parent_count
+                        )
                     )
                 else:
                     result = run_real_block_selector(
@@ -579,6 +647,43 @@ def run_dynamic_block_benchmark(
                         mode=suppression_mode,
                         threshold=suppression_threshold,
                     )
+                    selector_latency_sec_override = (
+                        None
+                        if first_pass_result is None
+                        else (
+                            result.latency.selector_sec
+                            + first_pass_result.latency.selector_sec
+                        )
+                    )
+                    total_latency_sec_override = (
+                        None
+                        if first_pass_result is None
+                        else result.latency.total_sec + first_pass_result.latency.total_sec
+                    )
+                    prefill_latency_sec_override = (
+                        None
+                        if first_pass_result is None
+                        else (
+                            result.latency.prefill_sec
+                            + first_pass_result.latency.prefill_sec
+                        )
+                    )
+                    metadata_latency_sec_override = (
+                        None
+                        if first_pass_result is None
+                        else (
+                            result.latency.metadata_sec
+                            + first_pass_result.latency.metadata_sec
+                        )
+                    )
+                    inspection_latency_sec_override = (
+                        None
+                        if first_pass_result is None
+                        else (
+                            result.latency.inspection_sec
+                            + first_pass_result.latency.inspection_sec
+                        )
+                    )
                     rows.append(
                         _row_from_result(
                             model_name=model_name,
@@ -611,38 +716,12 @@ def run_dynamic_block_benchmark(
                             neighbor_expansion=neighbor_expansion,
                             halo_radius=halo_radius,
                             max_selected_blocks=max_selected_blocks,
-                            candidate_block_count_override=(
-                                coarse_candidate_count
-                                + fine_candidate_count_after_drilldown
-                                + retained_parent_count
-                                if is_coarse_to_fine_mode(block_mode)
-                                else None
-                            ),
-                            selector_latency_sec_override=(
-                                result.latency.selector_sec + coarse_result.latency.selector_sec
-                                if is_coarse_to_fine_mode(block_mode)
-                                else None
-                            ),
-                            total_latency_sec_override=(
-                                result.latency.total_sec + coarse_result.latency.total_sec
-                                if is_coarse_to_fine_mode(block_mode)
-                                else None
-                            ),
-                            prefill_latency_sec_override=(
-                                result.latency.prefill_sec + coarse_result.latency.prefill_sec
-                                if is_coarse_to_fine_mode(block_mode)
-                                else None
-                            ),
-                            metadata_latency_sec_override=(
-                                result.latency.metadata_sec + coarse_result.latency.metadata_sec
-                                if is_coarse_to_fine_mode(block_mode)
-                                else None
-                            ),
-                            inspection_latency_sec_override=(
-                                result.latency.inspection_sec + coarse_result.latency.inspection_sec
-                                if is_coarse_to_fine_mode(block_mode)
-                                else None
-                            ),
+                            candidate_block_count_override=candidate_block_count_override,
+                            selector_latency_sec_override=selector_latency_sec_override,
+                            total_latency_sec_override=total_latency_sec_override,
+                            prefill_latency_sec_override=prefill_latency_sec_override,
+                            metadata_latency_sec_override=metadata_latency_sec_override,
+                            inspection_latency_sec_override=inspection_latency_sec_override,
                             coarse_candidate_count=coarse_candidate_count,
                             fine_candidate_count_after_drilldown=(
                                 fine_candidate_count_after_drilldown
@@ -650,6 +729,7 @@ def run_dynamic_block_benchmark(
                             retained_parent_count=retained_parent_count,
                             coarse_selected_candidate_ids=coarse_selected_candidate_ids,
                             coarse_selected_spans=coarse_selected_spans,
+                            mixed_fallback_used=mixed_fallback_used,
                             include_block_inspections=include_block_inspections,
                         )
                     )
@@ -733,6 +813,7 @@ def format_dynamic_block_report(result: DynamicBlockBenchmarkResult) -> str:
             f"coarse={row.coarse_candidate_count} "
             f"fine={row.fine_candidate_count_after_drilldown} "
             f"retained_parents={row.retained_parent_count} | "
+            f"mixed_fallback={row.mixed_fallback_used} | "
             f"selected={list(row.selected_candidate_ids)} | "
             f"roles={list(row.selected_candidate_roles)} | "
             f"recall={_fmt_optional(quality.target_recall)} "
@@ -774,6 +855,7 @@ def _row_from_result(
     coarse_candidate_count: int = 0,
     fine_candidate_count_after_drilldown: int = 0,
     retained_parent_count: int = 0,
+    mixed_fallback_used: bool = False,
     coarse_selected_candidate_ids: tuple[str, ...] = (),
     coarse_selected_spans: tuple[str, ...] = (),
     include_block_inspections: bool = False,
@@ -895,6 +977,7 @@ def _row_from_result(
         coarse_candidate_count=coarse_candidate_count,
         fine_candidate_count_after_drilldown=fine_candidate_count_after_drilldown,
         retained_parent_count=retained_parent_count,
+        mixed_fallback_used=mixed_fallback_used,
         coarse_selected_candidate_ids=coarse_selected_candidate_ids,
         coarse_selected_spans=coarse_selected_spans,
         refine_top_n_tokens=refine_top_n_tokens,
@@ -1006,6 +1089,99 @@ def _run_coarse_to_fine_selector(
         ),
     )
     return fine_result, coarse_result, tuple(coarse_selected)
+
+
+def _run_mixed_global_refine_selector(
+    *,
+    runtime: Any,
+    prompt: str,
+    config: RealBlockSelectorConfig,
+    block_mode: BlockModeName,
+    global_block_candidates: Sequence[BlockCandidate],
+    strategy: QKAggregationStrategy,
+    representation_source: RepresentationSource,
+    prompt_case: PromptRetrievalCase,
+    query_prompt: str | None,
+    refine_parent_k: int,
+    global_anchor_k: int,
+    fallback_margin: float,
+) -> tuple[Any, Any, tuple[BlockCandidate, ...], bool]:
+    global_size, fine_size = mixed_global_refine_spec(block_mode)
+    global_result = run_real_block_selector(
+        runtime,
+        prompt,
+        replace(
+            config,
+            block_size=global_size,
+            block_mode=f"fixed_{global_size}",  # type: ignore[arg-type]
+            block_candidates=tuple(global_block_candidates),
+            qk_aggregation_strategy=strategy,
+            representation_source=representation_source,
+            prompt_id=prompt_case.name,
+            prompt_name=prompt_case.name,
+            query_prompt=query_prompt,
+            relevant_text_fragments=prompt_case.target_fragments,
+            include_block_text=True,
+        ),
+    )
+    global_ranked = _ranked_candidates_from_result(global_result)
+    global_block_by_id = _block_candidate_by_id(global_result)
+    parent_budget = max(refine_parent_k, global_anchor_k)
+    global_selected: list[BlockCandidate] = []
+    for ranked in global_ranked:
+        candidate = global_block_by_id.get(ranked.block_id)
+        if candidate is None:
+            continue
+        global_selected.append(candidate)
+        if len(global_selected) >= parent_budget:
+            break
+    if not global_selected:
+        global_selected = list(global_block_by_id.values())[:parent_budget]
+
+    if _is_weak_global_margin(global_result, fallback_margin=fallback_margin):
+        return global_result, global_result, tuple(global_selected), True
+
+    refine_parents = tuple(global_selected[:refine_parent_k])
+    child_candidates = generate_child_block_candidates(
+        token_count=global_result.run_summary.token_count,
+        parent_candidates=refine_parents,
+        fine_block_size=fine_size,
+        block_mode=block_mode,
+    )
+    if not child_candidates:
+        return global_result, global_result, tuple(global_selected), True
+
+    final_candidates = retain_parent_and_child_candidates(
+        parent_candidates=tuple(global_selected[:parent_budget]),
+        child_candidates=child_candidates,
+        block_mode=block_mode,
+    )
+    mixed_result = run_real_block_selector(
+        runtime,
+        prompt,
+        replace(
+            config,
+            block_size=fine_size,
+            block_mode=block_mode,
+            block_candidates=final_candidates,
+            qk_aggregation_strategy=strategy,
+            representation_source=representation_source,
+            prompt_id=prompt_case.name,
+            prompt_name=prompt_case.name,
+            query_prompt=query_prompt,
+            relevant_text_fragments=prompt_case.target_fragments,
+            include_block_text=True,
+        ),
+    )
+    return mixed_result, global_result, tuple(global_selected), False
+
+
+def _is_weak_global_margin(result: Any, *, fallback_margin: float) -> bool:
+    if fallback_margin <= 0.0:
+        return False
+    confidence = getattr(result, "confidence", None)
+    raw_margin = float(getattr(confidence, "raw_margin", 0.0) or 0.0)
+    return raw_margin < fallback_margin
 
 
 def _block_candidate_by_id(result: Any) -> dict[int, BlockCandidate]:
@@ -2063,6 +2239,9 @@ def _query_only_context_candidates(
     if is_coarse_to_fine_mode(block_mode):
         coarse_size, _fine_size = coarse_to_fine_spec(block_mode)
         candidate_mode = cast(BlockModeName, f"fixed_{coarse_size}")
+    elif is_mixed_global_refine_mode(block_mode):
+        global_size, _fine_size = mixed_global_refine_spec(block_mode)
+        candidate_mode = cast(BlockModeName, f"fixed_{global_size}")
     return generate_block_candidates(
         token_count=context_tokens,
         mode=candidate_mode,
