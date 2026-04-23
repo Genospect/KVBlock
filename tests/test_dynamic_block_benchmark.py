@@ -1427,6 +1427,185 @@ def test_mixed_global_refine_selects_parents_after_rerank(
     )
 
 
+def test_mixed_global_refine_fallback_uses_base_selector_margin(
+    monkeypatch, tmp_path
+) -> None:
+    prompt_path = tmp_path / "prompt.txt"
+    prompt_path.write_text("alpha TOKEN beta gamma", encoding="utf-8")
+    seen: list[tuple[str, int, int]] = []
+
+    class FakeRuntime:
+        def __init__(self, load_config, *, capture_config=None):
+            self.load_config = load_config
+            self.capture_config = capture_config
+
+        def load_model(self):
+            return None
+
+    class FakeResult:
+        selected_to_semantic_k_ratio = 0.5
+        fallback_mode = "sparse"
+
+        def __init__(self, *, block_mode, blocks, selected_ids, raw_margin=0.1):
+            self.selected_block_ids = selected_ids
+            self.confidence = SimpleNamespace(raw_margin=raw_margin)
+            self.run_summary = SimpleNamespace(
+                representation_name="query_mean_layer_0_key_mean_layer_0",
+                token_count=120,
+                block_count=len(blocks),
+                block_mode=block_mode,
+            )
+            self.latency = SimpleNamespace(
+                selector_sec=0.001,
+                total_sec=0.002,
+                prefill_sec=0.0005,
+                metadata_sec=0.0003,
+                inspection_sec=0.0002,
+            )
+            self.block_inspections = tuple(blocks)
+
+        @property
+        def selected_block_inspections(self):
+            return tuple(block for block in self.block_inspections if block.selected)
+
+    def block(candidate, *, selected=False, text="other", score=0.5):
+        return SimpleNamespace(
+            block_id=candidate.block_id,
+            selected=selected,
+            selected_reason="semantic" if selected else "unselected",
+            final_score=score,
+            block_text=text,
+            preview_text=text,
+            candidate_id=candidate.candidate_id,
+            token_start=candidate.token_start,
+            token_end=candidate.token_end,
+            token_count=candidate.token_len,
+            block_size=candidate.block_size,
+            stride=candidate.stride,
+            block_mode=candidate.block_mode,
+            parent_candidate_id=candidate.parent_candidate_id,
+            candidate_role=candidate.candidate_role,
+        )
+
+    def fake_run_real_block_selector(runtime, prompt, config):
+        seen.append((config.block_mode, config.block_size, len(config.block_candidates)))
+        if config.block_mode == "fixed_40":
+            parent_candidates = tuple(
+                SimpleNamespace(
+                    block_id=block_id,
+                    candidate_id=(
+                        f"s40_stride40_t{block_id * 40}_{block_id * 40 + 40}"
+                    ),
+                    block_mode="fixed_40",
+                    block_size=40,
+                    stride=40,
+                    token_start=block_id * 40,
+                    token_len=40,
+                    token_end=block_id * 40 + 40,
+                    parent_candidate_id=None,
+                    candidate_role="block",
+                )
+                for block_id in range(3)
+            )
+            base_scores = {0: 1.0, 1: 0.8, 2: 0.1}
+            return FakeResult(
+                block_mode="fixed_40",
+                selected_ids=(0,),
+                blocks=tuple(
+                    block(
+                        candidate,
+                        selected=candidate.block_id == 0,
+                        text="promoted TOKEN" if candidate.block_id == 2 else "other",
+                        score=base_scores[candidate.block_id],
+                    )
+                    for candidate in parent_candidates
+                ),
+            )
+
+        assert config.block_mode == "mixed_global_refine_40_16"
+        return FakeResult(
+            block_mode="mixed_global_refine_40_16",
+            selected_ids=tuple(
+                candidate.block_id for candidate in config.block_candidates
+            ),
+            blocks=tuple(
+                block(candidate, selected=True)
+                for candidate in config.block_candidates
+            ),
+        )
+
+    def fake_rerank_candidates(ranked_candidates, *, result, mode, **kwargs):
+        if result.run_summary.block_mode != "fixed_40":
+            return tuple(ranked_candidates)
+        reranked = (
+            dynamic_bench.RankedCandidateSpan(
+                block_id=2,
+                candidate_id="s40_stride40_t80_120",
+                token_start=80,
+                token_end=120,
+                score=0.030,
+                rank=1,
+                block_size=40,
+                block_mode="fixed_40",
+            ),
+            dynamic_bench.RankedCandidateSpan(
+                block_id=0,
+                candidate_id="s40_stride40_t0_40",
+                token_start=0,
+                token_end=40,
+                score=0.029,
+                rank=2,
+                block_size=40,
+                block_mode="fixed_40",
+            ),
+            dynamic_bench.RankedCandidateSpan(
+                block_id=1,
+                candidate_id="s40_stride40_t40_80",
+                token_start=40,
+                token_end=80,
+                score=0.028,
+                rank=3,
+                block_size=40,
+                block_mode="fixed_40",
+            ),
+        )
+        return reranked
+
+    monkeypatch.setattr(dynamic_bench, "LocalHfRuntime", FakeRuntime)
+    monkeypatch.setattr(
+        dynamic_bench, "run_real_block_selector", fake_run_real_block_selector
+    )
+    monkeypatch.setattr(dynamic_bench, "_rerank_candidates", fake_rerank_candidates)
+
+    result = run_dynamic_block_benchmark(
+        model_names=("fake-model",),
+        prompt_cases=(
+            PromptRetrievalCase(
+                name="needle",
+                path=prompt_path,
+                target_fragments=("TOKEN",),
+            ),
+        ),
+        block_modes=("mixed_global_refine_40_16",),
+        qk_aggregation_strategy="block_max",
+        rerank_mode="dense_qk_token_refine",
+        mixed_refine_parent_k=1,
+        mixed_global_anchor_k=2,
+        mixed_fallback_margin=0.05,
+    )
+
+    assert seen == [
+        ("fixed_40", 40, 0),
+        ("mixed_global_refine_40_16", 16, 5),
+    ]
+    row = result.rows[0]
+    assert row.mixed_fallback_used is False
+    assert row.coarse_selected_candidate_ids == (
+        "s40_stride40_t80_120",
+        "s40_stride40_t0_40",
+    )
+
+
 def test_mixed_global_refine_falls_back_to_fixed40_on_weak_margin(
     monkeypatch, tmp_path
 ) -> None:

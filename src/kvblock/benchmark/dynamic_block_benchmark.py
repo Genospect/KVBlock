@@ -1174,6 +1174,16 @@ def _run_mixed_global_refine_selector(
         refine_candidate_limit=config.shortlist_m,
         excluded_block_ids=global_scaffold_excluded_ids,
     )
+    global_scaffold_excluded_id_set = {
+        int(block_id) for block_id in global_scaffold_excluded_ids
+    }
+    global_margin_ranked = _with_sequential_ranks(
+        tuple(
+            candidate
+            for candidate in global_base_ranked
+            if int(candidate.block_id) not in global_scaffold_excluded_id_set
+        )
+    )
     global_block_by_id = _block_candidate_by_id(global_result)
     parent_budget = max(refine_parent_k, global_anchor_k)
     global_selected: list[BlockCandidate] = []
@@ -1188,7 +1198,7 @@ def _run_mixed_global_refine_selector(
         global_selected = list(global_block_by_id.values())[:parent_budget]
 
     if _is_weak_reranked_margin(
-        global_ranked,
+        global_margin_ranked,
         included_count=parent_budget,
         fallback_margin=fallback_margin,
     ):
