@@ -1134,6 +1134,174 @@ def test_run_dynamic_block_benchmark_mixed_global_refine_mode(
     assert row.suppression_decisions[2]["candidate_role"] == "child"
 
 
+def test_mixed_global_refine_selects_parents_after_rerank(
+    monkeypatch, tmp_path
+) -> None:
+    prompt_path = tmp_path / "prompt.txt"
+    prompt_path.write_text("alpha TOKEN beta gamma", encoding="utf-8")
+    final_candidate_ids: tuple[str, ...] = ()
+    rerank_calls: list[tuple[str, str]] = []
+
+    class FakeRuntime:
+        def __init__(self, load_config, *, capture_config=None):
+            self.load_config = load_config
+            self.capture_config = capture_config
+
+        def load_model(self):
+            return None
+
+    class FakeResult:
+        selected_to_semantic_k_ratio = 0.5
+        fallback_mode = "sparse"
+
+        def __init__(self, *, block_mode, blocks, selected_ids, raw_margin=0.1):
+            self.selected_block_ids = selected_ids
+            self.confidence = SimpleNamespace(raw_margin=raw_margin)
+            self.run_summary = SimpleNamespace(
+                representation_name="query_mean_layer_0_key_mean_layer_0",
+                token_count=120,
+                block_count=len(blocks),
+                block_mode=block_mode,
+            )
+            self.latency = SimpleNamespace(
+                selector_sec=0.001,
+                total_sec=0.002,
+                prefill_sec=0.0005,
+                metadata_sec=0.0003,
+                inspection_sec=0.0002,
+            )
+            self.block_inspections = tuple(blocks)
+
+        @property
+        def selected_block_inspections(self):
+            return tuple(block for block in self.block_inspections if block.selected)
+
+    def block(candidate, *, selected=False, text="other", score=0.5):
+        return SimpleNamespace(
+            block_id=candidate.block_id,
+            selected=selected,
+            selected_reason="semantic" if selected else "unselected",
+            final_score=score,
+            block_text=text,
+            preview_text=text,
+            candidate_id=candidate.candidate_id,
+            token_start=candidate.token_start,
+            token_end=candidate.token_end,
+            token_count=candidate.token_len,
+            block_size=candidate.block_size,
+            stride=candidate.stride,
+            block_mode=candidate.block_mode,
+            parent_candidate_id=candidate.parent_candidate_id,
+            candidate_role=candidate.candidate_role,
+        )
+
+    def fake_run_real_block_selector(runtime, prompt, config):
+        nonlocal final_candidate_ids
+        if config.block_mode == "fixed_40":
+            parent_candidates = tuple(
+                SimpleNamespace(
+                    block_id=block_id,
+                    candidate_id=(
+                        f"s40_stride40_t{block_id * 40}_{block_id * 40 + 40}"
+                    ),
+                    block_mode="fixed_40",
+                    block_size=40,
+                    stride=40,
+                    token_start=block_id * 40,
+                    token_len=40,
+                    token_end=block_id * 40 + 40,
+                    parent_candidate_id=None,
+                    candidate_role="block",
+                )
+                for block_id in range(3)
+            )
+            return FakeResult(
+                block_mode="fixed_40",
+                selected_ids=(0,),
+                blocks=tuple(
+                    block(
+                        candidate,
+                        selected=candidate.block_id == 0,
+                        text="promoted TOKEN" if candidate.block_id == 2 else "other",
+                        score=1.0 - candidate.block_id * 0.1,
+                    )
+                    for candidate in parent_candidates
+                ),
+            )
+
+        assert config.block_mode == "mixed_global_refine_40_16"
+        final_candidate_ids = tuple(
+            candidate.candidate_id for candidate in config.block_candidates
+        )
+        return FakeResult(
+            block_mode="mixed_global_refine_40_16",
+            selected_ids=tuple(
+                candidate.block_id for candidate in config.block_candidates
+            ),
+            blocks=tuple(
+                block(candidate, selected=True)
+                for candidate in config.block_candidates
+            ),
+        )
+
+    def fake_rerank_candidates(ranked_candidates, *, result, mode, **kwargs):
+        rerank_calls.append((result.run_summary.block_mode, mode))
+        if result.run_summary.block_mode != "fixed_40":
+            return tuple(ranked_candidates)
+        order = {2: 0, 0: 1, 1: 2}
+        reranked = sorted(ranked_candidates, key=lambda item: order[item.block_id])
+        return tuple(
+            dynamic_bench.RankedCandidateSpan(
+                block_id=candidate.block_id,
+                candidate_id=candidate.candidate_id,
+                token_start=candidate.token_start,
+                token_end=candidate.token_end,
+                score=candidate.score,
+                rank=rank,
+                block_size=candidate.block_size,
+                block_mode=candidate.block_mode,
+            )
+            for rank, candidate in enumerate(reranked, start=1)
+        )
+
+    monkeypatch.setattr(dynamic_bench, "LocalHfRuntime", FakeRuntime)
+    monkeypatch.setattr(
+        dynamic_bench, "run_real_block_selector", fake_run_real_block_selector
+    )
+    monkeypatch.setattr(dynamic_bench, "_rerank_candidates", fake_rerank_candidates)
+
+    result = run_dynamic_block_benchmark(
+        model_names=("fake-model",),
+        prompt_cases=(
+            PromptRetrievalCase(
+                name="needle",
+                path=prompt_path,
+                target_fragments=("TOKEN",),
+            ),
+        ),
+        block_modes=("mixed_global_refine_40_16",),
+        qk_aggregation_strategy="block_max",
+        rerank_mode="dense_qk_token_refine",
+        mixed_refine_parent_k=1,
+        mixed_global_anchor_k=2,
+        mixed_fallback_margin=0.0,
+    )
+
+    assert ("fixed_40", "dense_qk_token_refine") in rerank_calls
+    assert result.rows[0].coarse_selected_candidate_ids == (
+        "s40_stride40_t80_120",
+        "s40_stride40_t0_40",
+    )
+    assert "s40_stride40_t80_120__parent" in final_candidate_ids
+    assert "s40_stride40_t40_80__parent" not in final_candidate_ids
+    assert any(
+        candidate_id.startswith(
+            "s40_stride40_t80_120__child_s16_stride16_t80_"
+        )
+        for candidate_id in final_candidate_ids
+    )
+
+
 def test_mixed_global_refine_falls_back_to_fixed40_on_weak_margin(
     monkeypatch, tmp_path
 ) -> None:

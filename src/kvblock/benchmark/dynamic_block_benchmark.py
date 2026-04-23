@@ -552,6 +552,11 @@ def run_dynamic_block_benchmark(
                             refine_parent_k=mixed_refine_parent_k,
                             global_anchor_k=mixed_global_anchor_k,
                             fallback_margin=mixed_fallback_margin,
+                            rerank_mode=resolved_rerank_mode,
+                            rerank_weight=rerank_weight,
+                            refine_top_n_tokens=refine_top_n_tokens,
+                            refine_score_mode=resolved_refine_score_mode,
+                            exclude_scaffold_blocks=exclude_scaffold_blocks,
                         )
                     )
                     result = mixed_result
@@ -1105,6 +1110,11 @@ def _run_mixed_global_refine_selector(
     refine_parent_k: int,
     global_anchor_k: int,
     fallback_margin: float,
+    rerank_mode: RerankMode,
+    rerank_weight: float,
+    refine_top_n_tokens: int,
+    refine_score_mode: RefineScoreMode,
+    exclude_scaffold_blocks: bool,
 ) -> tuple[Any, Any, tuple[BlockCandidate, ...], bool]:
     global_size, fine_size = mixed_global_refine_spec(block_mode)
     global_result = run_real_block_selector(
@@ -1124,7 +1134,23 @@ def _run_mixed_global_refine_selector(
             include_block_text=True,
         ),
     )
-    global_ranked = _ranked_candidates_from_result(global_result)
+    global_base_ranked = _ranked_candidates_from_result(global_result)
+    global_scaffold_excluded_ids = (
+        _scaffold_block_ids_from_result(global_result)
+        if exclude_scaffold_blocks
+        else ()
+    )
+    global_ranked = _rerank_candidates(
+        global_base_ranked,
+        result=global_result,
+        query_prompt=query_prompt or prompt,
+        mode=rerank_mode,
+        weight=rerank_weight,
+        refine_top_n_tokens=refine_top_n_tokens,
+        refine_score_mode=refine_score_mode,
+        refine_candidate_limit=config.shortlist_m,
+        excluded_block_ids=global_scaffold_excluded_ids,
+    )
     global_block_by_id = _block_candidate_by_id(global_result)
     parent_budget = max(refine_parent_k, global_anchor_k)
     global_selected: list[BlockCandidate] = []
