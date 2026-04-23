@@ -93,6 +93,15 @@ def build_parser() -> argparse.ArgumentParser:
         help="Fallback to fixed40 when the global rail raw margin is below this value.",
     )
     parser.add_argument(
+        "--mixed-max-children-per-parent",
+        type=int,
+        default=None,
+        help=(
+            "Optional Stage-C cap on refined child anchors per parent for mixed "
+            "global-refine modes."
+        ),
+    )
+    parser.add_argument(
         "--suppression-modes",
         default="none",
         help=(
@@ -234,6 +243,7 @@ def main(argv: list[str] | None = None) -> int:
         mixed_refine_parent_k=args.mixed_refine_parent_k,
         mixed_global_anchor_k=args.mixed_global_anchor_k,
         mixed_fallback_margin=args.mixed_fallback_margin,
+        mixed_max_children_per_parent=args.mixed_max_children_per_parent,
         rerank_mode=args.rerank_mode,
         rerank_weight=args.rerank_weight,
         refine_top_n_tokens=args.refine_top_n_tokens,

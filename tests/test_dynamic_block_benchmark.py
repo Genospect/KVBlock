@@ -522,6 +522,7 @@ def test_stage_c_semantic_refined_mix_keeps_both_ranking_rails() -> None:
         original_ranked_block_ids=(1, 2, 10, 3),
         semantic_k=4,
         policy="semantic_refined_mix",
+        block_mode="fixed_40",
     )
 
     assert selected == (1, 2, 10, 11)
@@ -533,9 +534,94 @@ def test_stage_c_refined_only_preserves_existing_selection_policy() -> None:
         original_ranked_block_ids=(1, 2, 10, 3),
         semantic_k=4,
         policy="refined_only",
+        block_mode="fixed_40",
     )
 
     assert selected == (10, 11, 12, 13)
+
+
+def test_stage_c_mixed_child_cap_refills_from_other_parents() -> None:
+    block_by_id = {
+        101: SimpleNamespace(
+            block_id=101,
+            candidate_role="child",
+            parent_candidate_id="parent-a",
+        ),
+        102: SimpleNamespace(
+            block_id=102,
+            candidate_role="child",
+            parent_candidate_id="parent-a",
+        ),
+        201: SimpleNamespace(
+            block_id=201,
+            candidate_role="child",
+            parent_candidate_id="parent-b",
+        ),
+        202: SimpleNamespace(
+            block_id=202,
+            candidate_role="child",
+            parent_candidate_id="parent-b",
+        ),
+        301: SimpleNamespace(
+            block_id=301,
+            candidate_role="child",
+            parent_candidate_id="parent-c",
+        ),
+        401: SimpleNamespace(
+            block_id=401,
+            candidate_role="child",
+            parent_candidate_id="parent-d",
+        ),
+    }
+
+    selected = dynamic_bench._stage_c_semantic_ids(
+        refined_selected_ids=(101, 102, 201, 202),
+        original_ranked_block_ids=(101, 201, 301, 401),
+        semantic_k=4,
+        policy="semantic_refined_mix",
+        block_mode="mixed_global_refine_40_16_stride_8",
+        block_by_id=block_by_id,
+        mixed_max_children_per_parent=1,
+    )
+
+    assert selected == (101, 201, 301, 401)
+
+
+def test_stage_c_mixed_child_cap_allows_multiple_siblings_when_budgeted() -> None:
+    block_by_id = {
+        101: SimpleNamespace(
+            block_id=101,
+            candidate_role="child",
+            parent_candidate_id="parent-a",
+        ),
+        102: SimpleNamespace(
+            block_id=102,
+            candidate_role="child",
+            parent_candidate_id="parent-a",
+        ),
+        201: SimpleNamespace(
+            block_id=201,
+            candidate_role="child",
+            parent_candidate_id="parent-b",
+        ),
+        202: SimpleNamespace(
+            block_id=202,
+            candidate_role="child",
+            parent_candidate_id="parent-b",
+        ),
+    }
+
+    selected = dynamic_bench._stage_c_semantic_ids(
+        refined_selected_ids=(101, 102, 201, 202),
+        original_ranked_block_ids=(101, 201, 102, 202),
+        semantic_k=4,
+        policy="refined_only",
+        block_mode="mixed_global_refine_40_16_stride_8",
+        block_by_id=block_by_id,
+        mixed_max_children_per_parent=2,
+    )
+
+    assert selected == (101, 102, 201, 202)
 
 
 def test_fragment_quality_credits_adjacent_selected_boundary_spans() -> None:
@@ -1646,6 +1732,8 @@ def test_dynamic_block_benchmark_prompt_filter_and_script_parser() -> None:
             "10",
             "--mixed-fallback-margin",
             "0.02",
+            "--mixed-max-children-per-parent",
+            "2",
             "--rerank-mode",
             "dense_qk_token_refine",
             "--rerank-weight",
@@ -1678,6 +1766,7 @@ def test_dynamic_block_benchmark_prompt_filter_and_script_parser() -> None:
     assert args.mixed_refine_parent_k == 6
     assert args.mixed_global_anchor_k == 10
     assert args.mixed_fallback_margin == 0.02
+    assert args.mixed_max_children_per_parent == 2
     assert args.rerank_mode == "dense_qk_token_refine"
     assert args.rerank_weight == 0.4
     assert args.refine_top_n_tokens == 3

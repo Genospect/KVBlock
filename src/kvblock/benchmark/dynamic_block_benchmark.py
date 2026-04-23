@@ -14,7 +14,7 @@ import math
 from pathlib import Path
 import re
 from time import perf_counter
-from typing import Any, Iterable, Literal, Sequence, cast
+from typing import Any, Iterable, Literal, Mapping, Sequence, cast
 
 import torch
 
@@ -394,6 +394,7 @@ def run_dynamic_block_benchmark(
     mixed_refine_parent_k: int = 8,
     mixed_global_anchor_k: int = 8,
     mixed_fallback_margin: float = 0.05,
+    mixed_max_children_per_parent: int | None = None,
     load_config_kwargs: dict[str, Any] | None = None,
     selector_config: RealBlockSelectorConfig | None = None,
     include_block_inspections: bool = False,
@@ -441,6 +442,11 @@ def run_dynamic_block_benchmark(
         raise ValueError("mixed_global_anchor_k must be > 0")
     if mixed_fallback_margin < 0.0:
         raise ValueError("mixed_fallback_margin must be >= 0")
+    if (
+        mixed_max_children_per_parent is not None
+        and mixed_max_children_per_parent <= 0
+    ):
+        raise ValueError("mixed_max_children_per_parent must be > 0 when provided")
     needle_strategy = (
         None
         if needle_qk_aggregation_strategy is None
@@ -705,6 +711,7 @@ def run_dynamic_block_benchmark(
                             refine_top_n_tokens=refine_top_n_tokens,
                             refine_score_mode=resolved_refine_score_mode,
                             stage_c_policy=resolved_stage_c_policy,
+                            mixed_max_children_per_parent=mixed_max_children_per_parent,
                             scaffold_excluded_count=len(scaffold_excluded_ids),
                             scaffold_excluded_ids=scaffold_excluded_ids,
                             original_ranked_block_ids=original_stage_c_ranked_block_ids,
@@ -845,6 +852,7 @@ def _row_from_result(
     refine_top_n_tokens: int,
     refine_score_mode: RefineScoreMode,
     stage_c_policy: StageCPolicyMode,
+    mixed_max_children_per_parent: int | None,
     scaffold_excluded_count: int,
     config: RealBlockSelectorConfig,
     result: Any,
@@ -880,13 +888,23 @@ def _row_from_result(
     refined_selected_ids = _selected_ids_after_suppression(
         result,
         suppression=suppression,
-        semantic_k=config.semantic_k,
+        semantic_k=(
+            None
+            if (
+                mixed_max_children_per_parent is not None
+                and is_mixed_global_refine_mode(block_mode)
+            )
+            else config.semantic_k
+        ),
     )
     semantic_selected_ids = _stage_c_semantic_ids(
         refined_selected_ids=refined_selected_ids,
         original_ranked_block_ids=original_ranked_block_ids,
         semantic_k=config.semantic_k,
         policy=stage_c_policy,
+        block_mode=block_mode,
+        block_by_id=block_by_id,
+        mixed_max_children_per_parent=mixed_max_children_per_parent,
         excluded_block_ids=excluded_ids,
     )
     expansion_radius = halo_radius if halo_radius > 0 else neighbor_expansion
@@ -1646,13 +1664,15 @@ def _selected_ids_after_suppression(
     result: Any,
     *,
     suppression: SuppressionResult,
-    semantic_k: int,
+    semantic_k: int | None,
 ) -> tuple[int, ...]:
-    if semantic_k <= 0:
+    if semantic_k is not None and semantic_k <= 0:
         raise ValueError("semantic_k must be > 0")
     if not suppression.survivor_block_ids:
-        return tuple(int(block_id) for block_id in result.selected_block_ids)
-    return tuple(int(block_id) for block_id in suppression.survivor_block_ids[:semantic_k])
+        selected_ids = tuple(int(block_id) for block_id in result.selected_block_ids)
+    else:
+        selected_ids = tuple(int(block_id) for block_id in suppression.survivor_block_ids)
+    return selected_ids if semantic_k is None else selected_ids[:semantic_k]
 
 
 def _stage_c_semantic_ids(
@@ -1661,12 +1681,20 @@ def _stage_c_semantic_ids(
     original_ranked_block_ids: Sequence[int],
     semantic_k: int,
     policy: StageCPolicyMode,
+    block_mode: str,
+    block_by_id: Mapping[int, Any] | None = None,
+    mixed_max_children_per_parent: int | None = None,
     excluded_block_ids: Iterable[int] = (),
 ) -> tuple[int, ...]:
     """Return benchmark Stage-C anchors from refined and/or original rankings."""
 
     if semantic_k <= 0:
         raise ValueError("semantic_k must be > 0")
+    if (
+        mixed_max_children_per_parent is not None
+        and mixed_max_children_per_parent <= 0
+    ):
+        raise ValueError("mixed_max_children_per_parent must be > 0 when provided")
     resolved_policy = stage_c_policy_from_name(policy)
     excluded = {int(block_id) for block_id in excluded_block_ids}
     refined = _unique_ids(
@@ -1674,19 +1702,32 @@ def _stage_c_semantic_ids(
         for block_id in refined_selected_ids
         if int(block_id) not in excluded
     )
-    if resolved_policy == "refined_only":
-        return refined[:semantic_k]
-
     original = _unique_ids(
         block_id
         for block_id in original_ranked_block_ids
         if int(block_id) not in excluded
     )
-    if not original:
-        return refined[:semantic_k]
-
     selected: list[int] = []
     seen: set[int] = set()
+    child_counts_by_parent: dict[str, int] = {}
+    child_cap_enabled = (
+        mixed_max_children_per_parent is not None
+        and is_mixed_global_refine_mode(block_mode)
+        and block_by_id is not None
+    )
+
+    def child_parent_key(block_id: int) -> str | None:
+        if not child_cap_enabled:
+            return None
+        block = block_by_id.get(block_id)
+        if block is None:
+            return None
+        if getattr(block, "candidate_role", "block") != "child":
+            return None
+        parent_candidate_id = getattr(block, "parent_candidate_id", None)
+        if parent_candidate_id is None:
+            return None
+        return str(parent_candidate_id)
 
     def add_from(ids: Sequence[int], *, limit: int | None = None) -> None:
         added = 0
@@ -1694,13 +1735,32 @@ def _stage_c_semantic_ids(
             normalized = int(block_id)
             if normalized in seen or normalized in excluded:
                 continue
+            parent_key = child_parent_key(normalized)
+            if (
+                parent_key is not None
+                and child_counts_by_parent.get(parent_key, 0)
+                >= int(mixed_max_children_per_parent or 0)
+            ):
+                continue
             selected.append(normalized)
             seen.add(normalized)
+            if parent_key is not None:
+                child_counts_by_parent[parent_key] = (
+                    child_counts_by_parent.get(parent_key, 0) + 1
+                )
             added += 1
             if len(selected) >= semantic_k:
                 return
             if limit is not None and added >= limit:
                 return
+
+    if resolved_policy == "refined_only":
+        add_from(refined)
+        return tuple(selected[:semantic_k])
+
+    if not original:
+        add_from(refined)
+        return tuple(selected[:semantic_k])
 
     original_quota = max(1, semantic_k // 2)
     refined_quota = max(0, semantic_k - original_quota)

@@ -106,7 +106,7 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
     tmp_path: Path,
 ) -> None:
     seen_coarse_top_k: list[int] = []
-    seen_mixed_args: list[tuple[int, int, float]] = []
+    seen_mixed_args: list[tuple[int, int, float, int | None]] = []
 
     def fake_dynamic_benchmark(**kwargs):
         seen_coarse_top_k.append(kwargs["coarse_top_k"])
@@ -115,6 +115,7 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
                 kwargs["mixed_refine_parent_k"],
                 kwargs["mixed_global_anchor_k"],
                 kwargs["mixed_fallback_margin"],
+                kwargs["mixed_max_children_per_parent"],
             )
         )
         case = kwargs["prompt_cases"][0]
@@ -251,6 +252,7 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
         mixed_refine_parent_k=6,
         mixed_global_anchor_k=10,
         mixed_fallback_margin=0.02,
+        mixed_max_children_per_parent=2,
     )
 
     assert result.samples[0].dataset_name == "narrativeqa"
@@ -299,7 +301,7 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
     assert result.stage_c_policy == "semantic_refined_mix"
     assert result.exclude_scaffold_blocks is True
     assert seen_coarse_top_k == [5]
-    assert seen_mixed_args == [(6, 10, 0.02)]
+    assert seen_mixed_args == [(6, 10, 0.02, 2)]
     assert result.oracle_mode == "none"
     assert result.rows[0].oracle_top_block_ids == ()
     assert result.rows[0].oracle_selected_mass_fraction is None
@@ -340,7 +342,7 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
         == pytest.approx(1.0)
     )
     assert seen_coarse_top_k == [5, 2]
-    assert seen_mixed_args == [(6, 10, 0.02), (8, 8, 0.05)]
+    assert seen_mixed_args == [(6, 10, 0.02, 2), (8, 8, 0.05, None)]
 
 
 def test_oracle_metrics_from_fake_dense_qk_scores() -> None:
@@ -445,6 +447,8 @@ def test_longbench_cli_parser_accepts_baseline_flags() -> None:
             "11",
             "--mixed-fallback-margin",
             "0.03",
+            "--mixed-max-children-per-parent",
+            "2",
             "--rerank-mode",
             "dense_qk_token_refine",
             "--rerank-weight",
@@ -482,6 +486,7 @@ def test_longbench_cli_parser_accepts_baseline_flags() -> None:
     assert args.mixed_refine_parent_k == 7
     assert args.mixed_global_anchor_k == 11
     assert args.mixed_fallback_margin == 0.03
+    assert args.mixed_max_children_per_parent == 2
     assert args.rerank_mode == "dense_qk_token_refine"
     assert args.rerank_weight == 0.4
     assert args.refine_top_n_tokens == 3
