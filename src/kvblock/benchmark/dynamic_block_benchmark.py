@@ -93,6 +93,9 @@ VALID_STAGE_C_POLICIES: tuple[StageCPolicyMode, ...] = (
 )
 
 _TOKEN_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9'_-]*")
+_HASH_LENGTH_SCAFFOLD_RE = re.compile(
+    r"^[0-9a-f]{8,}(?:\s+length:?(?:\s+\d+)?)?$"
+)
 _STOPWORDS = frozenset(
     {
         "about",
@@ -1600,6 +1603,10 @@ def _is_scaffold_block(block: Any) -> bool:
     if normalized.startswith("dataset:") and not has_passage_content:
         return True
     if normalized.startswith("sample_id:") and not has_passage_content:
+        return True
+    if normalized.startswith("length:") and not has_passage_content:
+        return True
+    if _HASH_LENGTH_SCAFFOLD_RE.fullmatch(normalized) is not None:
         return True
     if normalized.startswith("input:"):
         return True

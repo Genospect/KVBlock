@@ -426,6 +426,30 @@ def test_scaffold_exclusion_removes_metadata_only_blocks_from_rerank() -> None:
             score=0.5,
             rank=2,
         ),
+        dynamic_bench.RankedCandidateSpan(
+            block_id=2,
+            candidate_id="hash",
+            token_start=80,
+            token_end=96,
+            score=0.4,
+            rank=3,
+        ),
+        dynamic_bench.RankedCandidateSpan(
+            block_id=3,
+            candidate_id="hash_length",
+            token_start=96,
+            token_end=112,
+            score=0.3,
+            rank=4,
+        ),
+        dynamic_bench.RankedCandidateSpan(
+            block_id=4,
+            candidate_id="length_only",
+            token_start=112,
+            token_end=128,
+            score=0.2,
+            rank=5,
+        ),
     )
     result = SimpleNamespace(
         block_inspections=(
@@ -438,6 +462,21 @@ def test_scaffold_exclusion_removes_metadata_only_blocks_from_rerank() -> None:
                 block_id=1,
                 block_text="LENGTH: 6021 CONTEXT: Passage 1: useful evidence",
                 preview_text="CONTEXT: Passage 1: useful evidence",
+            ),
+            SimpleNamespace(
+                block_id=2,
+                block_text="f7f2869a81e92a1",
+                preview_text="f7f2869a81e92a1",
+            ),
+            SimpleNamespace(
+                block_id=3,
+                block_text="f7f2869a81e92a1 LENGTH: 2045",
+                preview_text="f7f2869a81e92a1 LENGTH: 2045",
+            ),
+            SimpleNamespace(
+                block_id=4,
+                block_text="LENGTH: 2045",
+                preview_text="LENGTH: 2045",
             ),
         )
     )
@@ -452,7 +491,7 @@ def test_scaffold_exclusion_removes_metadata_only_blocks_from_rerank() -> None:
         excluded_block_ids=excluded,
     )
 
-    assert excluded == (0,)
+    assert excluded == (0, 2, 3, 4)
     assert [candidate.block_id for candidate in reranked] == [1]
     assert reranked[0].rank == 1
 
