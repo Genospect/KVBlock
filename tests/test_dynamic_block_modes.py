@@ -5,6 +5,7 @@ from kvblock.kv.block_modes import (
     coarse_to_fine_spec,
     generate_block_candidates,
     generate_child_block_candidates,
+    mixed_global_refine_child_stride,
     mixed_global_refine_spec,
     retain_parent_and_child_candidates,
 )
@@ -46,9 +47,12 @@ def test_overlap_block_candidates_use_configured_stride() -> None:
 
 
 def test_block_mode_parser_validates_names() -> None:
-    assert block_modes_from_names(("fixed_16", "multiscale_16_32")) == (
+    assert block_modes_from_names(
+        ("fixed_16", "multiscale_16_32", "mixed_global_refine_40_16_stride_8")
+    ) == (
         "fixed_16",
         "multiscale_16_32",
+        "mixed_global_refine_40_16_stride_8",
     )
 
 
@@ -68,18 +72,23 @@ def test_coarse_to_fine_mode_generates_stable_coarse_regions() -> None:
 
 
 def test_mixed_global_refine_mode_generates_stable_global_regions() -> None:
-    candidates = generate_block_candidates(
-        token_count=82,
-        mode="mixed_global_refine_40_16",
-        default_block_size=16,
-    )
+    for mode, child_stride in (
+        ("mixed_global_refine_40_16", 16),
+        ("mixed_global_refine_40_16_stride_8", 8),
+    ):
+        candidates = generate_block_candidates(
+            token_count=82,
+            mode=mode,
+            default_block_size=16,
+        )
 
-    assert mixed_global_refine_spec("mixed_global_refine_40_16") == (40, 16)
-    assert [candidate.candidate_id for candidate in candidates] == [
-        "s40_stride40_t0_40",
-        "s40_stride40_t40_80",
-        "s40_stride40_t80_82",
-    ]
+        assert mixed_global_refine_spec(mode) == (40, 16)
+        assert mixed_global_refine_child_stride(mode) == child_stride
+        assert [candidate.candidate_id for candidate in candidates] == [
+            "s40_stride40_t0_40",
+            "s40_stride40_t40_80",
+            "s40_stride40_t80_82",
+        ]
 
 
 def test_child_candidates_preserve_parent_lineage() -> None:
@@ -108,6 +117,30 @@ def test_child_candidates_preserve_parent_lineage() -> None:
     assert children[0].parent_token_start == 0
     assert children[0].parent_token_len == 40
     assert children[0].candidate_role == "child"
+
+
+def test_mixed_global_refine_stride8_child_candidates_overlap() -> None:
+    parents = generate_block_candidates(
+        token_count=40,
+        mode="fixed_40",
+        default_block_size=16,
+    )[:1]
+
+    children = generate_child_block_candidates(
+        token_count=40,
+        parent_candidates=parents,
+        fine_block_size=16,
+        fine_stride=8,
+        block_mode="mixed_global_refine_40_16_stride_8",
+    )
+
+    assert [child.candidate_id for child in children] == [
+        "s40_stride40_t0_40__child_s16_stride8_t0_16",
+        "s40_stride40_t0_40__child_s16_stride8_t8_24",
+        "s40_stride40_t0_40__child_s16_stride8_t16_32",
+        "s40_stride40_t0_40__child_s16_stride8_t24_40",
+    ]
+    assert [child.stride for child in children] == [8, 8, 8, 8]
 
 
 def test_parent_retention_candidates_include_parent_and_children() -> None:

@@ -18,6 +18,7 @@ BlockModeName = Literal[
     "coarse_to_fine_32_16",
     "coarse_to_fine_40_16_keep_parent",
     "mixed_global_refine_40_16",
+    "mixed_global_refine_40_16_stride_8",
 ]
 
 VALID_BLOCK_MODES: tuple[BlockModeName, ...] = (
@@ -33,6 +34,7 @@ VALID_BLOCK_MODES: tuple[BlockModeName, ...] = (
     "coarse_to_fine_32_16",
     "coarse_to_fine_40_16_keep_parent",
     "mixed_global_refine_40_16",
+    "mixed_global_refine_40_16_stride_8",
 )
 
 
@@ -212,7 +214,10 @@ def is_parent_retention_coarse_to_fine_mode(mode: str) -> bool:
 def is_mixed_global_refine_mode(mode: str) -> bool:
     """Return whether a block mode keeps a global rail plus local refinement."""
 
-    return mode == "mixed_global_refine_40_16"
+    return mode in {
+        "mixed_global_refine_40_16",
+        "mixed_global_refine_40_16_stride_8",
+    }
 
 
 def coarse_to_fine_spec(mode: str) -> tuple[int, int]:
@@ -234,6 +239,19 @@ def mixed_global_refine_spec(mode: str) -> tuple[int, int]:
     resolved = block_mode_from_name(mode)
     if resolved == "mixed_global_refine_40_16":
         return (40, 16)
+    if resolved == "mixed_global_refine_40_16_stride_8":
+        return (40, 16)
+    raise ValueError(f"not a mixed global-refine mode: {mode!r}")
+
+
+def mixed_global_refine_child_stride(mode: str) -> int:
+    """Return the local child stride for mixed global-refine modes."""
+
+    resolved = block_mode_from_name(mode)
+    if resolved == "mixed_global_refine_40_16":
+        return 16
+    if resolved == "mixed_global_refine_40_16_stride_8":
+        return 8
     raise ValueError(f"not a mixed global-refine mode: {mode!r}")
 
 

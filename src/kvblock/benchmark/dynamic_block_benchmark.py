@@ -40,6 +40,7 @@ from kvblock.kv.block_modes import (
     is_coarse_to_fine_mode,
     is_mixed_global_refine_mode,
     is_parent_retention_coarse_to_fine_mode,
+    mixed_global_refine_child_stride,
     mixed_global_refine_spec,
     retain_parent_and_child_candidates,
 )
@@ -1120,6 +1121,7 @@ def _run_mixed_global_refine_selector(
     exclude_scaffold_blocks: bool,
 ) -> tuple[Any, Any, tuple[BlockCandidate, ...], bool]:
     global_size, fine_size = mixed_global_refine_spec(block_mode)
+    fine_stride = mixed_global_refine_child_stride(block_mode)
     global_result = run_real_block_selector(
         runtime,
         prompt,
@@ -1180,6 +1182,7 @@ def _run_mixed_global_refine_selector(
         parent_candidates=refine_parents,
         fine_block_size=fine_size,
         block_mode=block_mode,
+        fine_stride=fine_stride,
     )
     if not child_candidates:
         return global_result, global_result, tuple(global_selected), True
