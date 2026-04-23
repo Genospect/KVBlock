@@ -219,6 +219,7 @@ class LongBenchBenchmarkRunRow:
     candidate_count_after_suppression: int
     selected_count: int
     selected_to_semantic_k_ratio: float
+    mixed_fallback_used: bool
     selector_latency_sec: float
     prefill_latency_sec: float
     metadata_latency_sec: float
@@ -732,6 +733,7 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
             f"halo={row.halo_radius} cap={_fmt_int_optional(row.max_selected_blocks)} "
             f"length={row.longbench_length} tokens={row.tokens} "
             f"candidates={row.candidate_block_count} selected/K={row.selected_to_semantic_k_ratio:.3f} "
+            f"mixed_fallback={row.mixed_fallback_used} "
             f"answer_presence={row.answer_present_count}/{row.answer_count} "
             f"expected_blocks={row.expected_block_count} "
             f"expected_distance={_fmt_optional(row.expected_block_distance)} "
@@ -1047,6 +1049,7 @@ def _longbench_rows(
                 candidate_count_after_suppression=row.candidate_count_after_suppression,
                 selected_count=row.selected_count,
                 selected_to_semantic_k_ratio=row.selected_to_semantic_k_ratio,
+                mixed_fallback_used=row.mixed_fallback_used,
                 selector_latency_sec=row.selector_latency_sec,
                 prefill_latency_sec=row.prefill_latency_sec,
                 metadata_latency_sec=row.metadata_latency_sec,
