@@ -23,6 +23,8 @@ DEFAULT_COMPARISON_COLUMNS: tuple[str, ...] = (
     "halo_radius",
     "row_count",
     "scoreable_run_count",
+    "mixed_fallback_count",
+    "mixed_fallback_rate",
     "mean_recall",
     "recall_delta_vs_control",
     "mean_precision",
@@ -75,6 +77,8 @@ class LongBenchComparisonRow:
     oracle_mode: str
     row_count: int
     scoreable_run_count: int
+    mixed_fallback_count: int | None
+    mixed_fallback_rate: float | None
     mean_expected_block_count: float | None
     mean_answer_presence_rate: float | None
     mean_recall: float | None
@@ -279,6 +283,7 @@ def _comparison_row_from_group(
     scoreable_rows = [row for row in rows if _is_scoreable(row)]
     token_fractions = [_selected_token_fraction(row) for row in rows]
     selected_tokens = [_selected_token_count(row) for row in rows]
+    mixed_fallback_count = _mixed_fallback_count(rows)
     return LongBenchComparisonRow(
         run_label=run_label,
         scope=scope_name,
@@ -312,6 +317,10 @@ def _comparison_row_from_group(
         oracle_mode=str(payload.get("oracle_mode", "")),
         row_count=len(rows),
         scoreable_run_count=len(scoreable_rows),
+        mixed_fallback_count=mixed_fallback_count,
+        mixed_fallback_rate=(
+            None if mixed_fallback_count is None else mixed_fallback_count / len(rows)
+        ),
         mean_expected_block_count=_mean(
             _optional_float(row.get("expected_block_count")) for row in scoreable_rows
         ),
@@ -420,6 +429,12 @@ def _is_scoreable(row: Mapping[str, Any]) -> bool:
     if explicit is not None:
         return bool(explicit)
     return _optional_float(row.get("target_recall")) is not None
+
+
+def _mixed_fallback_count(rows: Sequence[Mapping[str, Any]]) -> int | None:
+    if not any("mixed_fallback_used" in row for row in rows):
+        return None
+    return sum(bool(row.get("mixed_fallback_used")) for row in rows)
 
 
 def _selected_token_count(row: Mapping[str, Any]) -> float | None:

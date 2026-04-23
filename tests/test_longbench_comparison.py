@@ -40,8 +40,9 @@ def _row(
     representation_source: str = "query_only_last_layer",
     block_mode: str = "fixed_40",
     scoreable: bool = True,
+    mixed_fallback_used: bool | None = None,
 ) -> dict:
-    return {
+    row = {
         "dataset_name": dataset_name,
         "model_name": "Qwen/Qwen2.5-1.5B-Instruct",
         "representation_source": representation_source,
@@ -69,6 +70,9 @@ def _row(
         "selector_latency_sec": selector_latency_sec,
         "scaffold_excluded_count": 1,
     }
+    if mixed_fallback_used is not None:
+        row["mixed_fallback_used"] = mixed_fallback_used
+    return row
 
 
 def _load_script():
@@ -127,6 +131,7 @@ def test_compare_longbench_runs_applies_named_control_deltas(tmp_path: Path) -> 
                 selected_spans=["0:40"],
                 selector_latency_sec=0.005,
                 representation_source="query_mean_last_layer",
+                mixed_fallback_used=True,
             ),
             _row(
                 dataset_name="musique",
@@ -136,6 +141,7 @@ def test_compare_longbench_runs_applies_named_control_deltas(tmp_path: Path) -> 
                 selected_spans=["0:40"],
                 selector_latency_sec=0.007,
                 representation_source="query_mean_last_layer",
+                mixed_fallback_used=False,
             ),
             _row(
                 dataset_name="hotpotqa",
@@ -146,6 +152,7 @@ def test_compare_longbench_runs_applies_named_control_deltas(tmp_path: Path) -> 
                 selector_latency_sec=0.005,
                 representation_source="query_mean_last_layer",
                 scoreable=False,
+                mixed_fallback_used=True,
             ),
         ],
     )
@@ -180,6 +187,12 @@ def test_compare_longbench_runs_applies_named_control_deltas(tmp_path: Path) -> 
     assert experiment_all.selected_token_fraction_delta_vs_control == pytest.approx(
         0.4 - ((0.8 + 0.8 + 0.4) / 3.0)
     )
+    assert control_all.mixed_fallback_count is None
+    assert control_all.mixed_fallback_rate is None
+    assert experiment_all.mixed_fallback_count == 2
+    assert experiment_all.mixed_fallback_rate == pytest.approx(2 / 3)
+    assert experiment_hotpot.mixed_fallback_count == 2
+    assert experiment_hotpot.mixed_fallback_rate == pytest.approx(1.0)
     assert experiment_all.selector_latency_delta_vs_control == pytest.approx(0.001)
     assert experiment_hotpot.window_recall_delta_vs_control == pytest.approx(0.05)
     assert experiment_all.representation_source == "query_mean_last_layer"
