@@ -289,6 +289,8 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
     assert result.rows[0].target_recall == 1.0
     assert result.dataset_summaries[0].mean_precision == 0.5
     assert result.dataset_summaries[0].mean_scaffold_excluded_count == 1.0
+    assert result.dataset_summaries[0].mean_selected_tokens == 80.0
+    assert result.dataset_summaries[0].mean_selected_token_fraction == 80 / 5120
     assert result.dataset_summaries[0].mean_evidence_window_recall == 1.0
     assert result.dataset_summaries[0].mean_evidence_window_precision == 0.5
     assert result.dataset_summaries[0].scoreable_run_count == 1

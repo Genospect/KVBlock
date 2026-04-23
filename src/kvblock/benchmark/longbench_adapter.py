@@ -263,6 +263,8 @@ class LongBenchDatasetSummary:
     scoreable_run_count: int
     mean_expected_block_count: float
     mean_selected_to_semantic_k_ratio: float
+    mean_selected_tokens: float
+    mean_selected_token_fraction: float
     mean_selector_latency_sec: float
     mean_scaffold_excluded_count: float
     mean_recall: float | None
@@ -698,6 +700,8 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
             f"scoreable_runs={summary.scoreable_run_count}/{summary.run_count} "
             f"mean_expected_blocks={summary.mean_expected_block_count:.1f} "
             f"mean_selected/K={summary.mean_selected_to_semantic_k_ratio:.3f} "
+            f"mean_selected_tokens={summary.mean_selected_tokens:.1f} "
+            f"mean_selected_token_fraction={summary.mean_selected_token_fraction:.3f} "
             f"mean_selector={summary.mean_selector_latency_sec:.6f}s "
             f"mean_scaffold_excluded={summary.mean_scaffold_excluded_count:.1f} "
             f"mean_recall={_fmt_optional(summary.mean_recall)} "
@@ -1346,6 +1350,14 @@ def _dataset_summaries(
                 row.selected_to_semantic_k_ratio for row in group
             )
             or 0.0,
+            mean_selected_tokens=_mean(
+                _selected_token_count(row) for row in group
+            )
+            or 0.0,
+            mean_selected_token_fraction=_mean(
+                _selected_token_fraction(row) for row in group
+            )
+            or 0.0,
             mean_selector_latency_sec=_mean(row.selector_latency_sec for row in group) or 0.0,
             mean_scaffold_excluded_count=_mean(
                 row.scaffold_excluded_count for row in group
@@ -1383,6 +1395,23 @@ def _dataset_summaries(
         )
         for dataset_name, group in sorted(grouped.items())
     )
+
+
+def _selected_token_count(row: LongBenchBenchmarkRunRow) -> int:
+    total = 0
+    for block in row.selected_blocks:
+        start = block.get("token_start")
+        end = block.get("token_end")
+        if start is None or end is None:
+            continue
+        total += max(0, int(end) - int(start))
+    return total
+
+
+def _selected_token_fraction(row: LongBenchBenchmarkRunRow) -> float:
+    if row.tokens <= 0:
+        return 0.0
+    return _selected_token_count(row) / row.tokens
 
 
 def _rank_by_block_id(
