@@ -2072,7 +2072,7 @@ def _fragment_block_ids(
     direct = tuple(
         block_id
         for block_id in block_ids
-        if fragment in block_text_by_id.get(block_id, "")
+        if _contains_fragment(block_text_by_id.get(block_id, ""), fragment)
     )
     if direct or block_by_id is None:
         return direct
@@ -2145,14 +2145,56 @@ def _fragment_block_ids_in_chain(
         parts.append((block.block_id, start, cursor))
         texts.append(text)
     combined = "".join(texts)
-    hit_start = combined.find(fragment)
-    if hit_start < 0:
+    hit_span = _normalized_fragment_span(combined, fragment)
+    if hit_span is None:
         return ()
-    hit_end = hit_start + len(fragment)
+    hit_start, hit_end = hit_span
     return tuple(
         block_id
         for block_id, start, end in parts
         if max(start, hit_start) < min(end, hit_end)
+    )
+
+
+def _contains_fragment(text: str, fragment: str) -> bool:
+    """Return whether ``fragment`` appears in text with light normalization."""
+
+    return _normalized_fragment_span(text, fragment) is not None
+
+
+def _normalized_fragment_span(text: str, fragment: str) -> tuple[int, int] | None:
+    """Find ``fragment`` after casefolding and whitespace normalization."""
+
+    normalized_fragment = " ".join(fragment.strip().casefold().split())
+    if not normalized_fragment:
+        return None
+    normalized_chars: list[str] = []
+    original_positions: list[int] = []
+    previous_was_space = True
+    for index, char in enumerate(text):
+        folded = char.casefold()
+        if folded.isspace():
+            if previous_was_space:
+                continue
+            normalized_chars.append(" ")
+            original_positions.append(index)
+            previous_was_space = True
+            continue
+        for folded_char in folded:
+            normalized_chars.append(folded_char)
+            original_positions.append(index)
+        previous_was_space = False
+    if normalized_chars and normalized_chars[-1] == " ":
+        normalized_chars.pop()
+        original_positions.pop()
+    normalized_text = "".join(normalized_chars)
+    hit_start = normalized_text.find(normalized_fragment)
+    if hit_start < 0:
+        return None
+    hit_end = hit_start + len(normalized_fragment)
+    return (
+        original_positions[hit_start],
+        original_positions[hit_end - 1] + 1,
     )
 
 
@@ -2366,6 +2408,14 @@ def _query_only_context_candidates(
     context_prompt = prompt.rsplit("\nINPUT:\n", maxsplit=1)[0].strip()
     if not context_prompt:
         return config.block_candidates
+    context_marker = "CONTEXT:\n"
+    context_offset = 0
+    if context_marker in context_prompt:
+        marker_end = context_prompt.index(context_marker) + len(context_marker)
+        context_offset = runtime.tokenize(context_prompt[:marker_end]).token_count
+        context_prompt = context_prompt[marker_end:].strip()
+        if not context_prompt:
+            return config.block_candidates
     context_tokens = runtime.tokenize(context_prompt).token_count
     candidate_mode = block_mode
     if is_coarse_to_fine_mode(block_mode):
@@ -2374,12 +2424,40 @@ def _query_only_context_candidates(
     elif is_mixed_global_refine_mode(block_mode):
         global_size, _fine_size = mixed_global_refine_spec(block_mode)
         candidate_mode = cast(BlockModeName, f"fixed_{global_size}")
-    return generate_block_candidates(
+    candidates = generate_block_candidates(
         token_count=context_tokens,
         mode=candidate_mode,
         default_block_size=config.block_size,
         overlap_stride=config.overlap_stride,
     )
+    if context_offset <= 0:
+        return candidates
+    return _offset_block_candidates(candidates, token_offset=context_offset)
+
+
+def _offset_block_candidates(
+    candidates: Sequence[BlockCandidate],
+    *,
+    token_offset: int,
+) -> tuple[BlockCandidate, ...]:
+    """Shift generated context-local candidates onto absolute prompt tokens."""
+
+    if token_offset <= 0:
+        return tuple(candidates)
+    shifted: list[BlockCandidate] = []
+    for candidate in candidates:
+        token_start = candidate.token_start + token_offset
+        shifted.append(
+            replace(
+                candidate,
+                token_start=token_start,
+                candidate_id=(
+                    f"s{candidate.block_size}_stride{candidate.stride}_"
+                    f"t{token_start}_{token_start + candidate.token_len}"
+                ),
+            )
+        )
+    return tuple(shifted)
 
 
 def _format_summary(summary: DynamicBlockAggregateSummary) -> str:

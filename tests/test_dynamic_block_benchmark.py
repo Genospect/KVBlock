@@ -517,6 +517,44 @@ def test_neighbor_expansion_does_not_reintroduce_excluded_scaffold() -> None:
     assert expanded == (1, 2)
 
 
+def test_fragment_quality_uses_answer_presence_normalization() -> None:
+    quality = dynamic_bench._fragment_quality_for_result(
+        selected_ids=(1,),
+        block_text_by_id={
+            1: "The answer is alpha\n   evidence in this passage.",
+        },
+        block_by_id={
+            1: SimpleNamespace(block_id=1, token_start=0, token_end=40),
+        },
+        target_fragments=("Alpha Evidence",),
+    )
+
+    assert quality.expected_block_ids == (1,)
+    assert quality.selected_expected_block_ids == (1,)
+    assert quality.target_recall == 1.0
+
+
+def test_fragment_quality_maps_normalized_cross_block_hits() -> None:
+    block_by_id = {
+        1: SimpleNamespace(block_id=1, token_start=0, token_end=16),
+        2: SimpleNamespace(block_id=2, token_start=16, token_end=32),
+    }
+
+    quality = dynamic_bench._fragment_quality_for_result(
+        selected_ids=(1, 2),
+        block_text_by_id={
+            1: "Alpha\n",
+            2: "  Evidence is split.",
+        },
+        block_by_id=block_by_id,
+        target_fragments=("alpha evidence",),
+    )
+
+    assert quality.expected_block_ids == (1, 2)
+    assert quality.selected_expected_block_ids == (1, 2)
+    assert quality.target_recall == 1.0
+
+
 def test_stage_c_semantic_refined_mix_keeps_both_ranking_rails() -> None:
     selected = dynamic_bench._stage_c_semantic_ids(
         refined_selected_ids=(10, 11, 12, 13),
@@ -982,12 +1020,12 @@ def test_query_only_coarse_to_fine_restricts_coarse_candidates_to_context(
 
     assert seen[0] == (
         "fixed_40",
-        ((0, context_token_count),),
+        ((1, context_token_count),),
         "Which question tail mentions TOKEN?",
     )
     assert seen[1][0] == "coarse_to_fine_40_16"
-    assert seen[1][1] == ((0, context_token_count),)
-    assert result.rows[0].coarse_selected_spans == (f"0:{context_token_count}",)
+    assert seen[1][1] == ((1, context_token_count),)
+    assert result.rows[0].coarse_selected_spans == (f"1:{context_token_count}",)
 
 
 def test_run_dynamic_block_benchmark_coarse_to_fine_keep_parent_mode(
