@@ -192,6 +192,13 @@ class LongBenchBenchmarkRunRow:
     missed_expected_block_ids: tuple[int, ...]
     selected_spans: tuple[str, ...]
     expected_block_distance: int | None
+    expected_parent_hit_count: int
+    expected_parent_miss_count: int
+    child_rank_miss_count: int
+    expected_parent_recall: float | None
+    parent_hit_expected_block_ids: tuple[int, ...]
+    child_rank_miss_expected_block_ids: tuple[int, ...]
+    parent_miss_expected_block_ids: tuple[int, ...]
     selected_blocks: tuple[dict[str, Any], ...]
     expected_blocks: tuple[dict[str, Any], ...]
     missed_expected_blocks: tuple[dict[str, Any], ...]
@@ -267,6 +274,9 @@ class LongBenchDatasetSummary:
     mean_answer_presence_rate: float
     scoreable_run_count: int
     mean_expected_block_count: float
+    mean_expected_parent_recall: float | None
+    mean_child_rank_miss_count: float
+    mean_parent_miss_count: float
     mean_selected_to_semantic_k_ratio: float
     mean_selected_tokens: float
     mean_selected_token_fraction: float
@@ -706,6 +716,9 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
             f"answer_presence={summary.mean_answer_presence_rate:.3f} "
             f"scoreable_runs={summary.scoreable_run_count}/{summary.run_count} "
             f"mean_expected_blocks={summary.mean_expected_block_count:.1f} "
+            f"mean_parent_recall={_fmt_optional(summary.mean_expected_parent_recall)} "
+            f"mean_child_rank_miss={summary.mean_child_rank_miss_count:.1f} "
+            f"mean_parent_miss={summary.mean_parent_miss_count:.1f} "
             f"mean_selected/K={summary.mean_selected_to_semantic_k_ratio:.3f} "
             f"mean_selected_tokens={summary.mean_selected_tokens:.1f} "
             f"mean_selected_token_fraction={summary.mean_selected_token_fraction:.3f} "
@@ -744,6 +757,9 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
             f"mixed_child_cap={_fmt_int_optional(row.mixed_max_children_per_parent)} "
             f"answer_presence={row.answer_present_count}/{row.answer_count} "
             f"expected_blocks={row.expected_block_count} "
+            f"parent_recall={_fmt_optional(row.expected_parent_recall)} "
+            f"child_rank_miss={row.child_rank_miss_count} "
+            f"parent_miss={row.expected_parent_miss_count} "
             f"expected_distance={_fmt_optional(row.expected_block_distance)} "
             f"expected_ranks={list(row.expected_block_ranks)} "
             f"expected_rank_moves={_format_rank_movements(row.expected_rank_movements)} "
@@ -909,6 +925,12 @@ def _longbench_rows(
             if top1_score is None or best_expected_score is None
             else top1_score - best_expected_score
         )
+        parent_diagnostics = _parent_hit_diagnostics(
+            inspection_by_id,
+            selected_ids=row.selected_ids,
+            expected_ids=row.retrieval_quality.expected_block_ids,
+            missed_expected_ids=row.retrieval_quality.missed_expected_block_ids,
+        )
         rows.append(
             LongBenchBenchmarkRunRow(
                 dataset_name=sample.dataset_name,
@@ -1020,6 +1042,19 @@ def _longbench_rows(
                     selected_ids=row.selected_ids,
                     expected_ids=row.retrieval_quality.expected_block_ids,
                 ),
+                expected_parent_hit_count=parent_diagnostics["parent_hit_count"],
+                expected_parent_miss_count=parent_diagnostics["parent_miss_count"],
+                child_rank_miss_count=parent_diagnostics["child_rank_miss_count"],
+                expected_parent_recall=parent_diagnostics["parent_recall"],
+                parent_hit_expected_block_ids=parent_diagnostics[
+                    "parent_hit_expected_ids"
+                ],
+                child_rank_miss_expected_block_ids=parent_diagnostics[
+                    "child_rank_miss_expected_ids"
+                ],
+                parent_miss_expected_block_ids=parent_diagnostics[
+                    "parent_miss_expected_ids"
+                ],
                 selected_blocks=_records_for_ids(inspection_by_id, row.selected_ids),
                 expected_blocks=_records_for_ids(
                     inspection_by_id,
@@ -1361,6 +1396,13 @@ def _dataset_summaries(
             mean_answer_presence_rate=_mean(row.answer_presence_rate for row in group) or 0.0,
             scoreable_run_count=sum(1 for row in group if row.scoreable_by_answer_presence),
             mean_expected_block_count=_mean(row.expected_block_count for row in group) or 0.0,
+            mean_expected_parent_recall=_mean_optional(
+                row.expected_parent_recall for row in group
+            ),
+            mean_child_rank_miss_count=_mean(row.child_rank_miss_count for row in group)
+            or 0.0,
+            mean_parent_miss_count=_mean(row.expected_parent_miss_count for row in group)
+            or 0.0,
             mean_selected_to_semantic_k_ratio=_mean(
                 row.selected_to_semantic_k_ratio for row in group
             )
@@ -1644,6 +1686,74 @@ def _records_for_ids(
     )
 
 
+def _parent_hit_diagnostics(
+    inspection_by_id: Mapping[int, Mapping[str, Any]],
+    *,
+    selected_ids: Sequence[int],
+    expected_ids: Sequence[int],
+    missed_expected_ids: Sequence[int],
+) -> dict[str, Any]:
+    """Return parent-level routing diagnostics for expected evidence blocks."""
+
+    expected = tuple(int(block_id) for block_id in expected_ids)
+    if not expected:
+        return {
+            "parent_hit_count": 0,
+            "parent_miss_count": 0,
+            "child_rank_miss_count": 0,
+            "parent_recall": None,
+            "parent_hit_expected_ids": (),
+            "child_rank_miss_expected_ids": (),
+            "parent_miss_expected_ids": (),
+        }
+    selected_parent_keys = {
+        parent_key
+        for block_id in selected_ids
+        if (record := inspection_by_id.get(int(block_id))) is not None
+        if (parent_key := _parent_route_key(record)) is not None
+    }
+    parent_hit_ids = tuple(
+        block_id
+        for block_id in expected
+        if (
+            record := inspection_by_id.get(block_id)
+        ) is not None
+        and (parent_key := _parent_route_key(record)) is not None
+        and parent_key in selected_parent_keys
+    )
+    parent_hit_set = set(parent_hit_ids)
+    missed = tuple(int(block_id) for block_id in missed_expected_ids)
+    child_rank_miss_ids = tuple(
+        block_id for block_id in missed if block_id in parent_hit_set
+    )
+    parent_miss_ids = tuple(
+        block_id for block_id in missed if block_id not in parent_hit_set
+    )
+    return {
+        "parent_hit_count": len(parent_hit_ids),
+        "parent_miss_count": len(parent_miss_ids),
+        "child_rank_miss_count": len(child_rank_miss_ids),
+        "parent_recall": len(parent_hit_ids) / len(expected),
+        "parent_hit_expected_ids": parent_hit_ids,
+        "child_rank_miss_expected_ids": child_rank_miss_ids,
+        "parent_miss_expected_ids": parent_miss_ids,
+    }
+
+
+def _parent_route_key(record: Mapping[str, Any]) -> str | None:
+    """Return the parent routing key for a parent/child/block record."""
+
+    if str(record.get("candidate_role", "block")) == "child":
+        parent_candidate_id = record.get("parent_candidate_id")
+        if parent_candidate_id not in (None, ""):
+            return str(parent_candidate_id)
+    candidate_id = record.get("candidate_id")
+    if candidate_id not in (None, ""):
+        return str(candidate_id)
+    block_id = record.get("block_id")
+    return None if block_id is None else f"block:{int(block_id)}"
+
+
 def _top_ranked_blocks(
     suppression_decisions: Sequence[Mapping[str, Any]],
     *,
@@ -1681,6 +1791,11 @@ def _compact_inspection_record(record: Mapping[str, Any]) -> dict[str, Any]:
         "token_start": record.get("token_start"),
         "token_end": record.get("token_end"),
         "block_size": record.get("block_size"),
+        "candidate_role": record.get("candidate_role"),
+        "parent_block_id": record.get("parent_block_id"),
+        "parent_candidate_id": record.get("parent_candidate_id"),
+        "parent_token_start": record.get("parent_token_start"),
+        "parent_token_end": record.get("parent_token_end"),
         "stage_a_score": record.get("stage_a_score"),
         "stage_b_score": record.get("stage_b_score"),
         "final_score": record.get("final_score"),

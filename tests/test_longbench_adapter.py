@@ -353,6 +353,41 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
     assert seen_mixed_args == [(6, 10, 0.02, 2), (8, 8, 0.05, None)]
 
 
+def test_parent_hit_diagnostics_split_child_and_parent_misses() -> None:
+    diagnostics = longbench._parent_hit_diagnostics(
+        {
+            1: {
+                "block_id": 1,
+                "candidate_id": "parent-a__child0",
+                "candidate_role": "child",
+                "parent_candidate_id": "parent-a",
+            },
+            2: {
+                "block_id": 2,
+                "candidate_id": "parent-a__child1",
+                "candidate_role": "child",
+                "parent_candidate_id": "parent-a",
+            },
+            3: {
+                "block_id": 3,
+                "candidate_id": "parent-b__child0",
+                "candidate_role": "child",
+                "parent_candidate_id": "parent-b",
+            },
+        },
+        selected_ids=(1,),
+        expected_ids=(2, 3),
+        missed_expected_ids=(2, 3),
+    )
+
+    assert diagnostics["parent_hit_count"] == 1
+    assert diagnostics["parent_miss_count"] == 1
+    assert diagnostics["child_rank_miss_count"] == 1
+    assert diagnostics["parent_recall"] == pytest.approx(0.5)
+    assert diagnostics["child_rank_miss_expected_ids"] == (2,)
+    assert diagnostics["parent_miss_expected_ids"] == (3,)
+
+
 def test_oracle_metrics_from_fake_dense_qk_scores() -> None:
     oracle = longbench.DenseQKOracleDiagnostics(
         top_block_ids=(3, 1, 2, 4),

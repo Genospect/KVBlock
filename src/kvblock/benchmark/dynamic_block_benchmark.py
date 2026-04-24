@@ -1991,6 +1991,10 @@ def _block_inspection_records(
             "stride": getattr(block, "stride", None),
             "block_mode": getattr(block, "block_mode", None),
             "candidate_role": getattr(block, "candidate_role", "block"),
+            "parent_block_id": getattr(block, "parent_block_id", None),
+            "parent_candidate_id": getattr(block, "parent_candidate_id", None),
+            "parent_token_start": getattr(block, "parent_token_start", None),
+            "parent_token_end": getattr(block, "parent_token_end", None),
         }
         original_rank = (
             None
