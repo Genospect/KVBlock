@@ -240,10 +240,10 @@ class RealBlockSelectorResult:
             "selected_block_ids": list(self.selected_block_ids),
             "selected_to_semantic_k_ratio": self.selected_to_semantic_k_ratio,
             "fallback_mode": self.fallback_mode,
-            "confidence": asdict(self.confidence),
+            "confidence": self.confidence.to_dict(),
             "run_summary": self.run_summary.to_dict(),
             "latency": self.latency.to_dict(),
-            "trace": asdict(self.trace),
+            "trace": self.trace.to_dict(),
             "block_inspections": [
                 block.to_dict() for block in self.block_inspections
             ],

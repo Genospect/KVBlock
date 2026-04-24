@@ -28,6 +28,13 @@ from kvblock.selector.policies import (
 from kvblock.selector.stage_a import StageAScorer
 from kvblock.selector.stage_b import StageBRefiner
 from kvblock.selector.stage_c import StageCSelector
+from kvblock.selector.trace import (
+    BlockScoreTrace,
+    ConfidenceTrace,
+    FallbackTrace,
+    SelectionSplitTrace,
+    SelectorDecisionTrace,
+)
 from kvblock.summaries.sign_sketch import generate_sign_sketch
 
 
@@ -52,76 +59,6 @@ class SelectorPipelineConfig:
             confidence=ConfidencePolicy.from_selector_config(config),
             fallback=FallbackPolicy.from_selector_config(config),
         )
-
-
-@dataclass(frozen=True, slots=True)
-class BlockScoreTrace:
-    """Serializable per-block score record for pipeline traces."""
-
-    block_id: int
-    token_start: int
-    token_len: int
-    approx_similarity_score: float
-    recency_score: float
-    attn_score: float
-    priority_score: float
-    stage_a_score: float
-    hamming_similarity: float
-    stage_b_score: float
-    final_score: float
-
-
-@dataclass(frozen=True, slots=True)
-class SelectionSplitTrace:
-    """Trace of rail-preserved vs semantic selections."""
-
-    recent_block_ids: tuple[int, ...]
-    anchor_block_ids: tuple[int, ...]
-    semantic_block_ids: tuple[int, ...]
-    final_selected_block_ids: tuple[int, ...]
-    rail_block_ids: tuple[int, ...]
-    rail_block_count: int
-    semantic_block_count: int
-
-
-@dataclass(frozen=True, slots=True)
-class ConfidenceTrace:
-    """Traceable confidence metrics for one selector invocation."""
-
-    semantic_candidate_block_ids: tuple[int, ...]
-    semantic_included_count: int
-    raw_margin: float
-    normalized_margin: float | None
-    selected_mass: float | None
-    normalized_mass: float | None
-    is_confident: bool
-
-
-@dataclass(frozen=True, slots=True)
-class FallbackTrace:
-    """Trace-friendly fallback decision record."""
-
-    action: str
-    mode: str
-    next_semantic_top_k: int
-    next_keep_recent_blocks: int
-    use_dense_fallback: bool
-    reason_code: str
-
-
-@dataclass(frozen=True, slots=True)
-class SelectorDecisionTrace:
-    """Complete end-to-end decision trace for one query/step."""
-
-    step_id: str | int | None
-    query_sign_sketch: int
-    stage_a_scores: tuple[BlockScoreTrace, ...]
-    stage_a_shortlist_block_ids: tuple[int, ...]
-    stage_b_scores: tuple[BlockScoreTrace, ...]
-    pre_fallback_selection: SelectionSplitTrace
-    final_selection: SelectionSplitTrace
-    confidence: ConfidenceTrace
-    fallback: FallbackTrace
 
 
 @dataclass(frozen=True, slots=True)
@@ -198,10 +135,11 @@ class SelectorPipeline:
             if keep_recent_blocks is None
             else keep_recent_blocks
         )
+        resolved_anchor_block_ids = tuple(anchor_block_ids)
 
         pre_fallback_selection = self.stage_c.select(
             stage_b_refined,
-            anchor_block_ids=anchor_block_ids,
+            anchor_block_ids=resolved_anchor_block_ids,
             semantic_top_k=current_semantic_top_k,
             keep_recent_blocks=current_keep_recent,
             context_tokens=context_tokens,
@@ -238,7 +176,7 @@ class SelectorPipeline:
             self.stage_c,
             stage_b_refined,
             pre_fallback_selection,
-            anchor_block_ids=anchor_block_ids,
+            anchor_block_ids=resolved_anchor_block_ids,
             semantic_top_k=fallback_trace.next_semantic_top_k,
             keep_recent_blocks=fallback_trace.next_keep_recent_blocks,
             context_tokens=context_tokens,
@@ -248,13 +186,24 @@ class SelectorPipeline:
         trace = SelectorDecisionTrace(
             step_id=step_id,
             query_sign_sketch=resolved_query_sign_sketch,
+            candidate_block_ids=tuple(int(block.block_id) for block in metadata_blocks),
             stage_a_scores=tuple(_score_trace(block) for block in stage_a_all_scores),
             stage_a_shortlist_block_ids=tuple(
                 int(block.block_id) for block in stage_a_shortlist
             ),
             stage_b_scores=tuple(_score_trace(block) for block in stage_b_refined),
-            pre_fallback_selection=_selection_trace(pre_fallback_selection),
-            final_selection=_selection_trace(final_selection),
+            pre_fallback_selection=_selection_trace(
+                pre_fallback_selection,
+                candidates=stage_b_refined,
+                anchor_block_ids=resolved_anchor_block_ids,
+                semantic_top_k=current_semantic_top_k,
+            ),
+            final_selection=_selection_trace(
+                final_selection,
+                candidates=stage_b_refined,
+                anchor_block_ids=resolved_anchor_block_ids,
+                semantic_top_k=fallback_trace.next_semantic_top_k,
+            ),
             confidence=confidence_trace,
             fallback=fallback_trace,
         )
@@ -331,7 +280,8 @@ def _build_fallback_trace(
         "add_recent_blocks": "add_recent",
         "dense_fallback": "dense",
     }
-    reason_code = _reason_code(confidence, confidence_policy)
+    reason_codes = _reason_codes(confidence, confidence_policy)
+    reason_code = _reason_code(reason_codes)
     return FallbackTrace(
         action=decision.action,
         mode=mode_map[decision.action],
@@ -339,12 +289,13 @@ def _build_fallback_trace(
         next_keep_recent_blocks=decision.next_keep_recent_blocks,
         use_dense_fallback=decision.use_dense_fallback,
         reason_code=reason_code,
+        reason_codes=reason_codes,
     )
 
 
-def _reason_code(
+def _reason_codes(
     confidence: ConfidenceTrace, confidence_policy: ConfidencePolicy
-) -> str:
+) -> tuple[str, ...]:
     low_margin = confidence.raw_margin < confidence_policy.margin_threshold
     low_normalized_margin = (
         confidence_policy.normalized_margin_threshold is not None
@@ -363,21 +314,26 @@ def _reason_code(
             or confidence.normalized_mass < confidence_policy.min_normalized_mass
         )
     )
-    if low_margin and low_normalized_margin and low_mass:
-        return "low_margin_low_normalized_margin_and_low_normalized_mass"
-    if low_margin and low_normalized_margin:
-        return "low_margin_and_low_normalized_margin"
-    if low_margin and low_mass:
-        return "low_margin_and_low_normalized_mass"
-    if low_normalized_margin and low_mass:
-        return "low_normalized_margin_and_low_normalized_mass"
+    reasons: list[str] = []
     if low_margin:
-        return "low_margin"
+        reasons.append("low_margin")
     if low_normalized_margin:
-        return "low_normalized_margin"
+        reasons.append("low_normalized_margin")
     if low_mass:
-        return "low_normalized_mass"
-    return "confident"
+        reasons.append("low_normalized_mass")
+    return tuple(reasons) or ("confident",)
+
+
+def _reason_code(reason_codes: tuple[str, ...]) -> str:
+    if len(reason_codes) == 1:
+        return reason_codes[0]
+    if reason_codes == (
+        "low_margin",
+        "low_normalized_margin",
+        "low_normalized_mass",
+    ):
+        return "low_margin_low_normalized_margin_and_low_normalized_mass"
+    return "_and_".join(reason_codes)
 
 
 def _apply_fallback_if_needed(
@@ -402,7 +358,13 @@ def _apply_fallback_if_needed(
     return current_selection
 
 
-def _selection_trace(selection: FinalSelection) -> SelectionSplitTrace:
+def _selection_trace(
+    selection: FinalSelection,
+    *,
+    candidates: Sequence[ScoredBlock],
+    anchor_block_ids: Iterable[BlockId | int],
+    semantic_top_k: int,
+) -> SelectionSplitTrace:
     recent_ids = tuple(int(block.block_id) for block in selection.recent_blocks)
     anchor_ids = tuple(int(block.block_id) for block in selection.anchor_blocks)
     semantic_ids = tuple(int(block.block_id) for block in selection.semantic_blocks)
@@ -410,6 +372,31 @@ def _selection_trace(selection: FinalSelection) -> SelectionSplitTrace:
         anchor_id for anchor_id in anchor_ids if anchor_id not in recent_ids
     )
     final_ids = tuple(int(block.block_id) for block in selection.selected_blocks)
+    requested_anchor_ids = _normalize_trace_anchor_ids(anchor_block_ids)
+    candidate_ids = {int(candidate.block_id) for candidate in candidates}
+    recent_set = set(recent_ids)
+    anchor_set = set(anchor_ids)
+    rail_set = set(rail_ids)
+    semantic_raw_top_ids = tuple(
+        int(candidate.block_id)
+        for candidate in sorted(
+            candidates,
+            key=lambda candidate: candidate.final_score,
+            reverse=True,
+        )[: max(semantic_top_k, 0)]
+    )
+    missing_anchor_ids = tuple(
+        block_id for block_id in requested_anchor_ids if block_id not in candidate_ids
+    )
+    deduped_anchor_ids = tuple(
+        block_id
+        for block_id in requested_anchor_ids
+        if block_id in candidate_ids and block_id in recent_set and block_id not in anchor_set
+    )
+    deduped_semantic_ids = tuple(
+        block_id for block_id in semantic_raw_top_ids if block_id in rail_set
+    )
+    deduped_ids = _ordered_union(deduped_anchor_ids, deduped_semantic_ids)
     return SelectionSplitTrace(
         recent_block_ids=recent_ids,
         anchor_block_ids=anchor_ids,
@@ -418,7 +405,38 @@ def _selection_trace(selection: FinalSelection) -> SelectionSplitTrace:
         rail_block_ids=rail_ids,
         rail_block_count=len(rail_ids),
         semantic_block_count=len(semantic_ids),
+        requested_anchor_block_ids=requested_anchor_ids,
+        missing_anchor_block_ids=missing_anchor_ids,
+        deduped_anchor_block_ids=deduped_anchor_ids,
+        deduped_semantic_block_ids=deduped_semantic_ids,
+        deduped_block_ids=deduped_ids,
     )
+
+
+def _normalize_trace_anchor_ids(
+    anchor_block_ids: Iterable[BlockId | int],
+) -> tuple[int, ...]:
+    normalized: list[int] = []
+    seen: set[int] = set()
+    for anchor_id in anchor_block_ids:
+        block_id = int(anchor_id)
+        if block_id in seen:
+            continue
+        seen.add(block_id)
+        normalized.append(block_id)
+    return tuple(normalized)
+
+
+def _ordered_union(*groups: Sequence[int]) -> tuple[int, ...]:
+    ordered: list[int] = []
+    seen: set[int] = set()
+    for group in groups:
+        for block_id in group:
+            if block_id in seen:
+                continue
+            seen.add(block_id)
+            ordered.append(block_id)
+    return tuple(ordered)
 
 
 def _score_trace(block: ScoredBlock) -> BlockScoreTrace:

@@ -17,11 +17,6 @@ from kvblock.selector.policies import (
     StageCPolicy,
 )
 from kvblock.selector.pipeline import (
-    BlockScoreTrace,
-    ConfidenceTrace,
-    FallbackTrace,
-    SelectionSplitTrace,
-    SelectorDecisionTrace,
     SelectorPipeline,
     SelectorPipelineConfig,
     SelectorPipelineResult,
@@ -40,6 +35,13 @@ from kvblock.selector.oracle import (
 from kvblock.selector.stage_a import StageAScorer, approx_cosine_similarity
 from kvblock.selector.stage_b import StageBRefiner
 from kvblock.selector.stage_c import StageCSelector
+from kvblock.selector.trace import (
+    BlockScoreTrace,
+    ConfidenceTrace,
+    FallbackTrace,
+    SelectionSplitTrace,
+    SelectorDecisionTrace,
+)
 
 __all__ = [
     "ConfidenceAssessment",
