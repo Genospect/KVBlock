@@ -43,6 +43,7 @@ def _row(
     mixed_fallback_used: bool | None = None,
     mixed_fallback_margin: float | None = None,
     mixed_max_children_per_parent: int | None = None,
+    mixed_child_window_radius: int | None = None,
     expected_parent_recall: float | None = None,
     child_rank_miss_count: int | None = None,
     parent_miss_count: int | None = None,
@@ -81,6 +82,8 @@ def _row(
         row["mixed_fallback_margin"] = mixed_fallback_margin
     if mixed_max_children_per_parent is not None:
         row["mixed_max_children_per_parent"] = mixed_max_children_per_parent
+    if mixed_child_window_radius is not None:
+        row["mixed_child_window_radius"] = mixed_child_window_radius
     if expected_parent_recall is not None:
         row["expected_parent_recall"] = expected_parent_recall
     if child_rank_miss_count is not None:
@@ -149,6 +152,7 @@ def test_compare_longbench_runs_applies_named_control_deltas(tmp_path: Path) -> 
                 mixed_fallback_used=True,
                 mixed_fallback_margin=0.05,
                 mixed_max_children_per_parent=1,
+                mixed_child_window_radius=1,
                 expected_parent_recall=0.9,
                 child_rank_miss_count=1,
                 parent_miss_count=0,
@@ -164,6 +168,7 @@ def test_compare_longbench_runs_applies_named_control_deltas(tmp_path: Path) -> 
                 mixed_fallback_used=False,
                 mixed_fallback_margin=0.05,
                 mixed_max_children_per_parent=1,
+                mixed_child_window_radius=1,
                 expected_parent_recall=1.0,
                 child_rank_miss_count=0,
                 parent_miss_count=0,
@@ -180,6 +185,7 @@ def test_compare_longbench_runs_applies_named_control_deltas(tmp_path: Path) -> 
                 mixed_fallback_used=True,
                 mixed_fallback_margin=0.05,
                 mixed_max_children_per_parent=1,
+                mixed_child_window_radius=1,
                 expected_parent_recall=0.0,
                 child_rank_miss_count=0,
                 parent_miss_count=4,
@@ -227,6 +233,7 @@ def test_compare_longbench_runs_applies_named_control_deltas(tmp_path: Path) -> 
     assert experiment_all.mixed_fallback_rate == pytest.approx(2 / 3)
     assert experiment_all.mixed_fallback_margin == "0.05"
     assert experiment_all.mixed_max_children_per_parent == "1"
+    assert experiment_all.mixed_child_window_radius == "1"
     assert experiment_all.mean_expected_parent_recall == pytest.approx(
         (0.9 + 1.0 + 0.0) / 3.0
     )

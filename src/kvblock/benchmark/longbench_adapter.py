@@ -231,6 +231,7 @@ class LongBenchBenchmarkRunRow:
     mixed_global_anchor_k: int
     mixed_fallback_margin: float
     mixed_max_children_per_parent: int | None
+    mixed_child_window_radius: int
     selector_latency_sec: float
     prefill_latency_sec: float
     metadata_latency_sec: float
@@ -571,6 +572,7 @@ def run_longbench_selector_benchmark(
     mixed_global_anchor_k: int = 8,
     mixed_fallback_margin: float = 0.05,
     mixed_max_children_per_parent: int | None = None,
+    mixed_child_window_radius: int = 0,
     rerank_mode: RerankMode = "none",
     rerank_weight: float = 0.3,
     refine_top_n_tokens: int = 4,
@@ -628,6 +630,7 @@ def run_longbench_selector_benchmark(
         mixed_global_anchor_k=mixed_global_anchor_k,
         mixed_fallback_margin=mixed_fallback_margin,
         mixed_max_children_per_parent=mixed_max_children_per_parent,
+        mixed_child_window_radius=mixed_child_window_radius,
         rerank_mode=rerank_mode,
         rerank_weight=rerank_weight,
         refine_top_n_tokens=refine_top_n_tokens,
@@ -755,6 +758,7 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
             f"mixed_fallback={row.mixed_fallback_used} "
             f"mixed_margin={row.mixed_fallback_margin:g} "
             f"mixed_child_cap={_fmt_int_optional(row.mixed_max_children_per_parent)} "
+            f"mixed_child_window={row.mixed_child_window_radius} "
             f"answer_presence={row.answer_present_count}/{row.answer_count} "
             f"expected_blocks={row.expected_block_count} "
             f"parent_recall={_fmt_optional(row.expected_parent_recall)} "
@@ -1097,6 +1101,7 @@ def _longbench_rows(
                 mixed_global_anchor_k=row.mixed_global_anchor_k,
                 mixed_fallback_margin=row.mixed_fallback_margin,
                 mixed_max_children_per_parent=row.mixed_max_children_per_parent,
+                mixed_child_window_radius=row.mixed_child_window_radius,
                 selector_latency_sec=row.selector_latency_sec,
                 prefill_latency_sec=row.prefill_latency_sec,
                 metadata_latency_sec=row.metadata_latency_sec,

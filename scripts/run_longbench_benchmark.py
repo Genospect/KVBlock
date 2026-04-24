@@ -107,6 +107,15 @@ def build_parser() -> argparse.ArgumentParser:
             "global-refine modes."
         ),
     )
+    parser.add_argument(
+        "--mixed-child-window-radius",
+        type=int,
+        default=0,
+        help=(
+            "Optional same-parent child sibling expansion radius for mixed "
+            "global-refine selections."
+        ),
+    )
     parser.add_argument("--keep-recent-blocks", type=int, default=0)
     parser.add_argument("--keep-anchor-blocks", type=int, default=0)
     parser.add_argument("--top-token-count", type=int, default=4)
@@ -250,6 +259,7 @@ def main(argv: list[str] | None = None) -> int:
         mixed_global_anchor_k=args.mixed_global_anchor_k,
         mixed_fallback_margin=args.mixed_fallback_margin,
         mixed_max_children_per_parent=args.mixed_max_children_per_parent,
+        mixed_child_window_radius=args.mixed_child_window_radius,
         rerank_mode=args.rerank_mode,
         rerank_weight=args.rerank_weight,
         refine_top_n_tokens=args.refine_top_n_tokens,

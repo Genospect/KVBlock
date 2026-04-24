@@ -23,6 +23,7 @@ DEFAULT_COMPARISON_COLUMNS: tuple[str, ...] = (
     "halo_radius",
     "mixed_fallback_margin",
     "mixed_max_children_per_parent",
+    "mixed_child_window_radius",
     "row_count",
     "scoreable_run_count",
     "mixed_fallback_count",
@@ -83,6 +84,7 @@ class LongBenchComparisonRow:
     mixed_global_anchor_k: str
     mixed_fallback_margin: str
     mixed_max_children_per_parent: str
+    mixed_child_window_radius: str
     evidence_window_radius: str
     exclude_scaffold_blocks: bool | None
     oracle_mode: str
@@ -347,6 +349,9 @@ def _comparison_row_from_group(
         ),
         mixed_max_children_per_parent=_join_unique(
             row.get("mixed_max_children_per_parent") for row in rows
+        ),
+        mixed_child_window_radius=_join_unique(
+            row.get("mixed_child_window_radius") for row in rows
         ),
         evidence_window_radius=_join_unique(
             row.get("evidence_window_radius", payload.get("evidence_window_radius"))

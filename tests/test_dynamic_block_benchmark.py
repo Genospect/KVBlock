@@ -2106,6 +2106,82 @@ def test_mixed_global_refine_child_caps_do_not_force_fallback(
     assert any(block_size == 16 for block_size in row.selected_block_sizes)
 
 
+def test_mixed_child_window_expands_siblings_inside_selected_parent() -> None:
+    block_by_id = {
+        10: SimpleNamespace(
+            block_id=10,
+            candidate_id="parent-a",
+            candidate_role="parent",
+            token_start=0,
+            token_end=40,
+            final_score=0.1,
+        ),
+        11: SimpleNamespace(
+            block_id=11,
+            candidate_id="parent-b",
+            candidate_role="parent",
+            token_start=40,
+            token_end=80,
+            final_score=0.1,
+        ),
+        1: SimpleNamespace(
+            block_id=1,
+            candidate_id="a-child-0",
+            candidate_role="child",
+            parent_candidate_id="parent-a",
+            token_start=0,
+            token_end=16,
+            final_score=0.1,
+        ),
+        2: SimpleNamespace(
+            block_id=2,
+            candidate_id="a-child-1",
+            candidate_role="child",
+            parent_candidate_id="parent-a",
+            token_start=8,
+            token_end=24,
+            final_score=0.9,
+        ),
+        3: SimpleNamespace(
+            block_id=3,
+            candidate_id="a-child-2",
+            candidate_role="child",
+            parent_candidate_id="parent-a",
+            token_start=16,
+            token_end=32,
+            final_score=0.2,
+        ),
+        4: SimpleNamespace(
+            block_id=4,
+            candidate_id="b-child-0",
+            candidate_role="child",
+            parent_candidate_id="parent-b",
+            token_start=40,
+            token_end=56,
+            final_score=0.8,
+        ),
+    }
+
+    expanded_from_parent = dynamic_bench._expand_mixed_child_window_ids(
+        (10,),
+        block_mode="mixed_global_refine_40_16_stride_8",
+        block_by_id=block_by_id,
+        radius=1,
+        ranked_block_ids=(2, 1, 3, 4),
+        max_selected_blocks=3,
+    )
+    expanded_from_child = dynamic_bench._expand_mixed_child_window_ids(
+        (2,),
+        block_mode="mixed_global_refine_40_16_stride_8",
+        block_by_id=block_by_id,
+        radius=1,
+        max_selected_blocks=3,
+    )
+
+    assert expanded_from_parent == (10, 2, 1)
+    assert expanded_from_child == (2, 1, 3)
+
+
 def test_dynamic_block_benchmark_prompt_filter_and_script_parser() -> None:
     cases = default_dynamic_prompt_cases(("needle", "code_context"))
     assert [case.name for case in cases] == ["needle", "code_context"]
@@ -2135,6 +2211,8 @@ def test_dynamic_block_benchmark_prompt_filter_and_script_parser() -> None:
             "0.02",
             "--mixed-max-children-per-parent",
             "2",
+            "--mixed-child-window-radius",
+            "1",
             "--rerank-mode",
             "dense_qk_token_refine",
             "--rerank-weight",
@@ -2168,6 +2246,7 @@ def test_dynamic_block_benchmark_prompt_filter_and_script_parser() -> None:
     assert args.mixed_global_anchor_k == 10
     assert args.mixed_fallback_margin == 0.02
     assert args.mixed_max_children_per_parent == 2
+    assert args.mixed_child_window_radius == 1
     assert args.rerank_mode == "dense_qk_token_refine"
     assert args.rerank_weight == 0.4
     assert args.refine_top_n_tokens == 3

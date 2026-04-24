@@ -229,6 +229,7 @@ class DynamicBlockRunRow:
     mixed_global_anchor_k: int = 0
     mixed_fallback_margin: float = 0.0
     mixed_max_children_per_parent: int | None = None
+    mixed_child_window_radius: int = 0
     coarse_selected_candidate_ids: tuple[str, ...] = ()
     coarse_selected_spans: tuple[str, ...] = ()
     block_inspection_records: tuple[dict[str, Any], ...] = ()
@@ -399,6 +400,7 @@ def run_dynamic_block_benchmark(
     mixed_global_anchor_k: int = 8,
     mixed_fallback_margin: float = 0.05,
     mixed_max_children_per_parent: int | None = None,
+    mixed_child_window_radius: int = 0,
     load_config_kwargs: dict[str, Any] | None = None,
     selector_config: RealBlockSelectorConfig | None = None,
     include_block_inspections: bool = False,
@@ -451,6 +453,8 @@ def run_dynamic_block_benchmark(
         and mixed_max_children_per_parent <= 0
     ):
         raise ValueError("mixed_max_children_per_parent must be > 0 when provided")
+    if mixed_child_window_radius < 0:
+        raise ValueError("mixed_child_window_radius must be >= 0")
     needle_strategy = (
         None
         if needle_qk_aggregation_strategy is None
@@ -719,6 +723,7 @@ def run_dynamic_block_benchmark(
                             mixed_global_anchor_k=mixed_global_anchor_k,
                             mixed_fallback_margin=mixed_fallback_margin,
                             mixed_max_children_per_parent=mixed_max_children_per_parent,
+                            mixed_child_window_radius=mixed_child_window_radius,
                             scaffold_excluded_count=len(scaffold_excluded_ids),
                             scaffold_excluded_ids=scaffold_excluded_ids,
                             original_ranked_block_ids=original_stage_c_ranked_block_ids,
@@ -836,7 +841,10 @@ def format_dynamic_block_report(result: DynamicBlockBenchmarkResult) -> str:
             f"coarse={row.coarse_candidate_count} "
             f"fine={row.fine_candidate_count_after_drilldown} "
             f"retained_parents={row.retained_parent_count} | "
-            f"mixed_fallback={row.mixed_fallback_used} | "
+            f"mixed_fallback={row.mixed_fallback_used} "
+            f"mixed_margin={row.mixed_fallback_margin:g} "
+            f"mixed_child_cap={_fmt_int_optional(row.mixed_max_children_per_parent)} "
+            f"mixed_child_window={row.mixed_child_window_radius} | "
             f"selected={list(row.selected_candidate_ids)} | "
             f"roles={list(row.selected_candidate_roles)} | "
             f"recall={_fmt_optional(quality.target_recall)} "
@@ -863,6 +871,7 @@ def _row_from_result(
     mixed_global_anchor_k: int,
     mixed_fallback_margin: float,
     mixed_max_children_per_parent: int | None,
+    mixed_child_window_radius: int,
     scaffold_excluded_count: int,
     config: RealBlockSelectorConfig,
     result: Any,
@@ -917,11 +926,29 @@ def _row_from_result(
         mixed_max_children_per_parent=mixed_max_children_per_parent,
         excluded_block_ids=excluded_ids,
     )
+    ranked_block_ids = tuple(int(decision.block_id) for decision in suppression.decisions)
+    child_window_selected_ids = _expand_mixed_child_window_ids(
+        semantic_selected_ids,
+        block_mode=block_mode,
+        block_by_id=block_by_id,
+        radius=mixed_child_window_radius,
+        ranked_block_ids=ranked_block_ids,
+        max_selected_blocks=max_selected_blocks,
+        excluded_block_ids=excluded_ids,
+    )
     expansion_radius = halo_radius if halo_radius > 0 else neighbor_expansion
     expansion_cap = max_selected_blocks if halo_radius > 0 else None
-    expansion_reason = "halo" if halo_radius > 0 else "neighbor_expansion"
+    expansion_reason = (
+        "halo"
+        if halo_radius > 0
+        else (
+            "mixed_child_window"
+            if mixed_child_window_radius > 0 and is_mixed_global_refine_mode(block_mode)
+            else "neighbor_expansion"
+        )
+    )
     selected_ids = _expand_selected_ids_by_neighbors(
-        semantic_selected_ids,
+        child_window_selected_ids,
         block_by_id=block_by_id,
         radius=expansion_radius,
         max_selected_blocks=expansion_cap,
@@ -1019,6 +1046,7 @@ def _row_from_result(
         mixed_global_anchor_k=mixed_global_anchor_k,
         mixed_fallback_margin=mixed_fallback_margin,
         mixed_max_children_per_parent=mixed_max_children_per_parent,
+        mixed_child_window_radius=mixed_child_window_radius,
         coarse_selected_candidate_ids=coarse_selected_candidate_ids,
         coarse_selected_spans=coarse_selected_spans,
         refine_top_n_tokens=refine_top_n_tokens,
@@ -1805,6 +1833,131 @@ def _unique_ids(ids: Iterable[int]) -> tuple[int, ...]:
         seen.add(normalized)
         unique.append(normalized)
     return tuple(unique)
+
+
+def _expand_mixed_child_window_ids(
+    selected_ids: Sequence[int],
+    *,
+    block_mode: str,
+    block_by_id: dict[int, Any],
+    radius: int,
+    ranked_block_ids: Sequence[int] = (),
+    max_selected_blocks: int | None = None,
+    excluded_block_ids: Iterable[int] = (),
+) -> tuple[int, ...]:
+    """Expand mixed selections to adjacent siblings inside selected parents."""
+
+    excluded = {int(block_id) for block_id in excluded_block_ids}
+    base = tuple(
+        int(block_id)
+        for block_id in selected_ids
+        if int(block_id) not in excluded
+    )
+    if radius <= 0 or not base or not is_mixed_global_refine_mode(block_mode):
+        return base
+    cap = (
+        None
+        if max_selected_blocks is None
+        else max(int(max_selected_blocks), len(base))
+    )
+    children_by_parent: dict[str, list[Any]] = {}
+    for block in block_by_id.values():
+        if getattr(block, "candidate_role", "block") != "child":
+            continue
+        parent_key = _mixed_parent_key(block)
+        if parent_key is None:
+            continue
+        children_by_parent.setdefault(parent_key, []).append(block)
+    for siblings in children_by_parent.values():
+        siblings.sort(
+            key=lambda block: (
+                int(getattr(block, "token_start", 0)),
+                int(getattr(block, "token_end", 0)),
+                int(getattr(block, "block_id", 0)),
+            )
+        )
+    rank_by_id = {
+        int(block_id): rank for rank, block_id in enumerate(ranked_block_ids)
+    }
+    expanded: list[int] = []
+    seen: set[int] = set()
+
+    def append(block_id: int, *, enforce_cap: bool) -> bool:
+        if enforce_cap and cap is not None and len(expanded) >= cap:
+            return False
+        if block_id in excluded:
+            return True
+        if block_id in block_by_id and block_id not in seen:
+            seen.add(block_id)
+            expanded.append(block_id)
+        return True
+
+    for block_id in base:
+        append(block_id, enforce_cap=False)
+
+    center_ids: list[int] = []
+    for block_id in base:
+        block = block_by_id.get(block_id)
+        if block is None:
+            continue
+        if getattr(block, "candidate_role", "block") == "child":
+            center_ids.append(block_id)
+            continue
+        parent_key = _mixed_parent_key(block)
+        if parent_key is None:
+            continue
+        siblings = children_by_parent.get(parent_key, [])
+        if not siblings:
+            continue
+        best_child = min(
+            siblings,
+            key=lambda child: (
+                rank_by_id.get(int(child.block_id), 10**9),
+                -float(getattr(child, "final_score", 0.0) or 0.0),
+                int(getattr(child, "token_start", 0)),
+                int(child.block_id),
+            ),
+        )
+        center_ids.append(int(best_child.block_id))
+
+    for center_id in center_ids:
+        append(center_id, enforce_cap=True)
+
+    for distance in range(1, radius + 1):
+        for center_id in center_ids:
+            center = block_by_id.get(center_id)
+            if center is None:
+                continue
+            parent_key = _mixed_parent_key(center)
+            if parent_key is None:
+                continue
+            siblings = children_by_parent.get(parent_key, [])
+            sibling_ids = [int(block.block_id) for block in siblings]
+            try:
+                center_index = sibling_ids.index(center_id)
+            except ValueError:
+                continue
+            left = center_index - distance
+            right = center_index + distance
+            if left >= 0 and not append(sibling_ids[left], enforce_cap=True):
+                return tuple(expanded)
+            if right < len(sibling_ids) and not append(
+                sibling_ids[right],
+                enforce_cap=True,
+            ):
+                return tuple(expanded)
+    return tuple(expanded)
+
+
+def _mixed_parent_key(block: Any) -> str | None:
+    role = getattr(block, "candidate_role", "block")
+    if role == "child":
+        parent_candidate_id = getattr(block, "parent_candidate_id", None)
+        return None if parent_candidate_id is None else str(parent_candidate_id)
+    if role == "parent":
+        candidate_id = getattr(block, "candidate_id", None)
+        return None if candidate_id is None else str(candidate_id)
+    return None
 
 
 def _expand_selected_ids_by_neighbors(
