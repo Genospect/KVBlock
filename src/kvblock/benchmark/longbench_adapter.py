@@ -220,6 +220,10 @@ class LongBenchBenchmarkRunRow:
     selected_count: int
     selected_to_semantic_k_ratio: float
     mixed_fallback_used: bool
+    mixed_refine_parent_k: int
+    mixed_global_anchor_k: int
+    mixed_fallback_margin: float
+    mixed_max_children_per_parent: int | None
     selector_latency_sec: float
     prefill_latency_sec: float
     metadata_latency_sec: float
@@ -736,6 +740,8 @@ def format_longbench_benchmark_report(result: LongBenchBenchmarkResult) -> str:
             f"length={row.longbench_length} tokens={row.tokens} "
             f"candidates={row.candidate_block_count} selected/K={row.selected_to_semantic_k_ratio:.3f} "
             f"mixed_fallback={row.mixed_fallback_used} "
+            f"mixed_margin={row.mixed_fallback_margin:g} "
+            f"mixed_child_cap={_fmt_int_optional(row.mixed_max_children_per_parent)} "
             f"answer_presence={row.answer_present_count}/{row.answer_count} "
             f"expected_blocks={row.expected_block_count} "
             f"expected_distance={_fmt_optional(row.expected_block_distance)} "
@@ -1052,6 +1058,10 @@ def _longbench_rows(
                 selected_count=row.selected_count,
                 selected_to_semantic_k_ratio=row.selected_to_semantic_k_ratio,
                 mixed_fallback_used=row.mixed_fallback_used,
+                mixed_refine_parent_k=row.mixed_refine_parent_k,
+                mixed_global_anchor_k=row.mixed_global_anchor_k,
+                mixed_fallback_margin=row.mixed_fallback_margin,
+                mixed_max_children_per_parent=row.mixed_max_children_per_parent,
                 selector_latency_sec=row.selector_latency_sec,
                 prefill_latency_sec=row.prefill_latency_sec,
                 metadata_latency_sec=row.metadata_latency_sec,

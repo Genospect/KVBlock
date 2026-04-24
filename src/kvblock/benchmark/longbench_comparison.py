@@ -21,6 +21,8 @@ DEFAULT_COMPARISON_COLUMNS: tuple[str, ...] = (
     "semantic_k",
     "max_selected_blocks",
     "halo_radius",
+    "mixed_fallback_margin",
+    "mixed_max_children_per_parent",
     "row_count",
     "scoreable_run_count",
     "mixed_fallback_count",
@@ -72,6 +74,10 @@ class LongBenchComparisonRow:
     semantic_k: str
     max_selected_blocks: str
     halo_radius: str
+    mixed_refine_parent_k: str
+    mixed_global_anchor_k: str
+    mixed_fallback_margin: str
+    mixed_max_children_per_parent: str
     evidence_window_radius: str
     exclude_scaffold_blocks: bool | None
     oracle_mode: str
@@ -309,6 +315,18 @@ def _comparison_row_from_group(
         semantic_k=_join_unique(_infer_semantic_k(row) for row in rows),
         max_selected_blocks=_join_unique(row.get("max_selected_blocks") for row in rows),
         halo_radius=_join_unique(row.get("halo_radius") for row in rows),
+        mixed_refine_parent_k=_join_unique(
+            row.get("mixed_refine_parent_k") for row in rows
+        ),
+        mixed_global_anchor_k=_join_unique(
+            row.get("mixed_global_anchor_k") for row in rows
+        ),
+        mixed_fallback_margin=_join_unique(
+            row.get("mixed_fallback_margin") for row in rows
+        ),
+        mixed_max_children_per_parent=_join_unique(
+            row.get("mixed_max_children_per_parent") for row in rows
+        ),
         evidence_window_radius=_join_unique(
             row.get("evidence_window_radius", payload.get("evidence_window_radius"))
             for row in rows

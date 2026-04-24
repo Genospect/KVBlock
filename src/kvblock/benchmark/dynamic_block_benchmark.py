@@ -225,6 +225,10 @@ class DynamicBlockRunRow:
     fine_candidate_count_after_drilldown: int = 0
     retained_parent_count: int = 0
     mixed_fallback_used: bool = False
+    mixed_refine_parent_k: int = 0
+    mixed_global_anchor_k: int = 0
+    mixed_fallback_margin: float = 0.0
+    mixed_max_children_per_parent: int | None = None
     coarse_selected_candidate_ids: tuple[str, ...] = ()
     coarse_selected_spans: tuple[str, ...] = ()
     block_inspection_records: tuple[dict[str, Any], ...] = ()
@@ -711,6 +715,9 @@ def run_dynamic_block_benchmark(
                             refine_top_n_tokens=refine_top_n_tokens,
                             refine_score_mode=resolved_refine_score_mode,
                             stage_c_policy=resolved_stage_c_policy,
+                            mixed_refine_parent_k=mixed_refine_parent_k,
+                            mixed_global_anchor_k=mixed_global_anchor_k,
+                            mixed_fallback_margin=mixed_fallback_margin,
                             mixed_max_children_per_parent=mixed_max_children_per_parent,
                             scaffold_excluded_count=len(scaffold_excluded_ids),
                             scaffold_excluded_ids=scaffold_excluded_ids,
@@ -852,6 +859,9 @@ def _row_from_result(
     refine_top_n_tokens: int,
     refine_score_mode: RefineScoreMode,
     stage_c_policy: StageCPolicyMode,
+    mixed_refine_parent_k: int,
+    mixed_global_anchor_k: int,
+    mixed_fallback_margin: float,
     mixed_max_children_per_parent: int | None,
     scaffold_excluded_count: int,
     config: RealBlockSelectorConfig,
@@ -1005,6 +1015,10 @@ def _row_from_result(
         fine_candidate_count_after_drilldown=fine_candidate_count_after_drilldown,
         retained_parent_count=retained_parent_count,
         mixed_fallback_used=mixed_fallback_used,
+        mixed_refine_parent_k=mixed_refine_parent_k,
+        mixed_global_anchor_k=mixed_global_anchor_k,
+        mixed_fallback_margin=mixed_fallback_margin,
+        mixed_max_children_per_parent=mixed_max_children_per_parent,
         coarse_selected_candidate_ids=coarse_selected_candidate_ids,
         coarse_selected_spans=coarse_selected_spans,
         refine_top_n_tokens=refine_top_n_tokens,

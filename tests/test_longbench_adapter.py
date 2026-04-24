@@ -190,6 +190,10 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
             refine_top_n_tokens=kwargs.get("refine_top_n_tokens", 4),
             refine_score_mode=kwargs.get("refine_score_mode", "raw_topn_mean"),
             stage_c_policy=kwargs.get("stage_c_policy", "refined_only"),
+            mixed_refine_parent_k=kwargs["mixed_refine_parent_k"],
+            mixed_global_anchor_k=kwargs["mixed_global_anchor_k"],
+            mixed_fallback_margin=kwargs["mixed_fallback_margin"],
+            mixed_max_children_per_parent=kwargs["mixed_max_children_per_parent"],
             scaffold_excluded_count=1 if kwargs.get("exclude_scaffold_blocks") else 0,
             block_inspection_records=(
                 {
@@ -264,6 +268,10 @@ def test_run_longbench_benchmark_wraps_dynamic_result(
     assert result.rows[0].refine_score_mode == "cosine_topn_mean"
     assert result.rows[0].stage_c_policy == "semantic_refined_mix"
     assert result.rows[0].scaffold_excluded_count == 1
+    assert result.rows[0].mixed_refine_parent_k == 6
+    assert result.rows[0].mixed_global_anchor_k == 10
+    assert result.rows[0].mixed_fallback_margin == pytest.approx(0.02)
+    assert result.rows[0].mixed_max_children_per_parent == 2
     assert result.rows[0].answer_present_count == 1
     assert result.rows[0].expected_block_count == 1
     assert result.rows[0].selected_expected_block_count == 1
