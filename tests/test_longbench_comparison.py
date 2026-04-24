@@ -186,6 +186,7 @@ def test_compare_longbench_runs_applies_named_control_deltas(tmp_path: Path) -> 
 
     assert control_all.mean_recall == pytest.approx((0.6 + 1.0 + 0.0) / 3.0)
     assert control_all.mean_scoreable_recall == pytest.approx(0.8)
+    assert control_all.mean_localization_gap == pytest.approx(0.0)
     assert control_all.recall_delta_vs_control == pytest.approx(0.0)
     assert control_all.semantic_k == "8"
     assert control_all.mean_selected_token_fraction == pytest.approx(
@@ -193,6 +194,9 @@ def test_compare_longbench_runs_applies_named_control_deltas(tmp_path: Path) -> 
     )
     assert experiment_all.mean_recall == pytest.approx((0.8 + 1.0 + 0.0) / 3.0)
     assert experiment_all.mean_scoreable_recall == pytest.approx(0.9)
+    assert experiment_all.mean_localization_gap == pytest.approx(
+        ((0.7 + 1.0 + 0.0) / 3.0) - ((0.8 + 1.0 + 0.0) / 3.0)
+    )
     assert experiment_all.recall_delta_vs_control == pytest.approx(
         ((0.8 + 1.0 + 0.0) / 3.0) - ((0.6 + 1.0 + 0.0) / 3.0)
     )

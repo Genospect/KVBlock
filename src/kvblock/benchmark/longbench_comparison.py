@@ -31,6 +31,7 @@ DEFAULT_COMPARISON_COLUMNS: tuple[str, ...] = (
     "recall_delta_vs_control",
     "mean_precision",
     "mean_evidence_window_recall",
+    "mean_localization_gap",
     "window_recall_delta_vs_control",
     "mean_evidence_window_precision",
     "mean_selected_to_semantic_k_ratio",
@@ -91,6 +92,7 @@ class LongBenchComparisonRow:
     recall_delta_vs_control: float | None = None
     mean_precision: float | None = None
     mean_evidence_window_recall: float | None = None
+    mean_localization_gap: float | None = None
     window_recall_delta_vs_control: float | None = None
     mean_evidence_window_precision: float | None = None
     mean_selected_to_semantic_k_ratio: float | None = None
@@ -107,6 +109,7 @@ class LongBenchComparisonRow:
     mean_scoreable_recall: float | None = None
     mean_scoreable_precision: float | None = None
     mean_scoreable_evidence_window_recall: float | None = None
+    mean_scoreable_localization_gap: float | None = None
     mean_scoreable_evidence_window_precision: float | None = None
 
     def to_dict(self) -> dict[str, Any]:
@@ -290,6 +293,16 @@ def _comparison_row_from_group(
     token_fractions = [_selected_token_fraction(row) for row in rows]
     selected_tokens = [_selected_token_count(row) for row in rows]
     mixed_fallback_count = _mixed_fallback_count(rows)
+    mean_recall = _mean(_optional_float(row.get("target_recall")) for row in rows)
+    mean_window_recall = _mean(
+        _optional_float(row.get("evidence_window_recall")) for row in rows
+    )
+    mean_scoreable_recall = _mean(
+        _optional_float(row.get("target_recall")) for row in scoreable_rows
+    )
+    mean_scoreable_window_recall = _mean(
+        _optional_float(row.get("evidence_window_recall")) for row in scoreable_rows
+    )
     return LongBenchComparisonRow(
         run_label=run_label,
         scope=scope_name,
@@ -347,13 +360,12 @@ def _comparison_row_from_group(
         ),
         # Match LongBench DATASET SUMMARIES: unscoreable answer-absent rows still
         # carry numeric zero metrics and are included in the reported means.
-        mean_recall=_mean(_optional_float(row.get("target_recall")) for row in rows),
+        mean_recall=mean_recall,
         mean_precision=_mean(
             _optional_float(row.get("selected_precision")) for row in rows
         ),
-        mean_evidence_window_recall=_mean(
-            _optional_float(row.get("evidence_window_recall")) for row in rows
-        ),
+        mean_evidence_window_recall=mean_window_recall,
+        mean_localization_gap=_delta(mean_window_recall, mean_recall),
         mean_evidence_window_precision=_mean(
             _optional_float(row.get("evidence_window_precision")) for row in rows
         ),
@@ -380,14 +392,14 @@ def _comparison_row_from_group(
         mean_oracle_expected_mass_fraction=_mean(
             _optional_float(row.get("oracle_expected_mass_fraction")) for row in rows
         ),
-        mean_scoreable_recall=_mean(
-            _optional_float(row.get("target_recall")) for row in scoreable_rows
-        ),
+        mean_scoreable_recall=mean_scoreable_recall,
         mean_scoreable_precision=_mean(
             _optional_float(row.get("selected_precision")) for row in scoreable_rows
         ),
-        mean_scoreable_evidence_window_recall=_mean(
-            _optional_float(row.get("evidence_window_recall")) for row in scoreable_rows
+        mean_scoreable_evidence_window_recall=mean_scoreable_window_recall,
+        mean_scoreable_localization_gap=_delta(
+            mean_scoreable_window_recall,
+            mean_scoreable_recall,
         ),
         mean_scoreable_evidence_window_precision=_mean(
             _optional_float(row.get("evidence_window_precision")) for row in scoreable_rows
