@@ -207,6 +207,8 @@ def run_longbench_output_benchmark(
     passage_header_tokens: int = 24,
     selection_min_blocks: int = 0,
     selection_score_ratio: float | None = None,
+    selection_max_total_blocks: int | None = None,
+    selection_max_children_per_parent: int | None = None,
     load_config_kwargs: dict[str, Any] | None = None,
     selector_config: RealBlockSelectorConfig | None = None,
     dataset_loader: DatasetLoader | None = None,
@@ -231,6 +233,15 @@ def run_longbench_output_benchmark(
         raise ValueError("selection_min_blocks must be >= 0")
     if selection_score_ratio is not None and selection_score_ratio < 0.0:
         raise ValueError("selection_score_ratio must be >= 0 when provided")
+    if selection_max_total_blocks is not None and selection_max_total_blocks <= 0:
+        raise ValueError("selection_max_total_blocks must be > 0 when provided")
+    if (
+        selection_max_children_per_parent is not None
+        and selection_max_children_per_parent <= 0
+    ):
+        raise ValueError(
+            "selection_max_children_per_parent must be > 0 when provided"
+        )
 
     bucket = (
         parse_length_bucket(length_bucket)
@@ -299,6 +310,8 @@ def run_longbench_output_benchmark(
                 selected_blocks=selector_row.selected_blocks,
                 selection_min_blocks=selection_min_blocks,
                 selection_score_ratio=selection_score_ratio,
+                selection_max_total_blocks=selection_max_total_blocks,
+                selection_max_children_per_parent=selection_max_children_per_parent,
             )
             reconstructed_context = reconstruct_selected_context(
                 runtime,
@@ -429,6 +442,8 @@ def run_longbench_output_benchmark(
         passage_header_tokens=passage_header_tokens,
         selection_min_blocks=selection_min_blocks,
         selection_score_ratio=selection_score_ratio,
+        selection_max_total_blocks=selection_max_total_blocks,
+        selection_max_children_per_parent=selection_max_children_per_parent,
         selector_config=selector_config,
         load_config_kwargs=load_kwargs,
     )
@@ -450,8 +465,10 @@ def filter_output_selection(
     selected_blocks: Sequence[dict[str, Any]],
     selection_min_blocks: int = 0,
     selection_score_ratio: float | None = None,
+    selection_max_total_blocks: int | None = None,
+    selection_max_children_per_parent: int | None = None,
 ) -> OutputSelection:
-    """Apply an optional output-only score-ratio budget filter."""
+    """Apply optional output-only budget filters while preserving rank order."""
 
     block_records = {
         int(record["block_id"]): dict(record)
@@ -467,7 +484,11 @@ def filter_output_selection(
         )
         for block_id, span in pairs
     )
-    if selection_score_ratio is None or not triples:
+    if (
+        selection_score_ratio is None
+        and selection_max_total_blocks is None
+        and selection_max_children_per_parent is None
+    ) or not triples:
         return OutputSelection(
             block_ids=tuple(block_id for block_id, _, _ in triples),
             spans=tuple(span for _, span, _ in triples),
@@ -475,23 +496,16 @@ def filter_output_selection(
             dropped_count=0,
         )
 
-    min_keep = min(max(0, selection_min_blocks), len(triples))
-    top_score = _selection_score(triples[0][2])
-    if top_score is None or top_score <= 0.0:
-        keep_count = len(triples)
-    else:
-        threshold = top_score * selection_score_ratio
-        keep_count = len(triples)
-        for index, (_, _, record) in enumerate(triples):
-            if index < min_keep:
-                continue
-            score = _selection_score(record)
-            if score is None or score < threshold:
-                keep_count = index
-                break
-        keep_count = max(min_keep, keep_count)
-
-    kept = triples[:keep_count]
+    score_filtered = _score_ratio_filter(
+        triples,
+        selection_min_blocks=selection_min_blocks,
+        selection_score_ratio=selection_score_ratio,
+    )
+    kept = _parent_cap_filter(
+        score_filtered,
+        selection_max_total_blocks=selection_max_total_blocks,
+        selection_max_children_per_parent=selection_max_children_per_parent,
+    )
     return OutputSelection(
         block_ids=tuple(block_id for block_id, _, _ in kept),
         spans=tuple(span for _, span, _ in kept),
@@ -500,12 +514,87 @@ def filter_output_selection(
     )
 
 
+def _score_ratio_filter(
+    triples: Sequence[tuple[int, str, dict[str, Any]]],
+    *,
+    selection_min_blocks: int,
+    selection_score_ratio: float | None,
+) -> tuple[tuple[int, str, dict[str, Any]], ...]:
+    if selection_score_ratio is None:
+        return tuple(triples)
+
+    min_keep = min(max(0, selection_min_blocks), len(triples))
+    top_score = _selection_score(triples[0][2])
+    if top_score is None or top_score <= 0.0:
+        return tuple(triples)
+
+    threshold = top_score * selection_score_ratio
+    keep_count = len(triples)
+    for index, (_, _, record) in enumerate(triples):
+        if index < min_keep:
+            continue
+        score = _selection_score(record)
+        if score is None or score < threshold:
+            keep_count = index
+            break
+    return tuple(triples[: max(min_keep, keep_count)])
+
+
+def _parent_cap_filter(
+    triples: Sequence[tuple[int, str, dict[str, Any]]],
+    *,
+    selection_max_total_blocks: int | None,
+    selection_max_children_per_parent: int | None,
+) -> tuple[tuple[int, str, dict[str, Any]], ...]:
+    max_total = (
+        len(triples)
+        if selection_max_total_blocks is None
+        else min(selection_max_total_blocks, len(triples))
+    )
+    if selection_max_children_per_parent is None and max_total == len(triples):
+        return tuple(triples)
+
+    kept: list[tuple[int, str, dict[str, Any]]] = []
+    child_counts_by_parent: dict[str, int] = {}
+    for block_id, span, record in triples:
+        if len(kept) >= max_total:
+            break
+        if (
+            selection_max_children_per_parent is not None
+            and _selection_is_child(record)
+        ):
+            parent_key = _selection_parent_key(record, block_id)
+            child_count = child_counts_by_parent.get(parent_key, 0)
+            if child_count >= selection_max_children_per_parent:
+                continue
+            child_counts_by_parent[parent_key] = child_count + 1
+        kept.append((block_id, span, record))
+    return tuple(kept)
+
+
 def _selection_score(record: dict[str, Any]) -> float | None:
     for key in ("final_score", "refined_score", "stage_b_score", "stage_a_score"):
         value = record.get(key)
         if value is not None:
             return float(value)
     return None
+
+
+def _selection_is_child(record: dict[str, Any]) -> bool:
+    return str(record.get("candidate_role", "")) == "child"
+
+
+def _selection_parent_key(record: dict[str, Any], block_id: int) -> str:
+    parent_candidate_id = record.get("parent_candidate_id")
+    if parent_candidate_id not in (None, ""):
+        return str(parent_candidate_id)
+    parent_block_id = record.get("parent_block_id")
+    if parent_block_id is not None:
+        return f"parent_block:{int(parent_block_id)}"
+    candidate_id = record.get("candidate_id")
+    if candidate_id not in (None, ""):
+        return str(candidate_id)
+    return f"block:{int(block_id)}"
 
 
 def reconstruct_selected_context(

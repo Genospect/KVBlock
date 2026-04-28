@@ -152,6 +152,21 @@ def build_parser() -> argparse.ArgumentParser:
             "below this ratio of the top selected score."
         ),
     )
+    parser.add_argument(
+        "--selection-max-total-blocks",
+        type=int,
+        default=None,
+        help="Optional output-only cap on selected blocks after filtering.",
+    )
+    parser.add_argument(
+        "--selection-max-children-per-parent",
+        type=int,
+        default=None,
+        help=(
+            "Optional output-only cap on child blocks kept per mixed parent "
+            "candidate while preserving selected rank order."
+        ),
+    )
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--torch-dtype", default="float32")
     parser.add_argument("--device-map", default=None)
@@ -230,6 +245,8 @@ def main(argv: list[str] | None = None) -> int:
         passage_header_tokens=args.passage_header_tokens,
         selection_min_blocks=args.selection_min_blocks,
         selection_score_ratio=args.selection_score_ratio,
+        selection_max_total_blocks=args.selection_max_total_blocks,
+        selection_max_children_per_parent=args.selection_max_children_per_parent,
         load_config_kwargs={
             "device": args.device,
             "torch_dtype": args.torch_dtype,

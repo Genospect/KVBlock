@@ -183,3 +183,59 @@ def test_filter_output_selection_is_disabled_without_score_ratio() -> None:
 
     assert filtered.block_ids == (1, 2)
     assert filtered.dropped_count == 0
+
+
+def test_filter_output_selection_caps_children_per_parent_with_backfill() -> None:
+    filtered = filter_output_selection(
+        selected_block_ids=(1, 2, 3, 4, 5),
+        selected_spans=("0:10", "10:20", "20:30", "30:40", "40:50"),
+        selected_blocks=(
+            {
+                "block_id": 1,
+                "candidate_role": "child",
+                "parent_candidate_id": "parent-a",
+            },
+            {
+                "block_id": 2,
+                "candidate_role": "child",
+                "parent_candidate_id": "parent-a",
+            },
+            {
+                "block_id": 3,
+                "candidate_role": "child",
+                "parent_candidate_id": "parent-a",
+            },
+            {
+                "block_id": 4,
+                "candidate_role": "child",
+                "parent_candidate_id": "parent-b",
+            },
+            {
+                "block_id": 5,
+                "candidate_role": "parent",
+                "candidate_id": "parent-c",
+            },
+        ),
+        selection_max_total_blocks=4,
+        selection_max_children_per_parent=2,
+    )
+
+    assert filtered.block_ids == (1, 2, 4, 5)
+    assert filtered.spans == ("0:10", "10:20", "30:40", "40:50")
+    assert filtered.dropped_count == 1
+
+
+def test_filter_output_selection_caps_total_blocks() -> None:
+    filtered = filter_output_selection(
+        selected_block_ids=(1, 2, 3),
+        selected_spans=("0:10", "10:20", "20:30"),
+        selected_blocks=(
+            {"block_id": 1, "candidate_role": "parent"},
+            {"block_id": 2, "candidate_role": "parent"},
+            {"block_id": 3, "candidate_role": "parent"},
+        ),
+        selection_max_total_blocks=2,
+    )
+
+    assert filtered.block_ids == (1, 2)
+    assert filtered.dropped_count == 1
