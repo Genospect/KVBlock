@@ -37,6 +37,7 @@ from kvblock.runtime.local_hf_runtime import LocalHfRuntime
 from kvblock.runtime.real_block_eval import RealBlockSelectorConfig
 
 ContextReconstructionMode = Literal["selected_spans", "passage_window"]
+OutputPolicy = Literal["manual", "length_aware_static"]
 
 _CONTEXT_MARKER = "CONTEXT:\n"
 _INPUT_MARKER = "\nINPUT:\n"
@@ -69,6 +70,16 @@ class OutputSelection:
     spans: tuple[str, ...]
     blocks: tuple[dict[str, Any], ...]
     dropped_count: int
+
+
+@dataclass(frozen=True, slots=True)
+class ResolvedOutputPolicy:
+    """Effective output benchmark policy settings."""
+
+    name: OutputPolicy
+    max_selected_blocks: int | None
+    context_reconstruction: ContextReconstructionMode
+    passage_window_tokens: int
 
 
 @dataclass(frozen=True, slots=True)
@@ -202,6 +213,7 @@ def run_longbench_output_benchmark(
     oracle_top_k: Sequence[int] = DEFAULT_ORACLE_TOP_K,
     max_new_tokens: int = 32,
     temperature: float = 0.0,
+    output_policy: OutputPolicy = "manual",
     context_reconstruction: ContextReconstructionMode = "selected_spans",
     passage_window_tokens: int = 120,
     passage_header_tokens: int = 24,
@@ -248,6 +260,18 @@ def run_longbench_output_benchmark(
         if isinstance(length_bucket, str)
         else length_bucket
     )
+    resolved_output_policy = resolve_output_policy_settings(
+        output_policy=output_policy,
+        dataset_names=dataset_names,
+        length_bucket=bucket,
+        max_selected_blocks=max_selected_blocks,
+        context_reconstruction=context_reconstruction,
+        passage_window_tokens=passage_window_tokens,
+    )
+    max_selected_blocks = resolved_output_policy.max_selected_blocks
+    context_reconstruction = resolved_output_policy.context_reconstruction
+    passage_window_tokens = resolved_output_policy.passage_window_tokens
+
     resolved_oracle_mode = parse_oracle_mode(oracle_mode)
     resolved_oracle_top_k = parse_oracle_top_k(oracle_top_k)
     load_kwargs = dict(load_config_kwargs or {})
@@ -437,6 +461,7 @@ def run_longbench_output_benchmark(
         oracle_top_k=resolved_oracle_top_k,
         max_new_tokens=max_new_tokens,
         temperature=temperature,
+        output_policy=resolved_output_policy.name,
         context_reconstruction=context_reconstruction,
         passage_window_tokens=passage_window_tokens,
         passage_header_tokens=passage_header_tokens,
@@ -456,6 +481,89 @@ def run_longbench_output_benchmark(
         dataset_summaries=dataset_summaries,
         overall_summary=_summarize_output_rows("all", row_tuple),
     )
+
+
+def resolve_output_policy_settings(
+    *,
+    output_policy: OutputPolicy,
+    dataset_names: Sequence[str],
+    length_bucket: LengthBucket,
+    max_selected_blocks: int | None,
+    context_reconstruction: ContextReconstructionMode,
+    passage_window_tokens: int,
+) -> ResolvedOutputPolicy:
+    """Resolve explicit output benchmark policy presets.
+
+    The length-aware preset is intentionally small and empirical. It captures the
+    current best output-quality regimes without changing selector internals.
+    """
+
+    normalized_policy = output_policy.strip().lower()
+    if normalized_policy == "manual":
+        return ResolvedOutputPolicy(
+            name="manual",
+            max_selected_blocks=max_selected_blocks,
+            context_reconstruction=context_reconstruction,
+            passage_window_tokens=passage_window_tokens,
+        )
+    if normalized_policy != "length_aware_static":
+        raise ValueError("output_policy must be one of manual, length_aware_static")
+
+    budget = _length_aware_static_budget(dataset_names, length_bucket)
+    return ResolvedOutputPolicy(
+        name="length_aware_static",
+        max_selected_blocks=budget,
+        context_reconstruction="passage_window",
+        passage_window_tokens=64,
+    )
+
+
+def _length_aware_static_budget(
+    dataset_names: Sequence[str],
+    length_bucket: LengthBucket,
+) -> int:
+    datasets = tuple(
+        sorted({dataset.strip().lower() for dataset in dataset_names if dataset.strip()})
+    )
+    if not datasets:
+        raise ValueError("dataset_names must not be empty")
+
+    if length_bucket.max_length is not None and length_bucket.max_length <= 4000:
+        budgets = {dataset: 20 for dataset in datasets}
+    elif length_bucket.min_length == 4000 and length_bucket.max_length == 8000:
+        empirical_4k_8k_budgets = {
+            "hotpotqa": 12,
+            "musique": 8,
+        }
+        missing = tuple(
+            dataset
+            for dataset in datasets
+            if dataset not in empirical_4k_8k_budgets
+        )
+        if missing:
+            raise ValueError(
+                "length_aware_static has no 4k-8k budget for datasets: "
+                + ",".join(missing)
+            )
+        budgets = {
+            dataset: empirical_4k_8k_budgets[dataset]
+            for dataset in datasets
+        }
+    else:
+        raise ValueError(
+            "length_aware_static currently supports length buckets 0-4k and 4k-8k"
+        )
+
+    unique_budgets = set(budgets.values())
+    if len(unique_budgets) != 1:
+        details = ", ".join(
+            f"{dataset}=m{budget}" for dataset, budget in sorted(budgets.items())
+        )
+        raise ValueError(
+            "length_aware_static resolves different budgets for this dataset mix "
+            f"({details}); run those datasets separately"
+        )
+    return next(iter(unique_budgets))
 
 
 def filter_output_selection(

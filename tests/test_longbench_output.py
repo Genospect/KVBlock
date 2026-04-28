@@ -11,7 +11,9 @@ from kvblock.benchmark.longbench_output import (
     filter_output_selection,
     format_selected_context_prompt,
     passage_window_context_from_spans,
+    resolve_output_policy_settings,
 )
+from kvblock.benchmark.longbench_adapter import parse_length_bucket
 
 
 def _row(
@@ -239,3 +241,59 @@ def test_filter_output_selection_caps_total_blocks() -> None:
 
     assert filtered.block_ids == (1, 2)
     assert filtered.dropped_count == 1
+
+
+def test_manual_output_policy_preserves_explicit_settings() -> None:
+    resolved = resolve_output_policy_settings(
+        output_policy="manual",
+        dataset_names=("hotpotqa",),
+        length_bucket=parse_length_bucket("4k-8k"),
+        max_selected_blocks=17,
+        context_reconstruction="selected_spans",
+        passage_window_tokens=120,
+    )
+
+    assert resolved.name == "manual"
+    assert resolved.max_selected_blocks == 17
+    assert resolved.context_reconstruction == "selected_spans"
+    assert resolved.passage_window_tokens == 120
+
+
+@pytest.mark.parametrize(
+    ("dataset", "length_bucket", "expected_budget"),
+    (
+        ("hotpotqa", "0-4k", 20),
+        ("hotpotqa", "4k-8k", 12),
+        ("musique", "4k-8k", 8),
+    ),
+)
+def test_length_aware_static_output_policy_sets_empirical_budget_and_window(
+    dataset: str,
+    length_bucket: str,
+    expected_budget: int,
+) -> None:
+    resolved = resolve_output_policy_settings(
+        output_policy="length_aware_static",
+        dataset_names=(dataset,),
+        length_bucket=parse_length_bucket(length_bucket),
+        max_selected_blocks=None,
+        context_reconstruction="selected_spans",
+        passage_window_tokens=120,
+    )
+
+    assert resolved.name == "length_aware_static"
+    assert resolved.max_selected_blocks == expected_budget
+    assert resolved.context_reconstruction == "passage_window"
+    assert resolved.passage_window_tokens == 64
+
+
+def test_length_aware_static_requires_single_budget_per_run() -> None:
+    with pytest.raises(ValueError, match="run those datasets separately"):
+        resolve_output_policy_settings(
+            output_policy="length_aware_static",
+            dataset_names=("hotpotqa", "musique"),
+            length_bucket=parse_length_bucket("4k-8k"),
+            max_selected_blocks=None,
+            context_reconstruction="selected_spans",
+            passage_window_tokens=120,
+        )

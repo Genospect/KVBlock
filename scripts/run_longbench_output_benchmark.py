@@ -120,6 +120,16 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--max-new-tokens", type=int, default=32)
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument(
+        "--output-policy",
+        default="manual",
+        choices=("manual", "length_aware_static"),
+        help=(
+            "Output benchmark policy preset. length_aware_static sets passage_window "
+            "reconstruction, passage-window-tokens=64, and the empirical selected-block "
+            "budget for the requested dataset/length bucket."
+        ),
+    )
+    parser.add_argument(
         "--context-reconstruction",
         default="selected_spans",
         choices=("selected_spans", "passage_window"),
@@ -240,6 +250,7 @@ def main(argv: list[str] | None = None) -> int:
         oracle_top_k=parse_oracle_top_k(args.oracle_top_k),
         max_new_tokens=args.max_new_tokens,
         temperature=args.temperature,
+        output_policy=args.output_policy,
         context_reconstruction=args.context_reconstruction,
         passage_window_tokens=args.passage_window_tokens,
         passage_header_tokens=args.passage_header_tokens,
