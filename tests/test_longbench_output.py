@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from types import SimpleNamespace
+
 import pytest
 
 from kvblock.benchmark.longbench_output import (
@@ -7,6 +9,7 @@ from kvblock.benchmark.longbench_output import (
     build_output_summaries,
     extract_longbench_question,
     format_selected_context_prompt,
+    passage_window_context_from_spans,
 )
 
 
@@ -27,6 +30,9 @@ def _row(
         longbench_length=100,
         selected_token_count=int(selected_token_fraction * 100),
         selected_token_fraction=selected_token_fraction,
+        reconstructed_context_token_count=int(selected_token_fraction * 100),
+        reconstructed_context_token_fraction=selected_token_fraction,
+        context_reconstruction="selected_spans",
         selected_block_count=2,
         mixed_fallback_used=mixed_fallback_used,
         selector_latency_sec=0.01,
@@ -75,6 +81,10 @@ def test_output_summaries_aggregate_answer_and_fallback_metrics() -> None:
     assert summaries[0].mean_answer_f1 == 0.5
     assert summaries[0].mean_answer_em == 0.5
     assert summaries[0].mean_selected_token_fraction == pytest.approx(0.15)
+    assert summaries[0].mean_reconstructed_context_token_fraction == pytest.approx(
+        0.15
+    )
+    assert summaries[0].mean_reconstructed_context_tokens == pytest.approx(15.0)
     assert summaries[0].mixed_fallback_count == 1
     assert summaries[0].mixed_fallback_rate == 0.5
 
@@ -95,3 +105,42 @@ def test_prompt_helpers_extract_question_and_format_selected_context() -> None:
         "\n"
         "Answer:"
     )
+
+
+class WhitespaceRuntime:
+    def tokenize(self, prompt: str) -> SimpleNamespace:
+        token_ids = tuple(prompt.split())
+        return SimpleNamespace(
+            token_ids=token_ids,
+            token_count=len(token_ids),
+        )
+
+    def decode_token_ids(self, token_ids: tuple[str, ...]) -> str:
+        return " ".join(token_ids)
+
+
+def test_passage_window_context_preserves_selected_passage_header_and_order() -> None:
+    prompt = (
+        "DATASET: hotpotqa\n\n"
+        "CONTEXT:\n"
+        "Passage 1: Alpha Title alpha0 alpha1 alpha2 alpha3\n"
+        "Passage 2: Beta Title beta0 beta1 beta2 beta3 beta4 beta5\n"
+        "\nINPUT:\n"
+        "Who?"
+    )
+    token_ids = prompt.split()
+    selected_start = token_ids.index("beta3")
+    selected_span = f"{selected_start}:{selected_start + 1}"
+
+    reconstructed = passage_window_context_from_spans(
+        WhitespaceRuntime(),  # type: ignore[arg-type]
+        prompt_text=prompt,
+        selected_spans=(selected_span,),
+        passage_window_tokens=5,
+        passage_header_tokens=4,
+    )
+
+    assert "Passage 2: Beta Title" in reconstructed.text
+    assert "beta3" in reconstructed.text
+    assert "Passage 1:" not in reconstructed.text
+    assert reconstructed.token_count >= 5

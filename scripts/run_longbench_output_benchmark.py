@@ -119,6 +119,24 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--overlap-stride", type=int, default=None)
     parser.add_argument("--max-new-tokens", type=int, default=32)
     parser.add_argument("--temperature", type=float, default=0.0)
+    parser.add_argument(
+        "--context-reconstruction",
+        default="selected_spans",
+        choices=("selected_spans", "passage_window"),
+        help="How selected token spans are rebuilt into generation context.",
+    )
+    parser.add_argument(
+        "--passage-window-tokens",
+        type=int,
+        default=120,
+        help="Minimum local token window per selected span in passage_window mode.",
+    )
+    parser.add_argument(
+        "--passage-header-tokens",
+        type=int,
+        default=24,
+        help="Passage-leading tokens to preserve in passage_window mode.",
+    )
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--torch-dtype", default="float32")
     parser.add_argument("--device-map", default=None)
@@ -192,6 +210,9 @@ def main(argv: list[str] | None = None) -> int:
         oracle_top_k=parse_oracle_top_k(args.oracle_top_k),
         max_new_tokens=args.max_new_tokens,
         temperature=args.temperature,
+        context_reconstruction=args.context_reconstruction,
+        passage_window_tokens=args.passage_window_tokens,
+        passage_header_tokens=args.passage_header_tokens,
         load_config_kwargs={
             "device": args.device,
             "torch_dtype": args.torch_dtype,

@@ -16,6 +16,8 @@ DEFAULT_COLUMNS: tuple[str, ...] = (
     "mean_answer_em",
     "mean_selected_token_fraction",
     "mean_selected_tokens",
+    "mean_reconstructed_context_token_fraction",
+    "mean_reconstructed_context_tokens",
     "mean_selector_latency_sec",
     "mean_generation_latency_sec",
     "mixed_fallback_rate",

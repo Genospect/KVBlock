@@ -6,8 +6,9 @@ from dataclasses import asdict, dataclass
 import gc
 import json
 from pathlib import Path
+import re
 from time import perf_counter
-from typing import Any, Sequence
+from typing import Any, Literal, Sequence
 
 import torch
 
@@ -35,6 +36,30 @@ from kvblock.runtime.hooks import HiddenStateCaptureConfig, RepresentationSource
 from kvblock.runtime.local_hf_runtime import LocalHfRuntime
 from kvblock.runtime.real_block_eval import RealBlockSelectorConfig
 
+ContextReconstructionMode = Literal["selected_spans", "passage_window"]
+
+_CONTEXT_MARKER = "CONTEXT:\n"
+_INPUT_MARKER = "\nINPUT:\n"
+_PASSAGE_MARKER_RE = re.compile(r"Passage\s+\d+\s*:")
+
+
+@dataclass(frozen=True, slots=True)
+class ReconstructedContext:
+    """Context text plus token count used for generation."""
+
+    text: str
+    token_count: int
+
+
+@dataclass(frozen=True, slots=True)
+class PassageSpan:
+    """One parsed passage section with full-prompt token bounds."""
+
+    text_start: int
+    text_end: int
+    token_start: int
+    token_end: int
+
 
 @dataclass(frozen=True, slots=True)
 class LongBenchOutputRunRow:
@@ -48,6 +73,9 @@ class LongBenchOutputRunRow:
     longbench_length: int | None
     selected_token_count: int
     selected_token_fraction: float
+    reconstructed_context_token_count: int
+    reconstructed_context_token_fraction: float
+    context_reconstruction: str
     selected_block_count: int
     mixed_fallback_used: bool
     selector_latency_sec: float
@@ -86,6 +114,8 @@ class LongBenchOutputSummary:
     mean_answer_recall: float
     mean_selected_token_fraction: float
     mean_selected_tokens: float
+    mean_reconstructed_context_token_fraction: float
+    mean_reconstructed_context_tokens: float
     mean_selector_latency_sec: float
     mean_generation_latency_sec: float
     mixed_fallback_count: int
@@ -159,6 +189,9 @@ def run_longbench_output_benchmark(
     oracle_top_k: Sequence[int] = DEFAULT_ORACLE_TOP_K,
     max_new_tokens: int = 32,
     temperature: float = 0.0,
+    context_reconstruction: ContextReconstructionMode = "selected_spans",
+    passage_window_tokens: int = 120,
+    passage_header_tokens: int = 24,
     load_config_kwargs: dict[str, Any] | None = None,
     selector_config: RealBlockSelectorConfig | None = None,
     dataset_loader: DatasetLoader | None = None,
@@ -173,6 +206,12 @@ def run_longbench_output_benchmark(
         raise ValueError("max_new_tokens must be > 0")
     if temperature < 0.0:
         raise ValueError("temperature must be >= 0")
+    if context_reconstruction not in ("selected_spans", "passage_window"):
+        raise ValueError("unsupported context_reconstruction")
+    if passage_window_tokens <= 0:
+        raise ValueError("passage_window_tokens must be > 0")
+    if passage_header_tokens < 0:
+        raise ValueError("passage_header_tokens must be >= 0")
 
     bucket = (
         parse_length_bucket(length_bucket)
@@ -235,15 +274,18 @@ def run_longbench_output_benchmark(
             if selector_row.model_name != model_name:
                 continue
             prompt_text = Path(selector_row.prompt_file).read_text(encoding="utf-8")
-            selected_context = selected_context_from_spans(
+            reconstructed_context = reconstruct_selected_context(
                 runtime,
                 prompt_text=prompt_text,
                 selected_spans=selector_row.selected_spans,
+                mode=context_reconstruction,
+                passage_window_tokens=passage_window_tokens,
+                passage_header_tokens=passage_header_tokens,
             )
             question = extract_longbench_question(prompt_text)
             generation_prompt = format_selected_context_prompt(
                 question=question,
-                selected_context=selected_context,
+                selected_context=reconstructed_context.text,
             )
             prediction, generation_latency_sec = generate_answer(
                 runtime,
@@ -269,6 +311,15 @@ def run_longbench_output_benchmark(
                     longbench_length=selector_row.longbench_length,
                     selected_token_count=selected_token_count,
                     selected_token_fraction=selected_token_fraction,
+                    reconstructed_context_token_count=(
+                        reconstructed_context.token_count
+                    ),
+                    reconstructed_context_token_fraction=(
+                        0.0
+                        if selector_row.tokens <= 0
+                        else reconstructed_context.token_count / selector_row.tokens
+                    ),
+                    context_reconstruction=context_reconstruction,
                     selected_block_count=selector_row.selected_count,
                     mixed_fallback_used=selector_row.mixed_fallback_used,
                     selector_latency_sec=selector_row.selector_latency_sec,
@@ -324,6 +375,9 @@ def run_longbench_output_benchmark(
         oracle_top_k=resolved_oracle_top_k,
         max_new_tokens=max_new_tokens,
         temperature=temperature,
+        context_reconstruction=context_reconstruction,
+        passage_window_tokens=passage_window_tokens,
+        passage_header_tokens=passage_header_tokens,
         selector_config=selector_config,
         load_config_kwargs=load_kwargs,
     )
@@ -338,16 +392,45 @@ def run_longbench_output_benchmark(
     )
 
 
+def reconstruct_selected_context(
+    runtime: LocalHfRuntime,
+    *,
+    prompt_text: str,
+    selected_spans: Sequence[str],
+    mode: ContextReconstructionMode = "selected_spans",
+    passage_window_tokens: int = 120,
+    passage_header_tokens: int = 24,
+) -> ReconstructedContext:
+    """Build generation context from selected spans."""
+
+    if mode == "selected_spans":
+        return selected_context_from_spans(
+            runtime,
+            prompt_text=prompt_text,
+            selected_spans=selected_spans,
+        )
+    if mode == "passage_window":
+        return passage_window_context_from_spans(
+            runtime,
+            prompt_text=prompt_text,
+            selected_spans=selected_spans,
+            passage_window_tokens=passage_window_tokens,
+            passage_header_tokens=passage_header_tokens,
+        )
+    raise ValueError(f"unsupported context reconstruction mode: {mode!r}")
+
+
 def selected_context_from_spans(
     runtime: LocalHfRuntime,
     *,
     prompt_text: str,
     selected_spans: Sequence[str],
-) -> str:
+) -> ReconstructedContext:
     """Decode selected prompt token spans into a shortened context string."""
 
     tokenized = runtime.tokenize(prompt_text)
     chunks: list[str] = []
+    intervals: list[tuple[int, int]] = []
     for span in selected_spans:
         parsed = _parse_span(span)
         if parsed is None:
@@ -358,10 +441,90 @@ def selected_context_from_spans(
         token_ids = tuple(tokenized.token_ids[bounded_start:bounded_end])
         if not token_ids:
             continue
+        intervals.append((bounded_start, bounded_end))
         text = runtime.decode_token_ids(token_ids).strip()
         if text:
             chunks.append(text)
-    return "\n\n".join(chunks)
+    return ReconstructedContext(
+        text="\n\n".join(chunks),
+        token_count=_interval_token_count(_merge_intervals(intervals)),
+    )
+
+
+def passage_window_context_from_spans(
+    runtime: LocalHfRuntime,
+    *,
+    prompt_text: str,
+    selected_spans: Sequence[str],
+    passage_window_tokens: int = 120,
+    passage_header_tokens: int = 24,
+) -> ReconstructedContext:
+    """Group selected spans by passage and add passage headers/local windows."""
+
+    tokenized = runtime.tokenize(prompt_text)
+    passages = _passage_spans(runtime, prompt_text)
+    if not passages:
+        return selected_context_from_spans(
+            runtime,
+            prompt_text=prompt_text,
+            selected_spans=selected_spans,
+        )
+    selected_intervals = tuple(
+        (start, end)
+        for span in selected_spans
+        if (parsed := _parse_span(span)) is not None
+        for start, end in (parsed,)
+    )
+    sections: list[str] = []
+    all_intervals: list[tuple[int, int]] = []
+    for passage in passages:
+        overlapping = tuple(
+            (max(start, passage.token_start), min(end, passage.token_end))
+            for start, end in selected_intervals
+            if max(start, passage.token_start) < min(end, passage.token_end)
+        )
+        if not overlapping:
+            continue
+        intervals: list[tuple[int, int]] = []
+        if passage_header_tokens > 0:
+            intervals.append(
+                (
+                    passage.token_start,
+                    min(passage.token_end, passage.token_start + passage_header_tokens),
+                )
+            )
+        for start, end in overlapping:
+            intervals.append(
+                _expand_interval_to_target(
+                    start,
+                    end,
+                    target_tokens=passage_window_tokens,
+                    min_start=passage.token_start,
+                    max_end=passage.token_end,
+                )
+            )
+        merged = _merge_intervals(intervals)
+        all_intervals.extend(merged)
+        chunks: list[str] = []
+        for start, end in merged:
+            token_ids = tuple(tokenized.token_ids[start:end])
+            if not token_ids:
+                continue
+            text = runtime.decode_token_ids(token_ids).strip()
+            if text:
+                chunks.append(text)
+        if chunks:
+            sections.append(" ... ".join(chunks))
+    if not sections:
+        return selected_context_from_spans(
+            runtime,
+            prompt_text=prompt_text,
+            selected_spans=selected_spans,
+        )
+    return ReconstructedContext(
+        text="\n\n".join(sections),
+        token_count=_interval_token_count(_merge_intervals(all_intervals)),
+    )
 
 
 def extract_longbench_question(prompt_text: str) -> str:
@@ -467,8 +630,11 @@ def format_longbench_output_report(result: LongBenchOutputBenchmarkResult) -> st
         lines.append(
             f"{row.dataset}:{row.sample_id} model={row.model} mode={row.block_mode} "
             f"answer_f1={row.answer_f1:.3f} answer_em={row.answer_em:.3f} "
+            f"recon={row.context_reconstruction} "
             f"selected_frac={row.selected_token_fraction:.3f} "
+            f"recon_frac={row.reconstructed_context_token_fraction:.3f} "
             f"selected_tokens={row.selected_token_count} "
+            f"recon_tokens={row.reconstructed_context_token_count} "
             f"fallback={row.mixed_fallback_used} "
             f"selector={row.selector_latency_sec:.6f}s "
             f"generation={row.generation_latency_sec:.6f}s "
@@ -514,6 +680,12 @@ def _summarize_output_rows(
             row.selected_token_fraction for row in rows
         ),
         mean_selected_tokens=_mean(row.selected_token_count for row in rows),
+        mean_reconstructed_context_token_fraction=_mean(
+            row.reconstructed_context_token_fraction for row in rows
+        ),
+        mean_reconstructed_context_tokens=_mean(
+            row.reconstructed_context_token_count for row in rows
+        ),
         mean_selector_latency_sec=_mean(row.selector_latency_sec for row in rows),
         mean_generation_latency_sec=_mean(
             row.generation_latency_sec for row in rows
@@ -541,6 +713,115 @@ def _selected_token_count(selected_spans: Sequence[str]) -> int:
         start, end = parsed
         total += max(0, end - start)
     return total
+
+
+def _token_count(runtime: LocalHfRuntime, text: str) -> int:
+    if not text:
+        return 0
+    tokenized = runtime.tokenize(text)
+    return int(getattr(tokenized, "token_count", len(tokenized.token_ids)))
+
+
+def _context_bounds(prompt_text: str) -> tuple[int, int] | None:
+    context_marker_index = prompt_text.find(_CONTEXT_MARKER)
+    if context_marker_index < 0:
+        return None
+    context_start = context_marker_index + len(_CONTEXT_MARKER)
+    input_marker_index = prompt_text.find(_INPUT_MARKER, context_start)
+    context_end = len(prompt_text) if input_marker_index < 0 else input_marker_index
+    if context_end <= context_start:
+        return None
+    return context_start, context_end
+
+
+def _passage_spans(
+    runtime: LocalHfRuntime,
+    prompt_text: str,
+) -> tuple[PassageSpan, ...]:
+    bounds = _context_bounds(prompt_text)
+    if bounds is None:
+        return ()
+    context_start, context_end = bounds
+    context_text = prompt_text[context_start:context_end]
+    markers = tuple(_PASSAGE_MARKER_RE.finditer(context_text))
+    if not markers:
+        return ()
+
+    passages: list[PassageSpan] = []
+    for index, marker in enumerate(markers):
+        next_start = (
+            markers[index + 1].start()
+            if index + 1 < len(markers)
+            else len(context_text)
+        )
+        text_start = context_start + marker.start()
+        text_end = context_start + next_start
+        if text_end <= text_start:
+            continue
+        token_start = _token_count(runtime, prompt_text[:text_start])
+        token_end = _token_count(runtime, prompt_text[:text_end])
+        if token_end <= token_start:
+            continue
+        passages.append(
+            PassageSpan(
+                text_start=text_start,
+                text_end=min(text_end, context_end),
+                token_start=token_start,
+                token_end=token_end,
+            )
+        )
+    return tuple(passages)
+
+
+def _expand_interval_to_target(
+    start: int,
+    end: int,
+    *,
+    target_tokens: int,
+    min_start: int,
+    max_end: int,
+) -> tuple[int, int]:
+    bounded_start = max(min_start, min(start, max_end))
+    bounded_end = max(bounded_start, min(end, max_end))
+    target = max(0, target_tokens, bounded_end - bounded_start)
+    extra = max(0, target - (bounded_end - bounded_start))
+    expanded_start = max(min_start, bounded_start - extra // 2)
+    expanded_end = min(max_end, bounded_end + extra - extra // 2)
+
+    missing = target - (expanded_end - expanded_start)
+    if missing > 0 and expanded_start == min_start:
+        expanded_end = min(max_end, expanded_end + missing)
+
+    missing = target - (expanded_end - expanded_start)
+    if missing > 0 and expanded_end == max_end:
+        expanded_start = max(min_start, expanded_start - missing)
+
+    return expanded_start, expanded_end
+
+
+def _merge_intervals(
+    intervals: Sequence[tuple[int, int]],
+) -> tuple[tuple[int, int], ...]:
+    normalized = sorted(
+        (min(start, end), max(start, end))
+        for start, end in intervals
+        if end > start
+    )
+    if not normalized:
+        return ()
+
+    merged: list[tuple[int, int]] = [normalized[0]]
+    for start, end in normalized[1:]:
+        previous_start, previous_end = merged[-1]
+        if start <= previous_end:
+            merged[-1] = (previous_start, max(previous_end, end))
+        else:
+            merged.append((start, end))
+    return tuple(merged)
+
+
+def _interval_token_count(intervals: Sequence[tuple[int, int]]) -> int:
+    return sum(max(0, end - start) for start, end in intervals)
 
 
 def _parse_span(span: str) -> tuple[int, int] | None:
@@ -575,6 +856,8 @@ def _format_summary(summary: LongBenchOutputSummary) -> str:
         f"mean_answer_em={summary.mean_answer_em:.3f} "
         f"mean_selected_frac={summary.mean_selected_token_fraction:.3f} "
         f"mean_selected_tokens={summary.mean_selected_tokens:.1f} "
+        f"mean_recon_frac={summary.mean_reconstructed_context_token_fraction:.3f} "
+        f"mean_recon_tokens={summary.mean_reconstructed_context_tokens:.1f} "
         f"mean_selector={summary.mean_selector_latency_sec:.6f}s "
         f"mean_generation={summary.mean_generation_latency_sec:.6f}s "
         f"mixed_fallback={summary.mixed_fallback_count}/{summary.row_count}"
