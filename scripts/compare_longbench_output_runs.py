@@ -14,6 +14,8 @@ DEFAULT_COLUMNS: tuple[str, ...] = (
     "row_count",
     "mean_answer_f1",
     "mean_answer_em",
+    "mean_selected_block_count",
+    "mean_selection_filter_dropped_count",
     "mean_selected_token_fraction",
     "mean_selected_tokens",
     "mean_reconstructed_context_token_fraction",

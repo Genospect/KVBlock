@@ -62,6 +62,16 @@ class PassageSpan:
 
 
 @dataclass(frozen=True, slots=True)
+class OutputSelection:
+    """Selected block ids/spans after optional output-only budget filtering."""
+
+    block_ids: tuple[int, ...]
+    spans: tuple[str, ...]
+    blocks: tuple[dict[str, Any], ...]
+    dropped_count: int
+
+
+@dataclass(frozen=True, slots=True)
 class LongBenchOutputRunRow:
     """One generated-answer evaluation row."""
 
@@ -77,6 +87,7 @@ class LongBenchOutputRunRow:
     reconstructed_context_token_fraction: float
     context_reconstruction: str
     selected_block_count: int
+    selection_filter_dropped_count: int
     mixed_fallback_used: bool
     selector_latency_sec: float
     selector_total_latency_sec: float
@@ -112,6 +123,8 @@ class LongBenchOutputSummary:
     mean_answer_f1: float
     mean_answer_precision: float
     mean_answer_recall: float
+    mean_selected_block_count: float
+    mean_selection_filter_dropped_count: float
     mean_selected_token_fraction: float
     mean_selected_tokens: float
     mean_reconstructed_context_token_fraction: float
@@ -192,6 +205,8 @@ def run_longbench_output_benchmark(
     context_reconstruction: ContextReconstructionMode = "selected_spans",
     passage_window_tokens: int = 120,
     passage_header_tokens: int = 24,
+    selection_min_blocks: int = 0,
+    selection_score_ratio: float | None = None,
     load_config_kwargs: dict[str, Any] | None = None,
     selector_config: RealBlockSelectorConfig | None = None,
     dataset_loader: DatasetLoader | None = None,
@@ -212,6 +227,10 @@ def run_longbench_output_benchmark(
         raise ValueError("passage_window_tokens must be > 0")
     if passage_header_tokens < 0:
         raise ValueError("passage_header_tokens must be >= 0")
+    if selection_min_blocks < 0:
+        raise ValueError("selection_min_blocks must be >= 0")
+    if selection_score_ratio is not None and selection_score_ratio < 0.0:
+        raise ValueError("selection_score_ratio must be >= 0 when provided")
 
     bucket = (
         parse_length_bucket(length_bucket)
@@ -274,10 +293,17 @@ def run_longbench_output_benchmark(
             if selector_row.model_name != model_name:
                 continue
             prompt_text = Path(selector_row.prompt_file).read_text(encoding="utf-8")
+            output_selection = filter_output_selection(
+                selected_block_ids=selector_row.selected_block_ids,
+                selected_spans=selector_row.selected_spans,
+                selected_blocks=selector_row.selected_blocks,
+                selection_min_blocks=selection_min_blocks,
+                selection_score_ratio=selection_score_ratio,
+            )
             reconstructed_context = reconstruct_selected_context(
                 runtime,
                 prompt_text=prompt_text,
-                selected_spans=selector_row.selected_spans,
+                selected_spans=output_selection.spans,
                 mode=context_reconstruction,
                 passage_window_tokens=passage_window_tokens,
                 passage_header_tokens=passage_header_tokens,
@@ -295,7 +321,7 @@ def run_longbench_output_benchmark(
             )
             gold_answers = answers_by_prompt.get(selector_row.prompt_name, ())
             answer_scores = score_qa_answer(prediction, gold_answers)
-            selected_token_count = _selected_token_count(selector_row.selected_spans)
+            selected_token_count = _selected_token_count(output_selection.spans)
             selected_token_fraction = (
                 0.0
                 if selector_row.tokens <= 0
@@ -320,7 +346,8 @@ def run_longbench_output_benchmark(
                         else reconstructed_context.token_count / selector_row.tokens
                     ),
                     context_reconstruction=context_reconstruction,
-                    selected_block_count=selector_row.selected_count,
+                    selected_block_count=len(output_selection.block_ids),
+                    selection_filter_dropped_count=output_selection.dropped_count,
                     mixed_fallback_used=selector_row.mixed_fallback_used,
                     selector_latency_sec=selector_row.selector_latency_sec,
                     selector_total_latency_sec=selector_row.total_latency_sec,
@@ -334,13 +361,35 @@ def run_longbench_output_benchmark(
                     answer_f1=answer_scores["f1"],
                     answer_precision=answer_scores["precision"],
                     answer_recall=answer_scores["recall"],
-                    selector_recall=selector_row.target_recall,
-                    selector_precision=selector_row.selected_precision,
-                    evidence_window_recall=selector_row.evidence_window_recall,
-                    evidence_window_precision=selector_row.evidence_window_precision,
-                    expected_parent_recall=selector_row.expected_parent_recall,
-                    selected_ids=selector_row.selected_block_ids,
-                    selected_spans=selector_row.selected_spans,
+                    selector_recall=_filtered_recall(
+                        selector_row.target_recall,
+                        expected_ids=selector_row.expected_block_ids,
+                        selected_ids=output_selection.block_ids,
+                    ),
+                    selector_precision=_filtered_precision(
+                        selector_row.selected_precision,
+                        expected_ids=selector_row.expected_block_ids,
+                        selected_ids=output_selection.block_ids,
+                    ),
+                    evidence_window_recall=_filtered_window_recall(
+                        selector_row.evidence_window_recall,
+                        expected_ids=selector_row.expected_block_ids,
+                        selected_ids=output_selection.block_ids,
+                        radius=selector_row.evidence_window_radius,
+                    ),
+                    evidence_window_precision=_filtered_window_precision(
+                        selector_row.evidence_window_precision,
+                        expected_ids=selector_row.expected_block_ids,
+                        selected_ids=output_selection.block_ids,
+                        radius=selector_row.evidence_window_radius,
+                    ),
+                    expected_parent_recall=(
+                        selector_row.expected_parent_recall
+                        if output_selection.dropped_count == 0
+                        else None
+                    ),
+                    selected_ids=output_selection.block_ids,
+                    selected_spans=output_selection.spans,
                 )
             )
     row_tuple = tuple(rows)
@@ -378,6 +427,8 @@ def run_longbench_output_benchmark(
         context_reconstruction=context_reconstruction,
         passage_window_tokens=passage_window_tokens,
         passage_header_tokens=passage_header_tokens,
+        selection_min_blocks=selection_min_blocks,
+        selection_score_ratio=selection_score_ratio,
         selector_config=selector_config,
         load_config_kwargs=load_kwargs,
     )
@@ -390,6 +441,71 @@ def run_longbench_output_benchmark(
         dataset_summaries=dataset_summaries,
         overall_summary=_summarize_output_rows("all", row_tuple),
     )
+
+
+def filter_output_selection(
+    *,
+    selected_block_ids: Sequence[int],
+    selected_spans: Sequence[str],
+    selected_blocks: Sequence[dict[str, Any]],
+    selection_min_blocks: int = 0,
+    selection_score_ratio: float | None = None,
+) -> OutputSelection:
+    """Apply an optional output-only score-ratio budget filter."""
+
+    block_records = {
+        int(record["block_id"]): dict(record)
+        for record in selected_blocks
+        if "block_id" in record
+    }
+    pairs = tuple(zip(selected_block_ids, selected_spans, strict=False))
+    triples = tuple(
+        (
+            int(block_id),
+            span,
+            block_records.get(int(block_id), {}),
+        )
+        for block_id, span in pairs
+    )
+    if selection_score_ratio is None or not triples:
+        return OutputSelection(
+            block_ids=tuple(block_id for block_id, _, _ in triples),
+            spans=tuple(span for _, span, _ in triples),
+            blocks=tuple(record for _, _, record in triples),
+            dropped_count=0,
+        )
+
+    min_keep = min(max(0, selection_min_blocks), len(triples))
+    top_score = _selection_score(triples[0][2])
+    if top_score is None or top_score <= 0.0:
+        keep_count = len(triples)
+    else:
+        threshold = top_score * selection_score_ratio
+        keep_count = len(triples)
+        for index, (_, _, record) in enumerate(triples):
+            if index < min_keep:
+                continue
+            score = _selection_score(record)
+            if score is None or score < threshold:
+                keep_count = index
+                break
+        keep_count = max(min_keep, keep_count)
+
+    kept = triples[:keep_count]
+    return OutputSelection(
+        block_ids=tuple(block_id for block_id, _, _ in kept),
+        spans=tuple(span for _, span, _ in kept),
+        blocks=tuple(record for _, _, record in kept),
+        dropped_count=len(triples) - len(kept),
+    )
+
+
+def _selection_score(record: dict[str, Any]) -> float | None:
+    for key in ("final_score", "refined_score", "stage_b_score", "stage_a_score"):
+        value = record.get(key)
+        if value is not None:
+            return float(value)
+    return None
 
 
 def reconstruct_selected_context(
@@ -631,6 +747,8 @@ def format_longbench_output_report(result: LongBenchOutputBenchmarkResult) -> st
             f"{row.dataset}:{row.sample_id} model={row.model} mode={row.block_mode} "
             f"answer_f1={row.answer_f1:.3f} answer_em={row.answer_em:.3f} "
             f"recon={row.context_reconstruction} "
+            f"blocks={row.selected_block_count} "
+            f"dropped={row.selection_filter_dropped_count} "
             f"selected_frac={row.selected_token_fraction:.3f} "
             f"recon_frac={row.reconstructed_context_token_fraction:.3f} "
             f"selected_tokens={row.selected_token_count} "
@@ -676,6 +794,10 @@ def _summarize_output_rows(
         mean_answer_f1=_mean(row.answer_f1 for row in rows),
         mean_answer_precision=_mean(row.answer_precision for row in rows),
         mean_answer_recall=_mean(row.answer_recall for row in rows),
+        mean_selected_block_count=_mean(row.selected_block_count for row in rows),
+        mean_selection_filter_dropped_count=_mean(
+            row.selection_filter_dropped_count for row in rows
+        ),
         mean_selected_token_fraction=_mean(
             row.selected_token_fraction for row in rows
         ),
@@ -713,6 +835,78 @@ def _selected_token_count(selected_spans: Sequence[str]) -> int:
         start, end = parsed
         total += max(0, end - start)
     return total
+
+
+def _filtered_recall(
+    original_value: float | None,
+    *,
+    expected_ids: Sequence[int],
+    selected_ids: Sequence[int],
+) -> float | None:
+    if original_value is None:
+        return None
+    expected = set(expected_ids)
+    if not expected:
+        return None
+    return len(expected.intersection(selected_ids)) / len(expected)
+
+
+def _filtered_precision(
+    original_value: float | None,
+    *,
+    expected_ids: Sequence[int],
+    selected_ids: Sequence[int],
+) -> float | None:
+    if original_value is None:
+        return None
+    selected = set(selected_ids)
+    if not selected:
+        return None
+    return len(set(expected_ids).intersection(selected)) / len(selected)
+
+
+def _filtered_window_recall(
+    original_value: float | None,
+    *,
+    expected_ids: Sequence[int],
+    selected_ids: Sequence[int],
+    radius: int,
+) -> float | None:
+    if original_value is None:
+        return None
+    expected = set(expected_ids)
+    if not expected:
+        return None
+    selected_window = _expanded_id_set(selected_ids, radius=radius)
+    return len(expected.intersection(selected_window)) / len(expected)
+
+
+def _filtered_window_precision(
+    original_value: float | None,
+    *,
+    expected_ids: Sequence[int],
+    selected_ids: Sequence[int],
+    radius: int,
+) -> float | None:
+    if original_value is None:
+        return None
+    selected_window = _expanded_id_set(selected_ids, radius=radius)
+    if not selected_window:
+        return None
+    return len(set(expected_ids).intersection(selected_window)) / len(selected_window)
+
+
+def _expanded_id_set(ids: Sequence[int], *, radius: int) -> set[int]:
+    expanded: set[int] = set()
+    bounded_radius = max(0, radius)
+    for block_id in ids:
+        expanded.update(
+            range(
+                int(block_id) - bounded_radius,
+                int(block_id) + bounded_radius + 1,
+            )
+        )
+    return expanded
 
 
 def _token_count(runtime: LocalHfRuntime, text: str) -> int:
@@ -854,6 +1048,8 @@ def _format_summary(summary: LongBenchOutputSummary) -> str:
         f"{summary.dataset} | rows={summary.row_count} "
         f"mean_answer_f1={summary.mean_answer_f1:.3f} "
         f"mean_answer_em={summary.mean_answer_em:.3f} "
+        f"mean_blocks={summary.mean_selected_block_count:.1f} "
+        f"mean_dropped={summary.mean_selection_filter_dropped_count:.1f} "
         f"mean_selected_frac={summary.mean_selected_token_fraction:.3f} "
         f"mean_selected_tokens={summary.mean_selected_tokens:.1f} "
         f"mean_recon_frac={summary.mean_reconstructed_context_token_fraction:.3f} "

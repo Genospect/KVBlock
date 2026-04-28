@@ -8,6 +8,7 @@ from kvblock.benchmark.longbench_output import (
     LongBenchOutputRunRow,
     build_output_summaries,
     extract_longbench_question,
+    filter_output_selection,
     format_selected_context_prompt,
     passage_window_context_from_spans,
 )
@@ -34,6 +35,7 @@ def _row(
         reconstructed_context_token_fraction=selected_token_fraction,
         context_reconstruction="selected_spans",
         selected_block_count=2,
+        selection_filter_dropped_count=0,
         mixed_fallback_used=mixed_fallback_used,
         selector_latency_sec=0.01,
         selector_total_latency_sec=0.02,
@@ -80,6 +82,8 @@ def test_output_summaries_aggregate_answer_and_fallback_metrics() -> None:
     assert summaries[0].row_count == 2
     assert summaries[0].mean_answer_f1 == 0.5
     assert summaries[0].mean_answer_em == 0.5
+    assert summaries[0].mean_selected_block_count == pytest.approx(2.0)
+    assert summaries[0].mean_selection_filter_dropped_count == pytest.approx(0.0)
     assert summaries[0].mean_selected_token_fraction == pytest.approx(0.15)
     assert summaries[0].mean_reconstructed_context_token_fraction == pytest.approx(
         0.15
@@ -144,3 +148,38 @@ def test_passage_window_context_preserves_selected_passage_header_and_order() ->
     assert "beta3" in reconstructed.text
     assert "Passage 1:" not in reconstructed.text
     assert reconstructed.token_count >= 5
+
+
+def test_filter_output_selection_keeps_min_then_stops_on_score_ratio() -> None:
+    filtered = filter_output_selection(
+        selected_block_ids=(1, 2, 3, 4),
+        selected_spans=("0:10", "10:20", "20:30", "30:40"),
+        selected_blocks=(
+            {"block_id": 1, "final_score": 1.0},
+            {"block_id": 2, "final_score": 0.7},
+            {"block_id": 3, "final_score": 0.3},
+            {"block_id": 4, "final_score": 0.2},
+        ),
+        selection_min_blocks=2,
+        selection_score_ratio=0.5,
+    )
+
+    assert filtered.block_ids == (1, 2)
+    assert filtered.spans == ("0:10", "10:20")
+    assert filtered.dropped_count == 2
+
+
+def test_filter_output_selection_is_disabled_without_score_ratio() -> None:
+    filtered = filter_output_selection(
+        selected_block_ids=(1, 2),
+        selected_spans=("0:10", "10:20"),
+        selected_blocks=(
+            {"block_id": 1, "final_score": 1.0},
+            {"block_id": 2, "final_score": 0.1},
+        ),
+        selection_min_blocks=1,
+        selection_score_ratio=None,
+    )
+
+    assert filtered.block_ids == (1, 2)
+    assert filtered.dropped_count == 0

@@ -137,6 +137,21 @@ def build_parser() -> argparse.ArgumentParser:
         default=24,
         help="Passage-leading tokens to preserve in passage_window mode.",
     )
+    parser.add_argument(
+        "--selection-min-blocks",
+        type=int,
+        default=0,
+        help="Minimum output-context blocks to keep before score-ratio trimming.",
+    )
+    parser.add_argument(
+        "--selection-score-ratio",
+        type=float,
+        default=None,
+        help=(
+            "Optional output-only trim: after min blocks, stop when block score is "
+            "below this ratio of the top selected score."
+        ),
+    )
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--torch-dtype", default="float32")
     parser.add_argument("--device-map", default=None)
@@ -213,6 +228,8 @@ def main(argv: list[str] | None = None) -> int:
         context_reconstruction=args.context_reconstruction,
         passage_window_tokens=args.passage_window_tokens,
         passage_header_tokens=args.passage_header_tokens,
+        selection_min_blocks=args.selection_min_blocks,
+        selection_score_ratio=args.selection_score_ratio,
         load_config_kwargs={
             "device": args.device,
             "torch_dtype": args.torch_dtype,
