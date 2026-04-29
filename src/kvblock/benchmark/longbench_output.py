@@ -54,6 +54,16 @@ class ReconstructedContext:
 
     text: str
     token_count: int
+    source_spans: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True, slots=True)
+class ContextChunk:
+    """One context chunk with character bounds relative to the context section."""
+
+    text: str
+    text_start: int
+    text_end: int
 
 
 @dataclass(frozen=True, slots=True)
@@ -612,7 +622,7 @@ def _run_direct_context_output_benchmark(
                     evidence_window_precision=None,
                     expected_parent_recall=None,
                     selected_ids=(),
-                    selected_spans=(),
+                    selected_spans=reconstructed_context.source_spans,
                 )
             )
 
@@ -927,10 +937,22 @@ def full_context_from_prompt(
 ) -> ReconstructedContext:
     """Extract and count the original LongBench context section."""
 
+    bounds = _context_bounds(prompt_text)
     context = extract_longbench_context(prompt_text)
+    source_spans = ()
+    if bounds is not None:
+        source_spans = (
+            _prompt_token_span_for_char_range(
+                runtime,
+                prompt_text,
+                start=bounds[0],
+                end=bounds[1],
+            ),
+        )
     return ReconstructedContext(
         text=context,
         token_count=_token_count(runtime, context),
+        source_spans=source_spans,
     )
 
 
@@ -968,17 +990,28 @@ def answer_oracle_context_from_prompt(
 
     context = extract_longbench_context(prompt_text)
     chunks = _answer_oracle_context_chunks(context, answers)
-    oracle_context = "\n\n".join(chunks) if chunks else context
+    if chunks:
+        oracle_context = "\n\n".join(chunk.text for chunk in chunks)
+        source_spans = _source_spans_for_context_chunks(
+            runtime,
+            prompt_text=prompt_text,
+            chunks=chunks,
+        )
+    else:
+        full_context = full_context_from_prompt(runtime, prompt_text=prompt_text)
+        oracle_context = full_context.text
+        source_spans = full_context.source_spans
     return ReconstructedContext(
         text=oracle_context,
         token_count=_token_count(runtime, oracle_context),
+        source_spans=source_spans,
     )
 
 
 def _answer_oracle_context_chunks(
     context: str,
     answers: Sequence[str],
-) -> tuple[str, ...]:
+) -> tuple[ContextChunk, ...]:
     normalized_answers = tuple(
         normalized
         for answer in answers
@@ -993,39 +1026,65 @@ def _answer_oracle_context_chunks(
         hits = tuple(
             chunk
             for chunk in passage_chunks
-            if _chunk_contains_normalized_answer(chunk, normalized_answers)
+            if _chunk_contains_normalized_answer(chunk.text, normalized_answers)
         )
         if hits:
-            return _dedupe_text_chunks(hits)
+            return _dedupe_context_chunks(hits)
 
     sentence_hits = tuple(
         chunk
         for chunk in _sentence_like_chunks(context)
-        if _chunk_contains_normalized_answer(chunk, normalized_answers)
+        if _chunk_contains_normalized_answer(chunk.text, normalized_answers)
     )
-    return _dedupe_text_chunks(sentence_hits)
+    return _dedupe_context_chunks(sentence_hits)
 
 
-def _longbench_passage_chunks(context: str) -> tuple[str, ...]:
+def _longbench_passage_chunks(context: str) -> tuple[ContextChunk, ...]:
     matches = tuple(_PASSAGE_MARKER_RE.finditer(context))
     if not matches:
         return ()
-    chunks: list[str] = []
+    chunks: list[ContextChunk] = []
     for index, match in enumerate(matches):
         start = match.start()
         end = matches[index + 1].start() if index + 1 < len(matches) else len(context)
-        chunk = context[start:end].strip()
-        if chunk:
-            chunks.append(chunk)
+        chunk_start, chunk_end, chunk_text = _strip_chunk_bounds(context, start, end)
+        if chunk_text:
+            chunks.append(ContextChunk(chunk_text, chunk_start, chunk_end))
     return tuple(chunks)
 
 
-def _sentence_like_chunks(context: str) -> tuple[str, ...]:
-    return tuple(
-        chunk.strip()
-        for chunk in re.split(r"(?<=[.!?])\s+|\n+", context)
-        if chunk.strip()
+def _sentence_like_chunks(context: str) -> tuple[ContextChunk, ...]:
+    chunks: list[ContextChunk] = []
+    previous_end = 0
+    for match in re.finditer(r"(?<=[.!?])\s+|\n+", context):
+        chunk_start, chunk_end, chunk_text = _strip_chunk_bounds(
+            context,
+            previous_end,
+            match.start(),
+        )
+        if chunk_text:
+            chunks.append(ContextChunk(chunk_text, chunk_start, chunk_end))
+        previous_end = match.end()
+    chunk_start, chunk_end, chunk_text = _strip_chunk_bounds(
+        context,
+        previous_end,
+        len(context),
     )
+    if chunk_text:
+        chunks.append(ContextChunk(chunk_text, chunk_start, chunk_end))
+    return tuple(chunks)
+
+
+def _strip_chunk_bounds(
+    text: str,
+    start: int,
+    end: int,
+) -> tuple[int, int, str]:
+    while start < end and text[start].isspace():
+        start += 1
+    while end > start and text[end - 1].isspace():
+        end -= 1
+    return start, end, text[start:end]
 
 
 def _chunk_contains_normalized_answer(
@@ -1036,16 +1095,49 @@ def _chunk_contains_normalized_answer(
     return any(answer in normalized_chunk for answer in normalized_answers)
 
 
-def _dedupe_text_chunks(chunks: Sequence[str]) -> tuple[str, ...]:
+def _dedupe_context_chunks(chunks: Sequence[ContextChunk]) -> tuple[ContextChunk, ...]:
     seen: set[str] = set()
-    deduped: list[str] = []
+    deduped: list[ContextChunk] = []
     for chunk in chunks:
-        normalized = " ".join(chunk.split())
+        normalized = " ".join(chunk.text.split())
         if normalized in seen:
             continue
         seen.add(normalized)
         deduped.append(chunk)
     return tuple(deduped)
+
+
+def _source_spans_for_context_chunks(
+    runtime: LocalHfRuntime,
+    *,
+    prompt_text: str,
+    chunks: Sequence[ContextChunk],
+) -> tuple[str, ...]:
+    bounds = _context_bounds(prompt_text)
+    if bounds is None:
+        return ()
+    context_start, _ = bounds
+    return tuple(
+        _prompt_token_span_for_char_range(
+            runtime,
+            prompt_text,
+            start=context_start + chunk.text_start,
+            end=context_start + chunk.text_end,
+        )
+        for chunk in chunks
+    )
+
+
+def _prompt_token_span_for_char_range(
+    runtime: LocalHfRuntime,
+    prompt_text: str,
+    *,
+    start: int,
+    end: int,
+) -> str:
+    token_start = _token_count(runtime, prompt_text[:start])
+    token_end = token_start + _token_count(runtime, prompt_text[start:end])
+    return f"{token_start}:{token_end}"
 
 
 def selected_context_from_spans(
