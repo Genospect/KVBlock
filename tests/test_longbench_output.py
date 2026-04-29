@@ -354,13 +354,29 @@ def test_length_aware_static_output_policy_sets_empirical_budget_and_window(
         length_bucket=parse_length_bucket(length_bucket),
         max_selected_blocks=None,
         context_reconstruction="selected_spans",
-        passage_window_tokens=120,
+        passage_window_tokens=None,
     )
 
     assert resolved.name == "length_aware_static"
     assert resolved.max_selected_blocks == expected_budget
     assert resolved.context_reconstruction == "passage_window"
     assert resolved.passage_window_tokens == 64
+
+
+def test_length_aware_static_output_policy_preserves_explicit_window() -> None:
+    resolved = resolve_output_policy_settings(
+        output_policy="length_aware_static",
+        dataset_names=("hotpotqa",),
+        length_bucket=parse_length_bucket("4k-8k"),
+        max_selected_blocks=None,
+        context_reconstruction="selected_spans",
+        passage_window_tokens=128,
+    )
+
+    assert resolved.name == "length_aware_static"
+    assert resolved.max_selected_blocks == 12
+    assert resolved.context_reconstruction == "passage_window"
+    assert resolved.passage_window_tokens == 128
 
 
 def test_length_aware_static_requires_single_budget_per_run() -> None:

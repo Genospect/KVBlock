@@ -230,7 +230,7 @@ def run_longbench_output_benchmark(
     context_policy: ContextPolicy = "selected",
     output_policy: OutputPolicy = "manual",
     context_reconstruction: ContextReconstructionMode = "selected_spans",
-    passage_window_tokens: int = 120,
+    passage_window_tokens: int | None = None,
     passage_header_tokens: int = 24,
     selection_min_blocks: int = 0,
     selection_score_ratio: float | None = None,
@@ -254,7 +254,7 @@ def run_longbench_output_benchmark(
         raise ValueError("unsupported context_policy")
     if context_reconstruction not in ("selected_spans", "passage_window"):
         raise ValueError("unsupported context_reconstruction")
-    if passage_window_tokens <= 0:
+    if passage_window_tokens is not None and passage_window_tokens <= 0:
         raise ValueError("passage_window_tokens must be > 0")
     if passage_header_tokens < 0:
         raise ValueError("passage_header_tokens must be >= 0")
@@ -687,7 +687,7 @@ def resolve_output_policy_settings(
     length_bucket: LengthBucket,
     max_selected_blocks: int | None,
     context_reconstruction: ContextReconstructionMode,
-    passage_window_tokens: int,
+    passage_window_tokens: int | None,
 ) -> ResolvedOutputPolicy:
     """Resolve explicit output benchmark policy presets.
 
@@ -701,7 +701,9 @@ def resolve_output_policy_settings(
             name="manual",
             max_selected_blocks=max_selected_blocks,
             context_reconstruction=context_reconstruction,
-            passage_window_tokens=passage_window_tokens,
+            passage_window_tokens=(
+                120 if passage_window_tokens is None else passage_window_tokens
+            ),
         )
     if normalized_policy != "length_aware_static":
         raise ValueError("output_policy must be one of manual, length_aware_static")
@@ -711,7 +713,9 @@ def resolve_output_policy_settings(
         name="length_aware_static",
         max_selected_blocks=budget,
         context_reconstruction="passage_window",
-        passage_window_tokens=64,
+        passage_window_tokens=(
+            64 if passage_window_tokens is None else passage_window_tokens
+        ),
     )
 
 
