@@ -122,10 +122,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--context-policy",
         default="selected",
-        choices=("selected", "full_context"),
+        choices=("selected", "full_context", "answer_oracle"),
         help=(
             "selected runs the block selector and generates from selected context; "
-            "full_context skips selector and generates from the original LongBench context."
+            "full_context skips selector and generates from the original LongBench "
+            "context; answer_oracle keeps literal gold-answer passages when possible "
+            "and falls back to full context otherwise."
         ),
     )
     parser.add_argument(

@@ -12,7 +12,7 @@ from typing import Any, Literal, Sequence
 
 import torch
 
-from kvblock.benchmark.answer_metrics import score_qa_answer
+from kvblock.benchmark.answer_metrics import normalize_answer, score_qa_answer
 from kvblock.benchmark.longbench_adapter import (
     DEFAULT_LONGBENCH_DATASETS,
     DEFAULT_ORACLE_TOP_K,
@@ -39,12 +39,13 @@ from kvblock.runtime.local_hf_runtime import LocalHfRuntime
 from kvblock.runtime.real_block_eval import RealBlockSelectorConfig
 
 ContextReconstructionMode = Literal["selected_spans", "passage_window"]
-ContextPolicy = Literal["selected", "full_context"]
+ContextPolicy = Literal["selected", "full_context", "answer_oracle"]
 OutputPolicy = Literal["manual", "length_aware_static"]
 
 _CONTEXT_MARKER = "CONTEXT:\n"
 _INPUT_MARKER = "\nINPUT:\n"
 _PASSAGE_MARKER_RE = re.compile(r"Passage\s+\d+\s*:")
+_ANSWER_ORACLE_UNHELPFUL_ANSWERS = frozenset(("yes", "no", "noanswer"))
 
 
 @dataclass(frozen=True, slots=True)
@@ -239,7 +240,7 @@ def run_longbench_output_benchmark(
         raise ValueError("max_new_tokens must be > 0")
     if temperature < 0.0:
         raise ValueError("temperature must be >= 0")
-    if context_policy not in ("selected", "full_context"):
+    if context_policy not in ("selected", "full_context", "answer_oracle"):
         raise ValueError("unsupported context_policy")
     if context_reconstruction not in ("selected_spans", "passage_window"):
         raise ValueError("unsupported context_reconstruction")
@@ -281,8 +282,8 @@ def run_longbench_output_benchmark(
     resolved_oracle_mode = parse_oracle_mode(oracle_mode)
     resolved_oracle_top_k = parse_oracle_top_k(oracle_top_k)
     load_kwargs = dict(load_config_kwargs or {})
-    if context_policy == "full_context":
-        return _run_full_context_output_benchmark(
+    if context_policy in ("full_context", "answer_oracle"):
+        return _run_direct_context_output_benchmark(
             name=name,
             model_names=model_names,
             dataset_names=dataset_names,
@@ -511,7 +512,7 @@ def run_longbench_output_benchmark(
     )
 
 
-def _run_full_context_output_benchmark(
+def _run_direct_context_output_benchmark(
     *,
     name: str,
     model_names: Sequence[str],
@@ -556,11 +557,16 @@ def _run_full_context_output_benchmark(
         for sample in samples:
             prompt_text = Path(sample.prompt_file).read_text(encoding="utf-8")
             prompt_tokens = _token_count(runtime, prompt_text)
-            full_context = full_context_from_prompt(runtime, prompt_text=prompt_text)
+            reconstructed_context = direct_context_from_prompt(
+                runtime,
+                prompt_text=prompt_text,
+                answers=sample.answer_labels,
+                context_policy=context_policy,
+            )
             question = extract_longbench_question(prompt_text)
             generation_prompt = format_selected_context_prompt(
                 question=question,
-                selected_context=full_context.text,
+                selected_context=reconstructed_context.text,
             )
             prediction, generation_latency_sec = generate_answer(
                 runtime,
@@ -570,21 +576,23 @@ def _run_full_context_output_benchmark(
             )
             answer_scores = score_qa_answer(prediction, sample.answer_labels)
             selected_fraction = (
-                0.0 if prompt_tokens <= 0 else full_context.token_count / prompt_tokens
+                0.0
+                if prompt_tokens <= 0
+                else reconstructed_context.token_count / prompt_tokens
             )
             rows.append(
                 LongBenchOutputRunRow(
                     dataset=sample.dataset_name,
                     sample_id=sample.sample_id,
                     model=model_name,
-                    block_mode="full_context",
+                    block_mode=context_policy,
                     prompt_tokens=prompt_tokens,
                     longbench_length=sample.length,
-                    selected_token_count=full_context.token_count,
+                    selected_token_count=reconstructed_context.token_count,
                     selected_token_fraction=selected_fraction,
-                    reconstructed_context_token_count=full_context.token_count,
+                    reconstructed_context_token_count=reconstructed_context.token_count,
                     reconstructed_context_token_fraction=selected_fraction,
-                    context_reconstruction="full_context",
+                    context_reconstruction=context_policy,
                     selected_block_count=0,
                     selection_filter_dropped_count=0,
                     mixed_fallback_used=False,
@@ -618,7 +626,7 @@ def _run_full_context_output_benchmark(
         limit_per_dataset=limit_per_dataset,
         representation_source=None,
         qk_aggregation_strategy=None,
-        block_modes=("full_context",),
+        block_modes=(context_policy,),
         coarse_top_k=None,
         mixed_refine_parent_k=None,
         mixed_global_anchor_k=None,
@@ -924,6 +932,120 @@ def full_context_from_prompt(
         text=context,
         token_count=_token_count(runtime, context),
     )
+
+
+def direct_context_from_prompt(
+    runtime: LocalHfRuntime,
+    *,
+    prompt_text: str,
+    answers: Sequence[str],
+    context_policy: ContextPolicy,
+) -> ReconstructedContext:
+    """Build a no-selector generation context for direct baseline policies."""
+
+    if context_policy == "full_context":
+        return full_context_from_prompt(runtime, prompt_text=prompt_text)
+    if context_policy == "answer_oracle":
+        return answer_oracle_context_from_prompt(
+            runtime,
+            prompt_text=prompt_text,
+            answers=answers,
+        )
+    raise ValueError(f"unsupported direct context policy: {context_policy!r}")
+
+
+def answer_oracle_context_from_prompt(
+    runtime: LocalHfRuntime,
+    *,
+    prompt_text: str,
+    answers: Sequence[str],
+) -> ReconstructedContext:
+    """Keep only answer-containing context chunks when literal gold text exists.
+
+    This is an upper-bound diagnostic for compression format quality, not a fair
+    deployable policy. Yes/no and non-literal answers fall back to full context.
+    """
+
+    context = extract_longbench_context(prompt_text)
+    chunks = _answer_oracle_context_chunks(context, answers)
+    oracle_context = "\n\n".join(chunks) if chunks else context
+    return ReconstructedContext(
+        text=oracle_context,
+        token_count=_token_count(runtime, oracle_context),
+    )
+
+
+def _answer_oracle_context_chunks(
+    context: str,
+    answers: Sequence[str],
+) -> tuple[str, ...]:
+    normalized_answers = tuple(
+        normalized
+        for answer in answers
+        if (normalized := normalize_answer(answer))
+        and normalized not in _ANSWER_ORACLE_UNHELPFUL_ANSWERS
+    )
+    if not normalized_answers:
+        return ()
+
+    passage_chunks = _longbench_passage_chunks(context)
+    if passage_chunks:
+        hits = tuple(
+            chunk
+            for chunk in passage_chunks
+            if _chunk_contains_normalized_answer(chunk, normalized_answers)
+        )
+        if hits:
+            return _dedupe_text_chunks(hits)
+
+    sentence_hits = tuple(
+        chunk
+        for chunk in _sentence_like_chunks(context)
+        if _chunk_contains_normalized_answer(chunk, normalized_answers)
+    )
+    return _dedupe_text_chunks(sentence_hits)
+
+
+def _longbench_passage_chunks(context: str) -> tuple[str, ...]:
+    matches = tuple(_PASSAGE_MARKER_RE.finditer(context))
+    if not matches:
+        return ()
+    chunks: list[str] = []
+    for index, match in enumerate(matches):
+        start = match.start()
+        end = matches[index + 1].start() if index + 1 < len(matches) else len(context)
+        chunk = context[start:end].strip()
+        if chunk:
+            chunks.append(chunk)
+    return tuple(chunks)
+
+
+def _sentence_like_chunks(context: str) -> tuple[str, ...]:
+    return tuple(
+        chunk.strip()
+        for chunk in re.split(r"(?<=[.!?])\s+|\n+", context)
+        if chunk.strip()
+    )
+
+
+def _chunk_contains_normalized_answer(
+    chunk: str,
+    normalized_answers: Sequence[str],
+) -> bool:
+    normalized_chunk = normalize_answer(chunk)
+    return any(answer in normalized_chunk for answer in normalized_answers)
+
+
+def _dedupe_text_chunks(chunks: Sequence[str]) -> tuple[str, ...]:
+    seen: set[str] = set()
+    deduped: list[str] = []
+    for chunk in chunks:
+        normalized = " ".join(chunk.split())
+        if normalized in seen:
+            continue
+        seen.add(normalized)
+        deduped.append(chunk)
+    return tuple(deduped)
 
 
 def selected_context_from_spans(

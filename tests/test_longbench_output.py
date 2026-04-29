@@ -6,6 +6,7 @@ import pytest
 
 from kvblock.benchmark.longbench_output import (
     LongBenchOutputRunRow,
+    answer_oracle_context_from_prompt,
     build_output_summaries,
     extract_longbench_context,
     extract_longbench_question,
@@ -126,6 +127,66 @@ def test_full_context_from_prompt_extracts_original_context() -> None:
 
     assert reconstructed.text == "alpha beta gamma"
     assert reconstructed.token_count == 3
+
+
+def test_answer_oracle_context_keeps_literal_answer_passage() -> None:
+    prompt = (
+        "DATASET: hotpotqa\n\n"
+        "CONTEXT:\n"
+        "Passage 1: Alpha says the answer is elsewhere.\n"
+        "Passage 2: Beta says Needle Answer was the winner.\n"
+        "\nINPUT:\n"
+        "Who won?"
+    )
+
+    reconstructed = answer_oracle_context_from_prompt(
+        WhitespaceRuntime(),  # type: ignore[arg-type]
+        prompt_text=prompt,
+        answers=("Needle Answer",),
+    )
+
+    assert "Passage 2:" in reconstructed.text
+    assert "Passage 1:" not in reconstructed.text
+    assert reconstructed.token_count == 9
+
+
+def test_answer_oracle_context_falls_back_for_yes_no_answers() -> None:
+    prompt = (
+        "DATASET: hotpotqa\n\n"
+        "CONTEXT:\n"
+        "Passage 1: Alpha says a mine is in Canada.\n"
+        "Passage 2: Beta says another mine is also in Canada.\n"
+        "\nINPUT:\n"
+        "Are both mines in Canada?"
+    )
+
+    reconstructed = answer_oracle_context_from_prompt(
+        WhitespaceRuntime(),  # type: ignore[arg-type]
+        prompt_text=prompt,
+        answers=("yes",),
+    )
+
+    assert "Passage 1:" in reconstructed.text
+    assert "Passage 2:" in reconstructed.text
+
+
+def test_answer_oracle_context_uses_sentence_fallback_without_passage_markers() -> None:
+    prompt = (
+        "DATASET: hotpotqa\n\n"
+        "CONTEXT:\n"
+        "Alpha is irrelevant. Needle Answer was the winner. Gamma is irrelevant.\n"
+        "\nINPUT:\n"
+        "Who won?"
+    )
+
+    reconstructed = answer_oracle_context_from_prompt(
+        WhitespaceRuntime(),  # type: ignore[arg-type]
+        prompt_text=prompt,
+        answers=("Needle Answer",),
+    )
+
+    assert reconstructed.text == "Needle Answer was the winner."
+    assert reconstructed.token_count == 5
 
 
 class WhitespaceRuntime:
