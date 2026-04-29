@@ -128,6 +128,9 @@ def test_quality_guarded_static_uses_fixed_for_long_hotpot_only(
     assert hybrid_all["row_count"] == 3
     assert hybrid_all["mean_answer_f1"] == pytest.approx((0.8 + 0.9 + 0.7) / 3)
     assert hybrid_all["mean_selected_tokens"] == pytest.approx((400 + 620 + 220) / 3)
+    assert hybrid_all["mean_answer_f1_per_1k_recon_tokens"] == pytest.approx(
+        ((0.8 + 0.9 + 0.7) / 3) / (((400 + 620 + 220) / 3) / 1000)
+    )
 
     hybrid_hotpot = next(
         row
@@ -137,6 +140,28 @@ def test_quality_guarded_static_uses_fixed_for_long_hotpot_only(
     )
     assert hybrid_hotpot["row_count"] == 2
     assert hybrid_hotpot["mean_answer_f1"] == pytest.approx((0.8 + 0.9) / 2)
+
+
+def test_compare_output_runs_adds_utility_columns_to_existing_summaries(
+    tmp_path: Path,
+) -> None:
+    payload = {
+        "config": {"block_modes": ["fixed_40"]},
+        "rows": [],
+        "overall_summary": {
+            "row_count": 2,
+            "mean_answer_f1": 0.5,
+            "mean_answer_em": 0.25,
+            "mean_reconstructed_context_tokens": 500.0,
+        },
+        "dataset_summaries": (),
+    }
+    path = _write_json(tmp_path / "fixed.json", payload)
+
+    rows = compare_output_runs((("fixed40", path),), scope="all")
+
+    assert rows[0]["mean_answer_f1_per_1k_recon_tokens"] == pytest.approx(1.0)
+    assert rows[0]["mean_answer_em_per_1k_recon_tokens"] == pytest.approx(0.5)
 
 
 def test_quality_guarded_static_requires_length_aware_source(

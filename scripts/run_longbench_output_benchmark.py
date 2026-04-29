@@ -120,6 +120,15 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--max-new-tokens", type=int, default=32)
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument(
+        "--context-policy",
+        default="selected",
+        choices=("selected", "full_context"),
+        help=(
+            "selected runs the block selector and generates from selected context; "
+            "full_context skips selector and generates from the original LongBench context."
+        ),
+    )
+    parser.add_argument(
         "--output-policy",
         default="manual",
         choices=("manual", "length_aware_static"),
@@ -250,6 +259,7 @@ def main(argv: list[str] | None = None) -> int:
         oracle_top_k=parse_oracle_top_k(args.oracle_top_k),
         max_new_tokens=args.max_new_tokens,
         temperature=args.temperature,
+        context_policy=args.context_policy,
         output_policy=args.output_policy,
         context_reconstruction=args.context_reconstruction,
         passage_window_tokens=args.passage_window_tokens,

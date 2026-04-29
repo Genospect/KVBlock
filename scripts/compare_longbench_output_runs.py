@@ -20,6 +20,8 @@ DEFAULT_COLUMNS: tuple[str, ...] = (
     "mean_selected_tokens",
     "mean_reconstructed_context_token_fraction",
     "mean_reconstructed_context_tokens",
+    "mean_answer_f1_per_1k_recon_tokens",
+    "mean_answer_em_per_1k_recon_tokens",
     "mean_selector_latency_sec",
     "mean_generation_latency_sec",
     "mixed_fallback_rate",
@@ -130,6 +132,7 @@ def _summary_row(label: str, dataset: str, summary: dict[str, Any]) -> dict[str,
     row = dict(summary)
     row["run_label"] = label
     row["dataset"] = dataset
+    _add_utility_metrics(row)
     return row
 
 
@@ -289,6 +292,26 @@ def _summarize_rows(rows: Sequence[dict[str, Any]]) -> dict[str, Any]:
         "mixed_fallback_count": fallback_count,
         "mixed_fallback_rate": fallback_count / len(rows),
     }
+
+
+def _add_utility_metrics(row: dict[str, Any]) -> None:
+    row["mean_answer_f1_per_1k_recon_tokens"] = _score_per_1k_tokens(
+        row.get("mean_answer_f1"),
+        row.get("mean_reconstructed_context_tokens"),
+    )
+    row["mean_answer_em_per_1k_recon_tokens"] = _score_per_1k_tokens(
+        row.get("mean_answer_em"),
+        row.get("mean_reconstructed_context_tokens"),
+    )
+
+
+def _score_per_1k_tokens(score: Any, tokens: Any) -> float | None:
+    if score is None or tokens is None:
+        return None
+    token_count = float(tokens)
+    if token_count <= 0.0:
+        return None
+    return float(score) / (token_count / 1000.0)
 
 
 def _mean(values: Any) -> float:

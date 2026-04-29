@@ -7,9 +7,11 @@ import pytest
 from kvblock.benchmark.longbench_output import (
     LongBenchOutputRunRow,
     build_output_summaries,
+    extract_longbench_context,
     extract_longbench_question,
     filter_output_selection,
     format_selected_context_prompt,
+    full_context_from_prompt,
     passage_window_context_from_spans,
     resolve_output_policy_settings,
 )
@@ -98,6 +100,7 @@ def test_output_summaries_aggregate_answer_and_fallback_metrics() -> None:
 def test_prompt_helpers_extract_question_and_format_selected_context() -> None:
     prompt = "DATASET: hotpotqa\n\nCONTEXT:\nalpha\n\nINPUT:\nWho won?"
 
+    assert extract_longbench_context(prompt) == "alpha"
     assert extract_longbench_question(prompt) == "Who won?"
     assert (
         format_selected_context_prompt(question="Who won?", selected_context="alpha")
@@ -111,6 +114,18 @@ def test_prompt_helpers_extract_question_and_format_selected_context() -> None:
         "\n"
         "Answer:"
     )
+
+
+def test_full_context_from_prompt_extracts_original_context() -> None:
+    prompt = "DATASET: hotpotqa\n\nCONTEXT:\nalpha beta gamma\n\nINPUT:\nWho won?"
+
+    reconstructed = full_context_from_prompt(
+        WhitespaceRuntime(),  # type: ignore[arg-type]
+        prompt_text=prompt,
+    )
+
+    assert reconstructed.text == "alpha beta gamma"
+    assert reconstructed.token_count == 3
 
 
 class WhitespaceRuntime:

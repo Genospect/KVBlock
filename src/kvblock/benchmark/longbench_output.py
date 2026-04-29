@@ -19,6 +19,8 @@ from kvblock.benchmark.longbench_adapter import (
     DatasetLoader,
     LengthBucket,
     OracleMode,
+    load_longbench_records,
+    materialize_longbench_prompt_cases,
     parse_length_bucket,
     parse_oracle_mode,
     parse_oracle_top_k,
@@ -37,6 +39,7 @@ from kvblock.runtime.local_hf_runtime import LocalHfRuntime
 from kvblock.runtime.real_block_eval import RealBlockSelectorConfig
 
 ContextReconstructionMode = Literal["selected_spans", "passage_window"]
+ContextPolicy = Literal["selected", "full_context"]
 OutputPolicy = Literal["manual", "length_aware_static"]
 
 _CONTEXT_MARKER = "CONTEXT:\n"
@@ -213,6 +216,7 @@ def run_longbench_output_benchmark(
     oracle_top_k: Sequence[int] = DEFAULT_ORACLE_TOP_K,
     max_new_tokens: int = 32,
     temperature: float = 0.0,
+    context_policy: ContextPolicy = "selected",
     output_policy: OutputPolicy = "manual",
     context_reconstruction: ContextReconstructionMode = "selected_spans",
     passage_window_tokens: int = 120,
@@ -235,6 +239,8 @@ def run_longbench_output_benchmark(
         raise ValueError("max_new_tokens must be > 0")
     if temperature < 0.0:
         raise ValueError("temperature must be >= 0")
+    if context_policy not in ("selected", "full_context"):
+        raise ValueError("unsupported context_policy")
     if context_reconstruction not in ("selected_spans", "passage_window"):
         raise ValueError("unsupported context_reconstruction")
     if passage_window_tokens <= 0:
@@ -275,6 +281,27 @@ def run_longbench_output_benchmark(
     resolved_oracle_mode = parse_oracle_mode(oracle_mode)
     resolved_oracle_top_k = parse_oracle_top_k(oracle_top_k)
     load_kwargs = dict(load_config_kwargs or {})
+    if context_policy == "full_context":
+        return _run_full_context_output_benchmark(
+            name=name,
+            model_names=model_names,
+            dataset_names=dataset_names,
+            split=split,
+            dataset_repo=dataset_repo,
+            limit_per_dataset=limit_per_dataset,
+            length_bucket=bucket,
+            prompt_cache_dir=prompt_cache_dir,
+            max_new_tokens=max_new_tokens,
+            temperature=temperature,
+            context_policy=context_policy,
+            output_policy=resolved_output_policy.name,
+            context_reconstruction=context_reconstruction,
+            passage_window_tokens=passage_window_tokens,
+            passage_header_tokens=passage_header_tokens,
+            load_kwargs=load_kwargs,
+            dataset_loader=dataset_loader,
+        )
+
     selector_result = run_longbench_selector_benchmark(
         model_names=model_names,
         dataset_names=dataset_names,
@@ -461,6 +488,7 @@ def run_longbench_output_benchmark(
         oracle_top_k=resolved_oracle_top_k,
         max_new_tokens=max_new_tokens,
         temperature=temperature,
+        context_policy=context_policy,
         output_policy=resolved_output_policy.name,
         context_reconstruction=context_reconstruction,
         passage_window_tokens=passage_window_tokens,
@@ -479,6 +507,157 @@ def run_longbench_output_benchmark(
         config=config,
         rows=row_tuple,
         dataset_summaries=dataset_summaries,
+        overall_summary=_summarize_output_rows("all", row_tuple),
+    )
+
+
+def _run_full_context_output_benchmark(
+    *,
+    name: str,
+    model_names: Sequence[str],
+    dataset_names: Sequence[str],
+    split: str,
+    dataset_repo: str,
+    limit_per_dataset: int | None,
+    length_bucket: LengthBucket,
+    prompt_cache_dir: str | Path,
+    max_new_tokens: int,
+    temperature: float,
+    context_policy: ContextPolicy,
+    output_policy: OutputPolicy,
+    context_reconstruction: ContextReconstructionMode,
+    passage_window_tokens: int,
+    passage_header_tokens: int,
+    load_kwargs: dict[str, Any],
+    dataset_loader: DatasetLoader | None,
+) -> LongBenchOutputBenchmarkResult:
+    records = load_longbench_records(
+        dataset_names=dataset_names,
+        split=split,
+        dataset_repo=dataset_repo,
+        limit_per_dataset=limit_per_dataset,
+        length_bucket=length_bucket,
+        dataset_loader=dataset_loader,
+    )
+    if not records:
+        raise ValueError("LongBench selection produced no records")
+    _, samples = materialize_longbench_prompt_cases(
+        records,
+        prompt_dir=prompt_cache_dir,
+    )
+
+    rows: list[LongBenchOutputRunRow] = []
+    for model_name in model_names:
+        runtime = LocalHfRuntime(
+            RuntimeLoadConfig(model_name=model_name, **load_kwargs),
+            capture_config=HiddenStateCaptureConfig(),
+        )
+        runtime.load_model()
+        for sample in samples:
+            prompt_text = Path(sample.prompt_file).read_text(encoding="utf-8")
+            prompt_tokens = _token_count(runtime, prompt_text)
+            full_context = full_context_from_prompt(runtime, prompt_text=prompt_text)
+            question = extract_longbench_question(prompt_text)
+            generation_prompt = format_selected_context_prompt(
+                question=question,
+                selected_context=full_context.text,
+            )
+            prediction, generation_latency_sec = generate_answer(
+                runtime,
+                generation_prompt,
+                max_new_tokens=max_new_tokens,
+                temperature=temperature,
+            )
+            answer_scores = score_qa_answer(prediction, sample.answer_labels)
+            selected_fraction = (
+                0.0 if prompt_tokens <= 0 else full_context.token_count / prompt_tokens
+            )
+            rows.append(
+                LongBenchOutputRunRow(
+                    dataset=sample.dataset_name,
+                    sample_id=sample.sample_id,
+                    model=model_name,
+                    block_mode="full_context",
+                    prompt_tokens=prompt_tokens,
+                    longbench_length=sample.length,
+                    selected_token_count=full_context.token_count,
+                    selected_token_fraction=selected_fraction,
+                    reconstructed_context_token_count=full_context.token_count,
+                    reconstructed_context_token_fraction=selected_fraction,
+                    context_reconstruction="full_context",
+                    selected_block_count=0,
+                    selection_filter_dropped_count=0,
+                    mixed_fallback_used=False,
+                    selector_latency_sec=0.0,
+                    selector_total_latency_sec=0.0,
+                    generation_latency_sec=generation_latency_sec,
+                    total_latency_sec=generation_latency_sec,
+                    gold_answers=sample.answer_labels,
+                    prediction=prediction,
+                    answer_em=answer_scores["em"],
+                    answer_f1=answer_scores["f1"],
+                    answer_precision=answer_scores["precision"],
+                    answer_recall=answer_scores["recall"],
+                    selector_recall=None,
+                    selector_precision=None,
+                    evidence_window_recall=None,
+                    evidence_window_precision=None,
+                    expected_parent_recall=None,
+                    selected_ids=(),
+                    selected_spans=(),
+                )
+            )
+
+    row_tuple = tuple(rows)
+    if not row_tuple:
+        raise ValueError("output benchmark produced no rows")
+    config = _output_config(
+        split=split,
+        dataset_repo=dataset_repo,
+        length_bucket=length_bucket.to_dict(),
+        limit_per_dataset=limit_per_dataset,
+        representation_source=None,
+        qk_aggregation_strategy=None,
+        block_modes=("full_context",),
+        coarse_top_k=None,
+        mixed_refine_parent_k=None,
+        mixed_global_anchor_k=None,
+        mixed_fallback_margin=None,
+        mixed_max_children_per_parent=None,
+        mixed_child_window_radius=None,
+        rerank_mode=None,
+        rerank_weight=None,
+        refine_top_n_tokens=None,
+        refine_score_mode=None,
+        stage_c_policy=None,
+        exclude_scaffold_blocks=None,
+        neighbor_expansion=None,
+        halo_radius=None,
+        max_selected_blocks=None,
+        evidence_window_radius=None,
+        oracle_mode="none",
+        oracle_top_k=(),
+        max_new_tokens=max_new_tokens,
+        temperature=temperature,
+        context_policy=context_policy,
+        output_policy=output_policy,
+        context_reconstruction=context_reconstruction,
+        passage_window_tokens=passage_window_tokens,
+        passage_header_tokens=passage_header_tokens,
+        selection_min_blocks=0,
+        selection_score_ratio=None,
+        selection_max_total_blocks=None,
+        selection_max_children_per_parent=None,
+        selector_config=None,
+        load_config_kwargs=load_kwargs,
+    )
+    return LongBenchOutputBenchmarkResult(
+        name=name,
+        model_names=tuple(model_names),
+        datasets=tuple(dataset_names),
+        config=config,
+        rows=row_tuple,
+        dataset_summaries=build_output_summaries(row_tuple),
         overall_summary=_summarize_output_rows("all", row_tuple),
     )
 
@@ -733,6 +912,20 @@ def reconstruct_selected_context(
     raise ValueError(f"unsupported context reconstruction mode: {mode!r}")
 
 
+def full_context_from_prompt(
+    runtime: LocalHfRuntime,
+    *,
+    prompt_text: str,
+) -> ReconstructedContext:
+    """Extract and count the original LongBench context section."""
+
+    context = extract_longbench_context(prompt_text)
+    return ReconstructedContext(
+        text=context,
+        token_count=_token_count(runtime, context),
+    )
+
+
 def selected_context_from_spans(
     runtime: LocalHfRuntime,
     *,
@@ -847,6 +1040,16 @@ def extract_longbench_question(prompt_text: str) -> str:
     if marker not in prompt_text:
         return prompt_text.strip()
     return prompt_text.rsplit(marker, maxsplit=1)[-1].strip()
+
+
+def extract_longbench_context(prompt_text: str) -> str:
+    """Extract the original LongBench context from a materialized prompt."""
+
+    bounds = _context_bounds(prompt_text)
+    if bounds is None:
+        return prompt_text.strip()
+    start, end = bounds
+    return prompt_text[start:end].strip()
 
 
 def format_selected_context_prompt(*, question: str, selected_context: str) -> str:
