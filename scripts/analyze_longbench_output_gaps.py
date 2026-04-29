@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 DEFAULT_DETAIL_COLUMNS: tuple[str, ...] = (
+    "candidate_label",
     "dataset",
     "sample_id",
     "oracle_candidate_category",
@@ -35,6 +36,7 @@ DEFAULT_DETAIL_COLUMNS: tuple[str, ...] = (
 )
 
 SUMMARY_COLUMNS: tuple[str, ...] = (
+    "candidate_label",
     "dataset",
     "row_count",
     "oracle_correct_candidate_wrong",
@@ -191,30 +193,45 @@ def analyze_output_gaps(
         for label, path in run_inputs
     )
     rows_by_role = _rows_by_role(payloads)
-    oracle_rows = rows_by_role.get("oracle", {})
-    candidate_rows = rows_by_role.get("candidate", {})
+    oracle_rows = _single_role_rows(rows_by_role.get("oracle", {}), role="oracle")
+    candidate_sources = rows_by_role.get("candidate", {})
     if not oracle_rows:
         raise ValueError("gap analysis requires an oracle/answer_oracle run")
-    if not candidate_rows:
+    if not candidate_sources:
         raise ValueError("gap analysis requires a lenaware/candidate run")
 
-    full_rows = rows_by_role.get("full", {})
-    fixed_rows = rows_by_role.get("fixed", {})
-    common_keys = sorted(set(oracle_rows).intersection(candidate_rows))
-    if not common_keys:
-        raise ValueError("oracle and candidate runs share no sample rows")
+    full_rows = _single_role_rows(rows_by_role.get("full", {}), role="full")
+    fixed_rows = _single_role_rows(rows_by_role.get("fixed", {}), role="fixed")
 
-    detail_rows = tuple(
-        _gap_detail_row(
-            key,
-            oracle=oracle_rows[key],
-            candidate=candidate_rows[key],
-            full=full_rows.get(key),
-            fixed=fixed_rows.get(key),
-            correct_field=correct_field,
-            correct_threshold=correct_threshold,
+    detail_rows_by_candidate: list[tuple[str, tuple[dict[str, Any], ...]]] = []
+    for candidate_label, candidate_rows in candidate_sources.items():
+        common_keys = sorted(set(oracle_rows).intersection(candidate_rows))
+        if not common_keys:
+            continue
+        detail_rows_by_candidate.append(
+            (
+                candidate_label,
+                tuple(
+                    _gap_detail_row(
+                        key,
+                        candidate_label=candidate_label,
+                        oracle=oracle_rows[key],
+                        candidate=candidate_rows[key],
+                        full=full_rows.get(key),
+                        fixed=fixed_rows.get(key),
+                        correct_field=correct_field,
+                        correct_threshold=correct_threshold,
+                    )
+                    for key in common_keys
+                ),
+            )
         )
-        for key in common_keys
+    if not detail_rows_by_candidate:
+        raise ValueError("oracle and candidate runs share no sample rows")
+    detail_rows = tuple(
+        row
+        for _, candidate_rows in detail_rows_by_candidate
+        for row in candidate_rows
     )
     sorted_detail_rows = tuple(
         sorted(
@@ -226,9 +243,14 @@ def analyze_output_gaps(
             reverse=True,
         )
     )
-    summary_rows = _gap_summary_rows(
-        detail_rows,
-        include_full=bool(full_rows),
+    summary_rows = tuple(
+        row
+        for candidate_label, candidate_rows in detail_rows_by_candidate
+        for row in _gap_summary_rows(
+            candidate_rows,
+            candidate_label=candidate_label,
+            include_full=bool(full_rows),
+        )
     )
     return GapAnalysisResult((summary_rows, sorted_detail_rows))
 
@@ -260,13 +282,13 @@ def format_markdown(
 
 def _rows_by_role(
     payloads: Sequence[tuple[str, dict[str, Any]]],
-) -> dict[str, dict[tuple[str, str, str], dict[str, Any]]]:
-    grouped: dict[str, dict[tuple[str, str, str], dict[str, Any]]] = {}
+) -> dict[str, dict[str, dict[tuple[str, str, str], dict[str, Any]]]]:
+    grouped: dict[str, dict[str, dict[tuple[str, str, str], dict[str, Any]]]] = {}
     for label, payload in payloads:
         role = _payload_role(label, payload)
         if role is None:
             continue
-        role_rows = grouped.setdefault(role, {})
+        role_rows = grouped.setdefault(role, {}).setdefault(label, {})
         for row in payload.get("rows", ()):
             key = _row_key(row)
             if key in role_rows:
@@ -276,6 +298,19 @@ def _rows_by_role(
                 )
             role_rows[key] = row
     return grouped
+
+
+def _single_role_rows(
+    sources: dict[str, dict[tuple[str, str, str], dict[str, Any]]],
+    *,
+    role: str,
+) -> dict[tuple[str, str, str], dict[str, Any]]:
+    if not sources:
+        return {}
+    if len(sources) > 1:
+        labels = ", ".join(sorted(sources))
+        raise ValueError(f"gap analysis supports one {role} run at a time: {labels}")
+    return next(iter(sources.values()))
 
 
 def _payload_role(label: str, payload: dict[str, Any]) -> str | None:
@@ -304,6 +339,10 @@ def _payload_role(label: str, payload: dict[str, Any]) -> str | None:
         output_policy == "length_aware_static"
         or "lenaware" in normalized_label
         or "length_aware" in normalized_label
+        or "_fb_" in normalized_label
+        or "fallback" in normalized_label
+        or "forced" in normalized_label
+        or "mixed" in normalized_label
         or normalized_label.endswith("_candidate")
     ):
         return "candidate"
@@ -315,6 +354,7 @@ def _payload_role(label: str, payload: dict[str, Any]) -> str | None:
 def _gap_detail_row(
     key: tuple[str, str, str],
     *,
+    candidate_label: str,
     oracle: dict[str, Any],
     candidate: dict[str, Any],
     full: dict[str, Any] | None,
@@ -344,6 +384,7 @@ def _gap_detail_row(
     )
 
     row: dict[str, Any] = {
+        "candidate_label": candidate_label,
         "dataset": key[0],
         "sample_id": key[1],
         "model": key[2],
@@ -404,16 +445,29 @@ def _gap_detail_row(
 def _gap_summary_rows(
     detail_rows: Sequence[dict[str, Any]],
     *,
+    candidate_label: str,
     include_full: bool,
 ) -> tuple[dict[str, Any], ...]:
     rows: list[dict[str, Any]] = [
-        _summarize_gap_rows("all", detail_rows, include_full=include_full)
+        _summarize_gap_rows(
+            "all",
+            detail_rows,
+            candidate_label=candidate_label,
+            include_full=include_full,
+        )
     ]
     grouped: dict[str, list[dict[str, Any]]] = {}
     for row in detail_rows:
         grouped.setdefault(str(row["dataset"]), []).append(row)
     for dataset, dataset_rows in sorted(grouped.items()):
-        rows.append(_summarize_gap_rows(dataset, dataset_rows, include_full=include_full))
+        rows.append(
+            _summarize_gap_rows(
+                dataset,
+                dataset_rows,
+                candidate_label=candidate_label,
+                include_full=include_full,
+            )
+        )
     return tuple(rows)
 
 
@@ -421,9 +475,11 @@ def _summarize_gap_rows(
     dataset: str,
     rows: Sequence[dict[str, Any]],
     *,
+    candidate_label: str,
     include_full: bool,
 ) -> dict[str, Any]:
     return {
+        "candidate_label": candidate_label,
         "dataset": dataset,
         "row_count": len(rows),
         "oracle_correct_candidate_wrong": _count_category(

@@ -94,6 +94,7 @@ def test_analyze_output_gaps_counts_quadrants_and_sorts_details(
     )
 
     summary = result.summary_rows[0]
+    assert summary["candidate_label"] == "hotpot_lenaware"
     assert summary["dataset"] == "all"
     assert summary["row_count"] == 3
     assert summary["oracle_correct_candidate_wrong"] == 1
@@ -110,6 +111,7 @@ def test_analyze_output_gaps_counts_quadrants_and_sorts_details(
     assert summary["mean_candidate_oracle_span_overlap_fraction"] == pytest.approx(1.0)
 
     assert result.detail_rows[0]["sample_id"] == "a"
+    assert result.detail_rows[0]["candidate_label"] == "hotpot_lenaware"
     assert (
         result.detail_rows[0]["oracle_candidate_category"]
         == "oracle_correct_candidate_wrong"
@@ -131,3 +133,50 @@ def test_analyze_output_gaps_requires_oracle_and_candidate(tmp_path: Path) -> No
 
     with pytest.raises(ValueError, match="oracle"):
         analyze_output_gaps((("hotpot_full", full),))
+
+
+def test_analyze_output_gaps_supports_multiple_candidate_runs(
+    tmp_path: Path,
+) -> None:
+    oracle = _write_json(
+        tmp_path / "oracle.json",
+        _payload(
+            config={"context_policy": "answer_oracle"},
+            rows=[_row(sample_id="a", answer_f1=1.0, answer_em=1.0, tokens=2000)],
+        ),
+    )
+    fallback_candidate = _write_json(
+        tmp_path / "fallback.json",
+        _payload(
+            config={"block_modes": ["mixed_global_refine_40_16_stride_8"]},
+            rows=[_row(sample_id="a", answer_f1=0.5, answer_em=0.0, tokens=500)],
+        ),
+    )
+    forced_candidate = _write_json(
+        tmp_path / "forced.json",
+        _payload(
+            config={"block_modes": ["mixed_global_refine_40_16_stride_8"]},
+            rows=[_row(sample_id="a", answer_f1=0.0, answer_em=0.0, tokens=400)],
+        ),
+    )
+
+    result = analyze_output_gaps(
+        (
+            ("hotpot_oracle", oracle),
+            ("hotpot48_fb_m12", fallback_candidate),
+            ("hotpot48_forced_m24", forced_candidate),
+        )
+    )
+
+    summary_by_candidate = {
+        str(row["candidate_label"]): row
+        for row in result.summary_rows
+        if row["dataset"] == "all"
+    }
+    assert set(summary_by_candidate) == {"hotpot48_fb_m12", "hotpot48_forced_m24"}
+    assert summary_by_candidate["hotpot48_fb_m12"][
+        "mean_oracle_minus_candidate_f1"
+    ] == pytest.approx(0.5)
+    assert summary_by_candidate["hotpot48_forced_m24"][
+        "mean_oracle_minus_candidate_f1"
+    ] == pytest.approx(1.0)
