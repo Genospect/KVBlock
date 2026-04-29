@@ -127,23 +127,21 @@ class LocalHfRuntime(RuntimeBackend):
         needs_hidden_states = not (is_query_source(source) or is_key_source(source))
         if query_capture is None:
             with torch.no_grad():
-                outputs = model(
+                outputs = _model_prefill_forward(
+                    model,
                     input_ids=input_ids,
                     attention_mask=attention_mask,
-                    output_hidden_states=needs_hidden_states,
-                    use_cache=True,
-                    return_dict=True,
+                    needs_hidden_states=needs_hidden_states,
                 )
             query_states = None
         else:
             with query_capture:
                 with torch.no_grad():
-                    outputs = model(
+                    outputs = _model_prefill_forward(
+                        model,
                         input_ids=input_ids,
                         attention_mask=attention_mask,
-                        output_hidden_states=needs_hidden_states,
-                        use_cache=True,
-                        return_dict=True,
+                        needs_hidden_states=needs_hidden_states,
                     )
             query_states = query_capture.query_states
 
@@ -197,6 +195,31 @@ class LocalHfRuntime(RuntimeBackend):
             if parameter.device.type != "meta":
                 return parameter.device
         return self.config.device
+
+
+def _model_prefill_forward(
+    model: Any,
+    *,
+    input_ids: torch.Tensor,
+    attention_mask: torch.Tensor,
+    needs_hidden_states: bool,
+) -> Any:
+    """Run causal-LM prefill without materializing full-sequence logits when possible."""
+
+    base_kwargs: dict[str, Any] = {
+        "input_ids": input_ids,
+        "attention_mask": attention_mask,
+        "output_hidden_states": needs_hidden_states,
+        "use_cache": True,
+        "return_dict": True,
+    }
+    for logits_kwarg in ("logits_to_keep", "num_logits_to_keep"):
+        try:
+            return model(**base_kwargs, **{logits_kwarg: 1})
+        except TypeError as exc:
+            if logits_kwarg not in str(exc):
+                raise
+    return model(**base_kwargs)
 
 
 def _resolve_torch_dtype(value: str) -> torch.dtype | None:

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from types import SimpleNamespace
+
 import torch
 
 from kvblock.kv.block_manager import (
@@ -18,7 +20,10 @@ from kvblock.runtime.hooks import (
     select_model_prefill_representations_with_name,
     select_query_key_states_with_name,
 )
-from kvblock.runtime.local_hf_runtime import _Gpt2QueryProjectionCapture
+from kvblock.runtime.local_hf_runtime import (
+    _Gpt2QueryProjectionCapture,
+    _model_prefill_forward,
+)
 from kvblock.runtime.real_block_eval import RealBlockSelectorConfig, run_real_block_selector
 from kvblock.summaries.base import MultiHeadQuerySummary
 
@@ -100,6 +105,54 @@ def test_runtime_backend_protocol_shape() -> None:
     assert output.token_count == 10
     assert output.token_representations.shape == (10, 6)
     assert output.representation_name == "mock_final_hidden_state"
+
+
+def test_model_prefill_forward_requests_only_latest_logits() -> None:
+    class FakeModel:
+        def __init__(self) -> None:
+            self.forward_kwargs: dict[str, object] | None = None
+
+        def __call__(self, **kwargs: object) -> SimpleNamespace:
+            self.forward_kwargs = dict(kwargs)
+            return SimpleNamespace(hidden_states=(), past_key_values=())
+
+    model = FakeModel()
+    output = _model_prefill_forward(
+        model,
+        input_ids=torch.ones(1, 3, dtype=torch.long),
+        attention_mask=torch.ones(1, 3, dtype=torch.long),
+        needs_hidden_states=False,
+    )
+
+    assert output.hidden_states == ()
+    assert model.forward_kwargs is not None
+    assert model.forward_kwargs["logits_to_keep"] == 1
+    assert model.forward_kwargs["use_cache"] is True
+    assert model.forward_kwargs["return_dict"] is True
+
+
+def test_model_prefill_forward_falls_back_for_older_logits_kwarg() -> None:
+    class FakeModel:
+        def __init__(self) -> None:
+            self.calls: list[dict[str, object]] = []
+
+        def __call__(self, **kwargs: object) -> SimpleNamespace:
+            self.calls.append(dict(kwargs))
+            if "logits_to_keep" in kwargs:
+                raise TypeError("unexpected keyword argument 'logits_to_keep'")
+            return SimpleNamespace(hidden_states=(), past_key_values=())
+
+    model = FakeModel()
+    _model_prefill_forward(
+        model,
+        input_ids=torch.ones(1, 3, dtype=torch.long),
+        attention_mask=torch.ones(1, 3, dtype=torch.long),
+        needs_hidden_states=True,
+    )
+
+    assert len(model.calls) == 2
+    assert model.calls[1]["num_logits_to_keep"] == 1
+    assert model.calls[1]["output_hidden_states"] is True
 
 
 def test_hidden_state_hook_selects_final_layer_and_latest_token() -> None:
