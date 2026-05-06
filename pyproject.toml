@@ -5,18 +5,31 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "kvblock"
 version = "0.1.0"
-description = "Initial scaffold for block-sparse KV cache experiments."
+description = "Policy-driven KV cache block selection for long-context LLM inference"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 dependencies = [
+    "numpy>=1.24",
+    "pydantic>=2.0",
+    "PyYAML>=6.0",
+    "rich>=13.0",
     "torch>=2.0",
+    "tqdm>=4.0",
+    "typer>=0.9",
 ]
 
 [project.optional-dependencies]
+bench = ["datasets>=2.0", "evaluate>=0.4", "pandas>=2.0"]
+dev = ["mypy>=1.0", "pytest>=8.0", "ruff>=0.4"]
+flashinfer = ["flashinfer-python"]
 hf = ["transformers>=4.0"]
 longbench = ["datasets>=2.0", "transformers>=4.0"]
 test = ["pytest>=8.0"]
+triton = ["triton"]
 yaml = ["PyYAML>=6.0"]
+
+[project.scripts]
+kvblock = "kvblock.cli.main:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

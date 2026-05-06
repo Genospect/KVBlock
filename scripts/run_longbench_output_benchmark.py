@@ -133,12 +133,17 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--output-policy",
         default="manual",
-        choices=("manual", "length_aware_static"),
+        choices=(
+            "manual",
+            "length_aware_static",
+            "quality_guarded_static",
+            "efficiency_guarded_static",
+        ),
         help=(
-            "Output benchmark policy preset. length_aware_static sets "
-            "passage_window reconstruction, defaults passage-window-tokens to 64 "
-            "unless explicitly set, and applies the empirical selected-block budget "
-            "for the requested dataset/length bucket."
+            "Output benchmark policy preset. length_aware_static sets only the "
+            "empirical selected-block budget and passage_window reconstruction. "
+            "quality_guarded_static and efficiency_guarded_static also apply the "
+            "V1 selector defaults measured for the current LongBench regimes."
         ),
     )
     parser.add_argument(
@@ -153,7 +158,7 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help=(
             "Minimum local token window per selected span in passage_window mode. "
-            "Defaults to 120 for manual policy and 64 for length_aware_static."
+            "Defaults to 120 for manual policy and 64 for static output policies."
         ),
     )
     parser.add_argument(

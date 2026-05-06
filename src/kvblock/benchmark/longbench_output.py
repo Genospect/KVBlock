@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field, replace
 import gc
 import json
 from pathlib import Path
@@ -37,10 +37,18 @@ from kvblock.runtime.base import RuntimeLoadConfig
 from kvblock.runtime.hooks import HiddenStateCaptureConfig, RepresentationSource
 from kvblock.runtime.local_hf_runtime import LocalHfRuntime
 from kvblock.runtime.real_block_eval import RealBlockSelectorConfig
+from kvblock.selectors.research_adapter import (
+    selected_kv_plan_from_longbench_selector_row,
+)
 
 ContextReconstructionMode = Literal["selected_spans", "passage_window"]
 ContextPolicy = Literal["selected", "full_context", "answer_oracle"]
-OutputPolicy = Literal["manual", "length_aware_static"]
+OutputPolicy = Literal[
+    "manual",
+    "length_aware_static",
+    "quality_guarded_static",
+    "efficiency_guarded_static",
+]
 
 _CONTEXT_MARKER = "CONTEXT:\n"
 _INPUT_MARKER = "\nINPUT:\n"
@@ -94,6 +102,22 @@ class ResolvedOutputPolicy:
     max_selected_blocks: int | None
     context_reconstruction: ContextReconstructionMode
     passage_window_tokens: int
+    block_modes: tuple[BlockModeName, ...] | None = None
+    representation_source: RepresentationSource | None = None
+    qk_aggregation_strategy: QKAggregationStrategy | None = None
+    mixed_refine_parent_k: int | None = None
+    mixed_fallback_margin: float | None = None
+    mixed_child_window_radius: int | None = None
+    rerank_mode: RerankMode | None = None
+    refine_top_n_tokens: int | None = None
+    refine_score_mode: RefineScoreMode | None = None
+    stage_c_policy: StageCPolicyMode | None = None
+    exclude_scaffold_blocks: bool | None = None
+    halo_radius: int | None = None
+    evidence_window_radius: int | None = None
+    selector_shortlist_m: int | None = None
+    selector_semantic_k: int | None = None
+    selector_confidence_margin: float | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -131,6 +155,11 @@ class LongBenchOutputRunRow:
     expected_parent_recall: float | None
     selected_ids: tuple[int, ...]
     selected_spans: tuple[str, ...]
+    selected_block_fraction: float = 0.0
+    exact_recall: float | None = None
+    answer_quality_score: float = 0.0
+    dense_sparse_quality_delta: float | None = None
+    selected_kv_plan: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         """Return a JSON-friendly row."""
@@ -149,6 +178,7 @@ class LongBenchOutputSummary:
     mean_answer_precision: float
     mean_answer_recall: float
     mean_selected_block_count: float
+    mean_selected_block_fraction: float
     mean_selection_filter_dropped_count: float
     mean_selected_token_fraction: float
     mean_selected_tokens: float
@@ -156,6 +186,11 @@ class LongBenchOutputSummary:
     mean_reconstructed_context_tokens: float
     mean_selector_latency_sec: float
     mean_generation_latency_sec: float
+    mean_evidence_recall: float | None
+    mean_evidence_window_recall: float | None
+    mean_exact_recall: float | None
+    mean_answer_quality_score: float
+    mean_dense_sparse_quality_delta: float | None
     mixed_fallback_count: int
     mixed_fallback_rate: float
 
@@ -288,6 +323,36 @@ def run_longbench_output_benchmark(
     max_selected_blocks = resolved_output_policy.max_selected_blocks
     context_reconstruction = resolved_output_policy.context_reconstruction
     passage_window_tokens = resolved_output_policy.passage_window_tokens
+    if resolved_output_policy.block_modes is not None:
+        block_modes = resolved_output_policy.block_modes
+    if resolved_output_policy.representation_source is not None:
+        representation_source = resolved_output_policy.representation_source
+    if resolved_output_policy.qk_aggregation_strategy is not None:
+        qk_aggregation_strategy = resolved_output_policy.qk_aggregation_strategy
+    if resolved_output_policy.mixed_refine_parent_k is not None:
+        mixed_refine_parent_k = resolved_output_policy.mixed_refine_parent_k
+    if resolved_output_policy.mixed_fallback_margin is not None:
+        mixed_fallback_margin = resolved_output_policy.mixed_fallback_margin
+    if resolved_output_policy.mixed_child_window_radius is not None:
+        mixed_child_window_radius = resolved_output_policy.mixed_child_window_radius
+    if resolved_output_policy.rerank_mode is not None:
+        rerank_mode = resolved_output_policy.rerank_mode
+    if resolved_output_policy.refine_top_n_tokens is not None:
+        refine_top_n_tokens = resolved_output_policy.refine_top_n_tokens
+    if resolved_output_policy.refine_score_mode is not None:
+        refine_score_mode = resolved_output_policy.refine_score_mode
+    if resolved_output_policy.stage_c_policy is not None:
+        stage_c_policy = resolved_output_policy.stage_c_policy
+    if resolved_output_policy.exclude_scaffold_blocks is not None:
+        exclude_scaffold_blocks = resolved_output_policy.exclude_scaffold_blocks
+    if resolved_output_policy.halo_radius is not None:
+        halo_radius = resolved_output_policy.halo_radius
+    if resolved_output_policy.evidence_window_radius is not None:
+        evidence_window_radius = resolved_output_policy.evidence_window_radius
+    selector_config = apply_output_policy_selector_overrides(
+        selector_config,
+        resolved_output_policy,
+    )
 
     resolved_oracle_mode = parse_oracle_mode(oracle_mode)
     resolved_oracle_top_k = parse_oracle_top_k(oracle_top_k)
@@ -402,6 +467,35 @@ def run_longbench_output_benchmark(
                 if selector_row.tokens <= 0
                 else selected_token_count / selector_row.tokens
             )
+            selector_recall = _filtered_recall(
+                selector_row.target_recall,
+                expected_ids=selector_row.expected_block_ids,
+                selected_ids=output_selection.block_ids,
+            )
+            selector_precision = _filtered_precision(
+                selector_row.selected_precision,
+                expected_ids=selector_row.expected_block_ids,
+                selected_ids=output_selection.block_ids,
+            )
+            evidence_window_recall = _filtered_window_recall(
+                selector_row.evidence_window_recall,
+                expected_ids=selector_row.expected_block_ids,
+                selected_ids=output_selection.block_ids,
+                radius=selector_row.evidence_window_radius,
+            )
+            evidence_window_precision = _filtered_window_precision(
+                selector_row.evidence_window_precision,
+                expected_ids=selector_row.expected_block_ids,
+                selected_ids=output_selection.block_ids,
+                radius=selector_row.evidence_window_radius,
+            )
+            selected_plan = selected_kv_plan_from_longbench_selector_row(
+                selector_row,
+                selected_block_ids=output_selection.block_ids,
+                selected_spans=output_selection.spans,
+                selected_blocks=output_selection.blocks,
+                policy_name=resolved_output_policy.name,
+            )
             rows.append(
                 LongBenchOutputRunRow(
                     dataset=selector_row.dataset_name,
@@ -436,28 +530,10 @@ def run_longbench_output_benchmark(
                     answer_f1=answer_scores["f1"],
                     answer_precision=answer_scores["precision"],
                     answer_recall=answer_scores["recall"],
-                    selector_recall=_filtered_recall(
-                        selector_row.target_recall,
-                        expected_ids=selector_row.expected_block_ids,
-                        selected_ids=output_selection.block_ids,
-                    ),
-                    selector_precision=_filtered_precision(
-                        selector_row.selected_precision,
-                        expected_ids=selector_row.expected_block_ids,
-                        selected_ids=output_selection.block_ids,
-                    ),
-                    evidence_window_recall=_filtered_window_recall(
-                        selector_row.evidence_window_recall,
-                        expected_ids=selector_row.expected_block_ids,
-                        selected_ids=output_selection.block_ids,
-                        radius=selector_row.evidence_window_radius,
-                    ),
-                    evidence_window_precision=_filtered_window_precision(
-                        selector_row.evidence_window_precision,
-                        expected_ids=selector_row.expected_block_ids,
-                        selected_ids=output_selection.block_ids,
-                        radius=selector_row.evidence_window_radius,
-                    ),
+                    selector_recall=selector_recall,
+                    selector_precision=selector_precision,
+                    evidence_window_recall=evidence_window_recall,
+                    evidence_window_precision=evidence_window_precision,
                     expected_parent_recall=(
                         selector_row.expected_parent_recall
                         if output_selection.dropped_count == 0
@@ -465,6 +541,11 @@ def run_longbench_output_benchmark(
                     ),
                     selected_ids=output_selection.block_ids,
                     selected_spans=output_selection.spans,
+                    selected_block_fraction=selected_plan.selected_block_fraction,
+                    exact_recall=selector_recall,
+                    answer_quality_score=answer_scores["f1"],
+                    dense_sparse_quality_delta=None,
+                    selected_kv_plan=selected_plan.to_dict(),
                 )
             )
     row_tuple = tuple(rows)
@@ -623,6 +704,10 @@ def _run_direct_context_output_benchmark(
                     expected_parent_recall=None,
                     selected_ids=(),
                     selected_spans=reconstructed_context.source_spans,
+                    selected_block_fraction=0.0,
+                    exact_recall=None,
+                    answer_quality_score=answer_scores["f1"],
+                    dense_sparse_quality_delta=None,
                 )
             )
 
@@ -691,8 +776,9 @@ def resolve_output_policy_settings(
 ) -> ResolvedOutputPolicy:
     """Resolve explicit output benchmark policy presets.
 
-    The length-aware preset is intentionally small and empirical. It captures the
-    current best output-quality regimes without changing selector internals.
+    The guarded presets are empirical V1 benchmark defaults. They intentionally
+    encode measured quality/efficiency regimes so the report harness stays
+    reproducible while selector work continues.
     """
 
     normalized_policy = output_policy.strip().lower()
@@ -705,23 +791,91 @@ def resolve_output_policy_settings(
                 120 if passage_window_tokens is None else passage_window_tokens
             ),
         )
-    if normalized_policy != "length_aware_static":
-        raise ValueError("output_policy must be one of manual, length_aware_static")
+    if normalized_policy == "length_aware_static":
+        budget = _length_aware_static_budget(
+            dataset_names,
+            length_bucket,
+            policy_name="length_aware_static",
+        )
+        return ResolvedOutputPolicy(
+            name="length_aware_static",
+            max_selected_blocks=budget,
+            context_reconstruction="passage_window",
+            passage_window_tokens=(
+                64 if passage_window_tokens is None else passage_window_tokens
+            ),
+        )
+    if normalized_policy in ("quality_guarded_static", "efficiency_guarded_static"):
+        return _guarded_static_output_policy(
+            output_policy=normalized_policy,
+            dataset_names=dataset_names,
+            length_bucket=length_bucket,
+            passage_window_tokens=passage_window_tokens,
+        )
+    raise ValueError(
+        "output_policy must be one of manual, length_aware_static, "
+        "quality_guarded_static, efficiency_guarded_static"
+    )
 
-    budget = _length_aware_static_budget(dataset_names, length_bucket)
+
+def _guarded_static_output_policy(
+    *,
+    output_policy: str,
+    dataset_names: Sequence[str],
+    length_bucket: LengthBucket,
+    passage_window_tokens: int | None,
+) -> ResolvedOutputPolicy:
+    policy_name = (
+        "quality_guarded_static"
+        if output_policy == "quality_guarded_static"
+        else "efficiency_guarded_static"
+    )
+    budget = _length_aware_static_budget(
+        dataset_names,
+        length_bucket,
+        policy_name=policy_name,
+    )
+    mixed_fallback_margin = 0.05
+    mixed_child_window_radius = 0
+    if _is_hotpot_4k_8k(dataset_names, length_bucket):
+        if policy_name == "quality_guarded_static":
+            budget = 12
+        else:
+            budget = 24
+            mixed_fallback_margin = 0.0
+            mixed_child_window_radius = 2
+
     return ResolvedOutputPolicy(
-        name="length_aware_static",
+        name=policy_name,
         max_selected_blocks=budget,
         context_reconstruction="passage_window",
         passage_window_tokens=(
             64 if passage_window_tokens is None else passage_window_tokens
         ),
+        block_modes=("mixed_global_refine_40_16_stride_8",),
+        representation_source="query_only_last_layer",
+        qk_aggregation_strategy="block_max",
+        mixed_refine_parent_k=4,
+        mixed_fallback_margin=mixed_fallback_margin,
+        mixed_child_window_radius=mixed_child_window_radius,
+        rerank_mode="dense_qk_token_refine",
+        refine_top_n_tokens=4,
+        refine_score_mode="softmax_mass",
+        stage_c_policy="semantic_refined_mix",
+        exclude_scaffold_blocks=True,
+        halo_radius=2,
+        evidence_window_radius=2,
+        selector_shortlist_m=32,
+        selector_semantic_k=8,
+        selector_confidence_margin=0.05,
     )
 
 
 def _length_aware_static_budget(
     dataset_names: Sequence[str],
     length_bucket: LengthBucket,
+    *,
+    policy_name: str = "length_aware_static",
 ) -> int:
     datasets = tuple(
         sorted({dataset.strip().lower() for dataset in dataset_names if dataset.strip()})
@@ -743,7 +897,7 @@ def _length_aware_static_budget(
         )
         if missing:
             raise ValueError(
-                "length_aware_static has no 4k-8k budget for datasets: "
+                f"{policy_name} has no 4k-8k budget for datasets: "
                 + ",".join(missing)
             )
         budgets = {
@@ -752,7 +906,7 @@ def _length_aware_static_budget(
         }
     else:
         raise ValueError(
-            "length_aware_static currently supports length buckets 0-4k and 4k-8k"
+            f"{policy_name} currently supports length buckets 0-4k and 4k-8k"
         )
 
     unique_budgets = set(budgets.values())
@@ -761,10 +915,51 @@ def _length_aware_static_budget(
             f"{dataset}=m{budget}" for dataset, budget in sorted(budgets.items())
         )
         raise ValueError(
-            "length_aware_static resolves different budgets for this dataset mix "
+            f"{policy_name} resolves different budgets for this dataset mix "
             f"({details}); run those datasets separately"
         )
     return next(iter(unique_budgets))
+
+
+def _is_hotpot_4k_8k(
+    dataset_names: Sequence[str],
+    length_bucket: LengthBucket,
+) -> bool:
+    datasets = {
+        dataset.strip().lower() for dataset in dataset_names if dataset.strip()
+    }
+    return (
+        datasets == {"hotpotqa"}
+        and length_bucket.min_length == 4000
+        and length_bucket.max_length == 8000
+    )
+
+
+def apply_output_policy_selector_overrides(
+    selector_config: RealBlockSelectorConfig | None,
+    resolved_output_policy: ResolvedOutputPolicy,
+) -> RealBlockSelectorConfig | None:
+    """Apply selector-config overrides required by output policy presets."""
+
+    updates: dict[str, Any] = {}
+    if resolved_output_policy.selector_shortlist_m is not None:
+        updates["shortlist_m"] = resolved_output_policy.selector_shortlist_m
+    if resolved_output_policy.selector_semantic_k is not None:
+        updates["semantic_k"] = resolved_output_policy.selector_semantic_k
+    if resolved_output_policy.selector_confidence_margin is not None:
+        updates["confidence_margin"] = (
+            resolved_output_policy.selector_confidence_margin
+        )
+    if resolved_output_policy.qk_aggregation_strategy is not None:
+        updates["qk_aggregation_strategy"] = (
+            resolved_output_policy.qk_aggregation_strategy
+        )
+    if resolved_output_policy.representation_source is not None:
+        updates["representation_source"] = resolved_output_policy.representation_source
+    if not updates:
+        return selector_config
+    base_config = selector_config or RealBlockSelectorConfig()
+    return replace(base_config, **updates)
 
 
 def filter_output_selection(
@@ -1364,14 +1559,20 @@ def format_longbench_output_report(result: LongBenchOutputBenchmarkResult) -> st
         lines.append(
             f"{row.dataset}:{row.sample_id} model={row.model} mode={row.block_mode} "
             f"answer_f1={row.answer_f1:.3f} answer_em={row.answer_em:.3f} "
+            f"quality={row.answer_quality_score:.3f} "
             f"recon={row.context_reconstruction} "
             f"blocks={row.selected_block_count} "
             f"dropped={row.selection_filter_dropped_count} "
-            f"selected_frac={row.selected_token_fraction:.3f} "
+            f"selected_token_frac={row.selected_token_fraction:.3f} "
+            f"selected_block_frac={row.selected_block_fraction:.3f} "
             f"recon_frac={row.reconstructed_context_token_fraction:.3f} "
             f"selected_tokens={row.selected_token_count} "
             f"recon_tokens={row.reconstructed_context_token_count} "
             f"fallback={row.mixed_fallback_used} "
+            f"evidence_recall={_fmt_optional(row.selector_recall)} "
+            f"window_recall={_fmt_optional(row.evidence_window_recall)} "
+            f"exact_recall={_fmt_optional(row.exact_recall)} "
+            f"quality_delta={_fmt_optional(row.dense_sparse_quality_delta)} "
             f"selector={row.selector_latency_sec:.6f}s "
             f"generation={row.generation_latency_sec:.6f}s "
             f"prediction={prediction!r} gold={gold!r}"
@@ -1413,6 +1614,9 @@ def _summarize_output_rows(
         mean_answer_precision=_mean(row.answer_precision for row in rows),
         mean_answer_recall=_mean(row.answer_recall for row in rows),
         mean_selected_block_count=_mean(row.selected_block_count for row in rows),
+        mean_selected_block_fraction=_mean(
+            row.selected_block_fraction for row in rows
+        ),
         mean_selection_filter_dropped_count=_mean(
             row.selection_filter_dropped_count for row in rows
         ),
@@ -1429,6 +1633,15 @@ def _summarize_output_rows(
         mean_selector_latency_sec=_mean(row.selector_latency_sec for row in rows),
         mean_generation_latency_sec=_mean(
             row.generation_latency_sec for row in rows
+        ),
+        mean_evidence_recall=_mean_optional(row.selector_recall for row in rows),
+        mean_evidence_window_recall=_mean_optional(
+            row.evidence_window_recall for row in rows
+        ),
+        mean_exact_recall=_mean_optional(row.exact_recall for row in rows),
+        mean_answer_quality_score=_mean(row.answer_quality_score for row in rows),
+        mean_dense_sparse_quality_delta=_mean_optional(
+            row.dense_sparse_quality_delta for row in rows
         ),
         mixed_fallback_count=fallback_count,
         mixed_fallback_rate=fallback_count / len(rows),
@@ -1666,12 +1879,18 @@ def _format_summary(summary: LongBenchOutputSummary) -> str:
         f"{summary.dataset} | rows={summary.row_count} "
         f"mean_answer_f1={summary.mean_answer_f1:.3f} "
         f"mean_answer_em={summary.mean_answer_em:.3f} "
+        f"mean_quality={summary.mean_answer_quality_score:.3f} "
         f"mean_blocks={summary.mean_selected_block_count:.1f} "
+        f"mean_block_frac={summary.mean_selected_block_fraction:.3f} "
         f"mean_dropped={summary.mean_selection_filter_dropped_count:.1f} "
         f"mean_selected_frac={summary.mean_selected_token_fraction:.3f} "
         f"mean_selected_tokens={summary.mean_selected_tokens:.1f} "
         f"mean_recon_frac={summary.mean_reconstructed_context_token_fraction:.3f} "
         f"mean_recon_tokens={summary.mean_reconstructed_context_tokens:.1f} "
+        f"mean_evidence_recall={_fmt_optional(summary.mean_evidence_recall)} "
+        f"mean_window_recall={_fmt_optional(summary.mean_evidence_window_recall)} "
+        f"mean_exact_recall={_fmt_optional(summary.mean_exact_recall)} "
+        f"mean_quality_delta={_fmt_optional(summary.mean_dense_sparse_quality_delta)} "
         f"mean_selector={summary.mean_selector_latency_sec:.6f}s "
         f"mean_generation={summary.mean_generation_latency_sec:.6f}s "
         f"mixed_fallback={summary.mixed_fallback_count}/{summary.row_count}"
@@ -1683,6 +1902,19 @@ def _mean(values: Any) -> float:
     if not materialized:
         return 0.0
     return sum(materialized) / len(materialized)
+
+
+def _mean_optional(values: Any) -> float | None:
+    materialized = tuple(float(value) for value in values if value is not None)
+    if not materialized:
+        return None
+    return sum(materialized) / len(materialized)
+
+
+def _fmt_optional(value: float | int | None) -> str:
+    if value is None:
+        return "n/a"
+    return f"{float(value):.3f}"
 
 
 def _release_torch_cache() -> None:

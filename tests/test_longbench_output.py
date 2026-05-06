@@ -7,6 +7,7 @@ import pytest
 from kvblock.benchmark.longbench_output import (
     LongBenchOutputRunRow,
     answer_oracle_context_from_prompt,
+    apply_output_policy_selector_overrides,
     build_output_summaries,
     extract_longbench_context,
     extract_longbench_question,
@@ -17,6 +18,7 @@ from kvblock.benchmark.longbench_output import (
     resolve_output_policy_settings,
 )
 from kvblock.benchmark.longbench_adapter import parse_length_bucket
+from kvblock.runtime.real_block_eval import RealBlockSelectorConfig
 
 
 def _row(
@@ -59,6 +61,29 @@ def _row(
         expected_parent_recall=1.0,
         selected_ids=(1, 2),
         selected_spans=("0:10", "10:20"),
+        selected_block_fraction=0.2,
+        exact_recall=0.5,
+        answer_quality_score=answer_f1,
+        dense_sparse_quality_delta=None,
+        selected_kv_plan={
+            "logical_block_ids": [1, 2],
+            "physical_page_ids": None,
+            "selected_token_ranges": [[0, 10], [10, 20]],
+            "recent_block_ids": [],
+            "anchor_block_ids": [],
+            "halo_block_ids": [],
+            "linked_block_ids": [],
+            "confidence": 1.0,
+            "fallback_triggered": mixed_fallback_used,
+            "fallback_reason": "fallback" if mixed_fallback_used else None,
+            "selector_name": "fixed_40",
+            "policy_name": "test",
+            "total_blocks": 10,
+            "selected_blocks": 2,
+            "total_tokens": 100,
+            "selected_tokens": 20,
+            "metadata": {},
+        },
     )
 
 
@@ -88,12 +113,18 @@ def test_output_summaries_aggregate_answer_and_fallback_metrics() -> None:
     assert summaries[0].mean_answer_f1 == 0.5
     assert summaries[0].mean_answer_em == 0.5
     assert summaries[0].mean_selected_block_count == pytest.approx(2.0)
+    assert summaries[0].mean_selected_block_fraction == pytest.approx(0.2)
     assert summaries[0].mean_selection_filter_dropped_count == pytest.approx(0.0)
     assert summaries[0].mean_selected_token_fraction == pytest.approx(0.15)
     assert summaries[0].mean_reconstructed_context_token_fraction == pytest.approx(
         0.15
     )
     assert summaries[0].mean_reconstructed_context_tokens == pytest.approx(15.0)
+    assert summaries[0].mean_evidence_recall == pytest.approx(0.5)
+    assert summaries[0].mean_evidence_window_recall == pytest.approx(1.0)
+    assert summaries[0].mean_exact_recall == pytest.approx(0.5)
+    assert summaries[0].mean_answer_quality_score == pytest.approx(0.5)
+    assert summaries[0].mean_dense_sparse_quality_delta is None
     assert summaries[0].mixed_fallback_count == 1
     assert summaries[0].mixed_fallback_rate == 0.5
 
@@ -389,3 +420,112 @@ def test_length_aware_static_requires_single_budget_per_run() -> None:
             context_reconstruction="selected_spans",
             passage_window_tokens=120,
         )
+
+
+def test_quality_guarded_static_sets_hotpot_quality_selector_defaults() -> None:
+    resolved = resolve_output_policy_settings(
+        output_policy="quality_guarded_static",
+        dataset_names=("hotpotqa",),
+        length_bucket=parse_length_bucket("4k-8k"),
+        max_selected_blocks=None,
+        context_reconstruction="selected_spans",
+        passage_window_tokens=None,
+    )
+
+    assert resolved.name == "quality_guarded_static"
+    assert resolved.max_selected_blocks == 12
+    assert resolved.context_reconstruction == "passage_window"
+    assert resolved.passage_window_tokens == 64
+    assert resolved.block_modes == ("mixed_global_refine_40_16_stride_8",)
+    assert resolved.representation_source == "query_only_last_layer"
+    assert resolved.qk_aggregation_strategy == "block_max"
+    assert resolved.mixed_refine_parent_k == 4
+    assert resolved.mixed_fallback_margin == pytest.approx(0.05)
+    assert resolved.mixed_child_window_radius == 0
+    assert resolved.rerank_mode == "dense_qk_token_refine"
+    assert resolved.refine_score_mode == "softmax_mass"
+    assert resolved.stage_c_policy == "semantic_refined_mix"
+    assert resolved.exclude_scaffold_blocks is True
+    assert resolved.halo_radius == 2
+    assert resolved.evidence_window_radius == 2
+    assert resolved.selector_shortlist_m == 32
+    assert resolved.selector_semantic_k == 8
+    assert resolved.selector_confidence_margin == pytest.approx(0.05)
+
+
+def test_efficiency_guarded_static_sets_hotpot_child_window_defaults() -> None:
+    resolved = resolve_output_policy_settings(
+        output_policy="efficiency_guarded_static",
+        dataset_names=("hotpotqa",),
+        length_bucket=parse_length_bucket("4k-8k"),
+        max_selected_blocks=None,
+        context_reconstruction="selected_spans",
+        passage_window_tokens=96,
+    )
+
+    assert resolved.name == "efficiency_guarded_static"
+    assert resolved.max_selected_blocks == 24
+    assert resolved.context_reconstruction == "passage_window"
+    assert resolved.passage_window_tokens == 96
+    assert resolved.mixed_fallback_margin == pytest.approx(0.0)
+    assert resolved.mixed_child_window_radius == 2
+
+
+@pytest.mark.parametrize(
+    ("output_policy", "dataset", "length_bucket", "expected_budget"),
+    (
+        ("quality_guarded_static", "hotpotqa", "0-4k", 20),
+        ("quality_guarded_static", "musique", "4k-8k", 8),
+        ("efficiency_guarded_static", "hotpotqa", "0-4k", 20),
+        ("efficiency_guarded_static", "musique", "4k-8k", 8),
+    ),
+)
+def test_guarded_static_uses_length_aware_budget_outside_hotpot_4k_8k(
+    output_policy: str,
+    dataset: str,
+    length_bucket: str,
+    expected_budget: int,
+) -> None:
+    resolved = resolve_output_policy_settings(
+        output_policy=output_policy,  # type: ignore[arg-type]
+        dataset_names=(dataset,),
+        length_bucket=parse_length_bucket(length_bucket),
+        max_selected_blocks=None,
+        context_reconstruction="selected_spans",
+        passage_window_tokens=None,
+    )
+
+    assert resolved.max_selected_blocks == expected_budget
+    assert resolved.mixed_fallback_margin == pytest.approx(0.05)
+    assert resolved.mixed_child_window_radius == 0
+
+
+def test_output_policy_selector_overrides_preserve_unrelated_config() -> None:
+    resolved = resolve_output_policy_settings(
+        output_policy="quality_guarded_static",
+        dataset_names=("hotpotqa",),
+        length_bucket=parse_length_bucket("4k-8k"),
+        max_selected_blocks=None,
+        context_reconstruction="selected_spans",
+        passage_window_tokens=None,
+    )
+    original = RealBlockSelectorConfig(
+        block_size=40,
+        shortlist_m=16,
+        semantic_k=4,
+        confidence_margin=0.0,
+        keep_recent_blocks=3,
+        keep_anchor_blocks=1,
+    )
+
+    overridden = apply_output_policy_selector_overrides(original, resolved)
+
+    assert overridden is not None
+    assert overridden.block_size == 40
+    assert overridden.keep_recent_blocks == 3
+    assert overridden.keep_anchor_blocks == 1
+    assert overridden.shortlist_m == 32
+    assert overridden.semantic_k == 8
+    assert overridden.confidence_margin == pytest.approx(0.05)
+    assert overridden.qk_aggregation_strategy == "block_max"
+    assert overridden.representation_source == "query_only_last_layer"
